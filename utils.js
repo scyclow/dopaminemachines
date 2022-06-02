@@ -21,25 +21,20 @@ function times(t, fn) {
   return out
 }
 
-// let __randomSeed = parseInt(tokenData.hash.slice(50, 58), 16)
+let __randomSeed = parseInt(tokenData.hash.slice(50, 58), 16)
 
-// const resetRandomSeed = () => { __randomSeed = parseInt(tokenData.hash.slice(50, 58), 16) }
+const resetRandomSeed = () => { __randomSeed = parseInt(tokenData.hash.slice(50, 58), 16) }
 
-// function rnd(mn, mx) {
-//   __randomSeed ^= __randomSeed << 13
-//   __randomSeed ^= __randomSeed >> 17
-//   __randomSeed ^= __randomSeed << 5
-//   const out = (((__randomSeed < 0) ? ~__randomSeed + 1 : __randomSeed) % 1000) / 1000
-//   if (mx != null) return mn + out * (mx - mn)
-//   else if (mn != null) return out * mn
-//   else return out
-// }
-const rnd = (mn, mx) => {
-  const out = Math.random()
+function rnd(mn, mx) {
+  __randomSeed ^= __randomSeed << 13
+  __randomSeed ^= __randomSeed >> 17
+  __randomSeed ^= __randomSeed << 5
+  const out = (((__randomSeed < 0) ? ~__randomSeed + 1 : __randomSeed) % 1000) / 1000
   if (mx != null) return mn + out * (mx - mn)
   else if (mn != null) return out * mn
   else return out
 }
+
 
 function rndint(mn, mx) {
   return parseInt(rnd(mn, mx))
