@@ -178,11 +178,14 @@
   const vh = sideways ? 'vw' : 'vh'
   const vw = sideways ? 'vh' : 'vw'
 
+  const fontFamily = prb(0.05) ? 'serif' : 'sans-serif'
+
+
   style.innerHTML = `
     * {
       margin: 0;
       padding: 0;
-      font-family: sans-serif;
+      font-family: ${fontFamily};
     }
 
     .layout {
