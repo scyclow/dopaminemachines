@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TIME IS RUNNING OUT</title>
+  <style type="text/css">
+    body {
+      /*background: #000;*/
+      display: flex;
+      align-items: center;
+      height: 100vh;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      font-size: 8vw;
+    }
+
+    h2 {
+      font-family: monospace;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+
+    section {
+      padding: 0.25em;
+    }
+    section > div {
+      border: 0.09em solid;
+      background: #fff;
+      padding: 0.25em;
+    }
+
+    #timer {
+      /*color:  #f00;*/
+    }
+  </style>
+
+</head>
+<body>
+  <section>
+    <div>
+      <h1>TIME IS RUNNING OUT</h1>
+      <h1 style="font-style: italic;color:  #f00;">ACT NOW</h1>
+      <h2 id="timer"></h2>
+    </div>
+  </section>
+
+</body>
+
+
+<script type="text/javascript">
+  async function triggerTimer() {
+    const timer = document.getElementById('timer')
+    const expiration = new Date('2079-07-16T04:01:00.000Z')
+    const with0 = x => x < 10 ? '0' + Math.floor(x) : Math.floor(x)
+
+    const setTime = () => {
+      const diff = (expiration - new Date()) / 1000
+      const d = diff / 86400
+      const h = (d - Math.floor(d)) * 24
+      const m = (h - Math.floor(h)) * 60
+      const s = (m - Math.floor(m)) * 60
+      const ms = (s - Math.floor(s)) * 100
+
+      timer.innerHTML = `${with0(h + d * 24)}:${with0(m)}:${with0(s)}:${with0(ms)}`
+    }
+    setTime()
+    setInterval(setTime, 10)
+
+  }
+
+  triggerTimer()
+</script>
+</html>

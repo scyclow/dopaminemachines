@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html translate="no" lang="en" class="notranslate">
+<head>
+  <meta charset="utf-8">
+  <meta name="google" content="notranslate" />
+  <title></title>
+
+    <style>
+      .marquee {
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .marqueeInner {
+        display: inline-flex;
+      }
+
+      .marqueeForward {
+        animation: Marquee 50s linear infinite;
+      }
+      .marqueeReverse {
+        animation: MarqueeReverse 50s linear infinite;
+      }
+
+      .marqueeInner > * {
+        display: inline-block;
+        white-space: nowrap;
+      }
+
+      @keyframes Marquee {
+        0% {
+          transform: translate3d(-50%, 0, 0);
+        }
+
+        100% {
+          transform: translate3d(0%, 0, 0);
+        }
+      }
+
+      @keyframes MarqueeReverse {
+        0% {
+          transform: transform: translate3d(0%, 0, 0);
+        }
+
+        100% {
+          transform: translate3d(-50%, 0, 0);
+        }
+      }
+
+      .fullColorRotate {
+        animation: FullColorRotate 25s linear infinite;
+      }
+      @keyframes FullColorRotate {
+        0% {
+          color: #ff0000;
+          background-color: #00ffff;
+        }
+
+        17% {
+          color: #ffff00;
+          background-color: #0000ff;
+        }
+
+        33% {
+          color: #00ff00;
+          background-color: #ff00ff;
+        }
+
+        50% {
+          color: #00ffff;
+          background-color: #ff0000;
+        }
+
+        66% {
+          color: #0000ff;
+          background-color: #ffff00;
+        }
+
+        83% {
+          color: #ff00ff;
+          background-color: #00ff00;
+        }
+
+        100% {
+          color: #ff0000;
+          background-color: #00ffff;
+        }
+      }
+
+      .rotate {
+        animation: Rotate 10s linear infinite;
+      }
+
+      @keyframes Rotate {
+        from {
+          transform: rotate(0deg);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+
+    </style>
+</head>
+<body>
+
+</body>
+
+<script src="./utils.js"></script>
+<script src="./components.js"></script>
+
+<script>
+/*
+    - marquee (left, right, speed, text)
+    - countdown (amount of time, direction, speed)
+    - header text (blinking, border)
+    - arrow (blinking)
+    - markovy text
+    - chat bot
+    - links to other tokens
+    - ads
+    - click here button (night mode, screen melting)
+    - emojis
+    - speaking guy
+*/
+
+
+  const rows = sample([
+    rndint(1, 2),
+    rndint(2, 10),
+    rndint(2, 10),
+    rndint(2, 10),
+    rndint(10, 25),
+    rndint(10, 25),
+    rndint(10, 25),
+    rndint(25, 65),
+  ])
+  const cols = 20
+
+  console.log(rows, cols)
+
+
+  const $body = document.body
+  const style = document.createElement('style')
+  const sideways = false
+  const vh = sideways ? 'vw' : 'vh'
+  const vw = sideways ? 'vh' : 'vw'
+
+  style.innerHTML = `
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    .layout {
+      height: 100${vh};
+      width: 100${vw};
+
+      display: grid;
+      grid-template-rows: repeat(${rows}, 1fr);
+      grid-template-columns: repeat(${cols}, 1fr);
+      ${sideways ? 'transform: rotate(90deg)' : ''}
+    }
+
+    .border {
+      border: 2px solid;
+      padding: 2px;
+    }
+  `
+  document.head.appendChild(style)
+  // document.head.appendChild(marqueeStyle)
+
+  const components = []
+  let rowCursor = 0
+
+  const allContent = [
+    ['$$$$'],
+    ['$$$$'],
+    ['$$$$'],
+    ['$$$$'],
+    [`<span style="font-size: calc(90${vh}/${rows})">💸</span>`],
+    [`<span style="font-size: calc(90${vh}/${rows})">🤑</span>`],
+
+
+    ['>>>>', '<<<<'],
+    ['!!!!'],
+
+    [`<span style="margin-right: 1em">WINNER</span>`, `<span style="margin-right: 1em">LOSER</span>`],
+    [`<span style="margin-right: 1em" slow="2.0">CONGRATULATIONS</span>`],
+    [`<span style="margin-right: 1em">NFTs</span>`],
+    [`<span style="margin-right: 1em">LUCKY</span>`],
+    [`<span style="margin-right: 1em">SEXY</span>`, `<span style="margin-right: 1em">XXX</span>`],
+    [`<span style="margin-right: 1em">FREE</span>`],
+    [`<span style="margin-right: 1em">BUY NOW</span>`],
+    [`<span style="margin-right: 1em" slow="4.0">ACT NOW (Before It's Too Late)</span>`],
+    [`<span style="margin-right: 1em" slow="4.0">WARNING</span>`],
+    [`<span style="margin-right: 1em" slow="3.0">THIS WON'T LAST</span>`],
+    [`<span style="margin-right: 1em" slow="3.5">DEAL OF A LIFETIME</span>`],
+    [`<span style="margin-right: 1em" slow="3.0">FEAR</span> <span style="margin-right: 1em">UNCERTAINTY</span> <span style="margin-right: 1em">DOUBT</span>`],
+    [`<span style="margin-right: 1em" slow="2.0">SAFE + SECURE</span>`],
+    [`<span style="margin-right: 1em">WTF</span>`, `<span style="margin-right: 1em">LOL</span>`, `<span style="margin-right: 1em">OMG</span>`, `<span style="margin-right: 1em">WAGMI</span>`],
+    [`<span style="margin-right: 1em" slow="8">BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE</span>`]
+  ]
+
+
+  const content = sample([
+    allContent.flat(),
+
+    sample(allContent),
+    [sample(allContent), sample(allContent)].flat(),
+    [sample(allContent), sample(allContent), sample(allContent)].flat(),
+    [`<span style="margin-right: 1em">FEAR</span>`, `<span style="margin-right: 1em">UNCERTAINTY</span>`, `<span style="margin-right: 1em">DOUBT</span>`]
+  ])
+
+  document.body.style.background = sample([
+    `hsl(${Math.random() * 360}deg, 100%, 50%)`,
+    `#fff`,
+    `#000`,
+  ])
+
+  const lineRotation = sample([
+    () => 0,
+    () => 0,
+    () => 0,
+    () => 0,
+    () => 0,
+    () => 180,
+    () => rnd(20),
+    () => rnd(20, 180),
+  ])
+
+  const freeFloating = ![0, 180].includes(lineRotation())
+
+  const hideBg = freeFloating ? prb(0.5) : false
+  const threeDRotations = (freeFloating && prb(0.5)) || prb(0.02)
+
+
+  const bw = prb(0.1)
+
+  const sH = rnd(360)
+  const chooseHue = sample([
+    () => rnd(360),
+    () => sH + sample([0, 180]) % 360,
+    () => sH + sample([60, 120, 240, 300]) % 360,
+    () => sH + sample([0, 120, 150]) % 360,
+    () => sH + sample([0, 120, 240]) % 360,
+    () => sH + sample([0, 150, 210]) % 360,
+    () => sH + sample([0, 150, 180, 210]) % 360,
+    () => sH + sample([0, 75]) % 360,
+
+
+    // (r, c) => (r/rows - c/cols) * 360 % 360,
+    // (r, c) => (r/rows + c/cols) * 180 % 360,
+    // (r, c) => (r/rows * c/cols) * 360 % 360,
+    // (r, c) => Math.abs((r-r/2) + (c-c/2)) * 180 % 360,
+  ])
+
+  const chooseAltHue = (h) => {
+    const alt = chooseHue()
+    return h === alt ? chooseAltHue(h) : alt
+  }
+
+  const showBorder = prb(0.1)
+  const rotateColor = prb(0.05)
+
+  const sat = 100
+
+
+
+  const multiRowCells = {}
+  times(rows, r => {
+    let cCursor = 0
+
+    while (cCursor < cols) {
+      const cSpan = rndint(1, cols-cCursor + 1)
+      const rSpan = 1//rndint(1, row)
+
+      const bgH = chooseHue(r, cCursor)
+      const txtH = chooseAltHue(bgH)
+      const shadowH = (bgH + 90) % 360
+      const shadow2H = (bgH + 270) % 360
+      const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
+      const bgColor = bw ? bwc.bg : `hsl(${bgH}deg, ${sat}%, 50%)`
+      const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
+      const shadowColor = `hsl(${shadowH}deg, ${sat}%, 20%)`
+      const shadow2Color = `hsl(${shadow2H}deg, ${sat}%, 50%)`
+      const height = `calc(${100*rSpan}${vh}/${rows})`
+      const shadowHeight = `calc(1${vh}/${rows})`
+      const negShadowHeight = `calc(-3${vh}/${rows})`
+
+
+      const child = sample(content)
+      const slowIx = child.indexOf('slow="')
+      const slow = slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
+
+      const rotation = threeDRotations
+        ? `perspective(500px) rotate3d(1,1,1,${lineRotation()}deg)`
+        : `rotate(${lineRotation()}deg)`
+
+      components.push(`
+        <div
+        class="${rotateColor ? 'fullColorRotate' : ''}"
+        style="
+          border: ${showBorder ? 0.03 : 0}em solid;
+          animation-delay: ${rotateColor ? '-'+rnd(5)+'s' : '0'};
+          grid-column: span ${cSpan};
+          grid-column: span ${cSpan};
+          background: ${hideBg ? 'none' : bgColor};
+          color: ${txtColor};
+          height: ${height};
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          font-size: ${height};
+          transform: ${rotation};
+        ">
+          ${marquee(`
+            <span style="text-shadow:
+              ${shadowHeight} ${shadowHeight} ${shadowColor}
+
+              ;">
+              ${child}
+            </span>
+          `, {
+            direction: posOrNeg(),
+            delay: rnd(-1000, 0),
+            duration: rnd(0.01, 2) * slow * 3
+          })}
+        </div>
+      `)
+
+
+      cCursor += cSpan
+    }
+
+
+  })
+
+
+
+
+  $body.innerHTML = `
+    <div class="layout">
+      ${components.join('')}
+    </div>
+  `
+      // <div style="position: absolute; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center">
+      //   <div style="background: #fff; width: 80vw; height: 80vh"></div>
+
+      // </div>
+
+
+
+
+
+</script>
+</html>

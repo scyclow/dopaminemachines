@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    body {
+    }
+
+    #thing {
+      display: grid;
+      grid-template-columns: 20% 20% 20% 20% 20%;
+      /*grid-template-rows: 20% 20% 20% 20% 20%;*/
+
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
+<body>
+  <div id="thing"></div>
+
+</body>
+
+<script type="text/javascript">
+
+  const createChild = (c) => {
+    const d = document.createElement('div')
+    const c2 = (c + 180) % 360
+
+    d.style.background = `hsl(${c}deg, 100%, 50%)`
+
+
+
+    d.style.display = 'flex'
+    d.style.alignItems = 'center'
+    d.style.justifyContent = 'center'
+    times(53, i => {
+      d.innerHTML += `<div style=" height: ${i*15}px; border: 2px solid hsl(${c2}deg, 100%, 50%); position: absolute;"></div>`
+    })
+
+    return d
+  }
+  const thing = document.getElementById('thing')
+  // document.body.insertBefore(createChild(), thing)
+  // document.body.insertBefore(createChild(), thing)
+
+  const c = '0'//Math.random() * 360
+  const c2 = '180'//(c + 180+90) % 360
+
+  const g1 = createChild(c)
+  const g2 = createChild(c2)
+
+  g1.style.order = '2'
+  g1.style.gridColumn = 'span 3'
+  g2.style.gridColumn = 'span 3'
+  thing.appendChild(g1)
+  thing.appendChild(g2)
+
+  function times(t, fn) {
+    const out = []
+    for (let i = 0; i < t; i++) out.push(fn(i))
+    return out
+  }
+</script>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+
+      border: 5px solid;
+      padding: 1em;
+      /*padding: 0.2em;*/
+      /*width: 88%;*/
+      font-size: 1.5vw;
+    }
+
+    div, h1, h2 {
+      animation: FullColorRotate 15s linear infinite;
+    }
+
+    h2 {
+      font-family: monospace;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+
+
+    @keyframes FullColorRotate {
+      0% {
+        color: #ff0000;
+      }
+
+      17% {
+        color: #ffff00;
+      }
+
+      33% {
+        color: #00ff00;
+      }
+
+      50% {
+        color: #00ffff;
+      }
+
+      66% {
+        color: #0000ff;
+      }
+
+      83% {
+        color: #ff00ff;
+      }
+
+      100% {
+        color: #ff0000;
+      }
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+  <div style="animation-delay: -100ms;">
+  <div style="animation-delay: -200ms;">
+  <div style="animation-delay: -300ms;">
+  <div style="animation-delay: -400ms;">
+  <div style="animation-delay: -500ms;">
+  <div style="animation-delay: -600ms;">
+  <div style="animation-delay: -700ms;">
+  <div style="animation-delay: -800ms;">
+  <div style="animation-delay: -900ms;">
+  <div style="animation-delay: -1000ms;">
+  <div style="animation-delay: -1100ms;">
+  <div style="animation-delay: -1200ms;">
+  <div style="animation-delay: -1300ms;">
+  <div style="animation-delay: -1400ms;">
+
+    <h1 style="animation-delay: -1500ms;">TIME IS RUNNING OUT</h1>
+    <h1 style="animation-delay: -1500ms; font-style: italic;">ACT NOW</h1>
+    <h2 style="animation-delay: -1500ms;" id="timer"></h2>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+</body>
+
+<script type="text/javascript">
+  async function triggerTimer() {
+    const timer = document.getElementById('timer')
+    const expiration = new Date('2079-07-16T04:01:00.000Z')
+    const with0 = x => x < 10 ? '0' + Math.floor(x) : Math.floor(x)
+
+    const setTime = () => {
+      const diff = (expiration - new Date()) / 1000
+      const d = diff / 86400
+      const h = (d - Math.floor(d)) * 24
+      const m = (h - Math.floor(h)) * 60
+      const s = (m - Math.floor(m)) * 60
+      const ms = (s - Math.floor(s)) * 100
+
+      timer.innerHTML = `${with0(h + d * 24)}:${with0(m)}:${with0(s)}:${with0(ms)}`
+    }
+    setTime()
+    setInterval(setTime, 10)
+
+  }
+
+  triggerTimer()
+</script>
+</html>

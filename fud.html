@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+    <style>
+      .marquee {
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .marqueeInner {
+        display: inline-flex;
+      }
+
+      .marqueeForward {
+        animation: Marquee 50s linear infinite;
+      }
+      .marqueeReverse {
+        animation: MarqueeReverse 50s linear infinite;
+      }
+
+      .marqueeInner > * {
+        display: inline-block;
+        white-space: nowrap;
+      }
+
+      @keyframes Marquee {
+        0% {
+          transform: translate3d(-50%, 0, 0);
+        }
+
+        100% {
+          transform: translate3d(0%, 0, 0);
+        }
+      }
+
+      @keyframes MarqueeReverse {
+        0% {
+          transform: transform: translate3d(0%, 0, 0);
+        }
+
+        100% {
+          transform: translate3d(-50%, 0, 0);
+        }
+      }
+    </style>
+</head>
+<body>
+
+</body>
+
+<script src="./utils.js"></script>
+<script src="./components.js"></script>
+
+<script>
+/*
+    - marquee (left, right, speed, text)
+    - countdown (amount of time, direction, speed)
+    - header text (blinking, border)
+    - arrow (blinking)
+    - markovy text
+    - chat bot
+    - links to other tokens
+    - ads
+    - click here button (night mode, screen melting)
+    - emojis
+    - speaking guy
+*/
+
+
+  const rows = 5
+  const cols = 3
+
+  console.log(rows, cols)
+
+
+  const $body = document.body
+  const style = document.createElement('style')
+  style.innerHTML = `
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      color: #fff;
+    }
+
+    body {
+      display: grid;
+      grid-template-rows: repeat(${rows}, 1fr);
+      grid-template-columns: repeat(${cols}, 1fr);
+      font-size: 6vw;
+      background: #000;
+    }
+
+    .border {
+      border: 2px solid;
+      padding: 2px;
+    }
+
+    h2 {
+      font-size: 20vh;
+      padding-right: 1em;
+      line-height: 1;
+    }
+  `
+  document.head.appendChild(style)
+  // document.head.appendChild(marqueeStyle)
+
+  const fud = () => {
+    const text = sample(['FEAR', 'UNCERTAINTY', 'DOUBT'])
+    const duration = (5 + Math.random()) * text.length / 11
+    return marquee(`<h2>${text}</h2>`, {
+      direction: posOrNeg(),
+      delay: rnd(-1000, 0),
+      duration
+    })
+  }
+
+  const components = times(15, fud)
+  // console.log(cols)
+  // let rowCursor = 0
+  // times(rows, r => {
+  //   let cCursor = 0
+
+  //   while (cCursor < cols) {
+  //     const cSpan = rndint(1, cols-cCursor + 1)
+  //     cCursor += cSpan
+  //     // const txt = sample(['BUY NOW!', 'THESE WONT LAST!!', 'NFTs!!!', 'OMG', 'LOL', 'WTF', 'CLICK HERE', '!!!!!', '$$$$$'])
+  //     const txt = sample(['FEAR', 'UNCERTAINTY', 'DOUBT'])
+  //     // components.push(marquee(
+  //     //   `<h2 style="padding-right: 2em">${txt}</h2>`, {
+  //     //     style: `grid-column: span ${cSpan}; border: 2px solid;`,
+  //     //     direction: posOrNeg(),
+  //     //     delay: rnd(-1000, 0),
+  //     //     duration: rnd(0.01, 2) * 5
+  //     //   })
+  //     // )
+
+  //     components.push(`<div style="grid-column: span ${cSpan}; background: hsl(${rndint(360)}deg, 100%, 50%); height: calc(100vh/${rows})"></div>`)
+  //   }
+  // })
+
+
+
+
+  $body.innerHTML = components.join('')
+
+
+
+
+
+</script>
+</html>
