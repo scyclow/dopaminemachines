@@ -35,6 +35,13 @@ function rnd(mn, mx) {
   else return out
 }
 
+const rnd2 = (mn, mx) => {
+  const out = Math.random()
+  if (mx != null) return mn + out * (mx - mn)
+  else if (mn != null) return out * mn
+  else return out
+}
+
 
 function rndint(mn, mx) {
   return parseInt(rnd(mn, mx))
