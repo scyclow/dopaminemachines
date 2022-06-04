@@ -156,6 +156,9 @@
     - speaking guy
 */
 
+  const divisor = window.innerHeight/window.innerWidth > 1.5
+    ? 3
+    : 1
 
   const rows = sample([
     rndint(1, 2),
@@ -167,7 +170,9 @@
     rndint(10, 25),
     rndint(25, 65),
   ])
-  const cols = 20
+
+
+  const cols = Math.round(20/divisor)
 
   console.log(rows, cols)
 
@@ -177,8 +182,16 @@
   const sideways = false
   const vh = sideways ? 'vw' : 'vh'
   const vw = sideways ? 'vh' : 'vw'
+  const speed = prb(0.05) ? 100 : 3
+  const sat = prb(0.05) ? 10 : 100
 
-  const fontFamily = prb(0.05) ? 'serif' : 'sans-serif'
+  const fontFamily = chance(
+    [5, 'serif'],
+    [5, 'cursive'],
+    [10, 'monospace'],
+    [85, 'sans-serif'],
+  )
+
 
 
   style.innerHTML = `
@@ -202,12 +215,21 @@
       border: 2px solid;
       padding: 2px;
     }
+
+    .clickhere {
+      cursor: pointer;
+      text-decoration: underline;
+      user-select: none;
+    }
+
   `
   document.head.appendChild(style)
   // document.head.appendChild(marqueeStyle)
 
   const components = []
   let rowCursor = 0
+
+  const word = (txt, slow) => `<span style="margin-right: 1em" ${slow ? `slow=${slow.toFixed(1)}` : ''}>${txt}</span>`
 
   const allContent = [
     ['$$$$'],
@@ -216,55 +238,86 @@
     ['$$$$'],
     [`<span style="font-size: calc(90${vh}/${rows})">💸</span>`],
     [`<span style="font-size: calc(90${vh}/${rows})">🤑</span>`],
+    [`<span style="font-size: calc(90${vh}/${rows})">🔥</span>`],
+    [`<span style="font-size: calc(90${vh}/${rows})">😂</span>`],
+    [`<span style="font-size: calc(90${vh}/${rows})">💥</span>`],
 
 
     ['>>>>', '<<<<'],
     ['!!!!'],
 
-    [`<span style="margin-right: 1em">WINNER</span>`, `<span style="margin-right: 1em">LOSER</span>`],
-    [`<span style="margin-right: 1em" slow="2.0">CONGRATULATIONS</span>`],
-    [`<span style="margin-right: 1em">NFTs</span>`],
-    [`<span style="margin-right: 1em">LUCKY</span>`],
-    [`<span style="margin-right: 1em">SEXY</span>`, `<span style="margin-right: 1em">XXX</span>`],
-    [`<span style="margin-right: 1em">FREE</span>`],
-    [`<span style="margin-right: 1em">BUY NOW</span>`],
-    [`<span style="margin-right: 1em" slow="4.0">ACT NOW (Before It's Too Late)</span>`],
-    [`<span style="margin-right: 1em" slow="4.0">WARNING</span>`],
-    [`<span style="margin-right: 1em" slow="3.0">THIS WON'T LAST</span>`],
-    [`<span style="margin-right: 1em" slow="3.5">DEAL OF A LIFETIME</span>`],
-    [`<span style="margin-right: 1em" slow="3.0">FEAR</span> <span style="margin-right: 1em">UNCERTAINTY</span> <span style="margin-right: 1em">DOUBT</span>`],
-    [`<span style="margin-right: 1em" slow="2.0">SAFE + SECURE</span>`],
-    [`<span style="margin-right: 1em">WTF</span>`, `<span style="margin-right: 1em">LOL</span>`, `<span style="margin-right: 1em">OMG</span>`, `<span style="margin-right: 1em">WAGMI</span>`],
-    [`<span style="margin-right: 1em" slow="8">BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE</span>`]
+    [word(`WINNER`), word(`LOSER`)],
+    [word(`DEALS`)],
+    [word(`NFTs`)],
+    [word(`HOT!`)],
+    [word(`LUCKY`)],
+    [word(`SEXY`), word(`XXX`)],
+    [word(`FREE`)],
+    [word(`BUY NOW`)],
+    [word(`AMAZING!`)],
+    [word(`CRYPTO`)],
+    [word(`DEGEN`)],
+    [word(`BARGAIN`)],
+    [word(`JACKPOT`)],
+    [word(`MILLIONAIRE`)],
+    [word(`BILLIONAIRE`)],
+    [word(`TRILLIONAIRE`)],
+    [word(`EXCITING!`)],
+    [word(`WARNING`)],
+    [word(`WTF`), word(`LOL`), word(`OMG`), word(`WAGMI`)],
+    [word(`DYOR`), word(`DO YOUR OWN RESEARCH`, 3)],
+    [word(`NFA`), word(`NOT FINANCIAL ADVICE`, 3)],
+    [word(`<a class="clickhere">CLICK HERE</a>`)],
+    [word(`<a href="http://fastcashmoneyplus.biz" target="_blank">MAKE FAST CASH NOW</a>`, 3)],
+    [word(`DON'T WAIT`, 2)],
+    [word(`WHAT A DEAL!`, 2)],
+    [word(`SAFE + SECURE`, 2)],
+    [word(`UNBELIEVABLE!`, 2)],
+    [word(`DON'T MISS OUT`, 2)],
+    [word(`CRYPTO FORTUNE`, 2)],
+    [word(`GET RICH QUICK`, 2)],
+    [word(`YIELD EXPLOSION`, 2)],
+    [word(`THROBBING GAINS`, 2)],
+    [word(`THIS WON'T LAST`, 2)],
+    [word(`CONGRATULATIONS`, 2)],
+    [word(`DEAL OF A LIFETIME`, 3)],
+    [word(`NEVER LOOKED SO GOOD`, 3)],
+    [word(`TOO GOOD TO BE TRUE!`, 3)],
+    [word(`Do you CRAVE YIELD?!`, 3)],
+    [word(`FEAR UNCERTAINTY DOUBT`, 3)],
+    [word(`YOU WON'T BELIEVE THIS!`, 3)],
+    [word(`MAKE GENERATIONAL WEALTH NOW`, 4)],
+    [word(`ACT NOW (Before It's Too Late)`, 4.5)],
+    [word(`Stop THROWING YOUR MONEY AWAY!`, 4.5)],
+    [word(`YOU CAN'T AFFORD TO PASS THIS UP`, 4.5)],
+    [word(`PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`, 8)],
+    [word(`BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`, 8)]
   ]
 
 
-  const content = sample([
-    allContent.flat(),
-
-    sample(allContent),
-    [sample(allContent), sample(allContent)].flat(),
-    [sample(allContent), sample(allContent), sample(allContent)].flat(),
-    [`<span style="margin-right: 1em">FEAR</span>`, `<span style="margin-right: 1em">UNCERTAINTY</span>`, `<span style="margin-right: 1em">DOUBT</span>`]
+  const content = chance(
+    [15, allContent.flat()],
+    [15, sample(allContent)],
+    [25, [sample(allContent), sample(allContent)].flat()],
+    [35, [sample(allContent), sample(allContent), sample(allContent)].flat()],
+    [8, [word(`FEAR`), word(`UNCERTAINTY`), word(`DOUBT`)],
+    [2
+      [`<span style="font-size: calc(90${vh}/${rows})">💸</span>`],
+      [`<span style="font-size: calc(90${vh}/${rows})">🤑</span>`],
+      [`<span style="font-size: calc(90${vh}/${rows})">🔥</span>`],
+      [`<span style="font-size: calc(90${vh}/${rows})">😂</span>`],
+      [`<span style="font-size: calc(90${vh}/${rows})">💥</span>`],
+    ]
   ])
 
-  document.body.style.background = sample([
-    `hsl(${rnd(360)}deg, 100%, 50%)`,
-    `#fff`,
-    `#000`,
-  ])
 
-  const lineRotation = sample([
-    () => 0,
-    () => 0,
-    () => 0,
-    () => 0,
-    () => rnd(20),
-    () => rnd(20),
-    () => rnd(20, 180),
-    () => rnd(20, 180),
-    () => 180,
-  ])
+
+  const lineRotation = chance(
+    [45, () => 0],
+    [25, () => rnd(20)],
+    [25, () => rnd(20, 180)],
+    [5, () => 180],
+  )
 
   const freeFloating = ![0, 180].includes(lineRotation())
 
@@ -292,6 +345,12 @@
     // (r, c) => Math.abs((r-r/2) + (c-c/2)) * 180 % 360,
   ])
 
+  document.body.style.background = sample([
+    `hsl(${chooseHue()}deg, ${sat}%, 50%)`,
+    `#fff`,
+    `#000`,
+  ])
+
   const chooseAltHue = (h) => {
     const alt = chooseHue()
     return h === alt ? chooseAltHue(h) : alt
@@ -302,7 +361,6 @@
 
   const deepShadows = prb(0.1)
 
-  const sat = 100
 
 
 
@@ -338,11 +396,10 @@
 
       components.push(`
         <div
-        class="${rotateColor ? 'fullColorRotate' : ''}"
+        class="${rotateColor ? 'fullColorRotate' : ''} grid-component"
         style="
           border: ${showBorder ? 0.03 : 0}em solid;
           animation-delay: ${rotateColor ? '-'+rnd(5)+'s' : '0'};
-          grid-column: span ${cSpan};
           grid-column: span ${cSpan};
           background: ${hideBg ? 'none' : bgColor};
           color: ${txtColor};
@@ -363,7 +420,7 @@
           `, {
             direction: posOrNeg(),
             delay: rnd(-1000, 0),
-            duration: rnd(0.01, 2) * slow * 3
+            duration: rnd(0.01, 2) * slow * speed
           })}
         </div>
       `)
@@ -371,6 +428,8 @@
 
       cCursor += cSpan
     }
+
+
 
 
   })
@@ -383,6 +442,10 @@
       ${components.join('')}
     </div>
   `
+  for (let ch of document.getElementsByClassName('clickhere')) {
+    console.log('1')
+    ch.onclick = () => {console.log('.')}
+  }
       // <div style="position: absolute; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center">
       //   <div style="background: #fff; width: 80vw; height: 80vh"></div>
 

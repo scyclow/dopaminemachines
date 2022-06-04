@@ -59,3 +59,13 @@ const posOrNeg = () => prb(0.5) ? 1 : -1
 const sample = (a) => a[Math.floor(rnd(a.length))]
 const exists = x => !!x
 const last = a => a[a.length-1]
+
+function chance(...chances) {
+  const total = chances.reduce((t, c) => t + c[0], 0)
+  const seed = rnd()
+  let sum = 0
+  for (let i = 0; i < chances.length; i++) {
+    sum += chances[i][0] / total
+    if (seed <= sum) return chances[i][1]
+  }
+}
