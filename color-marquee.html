@@ -1,3 +1,8 @@
+<!--
+Things are moving fast, and if you want to make the most of this opportunity you need to pounce on it. Don't wait. Act Now. These deals won't last.
+
+ -->
+
 <!DOCTYPE html>
 <html translate="no" lang="en" class="notranslate">
 <head>
@@ -283,12 +288,13 @@
     [word(`THROBBING GAINS`, 2)],
     [word(`THIS WON'T LAST`, 2)],
     [word(`CONGRATULATIONS`, 2)],
-    [word(`DEAL OF A LIFETIME`, 3)],
+    [word(`DEAL OF THE CENTURY`, 3)],
     [word(`NEVER LOOKED SO GOOD`, 3)],
     [word(`TOO GOOD TO BE TRUE!`, 3)],
     [word(`Do you CRAVE YIELD?!`, 3)],
     [word(`FEAR UNCERTAINTY DOUBT`, 3)],
     [word(`YOU WON'T BELIEVE THIS!`, 3)],
+    // [word(`OPPORTUNITY OF A LIFETIME`, 3.5)],
     [word(`MAKE GENERATIONAL WEALTH NOW`, 4)],
     [word(`ACT NOW (Before It's Too Late)`, 4.5)],
     [word(`Stop THROWING YOUR MONEY AWAY!`, 4.5)],
@@ -486,15 +492,16 @@ times(parseInt(Math.random() * 100), () => rnd())
 
       gain.gain.value = volume
       source.type = 'square'
-      source.frequency.value = freq
+      source.frequency.value = startingFreq
       source.start()
+
       return { source, gain, ctx };
     }
 
     const MAX_VOLUME = 0.01;
-    const { source: source1, gain: gain1, ctx: ctx1 } = createSource(0, 0.00000001)
-    const { source: source2, gain: gain2, ctx: ctx2 } = createSource(0, 0.00000001)
-    const { source: source3, gain: gain3, ctx: ctx3 } = createSource(0, 0.00000001)
+    const { source: source1, gain: gain1, ctx: ctx1 } = createSource(1, 0.00000001)
+    const { source: source2, gain: gain2, ctx: ctx2 } = createSource(1, 0.00000001)
+    const { source: source3, gain: gain3, ctx: ctx3 } = createSource(1, 0.00000001)
 
     // function triggerOscillator() {
     //   const v = rnd(vMin, vMax)
