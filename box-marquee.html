@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+<body>
+
+
+<svg width="500px" height="500px" viewBox="0 0 500 500">
+  <style>
+    .marquee {
+      animation: marquee 5s linear forwards infinite;
+      font: 20px serif; fill: black;
+    }
+
+    @keyframes marquee {
+      from {
+        start-offset
+      }
+
+      to {
+          stroke-dashoffset: -90px;
+      }
+    }
+  </style>
+  <!-- <rect width="500" height="500" fill="yellow"> -->
+
+  <path id="curve" fill="transparent" stroke="blue" d="
+    M100 100
+    l 300 0
+    l 0 300
+    l -300 0
+    l 0 -300
+    l 300 0
+  "></path>
+  <text width="100%" style="transform:translate3d(0,0,0);">
+      <textPath style="transform:translate3d(0,0,0);" alignment-baseline="top" xlink:href="#curve">*The pictures are not technically selfies.
+      <animate attributeName="startOffset" from="0%" to ="100%" begin="0s" dur="3s" repeatCount="indefinite"/>
+
+      </textPath>
+  </text>
+</svg>
+
+
+
+</body>
+
+
+</html>
