@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    body {
+      background: #aedaae;
+    }
+    .serif {
+      font-family: serif;
+      font-style: italic;
+      color: #bc1414;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 5vw;
+    }
+
+    #box {
+      display: inline-block;
+      position:  absolute;
+    }
+
+    main {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .theme-g {
+      background: #aedaae;
+    }
+    .theme-g .serif {
+      color: #bc1414;
+    }
+    .theme-g h1 {
+      color: #000;
+    }
+
+    .theme-b {
+      background: #000;
+    }
+    .theme-b .serif {
+      color: #aedaae;
+    }
+    .theme-b h1 {
+      color: #bc1414;
+    }
+
+    .theme-r {
+      background: #bc1414;
+    }
+    .theme-r .serif {
+      color: #aedaae;
+    }
+    .theme-r h1 {
+      color: #000;
+    }
+
+  </style>
+</head>
+<body class="theme-g">
+  <main id="border">
+    <div id="box">
+      <h1>Stop <span class="serif">Throwing</span></h1>
+      <h1>Your Money</h1>
+      <h1>Away</h1>
+    </div>
+  </main>
+
+</body>
+
+<script type="text/javascript">
+  let angle = rnd(0, Math.PI/2)
+  let xOff = 20
+  let yOff = 20
+  let overflow = 0
+
+  const box = document.getElementById('box')
+  const main = document.getElementById('border')
+
+    box.style.left = `${xOff}px`
+    box.style.top = `${yOff}px`
+
+  function setRect() {
+    const padding = 0
+    const rect = box.getBoundingClientRect()
+    const borderRect = main.getBoundingClientRect()
+    const [x, y] = getXYRotation(angle, 1, xOff, yOff)
+
+    xOff = x
+    yOff = y
+
+    box.style.left = `${xOff}px`
+    box.style.top = `${yOff}px`
+
+    // debugger
+
+    let reset = false
+    if (rect.bottom >= borderRect.bottom - padding) {
+      angle = rnd(Math.PI/2, Math.PI*1.5)
+      reset = true
+    }
+    if (rect.top <= borderRect.top + padding) {
+      angle = rnd(-Math.PI/2, Math.PI/2)
+      reset = true
+    }
+    if (rect.right >= borderRect.right - padding) {
+      angle = rnd(Math.PI, Math.PI*2)
+      reset = true
+    }
+    if (rect.left <= borderRect.left + padding) {
+      angle = rnd(0, Math.PI)
+      reset = true
+    }
+
+
+
+
+
+    if (reset) {
+      document.body.className = sample([
+        'theme-g',
+        'theme-r',
+        'theme-b',
+      ])
+      setRect()
+    }
+  }
+
+  setInterval(setRect, 10)
+
+
+
+  function rnd(mn, mx) {
+    const out = Math.random()
+    if (mx != null) return mn + out * (mx - mn)
+    else if (mn != null) return out * mn
+    else return out
+  }
+
+  function getXYRotation (deg, radius, cx=0, cy=0) {
+    return [
+      Math.sin(deg) * radius + cx,
+      Math.cos(deg) * radius + cy,
+    ]
+  }
+
+  function sample(a) { return a[Math.floor(rnd(a.length))] }
+</script>
+</html>

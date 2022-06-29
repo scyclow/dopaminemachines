@@ -4,190 +4,108 @@
   <meta charset="utf-8">
   <title></title>
 
-    <style>
-      .marquee {
-        overflow: hidden;
-        display: inline-block;
-        width: 100%;
-        box-sizing: border-box;
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 1em 0;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      column-gap: 1vw;
+      row-gap: 2vw;
+    }
+
+    main div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    iframe {
+      width: 32vw;
+      height: 20vw;
+    }
+
+    @media (max-width: 950px) {
+      main {
+        grid-template-columns: 1fr 1fr;
       }
 
-      .marqueeInner {
-        display: inline-flex;
+      iframe {
+        width: 49vw;
+        height: 30vw;
+      }
+    }
+
+    @media (max-width: 620px) {
+      main {
+        grid-template-columns: 1fr;
       }
 
-      .marqueeForward {
-        animation: Marquee 50s linear infinite;
+      iframe {
+        width: 100vw;
+        height: 60vw;
       }
-      .marqueeReverse {
-        animation: MarqueeReverse 50s linear infinite;
-      }
-
-      .marqueeInner > * {
-        display: inline-block;
-        white-space: nowrap;
-      }
-
-      @keyframes Marquee {
-        0% {
-          transform: translate3d(-50%, 0, 0);
-        }
-
-        100% {
-          transform: translate3d(0%, 0, 0);
-        }
-      }
-
-      @keyframes MarqueeReverse {
-        0% {
-          transform: transform: translate3d(0%, 0, 0);
-        }
-
-        100% {
-          transform: translate3d(-50%, 0, 0);
-        }
-      }
-    </style>
+    }
+  </style>
 </head>
 <body>
+  <h1>Welcome</h1>
+  <main>
+    <div>
+      <iframe src="./disclaimer.html"></iframe>
+      <caption>Disclaimer</caption>
+      <a target="_blank" href="./disclaimer.html">view ></a>
+    </div>
+    <div>
+      <iframe src="./death.html"></iframe>
+      <caption>Death</caption>
+      <a target="_blank" href="./death.html">view ></a>
+    </div>
+    <div>
+      <iframe src="./fud.html"></iframe>
+      <caption>F/U/D</caption>
+      <a target="_blank" href="./fud.html">view ></a>
+    </div>
+    <div>
+      <iframe src="./fud2.html"></iframe>
+      <caption>F\U\D</caption>
+      <a target="_blank" href="./fud2.html">view ></a>
+    </div>
+    <div>
+      <iframe src="./hell.html"></iframe>
+      <caption>Hell</caption>
+      <a target="_blank" href="./hell.html">view ></a>
+    </div>
+    <div>
+      <iframe src="./missing.html"></iframe>
+      <caption>Is Something Missing?</caption>
+      <a target="_blank" href="./missing.html">view ></a>
+    </div>
+    <div>
+      <iframe src="./stop.html"></iframe>
+      <caption>STOP</caption>
+      <a target="_blank" href="./stop.html">view ></a>
+    </div>
+    <div>
+      <iframe src="./throwing.html"></iframe>
+      <caption>Throwing Your Money Away</caption>
+      <a target="_blank" href="./throwing.html">view ></a>
+    </div>
+    <div>
+      <iframe src="./time.html"></iframe>
+      <caption>Time</caption>
+      <a target="_blank" href="./time.html">view ></a>
+    </div>
+  </main>
 
 </body>
-
-<script src="./utils.js"></script>
-<script src="./components.js"></script>
-
-<script>
-/*
-    - marquee (left, right, speed, text)
-    - countdown (amount of time, direction, speed)
-    - header text (blinking, border)
-    - arrow (blinking)
-    - markovy text
-    - chat bot
-    - links to other tokens
-    - ads
-    - click here button (night mode, screen melting)
-    - emojis
-    - speaking guy
-*/
-
-
-  const rows = 10
-  const cols = 10
-
-  console.log(rows, cols)
-
-
-  const $body = document.body
-  const style = document.createElement('style')
-  style.innerHTML = `
-    * {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-    }
-
-    body {
-      display: grid;
-      grid-template-rows: repeat(${rows}, 1fr);
-      grid-template-columns: repeat(${cols}, 1fr);
-    }
-
-    .border {
-      border: 2px solid;
-      padding: 2px;
-    }
-  `
-  document.head.appendChild(style)
-  // document.head.appendChild(marqueeStyle)
-
-  const components = []
-
-  // const rowOverflows = {}
-
-  // let rowCursor = 0
-  // times(rows, r => {
-  //   let cCursor = 0
-
-  //   while (cCursor < cols) {
-  //     const rSpan = rndint(1, 3)
-  //     const maxC = rowOverflows[r]
-  //     const cSpan = rndint(1, cols-cCursor + 1)
-
-  //     const extraRows = rSpan - 1
-  //     times(extraRows, _r => {
-  //       rowOverflows[_r + r + 1] = { start: cCursor, end: cCursor + cSpan}
-  //     })
-
-  //     cCursor += cSpan
-
-  //     components.push(`<div style="
-  //       grid-column: span ${cSpan};
-  //       height: calc(${100*rSpan}vh/${rows});
-  //       background: hsl(${rndint(360)}deg, 100%, 50%);
-  //     "></div>`)
-  //   }
-  // })
-
-
-
-
-  let i = 0
-  let c = 0
-  let r = 0
-
-  const rowOverflows = {0:[]}
-  while (r < rows && i < 1000) {
-
-    let cStart = c
-    const overflowCap = rowOverflows[r]?.find(overflow => overflow.start > c)
-    const cCap = overflowCap ? overflowCap.start - 1 : (cols - 1)
-    const cSpan = rndint(1, cCap-c + 1)
-
-    const rStart = r
-    const rSpan = rndint(1, 4)
-
-    components.push(`<div style="
-      grid-column: span ${cSpan};
-      grid-row: span ${rSpan};
-      height: calc(${100*rSpan}vh/${rows});
-      background: hsl(${rndint(360)}deg, 100%, 50%);
-    ">${i}, c: (${cStart}, span ${cSpan}, overflowCap: ${JSON.stringify(cCap)}), r: (${rStart}, ${rSpan})</div>`)
-
-
-    times(rSpan, _r => {
-      if (_r) {
-
-        if (rowOverflows[r + _r]) rowOverflows[r + _r].push({ start: cStart, end: cStart + cSpan })
-        else rowOverflows[r + _r] = [{ start: cStart, end: cStart + cSpan }]
-
-      }
-    })
-
-    console.log(rowOverflows)
-
-    if (c + cSpan >= cols) {
-      c = 0
-      if (overflowCap) {
-        r = overflowCap.end
-      } else {
-        r += 1
-      }
-    } else {
-      c += cSpan
-    }
-
-    i++
-  }
-
-
-
-
-  $body.innerHTML = components.join('')
-
-
-
-
-
-</script>
 </html>

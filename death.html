@@ -83,7 +83,6 @@
   const incrementDeathCount = () => {
     deathCount += 1
     $deathCount.innerHTML = deathCount
-    console.log(deathCount)
     setTimeout(incrementDeathCount, 100 + Math.random() * 700)
   }
 
