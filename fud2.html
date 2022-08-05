@@ -32,7 +32,7 @@
     }
 
 
-    .flash4 {
+    .flash {
       animation: flash4 240ms linear infinite;
     }
 
@@ -66,16 +66,34 @@
       }
     }
 
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 33.3334vh;
+      width: 100vw;
+    }
 
+    @media (min-aspect-ratio: 7/3) {
+      h1 {
+        font-size: 30vh;
+      }
+    }
 
 
   </style>
 </head>
 <body>
   <div class="layout">
-    <h1 style="animation-delay: 0ms;" class="flash4">FEAR</h1>
-    <h1 style="animation-delay: -80ms;" class="flash4">UNCERTAINTY</h1>
-    <h1 style="animation-delay: -160ms;" class="flash4">DOUBT</h1>
+    <div class="row flash" style="animation-delay: 0ms;">
+      <h1 >FEAR</h1>
+    </div>
+    <div class="row flash" style="animation-delay: -80ms;">
+      <h1 >UNCERTAINTY</h1>
+    </div>
+    <div class="row flash" style="animation-delay: -160ms;">
+      <h1 >DOUBT</h1>
+    </div>
   </div>
 </body>
 </html>

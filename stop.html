@@ -15,17 +15,38 @@
       font-family: sans-serif;
       text-align: center;
       color: red;
-      -webkit-text-stroke: 3px #000;
+      -webkit-text-stroke: 0.015em #000;
     }
 
     h2 {
       text-align: center;
       font-size: 5vw;
     }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+
+    @media (min-aspect-ratio: 2/1) {
+      h1 {
+        font-size: 50vh;
+      }
+
+      h2 {
+        font-size: 10vh;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Stop!</h1>
-  <h2>Unless you understand <em><strong>exactly</strong></em> what you are doing</h2>
+  <main>
+    <h1>Stop!</h1>
+    <h2>Unless you understand <em><strong>exactly</strong></em> what you are doing</h2>
+  </main>
 </body>
 </html>

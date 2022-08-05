@@ -43,6 +43,12 @@
     .theme-g h1 {
       color: #000;
     }
+    .theme-g.g2 .serif {
+      color: #000;
+    }
+    .theme-g.g2 h1 {
+      color: #bc1414;
+    }
 
     .theme-b {
       background: #000;
@@ -53,6 +59,12 @@
     .theme-b h1 {
       color: #bc1414;
     }
+    .theme-b.b2 .serif {
+      color: #bc1414;
+    }
+    .theme-b.b2 h1 {
+      color: #aedaae;
+    }
 
     .theme-r {
       background: #bc1414;
@@ -62,6 +74,18 @@
     }
     .theme-r h1 {
       color: #000;
+    }
+    .theme-r.r2 .serif {
+      color: #000;
+    }
+    .theme-r.r2 h1 {
+      color: #aedaae;
+    }
+
+    @media (min-aspect-ratio: 2/1) {
+      h1 {
+        font-size: 10vh;
+      }
     }
 
   </style>
@@ -124,12 +148,14 @@
 
 
 
-
     if (reset) {
       document.body.className = sample([
         'theme-g',
         'theme-r',
         'theme-b',
+        'theme-g g2',
+        'theme-r r2',
+        'theme-b b2',
       ])
       setRect()
     }

@@ -3,40 +3,36 @@
 <head>
   <meta charset="utf-8">
   <title></title>
-    <script>
-      function genTokenData(projectNum) {
 
-        const tokenId = String(projectNum * 1000000 + Math.floor(Math.random() * 1000))
-        let hash = '0x'
-        if (window.location.search.includes('?hash=')) {
-          hash = window.location.search.slice(6)
-        } else {
-          for (let i = 0; i < 64; i++) {
-            hash += Math.floor(Math.random() * 16).toString(16)
-          }
-          window.location.hash = '#' + hash
-
-          const last10hashes = JSON.parse(localStorage.getItem('last10Hashes')) || []
-          last10hashes.unshift(hash)
-
-          localStorage.setItem('last10Hashes', JSON.stringify(last10hashes.slice(0, 10)))
-        }
-        return {
-          hash,
-          // hash: '0xfeff8806ffe0ff004900b6104392c062d40f238839029c82ed000ffff3cb2003',
-          tokenId
-        }
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        color: #fff;
       }
 
-      const tokenData = genTokenData(999)
-      console.log(tokenData.hash)
-    </script>
-    <style>
+      body {
+        display: grid;
+        grid-template-rows: repeat(5, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        font-size: 6vw;
+        background: #000;
+      }
+
+      h2 {
+        font-size: 19vh;
+        padding-right: 1em;
+        line-height: 1;
+      }
+
       .marquee {
         overflow: hidden;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
         width: 100%;
         box-sizing: border-box;
+        height: 20vh;
       }
 
       .marqueeInner {
@@ -80,105 +76,42 @@
 
 </body>
 
-<script src="./utils.js"></script>
-<script src="./components.js"></script>
+
 
 <script>
-/*
-    - marquee (left, right, speed, text)
-    - countdown (amount of time, direction, speed)
-    - header text (blinking, border)
-    - arrow (blinking)
-    - markovy text
-    - chat bot
-    - links to other tokens
-    - ads
-    - click here button (night mode, screen melting)
-    - emojis
-    - speaking guy
-*/
+  const rnd = (mn, mx) => {
+    const out = Math.random()
+    if (mx != null) return mn + out * (mx - mn)
+    else if (mn != null) return out * mn
+    else return out
+  }
 
+  function times(t, fn) {
+    const out = []
+    for (let i = 0; i < t; i++) out.push(fn(i))
+    return out
+  }
+  const sample = (a) => a[Math.floor(rnd(a.length))]
 
-  const rows = 5
-  const cols = 3
-
-  console.log(rows, cols)
-
-
-  const $body = document.body
-  const style = document.createElement('style')
-  style.innerHTML = `
-    * {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-      color: #fff;
-    }
-
-    body {
-      display: grid;
-      grid-template-rows: repeat(${rows}, 1fr);
-      grid-template-columns: repeat(${cols}, 1fr);
-      font-size: 6vw;
-      background: #000;
-    }
-
-    .border {
-      border: 2px solid;
-      padding: 2px;
-    }
-
-    h2 {
-      font-size: 20vh;
-      padding-right: 1em;
-      line-height: 1;
-    }
-  `
-  document.head.appendChild(style)
-  // document.head.appendChild(marqueeStyle)
 
   const fud = () => {
     const text = sample(['FEAR', 'UNCERTAINTY', 'DOUBT'])
     const duration = (5 + Math.random()) * text.length / 11
-    return marquee(`<h2>${text}</h2>`, {
-      direction: posOrNeg(),
-      delay: rnd2(-1000, 0),
-      duration
-    })
+    return marquee(`<h2>${text}</h2>`,  rnd(-1000, 0), duration)
   }
 
-  const components = times(15, fud)
-  // console.log(cols)
-  // let rowCursor = 0
-  // times(rows, r => {
-  //   let cCursor = 0
+  const marquee = (text, delay, duration) => `
+    <div class="component marquee">
+      <div
+        class="marqueeInner ${rnd() < 0.5 ? 'marqueeForward' : 'marqueeReverse'} "
+        style="animation-delay: ${Math.floor(delay)}ms; animation-duration: ${duration*50}s;"
+      >
+        ${times(40, _ => text).join('')}
+      </div>
+    </div>
+  `
 
-  //   while (cCursor < cols) {
-  //     const cSpan = rndint(1, cols-cCursor + 1)
-  //     cCursor += cSpan
-  //     // const txt = sample(['BUY NOW!', 'THESE WONT LAST!!', 'NFTs!!!', 'OMG', 'LOL', 'WTF', 'CLICK HERE', '!!!!!', '$$$$$'])
-  //     const txt = sample(['FEAR', 'UNCERTAINTY', 'DOUBT'])
-  //     // components.push(marquee(
-  //     //   `<h2 style="padding-right: 2em">${txt}</h2>`, {
-  //     //     style: `grid-column: span ${cSpan}; border: 2px solid;`,
-  //     //     direction: posOrNeg(),
-  //     //     delay: rnd2(-1000, 0),
-  //     //     duration: rnd2(0.01, 2) * 5
-  //     //   })
-  //     // )
-
-  //     components.push(`<div style="grid-column: span ${cSpan}; background: hsl(${rndint(360)}deg, 100%, 50%); height: calc(100vh/${rows})"></div>`)
-  //   }
-  // })
-
-
-
-
-  $body.innerHTML = components.join('')
-
-
-
-
+  document.body.innerHTML = times(15, fud).join('')
 
 </script>
 </html>

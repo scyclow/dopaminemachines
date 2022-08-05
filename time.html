@@ -8,7 +8,9 @@
       /*background: #000;*/
       display: flex;
       align-items: center;
+      justify-content: center;
       height: 100vh;
+
     }
     * {
       margin: 0;
@@ -16,10 +18,7 @@
       font-size: 8vw;
     }
 
-    h2 {
-      font-family: monospace;
-    }
-    h1, h2 {
+    h1 {
       text-align: center;
     }
 
@@ -33,7 +32,15 @@
     }
 
     #timer {
+      font-family: monospace;
+      text-align: center;
       /*color:  #f00;*/
+    }
+
+    @media (min-aspect-ratio: 2/1) {
+      * {
+        font-size: 16vh;
+      }
     }
   </style>
 
