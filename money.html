@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Money</title>
   <style type="text/css">
     * {
       padding: 0;
@@ -110,8 +110,8 @@
   const box = document.getElementById('box')
   const main = document.getElementById('border')
 
-    box.style.left = `${xOff}px`
-    box.style.top = `${yOff}px`
+  box.style.left = `${xOff}px`
+  box.style.top = `${yOff}px`
 
   function setRect() {
     const padding = 0
@@ -146,8 +146,6 @@
     }
 
 
-
-
     if (reset) {
       document.body.className = sample([
         'theme-g',
@@ -162,7 +160,6 @@
   }
 
   setInterval(setRect, 10)
-
 
 
   function rnd(mn, mx) {

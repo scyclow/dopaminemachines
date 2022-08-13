@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Death</title>
 
   <style type="text/css">
     * {
@@ -12,8 +12,8 @@
     }
     .deathBox {
       background: #ddd;
-      padding: 0.2em;
-      border:  0.2em solid;
+      padding: 0.5vw;
+      border:  0.5vw solid;
 
       border-left-color: #ddd;
       border-top-color: #ddd;
@@ -23,9 +23,9 @@
       padding: 0.5em;
       width: 1.5em;
       text-align: center;
-      border: 1px solid #000;
+      border: 0.15vw solid #000;
       display: inline-block;
-      font-size: 1.2em;
+      font-size: 3vw;
       color:  #f00;
       background: #fff;
     }
@@ -45,31 +45,44 @@
 
     h1 {
       font-size: 6vw;
-      margin-top: 0.5em;
+      margin-top: 2vw;
     }
 
     h2 {
       font-size: 3vw;
-      margin-top: 1em;
+      margin-top: 3vw;
     }
     h2:last-child {
-      margin-bottom: 1em;
+      margin-bottom: 3vw;
     }
 
 
     @media (min-aspect-ratio: 2/1) {
       .deathBox {
         width: 150vh;
+        padding: 1vh;
+        border-width: 1vh;
       }
       .layout {
         padding: 4vh;
       }
+
+      #deathCount {
+        font-size: 6vh;
+        border: 0.3vh solid #000;
+      }
+
       h1 {
         font-size: 12vh;
+        margin-top: 4vh;
       }
 
       h2 {
         font-size: 6vh;
+        margin-top: 3vh;
+      }
+      h2:last-child {
+        margin-bottom: 3vh;
       }
     }
   </style>

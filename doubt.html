@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Doubt</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+    body {
+      background: #fff;
+      color: #000;
+    }
+
+    main {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .float {
+      display: inline-block;
+      /*border: 2px solid;*/
+      /*color: #fff;*/
+      line-height: 0.9;
+      padding: 0.15em;
+
+      font-size: 15vw;
+      position: absolute;
+      /*animation: Float 10s linear infinite;*/
+      -webkit-text-stroke: 1px #000;
+      text-shadow: 0 0 3px #000;
+
+    }
+
+
+
+/*    @keyframes Float {
+      0% {
+        transform: rotate3d(5,0,0, 0deg);
+      }
+
+      100% {
+        transform: rotate3d(1,1,1, 360deg);
+      }
+    }*/
+
+    @media (min-aspect-ratio: 2/1) {
+      .float {
+        font-size: 30vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="container">
+    <div ></div>
+  </main>
+<!--   <div class="float" style="animation-delay: -1.2s">Fear</div>
+  <div class="float" style="animation-delay: -4s">Uncertainty</div>
+  <div class="float" style="animation-delay: 0s">Doubt</div> -->
+</body>
+
+<script type="text/javascript">
+  const rnd = (mn, mx) => {
+    const out = Math.random()
+    if (mx != null) return mn + out * (mx - mn)
+    else if (mn != null) return out * mn
+    else return out
+  }
+
+  function times(t, fn) {
+    const out = []
+    for (let i = 0; i < t; i++) out.push(fn(i))
+    return out
+  }
+  const sample = (a) => a[Math.floor(rnd(a.length))]
+
+  const floater = (txt, i) => {
+    // background: hsla(40deg, 100%, 50%, 0.2);
+    const x1 = rnd(2)
+    const y1 = rnd(2)
+    const z1 = rnd(2)
+    const x2 = rnd()
+    const y2 = rnd()
+    const z2 = rnd()
+    return `
+      <style>
+        .float-animation-${i} {
+          animation: Float-${i} ${rnd(5, 15)}s linear infinite;
+        }
+
+        @keyframes Float-${i} {
+          0% {
+            transform: rotate3d(${x1},${y1},${z1}, 0deg);
+            background: hsla(40deg, 0%, 50%, 0.2);
+          }
+
+          50% {
+            transform: rotate3d(${(x1+x2)/2},${(y1+y2)/2},${(z1+z2)/2}, 180deg);
+            background: hsla(40deg, 0%, 50%, 0.05);
+          }
+
+          100% {
+            transform: rotate3d(${x2},${y2},${z2}, 360deg);
+            background: hsla(40deg, 0%, 50%, 0.2);
+          }
+        }
+      </style>
+      <div class="float float-animation-${i}" style="animation-delay: -${rnd(5)}s">
+        ${txt}
+      </div>
+    `
+  }
+// sample(['Fear', 'Uncertainty', 'Doubt'])
+  // times(3, i => {
+  //   document.getElementById('container').innerHTML += floater()
+  // })
+  ;['Fear', 'Uncertainty', 'Doubt'].forEach((t, i) => {
+    document.getElementById('container').innerHTML += floater(t, i)
+  })
+</script>
+</html>

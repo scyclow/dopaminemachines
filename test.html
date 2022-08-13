@@ -5,72 +5,37 @@
   <title></title>
 
   <style type="text/css">
-    * {
-      font-family: 'Roboto Condensed',sans-serif;
-    }
-    @media (min-width: 768px) {
-      .block-15 {
-        font-size: 1.6rem!important;
-      }
-    }
 
-    .block-15 {
-      font-size: calc(.7rem + 2.8vw);
+    main {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .inline-fix {
-      display: inline-block;
+    h1 {
+      font-size: 15vw;
+      animation: ExpandContract 1.75s cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
     }
 
-    .yellow-button {
-      background: #fffd00;
-      border: 3px solid #00f;
-      color: #00f;
-      display: inline-block;
-      padding: 15px;
-      box-shadow: rgb(0 0 0 / 19%) 0 10px 20px, rgb(0 0 0 / 23%) 0 6px 6px;
-      text-align: center;
-      border-radius: 10px;
-      white-space: normal;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: 700!important;
-      box-sizing: border-box;
-    }
-
-    .yellow-button:active, .yellow-button:hover {
-        background-color: #fff;
-        color: #00f;
-        border: 1vw solid #00f;
-    }
-
-    .pulsing {
-      transform: scale(1);
-      animation: pulsing 1s infinite;
-    }
-
-  /*  .lh1 {
-      line-height: 1;
-    }*/
-
-    @keyframes pulsing {
+    @keyframes ExpandContract {
       0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgb(0 0 0 / 70%);
+        transform: scale(0.2);
       }
-      70% {
-        transform: scale(1.034);
-        box-shadow: 0 0 0 10px transparent;
+      50% {
+        transform: scale(1);
       }
 
       100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 transparent;
+        transform: scale(0.2);
       }
     }
   </style>
 </head>
 <body>
-  <a class="closeit yellow-button block-15 lh1 pulsing has-text-weight-bold inline-fix" tabindex="-1"><span><strong>Yes!</strong> Keep Reading This Page</span></a>
+  <main>
+    <h1>WOW</h1>
+  </main>
 </body>
 </html>

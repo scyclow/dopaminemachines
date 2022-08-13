@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+
+<style type="text/css">
+
+</style>
+<body>
+  <main id="main"></main>
+<div style="
+          display: inline-block;
+          border: 2px solid;
+          padding: 5px;
+          background: #fff;
+
+          transform: perspective(300px) rotate3d(0,2,0, 36deg) translateZ(100px);
+        ">
+          You won't believe this!
+        </div>
+
+        <div style="
+          margin-top: 230px;
+          margin-left: 230px;
+          display: inline-block;
+          border: 2px solid;
+          padding: 5px;
+          background: #fff;
+
+          transform: perspective(300px) rotate3d(0,2,0, -36deg) translateZ(100px);
+        ">
+          You won't believe this!
+        </div>
+</body>
+
+<script type="text/javascript">
+  function siren(content, args={}) {
+    const className = args.className || ''
+    const style = args.style || ''
+    const direction = args.direction || 1
+    const delay = args.delay || 0
+    const duration = args.duration || 5
+
+    return `
+      <style>
+        .rotateZContainer {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .rotateZContent {
+          display: inline-block;
+          white-space: nowrap;
+        }
+        .rotateZ {
+          animation: rotateZ 5s linear infinite
+        }
+
+        @keyframes rotateZ {
+          0% {
+            transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px);
+          }
+
+          100% {
+            transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px);
+          }
+        }
+
+        .rotateZreverse {
+          animation: rotateZreverse 5s linear infinite
+        }
+
+        @keyframes rotateZreverse {
+          0% {
+            transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px);
+          }
+
+          100% {
+            transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px);
+          }
+        }
+
+
+      </style>
+
+      <div class="rotateZContainer ${className}" style="${style}">
+        <div
+          class="${direction === 1 ? 'rotateZ' : 'rotateZreverse'} "
+          style="animation-delay: ${Math.floor(delay)}ms; animation-duration: ${duration}s;"
+        >
+          <span class="rotateZContent">${content}</span>
+        </div>
+      </div>
+    `
+  }
+</script>
+
+<script type="text/javascript">
+  document.getElementById('main').innerHTML =
+    siren(`
+      <div>
+        <div style="border: 2px solid; padding: 5px; background: #fff; position: absolute">
+          You won't believe this!
+        </div>
+      </div>
+    `)
+</script>
+</html>

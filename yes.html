@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Yes</title>
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      /*background: #fde4ad;*/
+      background: #faeccc;
+      color: #8a260d;
+    }
+
+    main {
+      padding: 2vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 92vh;
+    }
+
+    #form {
+      border: 0.5vw solid;
+      padding: 2vw;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: sans-serif;
+      transition:  500ms;
+      box-shadow: 1vw 1vw 1vw black;
+    }
+
+    h1 {
+      font-size: 7vw;
+      text-align: center;
+      font-family: serif;
+    }
+
+    dt {
+      width: 16vw;
+    }
+    dd, input {
+      width: 23vw;
+    }
+    dt, dd {
+      font-size: 4vw;
+      display: inline-block;
+    }
+
+    input {
+      font-size: 3vw;
+      padding: 1vw;
+    }
+
+    dl div {
+      margin-bottom: 1vw;
+    }
+
+    dl {
+      margin: 1vw 0;
+    }
+
+    button {
+      font-size: 5vw;
+      padding: 1vw;
+      cursor: pointer;
+      color: #8a260d;
+      background: #e1f1f2;
+      border: 0.3vw solid;
+      border-radius: 0.8vw;
+    }
+
+    @media (min-aspect-ratio: 2/1) {
+      h1 {
+        font-size: 14vh;
+      }
+      dt {
+        width: 32vh;
+      }
+      dd, input {
+        width: 46vh;
+      }
+      dt, dd {
+        font-size: 8vh;
+      }
+      input {
+        font-size: 6vh;
+        padding: 2vh;
+      }
+
+      dl div {
+        margin-bottom: 2vh;
+      }
+
+      dl {
+        margin: 2vh 0;
+      }
+
+      main {
+        padding: 4vh;
+        height: 92vh;
+      }
+
+      button {
+        font-size: 10vh;
+        padding: 2vh;
+        border-radius: 1.6vh;
+        border-width: 0.6vh;
+      }
+
+      #form {
+        border: 1vh solid;
+        padding: 4vh;
+        /*width: 120vh;*/
+
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="form">
+      <h1>Is this all there is?</h1>
+      <h1>Yes!</h1>
+
+      <dl>
+        <div><dt>NAME:</dt> <dd><input></dd></div>
+        <div><dt>DOB:</dt> <dd><input></dd></div>
+      </dl>
+
+      <button id="button">SUBMIT</button>
+    </div>
+  </main>
+
+</body>
+<script type="text/javascript">
+  document.getElementById('button').onclick = () => document.getElementById('form').style.opacity = 0
+</script>
+</html>
