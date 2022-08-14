@@ -12,6 +12,8 @@
 
     body {
       background: #a9bed1;
+      height: 100vh;
+      overflow: hidden;
     }
     main {
       width: 100vw;
@@ -28,7 +30,13 @@
       text-align: center;
       font-family: sans-serif;
       letter-spacing: 5vw;
-      -webkit-text-stroke: 0.3vw #f2feff;
+      -webkit-text-stroke: 0.4vw #f2feff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+      border: 0.5vw solid #fff;
     }
 
     .expand {
@@ -51,8 +59,9 @@
     @media (min-aspect-ratio: 2/1) {
       h1 {
         font-size: 40vh;
-        -webkit-text-stroke: 0.6vh #f2feff;
+        -webkit-text-stroke: 0.8vh #f2feff;
         letter-spacing: 10vh;
+        border-width: 1vh;
       }
     }
 

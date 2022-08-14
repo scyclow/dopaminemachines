@@ -138,6 +138,11 @@
 
 </body>
 <script type="text/javascript">
-  document.getElementById('button').onclick = () => document.getElementById('form').style.opacity = 0
+  document.getElementById('button').onclick = () => {
+    document.getElementById('form').style.opacity = 0
+    setTimeout(() => {
+      document.getElementById('form').remove()
+    }, 500)
+  }
 </script>
 </html>
