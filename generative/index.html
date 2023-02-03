@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html translate="no" lang="en" class="notranslate">
+<head>
+  <meta charset="utf-8">
+  <meta name="google" content="notranslate" />
+  <title>WorldWideWeb</title>
+  <script>
+    function genTokenData(projectNum) {
+
+      const tokenId = String(projectNum * 1000000 + Math.floor(Math.random() * 1000))
+      let hash = '0x'
+      if (window.location.search.includes('?hash=')) {
+        hash = window.location.search.slice(6)
+      } else {
+        for (let i = 0; i < 64; i++) {
+          hash += Math.floor(Math.random() * 16).toString(16)
+        }
+        window.location.hash = '#' + hash
+
+        const last10hashes = JSON.parse(localStorage.getItem('last10Hashes')) || []
+        last10hashes.unshift(hash)
+
+        localStorage.setItem('last10Hashes', JSON.stringify(last10hashes.slice(0, 10)))
+      }
+      return {
+        hash,
+        tokenId
+      }
+    }
+
+    const tokenData = genTokenData(999)
+    console.log(tokenData.hash)
+  </script>
+</head>
+<body>
+
+</body>
+
+<script src="./utils.js"></script>
+<script src="./marquee.js"></script>
+<script src="./textAnimate.js"></script>
+<script src="./componentAnimate.js"></script>
+<script src="./index.js"></script>
+
+
+</html>

@@ -71,6 +71,22 @@
     - speaking guy
 */
 
+const rnd2 = (mn, mx) => {
+  const out = Math.random()
+  if (mx != null) return mn + out * (mx - mn)
+  else if (mn != null) return out * mn
+  else return out
+}
+
+const rndint = (mn, mx) => parseInt(rnd2(mn, mx))
+
+function times(t, fn) {
+  const out = []
+  for (let i = 0; i < t; i++) out.push(fn(i))
+  return out
+}
+
+
 
   const rows = 10
   const cols = 10
@@ -184,7 +200,6 @@
 
 
   $body.innerHTML = components.join('')
-
 
 
 

@@ -1,188 +1,54 @@
-<!--
-Wasted Existence B___
-World Wide Web
-
-Time Well Spent
-Screen Space
-Analysis paralysis
-Where Did The Time Go?
-Where Did It All Go?
-Is This All There Is?
-Was it Worth it?
-How Did I Get Here?
-Why Do I Do This To Myself?
-Screen Time
-Decisions Decisions
-Life Is For The Living
-
-Terminally Online
-
-Time To Live
-  Time to live is the expiration date attached to data in networking. When a caching (recurring) server queries the authoritative name server for any DNS records, the authoritative name server tells the caching server how long those records are good for—which is usually between a few minutes and one day.
-
-
-
-let's see, what is this project about? I guess it's a loose collection of web pages exploring the existential dread i feel from using the internet.
-
-what does it make me feel as i look at them? i guess a lot of them have the sense that time is moving forward as i spend my time staring at the screen. life is moving forward. things are advancing around me. i feel a slight shortness of breath and pressure in my chest. a mild nausia at the idea of wasint my life. wasting my precious hours on this earth. was it all for nothing?
-
-
- -->
-
-
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>This Won't Last</title>
-
-  <style type="text/css">
-    * {
-      padding: 0;
-      margin: 0;
-    }
-
-    h1 {
-      text-align: center;
-      margin: 0.75em 0;
-    }
-
-    main {
-      padding: 0 1vw;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      column-gap: 1vw;
-      row-gap: 1.5vw;
-    }
-
-    main div {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    a {
-      position: absolute;
-      margin-top: -20px;
-    }
-
-    iframe, a {
-      width: 23vw;
-      height: 24.5vh;
-    }
-
-    @media (max-width: 1400px) {
-      main {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-
-      iframe, a {
-        width: 31vw;
-        height: 20vw;
-      }
-    }
-
-    @media (max-width: 950px) {
-      main {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      iframe, a {
-        width: 48vw;
-        height: 30vw;
-      }
-    }
-
-    @media (max-width: 620px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-
-      iframe, a {
-        width: 97vw;
-        height: 60vw;
-      }
-    }
-  </style>
 </head>
+
+<script>
+  function genTokenData(projectNum, mintSize) {
+    const wwwHashesLookedAt = JSON.parse(localStorage.getItem('wwwHashesLookedAt')) || 0
+
+    const queryParams = window.location.search
+      ? window.location.search.replace('?', '').split('&').reduce((params, i) => {
+          const [k, v] = i.split('=')
+          params[k] = v
+          return params
+        }, {})
+      : {}
+
+    let hash = '0x'
+    if (queryParams.hash) {
+      hash = queryParams.hash
+    } else {
+      for (let i = 0; i < 64; i++) {
+        hash += Math.floor(Math.random() * 16).toString(16)
+      }
+      window.location.hash = '#' + hash
+
+      const last10hashes = JSON.parse(localStorage.getItem('last10Hashes')) || []
+      last10hashes.unshift(hash)
+
+      localStorage.setItem('last10Hashes', JSON.stringify(last10hashes.slice(0, 10)))
+      localStorage.setItem('wwwHashesLookedAt', JSON.stringify(wwwHashesLookedAt+1))
+    }
+
+    let tokenId = queryParams.tokenId
+    if (!tokenId) {
+      tokenId = String(projectNum * 1000000 + Math.floor(Math.random() * mintSize))
+    }
+
+    return { hash, tokenId }
+  }
+
+  const tokenData = genTokenData(999, 500)
+  console.log(tokenData.hash)
+</script>
 <body>
-  <h1>This Won't Last</h1>
-  <main>
-    <div>
-      <iframe src="./time.html"></iframe>
-      <caption>Time</caption>
-      <a target="_blank" href="./time.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./life.html"></iframe>
-      <caption>Life</caption>
-      <a target="_blank" href="./life.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./death.html"></iframe>
-      <caption>Death</caption>
-      <a target="_blank" href="./death.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./hell.html"></iframe>
-      <caption>Hell</caption>
-      <a target="_blank" href="./hell.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./money.html"></iframe>
-      <caption>Money</caption>
-      <a target="_blank" href="./money.html"></a>
-    </div>
-
-
-    <div>
-      <iframe src="./fear.html"></iframe>
-      <caption>Fear</caption>
-      <a target="_blank" href="./fear.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./uncertainty.html"></iframe>
-      <caption>Uncertainty</caption>
-      <a target="_blank" href="./uncertainty.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./doubt.html"></iframe>
-      <caption>Doubt</caption>
-      <a target="_blank" href="./doubt.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./fomo.html"></iframe>
-      <caption>FOMO</caption>
-      <a target="_blank" href="./fomo.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./stop.html"></iframe>
-      <caption>Stop</caption>
-      <a target="_blank" href="./stop.html"></a>
-    </div>
-
-    <div>
-      <iframe src="./god.html"></iframe>
-      <caption>God</caption>
-      <a target="_blank" href="./god.html"></a>
-    </div>
-
-
-    <div>
-      <iframe src="./yes.html"></iframe>
-      <caption>Yes</caption>
-      <a target="_blank" href="./yes.html"></a>
-    </div>
-  </main>
 
 </body>
+
+<script src="./utils.js"></script>
+<script src="./metadata.js"></script>
+<script src="./layout.js"></script>
+<script src="./index.js"></script>
+
 </html>

@@ -55,128 +55,271 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
       console.log(tokenData.hash)
     </script>
 
-    <style>
-      .marquee {
-        overflow: hidden;
-        display: inline-block;
-        width: 100%;
-        box-sizing: border-box;
-      }
-
-      .marqueeInner {
-        display: inline-flex;
-      }
-
-      .marqueeForward {
-        animation: Marquee 50s linear infinite;
-      }
-      .marqueeReverse {
-        animation: MarqueeReverse 50s linear infinite;
-      }
-
-      .marqueeInner > * {
-        display: inline-block;
-        white-space: nowrap;
-      }
-
-      @keyframes Marquee {
-        0% {
-          transform: translate3d(-50%, 0, 0);
-        }
-
-        100% {
-          transform: translate3d(0%, 0, 0);
-        }
-      }
-
-      @keyframes MarqueeReverse {
-        0% {
-          transform: transform: translate3d(0%, 0, 0);
-        }
-
-        100% {
-          transform: translate3d(-50%, 0, 0);
-        }
-      }
-
-      .fullColorRotate {
-        animation: FullColorRotate 25s linear infinite;
-      }
-      @keyframes FullColorRotate {
-        0% {
-          color: #ff0000;
-          background-color: #00ffff;
-        }
-
-        17% {
-          color: #ffff00;
-          background-color: #0000ff;
-        }
-
-        33% {
-          color: #00ff00;
-          background-color: #ff00ff;
-        }
-
-        50% {
-          color: #00ffff;
-          background-color: #ff0000;
-        }
-
-        66% {
-          color: #0000ff;
-          background-color: #ffff00;
-        }
-
-        83% {
-          color: #ff00ff;
-          background-color: #00ff00;
-        }
-
-        100% {
-          color: #ff0000;
-          background-color: #00ffff;
-        }
-      }
-
-      .rotate {
-        animation: Rotate 10s linear infinite;
-      }
-
-      @keyframes Rotate {
-        from {
-          transform: rotate(0deg);
-        }
-
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-
-    </style>
 </head>
 <body>
 
 </body>
 
-<script src="./utils.js"></script>
-<script src="./components.js"></script>
+<script>
+  // UTILS
+
+let __randomSeed = parseInt(tokenData.hash.slice(50, 58), 16)
+
+function rnd(mn, mx) {
+  __randomSeed ^= __randomSeed << 13
+  __randomSeed ^= __randomSeed >> 17
+  __randomSeed ^= __randomSeed << 5
+  const out = (((__randomSeed < 0) ? ~__randomSeed + 1 : __randomSeed) % 1000) / 1000
+  if (mx != null) return mn + out * (mx - mn)
+  else if (mn != null) return out * mn
+  else return out
+}
+
+const rndint = (mn, mx) => parseInt(rnd(mn, mx))
+const prb = x => rnd() < x
+const posOrNeg = () => prb(0.5) ? 1 : -1
+const sample = (a) => a[Math.floor(rnd(a.length))]
+const min = Math.min
+const max = Math.max
+
+function chance(...chances) {
+  const total = chances.reduce((t, c) => t + c[0], 0)
+  const seed = rnd()
+  let sum = 0
+  for (let i = 0; i < chances.length; i++) {
+    sum += chances[i][0] / total
+    if (seed <= sum) return chances[i][1]
+  }
+}
+
+function times(t, fn) {
+  const out = []
+  for (let i = 0; i < t; i++) out.push(fn(i))
+  return out
+}
+</script>
+
 
 <script>
-/*
-    - marquee (left, right, speed, text)
-    - countdown (amount of time, direction, speed)
-    - header text (blinking, border)
-    - arrow (blinking)
-    - markovy text
-    - chat bot
-    - links to other tokens
-    - ads
-    - click here button (night mode, screen melting)
-    - emojis
-    - speaking guy
-*/
+  // METADATA
+// METADATA
+
+const $ = (elem, prop, value) => elem.style[prop] = value
+$.qsa = document.querySelectorAll.bind(document)
+$.id = document.getElementById.bind(document)
+$.tag = document.getElementsByTagName.bind(document)
+$.class = $.cls = (className) => [].slice.call(document.getElementsByClassName(className))
+
+$.render = (e, children, debug=false) => {
+  // if (debug) debugger
+  if (!children) return
+  else if (typeof children === 'string') e.innerHTML = children
+  else if (Array.isArray(children)) {
+    children.forEach(child => e.innerHTML += child.outerHTML)
+  }
+  else e.appendChild(children)
+}
+
+
+$.create = elType => (children, attrs={}, debug=false) => {
+  const e = document.createElement(elType)
+  $.render(e, children, debug)
+
+  Object.keys(attrs).forEach(a => {
+    e.setAttribute(a, attrs[a])
+  })
+
+  return e
+}
+
+$.div = $.create('div')
+$.span = $.create('span')
+$.main = $.create('div')
+
+
+
+
+const $html = $.tag('html')[0]
+const $head = document.head
+const $body = document.body
+
+
+
+const addMetaTag = (args) => {
+  const meta = document.createElement('meta')
+  Object.keys(args).forEach(arg => {
+    meta[arg] = args[arg]
+  })
+
+  $head.appendChild(meta)
+}
+
+function css(style) {
+  const s = document.createElement('style')
+  s.innerHTML = style
+  $head.appendChild(s)
+}
+
+
+function setMetadata() {
+  $html.translate = false
+  $html.lang = 'en'
+  $html.className = 'notranslate'
+
+  document.title = 'World Wide Web'
+
+  addMetaTag({ name: 'google', content: 'notranslate'})
+
+  css`
+    * {margin: 0; padding: 0}
+
+    .marquee {
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .marqueeInner {
+      display: inline-flex;
+    }
+
+    .marqueeForward {
+      animation: Marquee 50s linear infinite;
+    }
+    .marqueeReverse {
+      animation: MarqueeReverse 50s linear infinite;
+    }
+
+    .updown {
+      animation: UpDown 2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    .marqueeInner > * {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    @keyframes UpDown {
+      0%, 100% {
+        transform: translate3d(0%, 10%, 0);
+      }
+
+      50% {
+        transform: translate3d(0%, -10%, 0);
+      }
+    }
+
+    @keyframes Marquee {
+      0% {
+        transform: translate3d(-50%, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(0%, 0, 0);
+      }
+    }
+
+    @keyframes MarqueeReverse {
+      0% {
+        transform: translate3d(0%, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
+    }
+
+    .fullColorRotate {
+      animation: FullColorRotate 25s linear infinite;
+    }
+    @keyframes FullColorRotate {
+      0% {
+        color: #ff0000;
+        background-color: #00ffff;
+      }
+
+      17% {
+        color: #ffff00;
+        background-color: #0000ff;
+      }
+
+      33% {
+        color: #00ff00;
+        background-color: #ff00ff;
+      }
+
+      50% {
+        color: #00ffff;
+        background-color: #ff0000;
+      }
+
+      66% {
+        color: #0000ff;
+        background-color: #ffff00;
+      }
+
+      83% {
+        color: #ff00ff;
+        background-color: #00ff00;
+      }
+
+      100% {
+        color: #ff0000;
+        background-color: #00ffff;
+      }
+    }
+
+    .rotate {
+      animation: Rotate 10s linear infinite;
+    }
+
+    @keyframes Rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  `
+
+  console.log('Welcome to the World Wide Web!')
+}
+
+</script>
+
+<script>
+function marquee(text, args) {
+  const className = args.className || ''
+  const style = args.style || ''
+  const direction = args.direction || 1
+  const delay = args.delay || 0
+  const duration = args.duration || 1
+
+
+
+  const inner = $.div(
+    times(40, _ => text),
+    {
+      class: `marqueeInner ${direction === 1 ? 'marqueeForward' : 'marqueeReverse'}`,
+      style: `animation-delay: ${Math.floor(delay)}ms; animation-duration: ${duration*50}s;`
+    },
+    true
+  )
+
+
+
+  return $.div(
+    inner,
+    {
+      style,
+      class: `component marquee ${className}`,
+    }
+  )
+}
 
   const divisor = window.innerHeight/window.innerWidth > 1.5
     ? 3
@@ -199,13 +342,13 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
   console.log(rows, cols)
 
 
-  const $body = document.body
-  const style = document.createElement('style')
   const sideways = false
   const vh = sideways ? 'vw' : 'vh'
   const vw = sideways ? 'vh' : 'vw'
   const speed = prb(0.05) ? 100 : 3
   const sat = 100
+  const rowMax = prb(0.5) ? 1 : rndint(2, 6)
+  const colMax = prb(0.05) ? 1 : cols
 
   const fontFamily = chance(
     [5, 'serif'],
@@ -214,12 +357,8 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
     [85, 'sans-serif'],
   )
 
-
-
-  style.innerHTML = `
+  css(`
     * {
-      margin: 0;
-      padding: 0;
       font-family: ${fontFamily};
     }
 
@@ -243,26 +382,38 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
       text-decoration: underline;
       user-select: none;
     }
+  `)
 
-  `
-  document.head.appendChild(style)
-  // document.head.appendChild(marqueeStyle)
 
   const components = []
-  let rowCursor = 0
 
-  const word = (txt, slow) => `<span style="margin-right: 1em" ${slow ? `slow=${slow.toFixed(1)}` : ''}>${txt}</span>`
+  const updown = (txt) => txt
+    .split('')
+    .map((c, i) => `
+      <span class="updown" style="animation-delay: -${i* 400}ms">${c}</span>
+    `)
+    .join('')
+
+  const word = (txt, slow, margin=1, fontSize=1) => `
+    <span style="margin-right: ${margin}em; font-size: ${fontSize}em" ${slow ? `slow=${slow.toFixed(1)}` : ''}>
+      ${txt}
+    </span>
+  `
+
+  const emoji = e => word(e, 1, 0, 0.9)
+
+
 
   const allContent = [
     ['$$$$'],
     ['$$$$'],
     ['$$$$'],
     ['$$$$'],
-    [`<span style="font-size: calc(90${vh}/${rows})">💸</span>`],
-    [`<span style="font-size: calc(90${vh}/${rows})">🤑</span>`],
-    [`<span style="font-size: calc(90${vh}/${rows})">🔥</span>`],
-    [`<span style="font-size: calc(90${vh}/${rows})">😂</span>`],
-    [`<span style="font-size: calc(90${vh}/${rows})">💥</span>`],
+    [emoji(`💸`)],
+    [emoji(`🤑`)],
+    [emoji(`🔥`)],
+    [emoji(`😂`)],
+    [emoji(`💥`)],
 
 
     ['>>>>', '<<<<'],
@@ -290,8 +441,8 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
     [word(`WTF`), word(`LOL`), word(`OMG`), word(`WAGMI`)],
     [word(`DYOR`), word(`DO YOUR OWN RESEARCH`, 3)],
     [word(`NFA`), word(`NOT FINANCIAL ADVICE`, 3)],
-    [word(`<a class="clickhere">CLICK HERE</a>`)],
-    [word(`<a href="http://fastcashmoneyplus.biz" target="_blank">MAKE FAST CASH NOW</a>`, 3)],
+    // [word(`<a class="clickhere">CLICK HERE</a>`)],
+    // [word(`<a href="http://fastcashmoneyplus.biz" target="_blank">MAKE FAST CASH NOW</a>`, 3)],
     [word(`DON'T WAIT`, 2)],
     [word(`DANGER ZONE`, 2)],
     [word(`WHAT A DEAL!`, 2)],
@@ -313,6 +464,7 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
     [word(`TOO GOOD TO BE TRUE!`, 3)],
     [word(`Do you CRAVE YIELD?!`, 3)],
     [word(`FEAR UNCERTAINTY DOUBT`, 3)],
+    [word(`[object HTMLDivElement]`, 3)],
     [word(`YOU WON'T BELIEVE THIS!`, 3)],
     [word(`OPPORTUNITY OF A LIFETIME`, 3.5)],
     [word(`MAKE GENERATIONAL WEALTH NOW`, 4)],
@@ -326,23 +478,19 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
 
 
   const content = chance(
-    [15, allContent.flat()],
-    [15, sample(allContent)],
-    [25, [sample(allContent), sample(allContent)].flat()],
+    // [15, allContent.flat()],
+    // [15, sample(allContent)],
+    // [25, [sample(allContent), sample(allContent)].flat()],
     [35, [sample(allContent), sample(allContent), sample(allContent)].flat()],
-    [8, [word(`FEAR`), word(`UNCERTAINTY`), word(`DOUBT`)],
-    [2
-      [`<span style="font-size: calc(90${vh}/${rows})">💸</span>`],
-      [`<span style="font-size: calc(90${vh}/${rows})">🤑</span>`],
-      [`<span style="font-size: calc(90${vh}/${rows})">🔥</span>`],
-      [`<span style="font-size: calc(90${vh}/${rows})">😂</span>`],
-      [`<span style="font-size: calc(90${vh}/${rows})">💥</span>`],
-    ]
-  ])
+    [8, [word(`FEAR`), word(`UNCERTAINTY`), word(`DOUBT`)]],
+    [2, [emoji`💸`, emoji`🤑`, emoji`🔥`, emoji`😂`, emoji`💥`]]
+  )
 
 
 
-  const lineRotation = chance(
+  const lineRotation = () => 0
+
+  chance(
     [45, () => 0],
     [25, () => rnd(20)],
     [25, () => rnd(20, 180)],
@@ -356,8 +504,8 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
 
 
   const bw = prb(0.1)
-
   const sH = rnd(360)
+
   const chooseHue = sample([
     () => rnd(360),
     () => sH + sample([0, 180]) % 360,
@@ -367,19 +515,14 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
     () => sH + sample([0, 150, 210]) % 360,
     () => sH + sample([0, 150, 180, 210]) % 360,
     () => sH + sample([0, 75]) % 360,
-
-
-    // (r, c) => (r/rows - c/cols) * 360 % 360,
-    // (r, c) => (r/rows + c/cols) * 180 % 360,
-    // (r, c) => (r/rows * c/cols) * 360 % 360,
-    // (r, c) => Math.abs((r-r/2) + (c-c/2)) * 180 % 360,
   ])
 
-  document.body.style.background = sample([
-    `hsl(${chooseHue()}deg, ${sat}%, 50%)`,
-    `#fff`,
-    `#000`,
-  ])
+  css(`
+    body {
+      background: ${sample([`hsl(${chooseHue()}deg, ${sat}%, 50%)`, `#fff`, `#000`])}
+    }
+  `)
+
 
   const chooseAltHue = (h) => {
     const alt = chooseHue()
@@ -392,88 +535,130 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
   const deepShadows = prb(0.1)
 
 
+  function drawMarquee(h, cSpan, rSpan, ix) {
+    const txtH = chooseAltHue(h)
+    const shadowH = (h + 90) % 360
+    const shadow2H = (h + 270) % 360
+    const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
+    const bgColor = bw ? bwc.bg : `hsl(${h}deg, ${sat}%, 50%)`
+    const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
+    const shadowColor = `hsl(${shadowH}deg, ${sat}%, 20%)`
+    const shadow2Color = `hsl(${shadow2H}deg, ${sat}%, 50%)`
+    const height = `calc(${100*rSpan}${vh}/${rows})`
+    const shadowHeight = deepShadows ? `0.1em` : `calc(1${vh}/${rows})`
+    const negShadowHeight = `calc(-3${vh}/${rows})`
 
 
-  const multiRowCells = {}
-  times(rows, r => {
-    let cCursor = 0
+    const child = (ix !== undefined) ? ix.toString() + '__' : sample(content)
+    const slowIx = child.indexOf('slow="')
+    const slow = slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
 
-    while (cCursor < cols) {
-      const cSpan = rndint(1, cols-cCursor + 1)
-      const rSpan = 1//rndint(1, row)
-
-      const bgH = chooseHue(r, cCursor)
-      const txtH = chooseAltHue(bgH)
-      const shadowH = (bgH + 90) % 360
-      const shadow2H = (bgH + 270) % 360
-      const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-      const bgColor = bw ? bwc.bg : `hsl(${bgH}deg, ${sat}%, 50%)`
-      const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
-      const shadowColor = `hsl(${shadowH}deg, ${sat}%, 20%)`
-      const shadow2Color = `hsl(${shadow2H}deg, ${sat}%, 50%)`
-      const height = `calc(${100*rSpan}${vh}/${rows})`
-      const shadowHeight = deepShadows ? `0.1em` : `calc(1${vh}/${rows})`
-      const negShadowHeight = `calc(-3${vh}/${rows})`
+    const rotation = threeDRotations
+      ? `perspective(500px) rotate3d(1,1,1,${lineRotation()}deg)`
+      : `rotate(${lineRotation()}deg)`
 
 
-      const child = sample(content)
-      const slowIx = child.indexOf('slow="')
-      const slow = slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
+    const childText = $.span(child, {
+      style: `text-shadow: ${shadowHeight} ${shadowHeight} ${shadowColor}`
+    })
 
-      const rotation = threeDRotations
-        ? `perspective(500px) rotate3d(1,1,1,${lineRotation()}deg)`
-        : `rotate(${lineRotation()}deg)`
+    const marq = marquee(childText, {
+      direction: posOrNeg(),
+      delay: rnd(-1000, 0),
+      duration: rnd(0.01, 2) * slow * speed
+    })
 
-      components.push(`
-        <div
-        class="${rotateColor ? 'fullColorRotate' : ''} grid-component"
-        style="
-          border: ${showBorder ? 0.03 : 0}em solid;
-          animation-delay: ${rotateColor ? '-'+rnd(5)+'s' : '0'};
-          grid-column: span ${cSpan};
-          background: ${hideBg ? 'none' : bgColor};
-          color: ${txtColor};
-          height: ${height};
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          font-size: ${height};
-          transform: ${rotation};
-        ">
-          ${marquee(`
-            <span style="text-shadow:
-              ${shadowHeight} ${shadowHeight} ${shadowColor}
-
-              ;">
-              ${child}
-            </span>
-          `, {
-            direction: posOrNeg(),
-            delay: rnd(-1000, 0),
-            duration: rnd(0.01, 2) * slow * speed
-          })}
-        </div>
-      `)
+    components.push(
+      $.div(
+        marq,
+        {
+          class: `${rotateColor ? 'fullColorRotate' : ''} grid-component`,
+          style: `
+            border: ${showBorder ? 0.03 : 0}em solid;
+            animation-delay: ${rotateColor ? '-'+rnd(5)+'s' : '0'};
+            grid-column: span ${cSpan};
+            grid-row: span ${rSpan};
+            background: ${hideBg ? 'none' : bgColor};
+            color: ${txtColor};
+            height: ${height};
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            font-size: ${height};
+            transform: ${rotation};
+          `
+        }
+      )
+    )
+  }
 
 
-      cCursor += cSpan
+
+
+
+  // TODO all cols as 1 looks kinda cool
+
+  function layout() {
+    let rCursor = 0
+
+    const cells = {}
+    times(rows, r => cells[r] = [])
+
+    const findNextFilledCol = (rC, cC) => {
+      for (let c = cC; c < cols; c++) {
+        if (cells[rC][c]) return c
+      }
+      return cols
+    }
+
+    const findNextUnfilledCol = (rC, cC) => {
+      for (let c = cC; c < cols; c++) {
+        if (!cells[rC][c]) return c
+      }
+
+      return cols
     }
 
 
+    while (rCursor < rows) {
+      let cCursor = findNextUnfilledCol(rCursor, 0)
+
+      while (cCursor < cols) {
+        const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
+
+        const cSpan = rndint(min(3, colsLeft), colsLeft)
+        const rSpan = rndint(1, max(1, min(rowMax, rows - rCursor)))
+        const h = chooseHue()
+
+        drawMarquee(h, cSpan, rSpan)
+
+        times(rSpan, r =>
+          times(cSpan, c =>
+            cells[rCursor+r][cCursor+c] = 1
+          )
+        )
+
+        cCursor = findNextUnfilledCol(rCursor, cCursor + cSpan)
+      }
+
+      rCursor++
+    }
+  }
 
 
-  })
+
+
+  layout()
+
+  setMetadata()
+
+  const $main = $.main(components, { class: 'layout'})
+
+  $.render($body, $main)
 
 
 
-
-  $body.innerHTML = `
-    <div class="layout">
-      ${components.join('')}
-    </div>
-  `
-
-times(parseInt(Math.random() * 100), () => rnd())
+  times(parseInt(Math.random() * 100), () => rnd())
 
 
 
@@ -595,7 +780,6 @@ times(parseInt(Math.random() * 100), () => rnd())
   }
 
   for (let ch of document.getElementsByClassName('clickhere')) {
-    console.log('clickable')
     ch.onclick = () => {triggerSound()}
   }
       // <div style="position: absolute; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center">
@@ -605,7 +789,7 @@ times(parseInt(Math.random() * 100), () => rnd())
 
 
 
-  setTimeout(() => location.reload(), 60000)
+  // setTimeout(() => location.reload(), 60000)
 
 
 </script>
