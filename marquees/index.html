@@ -119,8 +119,7 @@ $.id = document.getElementById.bind(document)
 $.tag = document.getElementsByTagName.bind(document)
 $.class = $.cls = (className) => [].slice.call(document.getElementsByClassName(className))
 
-$.render = (e, children, debug=false) => {
-  // if (debug) debugger
+$.render = (e, children) => {
   if (!children) return
   else if (typeof children === 'string') e.innerHTML = children
   else if (Array.isArray(children)) {
@@ -130,9 +129,9 @@ $.render = (e, children, debug=false) => {
 }
 
 
-$.create = elType => (children, attrs={}, debug=false) => {
+$.create = elType => (children, attrs={}) => {
   const e = document.createElement(elType)
-  $.render(e, children, debug)
+  $.render(e, children)
 
   Object.keys(attrs).forEach(a => {
     e.setAttribute(a, attrs[a])
@@ -183,7 +182,6 @@ function setMetadata() {
     * {margin: 0; padding: 0}
 
     .marquee {
-      overflow: hidden;
       display: inline-block;
       width: 100%;
       box-sizing: border-box;
@@ -325,6 +323,7 @@ function setMetadata() {
     const direction = args.direction || 1
     const delay = args.delay || 0
     const duration = args.duration || 1
+    const sideways = args.sideways || false
 
     const inner = $.div(
       times(40, _ => text),
@@ -333,15 +332,15 @@ function setMetadata() {
         style: `
           animation-delay: ${Math.floor(delay)}ms;
           animation-duration: ${duration*50}s;
-          animation-direction: ${direction === 1 ? 'normal' : 'reverse'}`
-      },
-      true
+          animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
+        `
+      }
     )
 
     return $.div(
       inner,
       {
-        style,
+        style: style + (sideways ? `transform: rotate(${sample([90, 270])}deg);` : ''),
         class: `component marquee ${className}`,
       }
     )
@@ -365,14 +364,12 @@ function setMetadata() {
 
   const cols = Math.round(20/divisor)
 
+  const sidewaysPrb = prb(0.75) ? 0 : rnd(0.5, 1)
 
-  const sideways = false
-  const vh = sideways ? 'vw' : 'vh'
-  const vw = sideways ? 'vh' : 'vw'
   const speed = prb(0.05) ? 100 : 3
   const sat = 100
-  const rowMax = prb(0.5) ? 1 : rndint(2, 6)
   const colMax = prb(0.05) ? 1 : cols
+  const rowMax = prb(0.25) ? rows : 4
   const italicRate = chance(
     [1, rnd()],
     [1, 1],
@@ -397,7 +394,7 @@ function setMetadata() {
     [1, 'blink'],
     [1, 'rotate'],
     [1, 'updown'],
-    [16, ''],
+    [32, ''],
   )
 
   const animationDirection = chance(
@@ -417,7 +414,7 @@ function setMetadata() {
     [1, () => 'dashed'],
     [1, () => 'dotted'],
     [1, () => 'double'],
-    [1, () => sample('solid', 'dashed', 'dotted', 'double')],
+    [1, () => sample(['solid', 'dashed', 'dotted', 'double'])],
   )
 
   const shadowType = chance(
@@ -429,19 +426,24 @@ function setMetadata() {
     [1, 6],
   )
 
+  const showBorder = prb(0.1)
+  const rotateColor = rows < 11 && prb(0.05)
+
+  const deepShadows = prb(0.1)
+  const gradientBg = prb(0.2)
+
   css(`
     * {
       font-family: ${fontFamily};
     }
 
     .layout {
-      height: 100${vh};
-      width: 100${vw};
+      height: 100vh;
+      width: 100vw;
       overflow: hidden;
       display: grid;
       grid-template-rows: repeat(${rows}, 1fr);
       grid-template-columns: repeat(${cols}, 1fr);
-      ${sideways ? 'transform: rotate(90deg)' : ''}
     }
 
     .clickhere {
@@ -570,16 +572,16 @@ function setMetadata() {
 
 
   const lineRotation = chance(
-    [70, () => 0],
-    [10, () => rnd(20)],
-    [20, () => rnd(20, 180)],
-    [5, () => 180],
+    [80, () => 0],
+    [5, () => rnd(20)],
+    [13, () => rnd(20, 180)],
+    [2, () => 180],
   )
 
   const freeFloating = ![0, 180].includes(lineRotation())
 
   const hideBg = freeFloating ? prb(0.5) : false
-  const threeDRotations = (freeFloating && prb(0.4)) || prb(0.01)
+  const threeDRotations = (freeFloating && prb(0.15)) || prb(0.01)
 
 
   const bw = prb(0.1)
@@ -608,22 +610,27 @@ function setMetadata() {
     return h === alt ? chooseAltHue(h) : alt
   }
 
-  const showBorder = prb(0.1)
-  const rotateColor = rows < 11 && prb(0.05)
 
-  const deepShadows = prb(0.1)
+  function getBgColor(h) {
+    const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
+    const bg2 = `hsl(${h+sample([60, 120, 180])}deg, ${sat}%, 50%)`
+
+    return gradientBg ? `linear-gradient(to right, ${bg1} , ${bg2})` : bg1
+  }
 
 
   function drawMarquee(h, cSpan, rSpan, ix) {
+    const sideways = prb(sidewaysPrb) && rSpan > rows/2
     const txtH = chooseAltHue(h)
     const shadowH = (h + 90) % 360
     const shadow2H = (h + 270) % 360
     const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-    const bgColor = bw ? bwc.bg : `hsl(${h}deg, ${sat}%, 50%)`
+    const bgColor = bw ? bwc.bg : getBgColor(h)
     const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
     const shadowColor = `hsl(${shadowH}deg, ${sat}%, 20%)`
     const shadow2Color = `hsl(${shadow2H}deg, ${sat}%, 50%)`
-    const height = `calc(${100*rSpan}${vh}/${rows})`
+    const height = `calc(${100*rSpan}vh/${rows})`
+    const width = `calc(${100*cSpan}vw/${cols})`
 
     const shadows =
       shadowType === 1 ? `
@@ -639,7 +646,7 @@ function setMetadata() {
       ` :
 
       shadowType === 2 ?
-        `calc(1${vh}/${rows}) calc(1${vh}/${rows}) ${shadowColor}` :
+        `calc(1vh/${rows}) calc(1vh/${rows}) ${shadowColor}` :
 
       shadowType === 3 ?
         `0.1em 0.1em ${shadowColor}` :
@@ -670,7 +677,8 @@ function setMetadata() {
     const marq = marquee(childText, {
       direction: posOrNeg(),
       delay: rnd(-1000, 0),
-      duration: rnd(0.01, 2) * slow * speed
+      duration: rnd(0.01, 2) * slow * speed,
+      sideways
     })
 
     components.push(
@@ -680,16 +688,15 @@ function setMetadata() {
           class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} grid-component`,
           style: `
             border-style: ${borderStyle()};
-            ${showBorder ? '0.03em; box-sizing: border-box;' : ''}
+            ${showBorder ? 'border-width: 0.03em; box-sizing: border-box;' : 'border-width: 0;'}
             grid-column: span ${cSpan};
             grid-row: span ${rSpan};
             background: ${hideBg ? 'none' : bgColor};
             color: ${txtColor};
-            height: ${height};
             overflow: hidden;
             display: flex;
             align-items: center;
-            font-size: ${height};
+            font-size: ${sideways ? width : height};
             transform: ${rotation};
             font-style: ${fontStyle};
             font-weight: ${fontWeight};
@@ -735,9 +742,10 @@ function setMetadata() {
 
       while (cCursor < cols) {
         const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
+        const rowsLeft = min(rows - rCursor, rowMax)
 
         const cSpan = rndint(min(3, colsLeft), colsLeft)
-        const rSpan = rndint(1, max(1, min(rowMax, rows - rCursor)))
+        const rSpan = rndint(min(3, rowsLeft), max(1, rowsLeft))
         const h = chooseHue()
 
         drawMarquee(h, cSpan, rSpan)
