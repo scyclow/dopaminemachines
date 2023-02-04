@@ -18,6 +18,15 @@ https://gorillasun.de/blog/an-algorithm-for-irregular-grids
 https://gorillasun.de/blog/an-algorithm-for-irregular-grids
 https://gorillasun.de/blog/an-algorithm-for-irregular-grids
 
+
+
+By using this website you agree to the terms...
+
+
+Best viewed in Chrome X.X.XXX
+
+
+
  -->
 
 <!DOCTYPE html>
@@ -187,13 +196,25 @@ function setMetadata() {
     .marqueeForward {
       animation: Marquee 50s linear infinite;
     }
-    .marqueeReverse {
-      animation: MarqueeReverse 50s linear infinite;
-    }
 
     .updown {
       animation: UpDown 2s ease-in-out infinite;
       display: inline-block;
+    }
+
+    .rotate {
+      animation: Rotate 10s linear infinite;
+    }
+
+
+    .blink {
+      animation: Blink 1.5s steps(2, start) infinite;
+    }
+
+    .borderBlink {
+      border-width: 0.05em;
+      animation: BorderBlink 1.5s steps(2, start) infinite;
+      box-sizing: border-box;
     }
 
     .marqueeInner > * {
@@ -221,19 +242,13 @@ function setMetadata() {
       }
     }
 
-    @keyframes MarqueeReverse {
-      0% {
-        transform: translate3d(0%, 0, 0);
-      }
-
-      100% {
-        transform: translate3d(-50%, 0, 0);
-      }
-    }
 
     .fullColorRotate {
       animation: FullColorRotate 25s linear infinite;
     }
+
+
+
     @keyframes FullColorRotate {
       0% {
         color: #ff0000;
@@ -271,9 +286,6 @@ function setMetadata() {
       }
     }
 
-    .rotate {
-      animation: Rotate 10s linear infinite;
-    }
 
     @keyframes Rotate {
       from {
@@ -284,6 +296,21 @@ function setMetadata() {
         transform: rotate(360deg);
       }
     }
+
+    @keyframes Blink {
+      to {
+        visibility: hidden;
+      }
+    }
+
+    @keyframes BorderBlink {
+
+
+      50% {
+        border-style: hidden;
+      }
+    }
+
   `
 
   console.log('Welcome to the World Wide Web!')
@@ -292,34 +319,33 @@ function setMetadata() {
 </script>
 
 <script>
-function marquee(text, args) {
-  const className = args.className || ''
-  const style = args.style || ''
-  const direction = args.direction || 1
-  const delay = args.delay || 0
-  const duration = args.duration || 1
+  function marquee(text, args) {
+    const className = args.className || ''
+    const style = args.style || ''
+    const direction = args.direction || 1
+    const delay = args.delay || 0
+    const duration = args.duration || 1
 
+    const inner = $.div(
+      times(40, _ => text),
+      {
+        class: `marqueeInner marqueeForward`,
+        style: `
+          animation-delay: ${Math.floor(delay)}ms;
+          animation-duration: ${duration*50}s;
+          animation-direction: ${direction === 1 ? 'normal' : 'reverse'}`
+      },
+      true
+    )
 
-
-  const inner = $.div(
-    times(40, _ => text),
-    {
-      class: `marqueeInner ${direction === 1 ? 'marqueeForward' : 'marqueeReverse'}`,
-      style: `animation-delay: ${Math.floor(delay)}ms; animation-duration: ${duration*50}s;`
-    },
-    true
-  )
-
-
-
-  return $.div(
-    inner,
-    {
-      style,
-      class: `component marquee ${className}`,
-    }
-  )
-}
+    return $.div(
+      inner,
+      {
+        style,
+        class: `component marquee ${className}`,
+      }
+    )
+  }
 
   const divisor = window.innerHeight/window.innerWidth > 1.5
     ? 3
@@ -339,8 +365,6 @@ function marquee(text, args) {
 
   const cols = Math.round(20/divisor)
 
-  console.log(rows, cols)
-
 
   const sideways = false
   const vh = sideways ? 'vw' : 'vh'
@@ -349,12 +373,60 @@ function marquee(text, args) {
   const sat = 100
   const rowMax = prb(0.5) ? 1 : rndint(2, 6)
   const colMax = prb(0.05) ? 1 : cols
+  const italicRate = chance(
+    [1, rnd()],
+    [1, 1],
+    [8, 0],
+  )
+
+  const fontWeight = chance(
+    [1, 100],
+    [8, 500],
+    [1, 900],
+  )
 
   const fontFamily = chance(
     [5, 'serif'],
     [5, 'cursive'],
-    [10, 'monospace'],
-    [85, 'sans-serif'],
+    [15, 'monospace'],
+    [75, 'sans-serif'],
+  )
+
+  const animation = chance(
+    [1, 'borderBlink'],
+    [1, 'blink'],
+    [1, 'rotate'],
+    [1, 'updown'],
+    [16, ''],
+  )
+
+  const animationDirection = chance(
+    [1, () => 'normal'],
+    [1, () => 'reverse'],
+    [1, () => prb(0.5) ? 'normal' : 'reverse'],
+  )
+
+  const animationDuration = chance(
+    [1, () => animation === 'blink' ? 3 : 5],
+    [1, () => animation === 'blink' ? 1.5 : 2],
+    [1, () => animation === 'blink' ? rnd(0.5, 5) : rnd(0.25, 20)],
+  )
+
+  const borderStyle = chance(
+    [1, () => 'solid'],
+    [1, () => 'dashed'],
+    [1, () => 'dotted'],
+    [1, () => 'double'],
+    [1, () => sample('solid', 'dashed', 'dotted', 'double')],
+  )
+
+  const shadowType = chance(
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [1, 4],
+    [1, 5],
+    [1, 6],
   )
 
   css(`
@@ -370,11 +442,6 @@ function marquee(text, args) {
       grid-template-rows: repeat(${rows}, 1fr);
       grid-template-columns: repeat(${cols}, 1fr);
       ${sideways ? 'transform: rotate(90deg)' : ''}
-    }
-
-    .border {
-      border: 2px solid;
-      padding: 2px;
     }
 
     .clickhere {
@@ -404,7 +471,11 @@ function marquee(text, args) {
 
 
 
+
+
   const allContent = [
+    ['→', '←'],
+    ['★'],
     ['$$$$'],
     ['$$$$'],
     ['$$$$'],
@@ -414,35 +485,42 @@ function marquee(text, args) {
     [emoji(`🔥`)],
     [emoji(`😂`)],
     [emoji(`💥`)],
-
+    [emoji`🍻`, emoji`🎉`, emoji`🕺`, emoji`💃`, emoji`🎊`, emoji`🍾`, emoji`🥂`, emoji`🥳`, emoji`🎈`],
+    [emoji`💸`, emoji`💶`, emoji`💰`, emoji`💎`, emoji`👑`, emoji`💍`, emoji`🤑`, emoji`🎁`, emoji`🥇`, emoji`💲`],
+    [emoji`🌟`,emoji`🚀`,emoji`🙌`,emoji`⚡️`,emoji`❤️‍🔥`,emoji`💫`,emoji`🚨`,emoji`💥`,emoji`🔥`,emoji`🤯`,emoji`✨`,emoji`🤩`, emoji`🏎`],
+    [emoji`🔟`, emoji`🦄`, emoji`🌈`, emoji`❓`, emoji`🍀`, emoji`🏋️‍♀️`, emoji`💪`, emoji`🌋`, emoji`🏖`, emoji`🌎`, emoji`🕸`, emoji`👨‍💻`, emoji`👁`, emoji`👁‍🗨`, emoji`📛`, emoji`😍`, emoji`💩`],
 
     ['>>>>', '<<<<'],
-    ['!!!!'],
+    ['!!!!', emoji`‼️`,emoji`❗️`],
 
     [word(`WINNER`), word(`LOSER`)],
-    [word(`DEALS`)],
+    [word(`WOW`)],
+    [word(`WOW!`)],
     [word(`NFTs`)],
     [word(`HOT!`)],
     [word(`LUCKY`)],
-    [word(`SEXY`), word(`XXX`)],
+    [word(`SEXY`), word(`XXX`), emoji`💋`, emoji`🍆`, emoji`🍑`],
     [word(`FREE`)],
     [word(`FOMO`)],
+    [word(`DEALS`)],
+    [word(`DEGEN`)],
+    [word(`CRYPTO`)],
+    [word(`SO HOT`)],
+    [word(`SO COOL`)],
     [word(`BUY NOW`)],
     [word(`AMAZING!`)],
-    [word(`CRYPTO`)],
-    [word(`DEGEN`)],
     [word(`BARGAIN`)],
+    [word(`WARNING`)],
     [word(`JACKPOT`)],
+    [word(`ACT NOW`)],
+    [word(`EXCITING!`)],
     [word(`MILLIONAIRE`)],
     [word(`BILLIONAIRE`)],
     [word(`TRILLIONAIRE`)],
-    [word(`EXCITING!`)],
-    [word(`WARNING`)],
     [word(`WTF`), word(`LOL`), word(`OMG`), word(`WAGMI`)],
     [word(`DYOR`), word(`DO YOUR OWN RESEARCH`, 3)],
     [word(`NFA`), word(`NOT FINANCIAL ADVICE`, 3)],
     // [word(`<a class="clickhere">CLICK HERE</a>`)],
-    // [word(`<a href="http://fastcashmoneyplus.biz" target="_blank">MAKE FAST CASH NOW</a>`, 3)],
     [word(`DON'T WAIT`, 2)],
     [word(`DANGER ZONE`, 2)],
     [word(`WHAT A DEAL!`, 2)],
@@ -457,12 +535,15 @@ function marquee(text, args) {
     [word(`THROBBING GAINS`, 2)],
     [word(`THIS WON'T LAST`, 2)],
     [word(`CONGRATULATIONS`, 2)],
+    // [word(`<a href="http://fastcashmoneyplus.biz" target="_blank">MAKE FAST CASH NOW</a>`, 3)],
+    [word(`MAKE FAST CASH NOW`, 3)],
     [word(`TOO GOOD TO BE TRUE`, 3)],
     [word(`FEAR OF MISSING OUT`, 3)],
     [word(`DEAL OF THE CENTURY`, 3)],
     [word(`NEVER LOOKED SO GOOD`, 3)],
     [word(`TOO GOOD TO BE TRUE!`, 3)],
     [word(`Do you CRAVE YIELD?!`, 3)],
+    [word(`THINGS ARE MOVING FAST`, 3)],
     [word(`FEAR UNCERTAINTY DOUBT`, 3)],
     [word(`[object HTMLDivElement]`, 3)],
     [word(`YOU WON'T BELIEVE THIS!`, 3)],
@@ -478,9 +559,9 @@ function marquee(text, args) {
 
 
   const content = chance(
-    // [15, allContent.flat()],
-    // [15, sample(allContent)],
-    // [25, [sample(allContent), sample(allContent)].flat()],
+    [15, allContent.flat()],
+    [15, sample(allContent)],
+    [25, [sample(allContent), sample(allContent)].flat()],
     [35, [sample(allContent), sample(allContent), sample(allContent)].flat()],
     [8, [word(`FEAR`), word(`UNCERTAINTY`), word(`DOUBT`)]],
     [2, [emoji`💸`, emoji`🤑`, emoji`🔥`, emoji`😂`, emoji`💥`]]
@@ -488,19 +569,17 @@ function marquee(text, args) {
 
 
 
-  const lineRotation = () => 0
-
-  chance(
-    [45, () => 0],
-    [25, () => rnd(20)],
-    [25, () => rnd(20, 180)],
+  const lineRotation = chance(
+    [70, () => 0],
+    [10, () => rnd(20)],
+    [20, () => rnd(20, 180)],
     [5, () => 180],
   )
 
   const freeFloating = ![0, 180].includes(lineRotation())
 
   const hideBg = freeFloating ? prb(0.5) : false
-  const threeDRotations = (freeFloating && prb(0.5)) || prb(0.02)
+  const threeDRotations = (freeFloating && prb(0.4)) || prb(0.01)
 
 
   const bw = prb(0.1)
@@ -530,7 +609,7 @@ function marquee(text, args) {
   }
 
   const showBorder = prb(0.1)
-  const rotateColor = prb(0.05)
+  const rotateColor = rows < 11 && prb(0.05)
 
   const deepShadows = prb(0.1)
 
@@ -545,21 +624,47 @@ function marquee(text, args) {
     const shadowColor = `hsl(${shadowH}deg, ${sat}%, 20%)`
     const shadow2Color = `hsl(${shadow2H}deg, ${sat}%, 50%)`
     const height = `calc(${100*rSpan}${vh}/${rows})`
-    const shadowHeight = deepShadows ? `0.1em` : `calc(1${vh}/${rows})`
-    const negShadowHeight = `calc(-3${vh}/${rows})`
+
+    const shadows =
+      shadowType === 1 ? `
+          0.025em 0.025em ${shadowColor},
+          -0.025em 0.025em ${shadowColor},
+          0.025em -0.025em ${shadowColor},
+          -0.025em -0.025em ${shadowColor},
+          0.025em 0 ${shadowColor},
+          -0.025em 0 ${shadowColor},
+          0 -0.025em ${shadowColor},
+          0 0.025em ${shadowColor},
+          0 0 0.1em ${shadowColor}
+      ` :
+
+      shadowType === 2 ?
+        `calc(1${vh}/${rows}) calc(1${vh}/${rows}) ${shadowColor}` :
+
+      shadowType === 3 ?
+        `0.1em 0.1em ${shadowColor}` :
+
+      shadowType === 4 ?
+        `0.05em 0.05em ${shadowColor}, 0.1em 0.1em ${shadow2Color}` :
+
+      shadowType === 5 ?
+        `0 0 0.05em ${shadowColor}`
+
+      : '0 0 0'
 
 
     const child = (ix !== undefined) ? ix.toString() + '__' : sample(content)
     const slowIx = child.indexOf('slow="')
     const slow = slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
-
     const rotation = threeDRotations
       ? `perspective(500px) rotate3d(1,1,1,${lineRotation()}deg)`
       : `rotate(${lineRotation()}deg)`
 
+    const fontStyle = prb(italicRate) ? 'italic' : 'none'
+
 
     const childText = $.span(child, {
-      style: `text-shadow: ${shadowHeight} ${shadowHeight} ${shadowColor}`
+      style: `text-shadow: ${shadows}`
     })
 
     const marq = marquee(childText, {
@@ -572,10 +677,10 @@ function marquee(text, args) {
       $.div(
         marq,
         {
-          class: `${rotateColor ? 'fullColorRotate' : ''} grid-component`,
+          class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} grid-component`,
           style: `
-            border: ${showBorder ? 0.03 : 0}em solid;
-            animation-delay: ${rotateColor ? '-'+rnd(5)+'s' : '0'};
+            border-style: ${borderStyle()};
+            ${showBorder ? '0.03em; box-sizing: border-box;' : ''}
             grid-column: span ${cSpan};
             grid-row: span ${rSpan};
             background: ${hideBg ? 'none' : bgColor};
@@ -586,6 +691,11 @@ function marquee(text, args) {
             align-items: center;
             font-size: ${height};
             transform: ${rotation};
+            font-style: ${fontStyle};
+            font-weight: ${fontWeight};
+            animation-delay: -${rnd(5)}s;
+            animation-direction: ${rotateColor ?'normal' : animationDirection()};
+            animation-duration: ${rotateColor ? '25' : animationDuration()}s;
           `
         }
       )
