@@ -27,6 +27,16 @@ Best viewed in Chrome X.X.XXX
 
 
 
+
+
+
+MARQUEES TODO
+  - generally slow down, espescially the slimmer ones
+  - have more single grid components animate (instead of all of them animating)
+  - split emojis up into better categories
+
+
+
  -->
 
 <!DOCTYPE html>
@@ -350,16 +360,12 @@ function setMetadata() {
     ? 3
     : 1
 
-  const rows = sample([
-    rndint(1, 2),
-    rndint(2, 10),
-    rndint(2, 10),
-    rndint(2, 10),
-    rndint(10, 25),
-    rndint(10, 25),
-    rndint(10, 25),
-    rndint(25, 65),
-  ])
+  const rows = chance(
+    [1, 1],
+    [3, rndint(2, 10)],
+    [3, rndint(10, 25)],
+    [1, rndint(25, 65)],
+  )
 
 
   const cols = Math.round(20/divisor)
@@ -369,7 +375,7 @@ function setMetadata() {
   const speed = prb(0.05) ? 100 : 3
   const sat = 100
   const colMax = prb(0.05) ? 1 : cols
-  const rowMax = prb(0.25) ? rows : 4
+  const rowMax = prb(0.25) ? rows : min(4, rows)
   const italicRate = chance(
     [1, rnd()],
     [1, 1],
@@ -454,8 +460,6 @@ function setMetadata() {
   `)
 
 
-  const components = []
-
   const updown = (txt) => txt
     .split('')
     .map((c, i) => `
@@ -471,7 +475,7 @@ function setMetadata() {
 
   const emoji = e => word(e, 1, 0, 0.9)
 
-
+  const emojis = es => es.split(' ').map(emoji)
 
 
 
@@ -487,13 +491,14 @@ function setMetadata() {
     [emoji(`🔥`)],
     [emoji(`😂`)],
     [emoji(`💥`)],
-    [emoji`🍻`, emoji`🎉`, emoji`🕺`, emoji`💃`, emoji`🎊`, emoji`🍾`, emoji`🥂`, emoji`🥳`, emoji`🎈`],
-    [emoji`💸`, emoji`💶`, emoji`💰`, emoji`💎`, emoji`👑`, emoji`💍`, emoji`🤑`, emoji`🎁`, emoji`🥇`, emoji`💲`],
-    [emoji`🌟`,emoji`🚀`,emoji`🙌`,emoji`⚡️`,emoji`❤️‍🔥`,emoji`💫`,emoji`🚨`,emoji`💥`,emoji`🔥`,emoji`🤯`,emoji`✨`,emoji`🤩`, emoji`🏎`],
-    [emoji`🔟`, emoji`🦄`, emoji`🌈`, emoji`❓`, emoji`🍀`, emoji`🏋️‍♀️`, emoji`💪`, emoji`🌋`, emoji`🏖`, emoji`🌎`, emoji`🕸`, emoji`👨‍💻`, emoji`👁`, emoji`👁‍🗨`, emoji`📛`, emoji`😍`, emoji`💩`],
+    emojis(`🍻 🎉 🕺 💃 🎊 🍾 🥂 🥳 🎈`),
+    emojis(`💸 💶 💰 💎 👑 💍 🤑 🎁 🥇 💲`),
+    emojis(`🌟 🚀 🙌 ⚡️ ❤️‍🔥 💫 🚨 💥 🔥 🤯 ✨ 🤩 🏎`),
+    emojis(`🔟 🦄 🌈 ❓ 🍀 🏋️‍♀️ 💪 🌋 🏖 🌎 🕸 👁 👁‍🗨 📛 😍 💩`),
+    emojis(`👨‍💻 🧑‍💻 👩‍💻`),
 
     ['>>>>', '<<<<'],
-    ['!!!!', emoji`‼️`,emoji`❗️`],
+    ['!!!!', ...emojis(`‼️ ❗️`)],
 
     [word(`WINNER`), word(`LOSER`)],
     [word(`WOW`)],
@@ -501,7 +506,7 @@ function setMetadata() {
     [word(`NFTs`)],
     [word(`HOT!`)],
     [word(`LUCKY`)],
-    [word(`SEXY`), word(`XXX`), emoji`💋`, emoji`🍆`, emoji`🍑`],
+    [word(`SEXY`), word(`XXX`), ...emojis(`💋 🍆 🍑`)],
     [word(`FREE`)],
     [word(`FOMO`)],
     [word(`DEALS`)],
@@ -566,7 +571,7 @@ function setMetadata() {
     [25, [sample(allContent), sample(allContent)].flat()],
     [35, [sample(allContent), sample(allContent), sample(allContent)].flat()],
     [8, [word(`FEAR`), word(`UNCERTAINTY`), word(`DOUBT`)]],
-    [2, [emoji`💸`, emoji`🤑`, emoji`🔥`, emoji`😂`, emoji`💥`]]
+    [2, emojis(`💸 🤑 🔥 😂 💥`)]
   )
 
 
@@ -619,7 +624,7 @@ function setMetadata() {
   }
 
 
-  function drawMarquee(h, cSpan, rSpan, ix) {
+  function $marquee(h, cSpan, rSpan, ix) {
     const sideways = prb(sidewaysPrb) && rSpan > rows/2
     const txtH = chooseAltHue(h)
     const shadowH = (h + 90) % 360
@@ -681,32 +686,31 @@ function setMetadata() {
       sideways
     })
 
-    components.push(
-      $.div(
-        marq,
-        {
-          class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} grid-component`,
-          style: `
-            border-style: ${borderStyle()};
-            ${showBorder ? 'border-width: 0.03em; box-sizing: border-box;' : 'border-width: 0;'}
-            grid-column: span ${cSpan};
-            grid-row: span ${rSpan};
-            background: ${hideBg ? 'none' : bgColor};
-            color: ${txtColor};
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            font-size: ${sideways ? width : height};
-            transform: ${rotation};
-            font-style: ${fontStyle};
-            font-weight: ${fontWeight};
-            animation-delay: -${rnd(5)}s;
-            animation-direction: ${rotateColor ?'normal' : animationDirection()};
-            animation-duration: ${rotateColor ? '25' : animationDuration()}s;
-          `
-        }
-      )
+    return $.div(
+      marq,
+      {
+        class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} grid-component`,
+        style: `
+          border-style: ${borderStyle()};
+          ${showBorder ? 'border-width: 0.03em; box-sizing: border-box;' : 'border-width: 0;'}
+          grid-column: span ${cSpan};
+          grid-row: span ${rSpan};
+          background: ${hideBg ? 'none' : bgColor};
+          color: ${txtColor};
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          font-size: ${sideways ? width : height};
+          transform: ${rotation};
+          font-style: ${fontStyle};
+          font-weight: ${fontWeight};
+          animation-delay: -${rnd(5)}s;
+          animation-direction: ${rotateColor ?'normal' : animationDirection()};
+          animation-duration: ${rotateColor ? '25' : animationDuration()}s;
+        `
+      }
     )
+
   }
 
 
@@ -715,7 +719,7 @@ function setMetadata() {
 
   // TODO all cols as 1 looks kinda cool
 
-  function layout() {
+  function marqueeLayout() {
     let rCursor = 0
 
     const cells = {}
@@ -736,6 +740,7 @@ function setMetadata() {
       return cols
     }
 
+    const marquees = []
 
     while (rCursor < rows) {
       let cCursor = findNextUnfilledCol(rCursor, 0)
@@ -748,7 +753,7 @@ function setMetadata() {
         const rSpan = rndint(min(3, rowsLeft), max(1, rowsLeft))
         const h = chooseHue()
 
-        drawMarquee(h, cSpan, rSpan)
+        marquees.push($marquee(h, cSpan, rSpan))
 
         times(rSpan, r =>
           times(cSpan, c =>
@@ -761,18 +766,24 @@ function setMetadata() {
 
       rCursor++
     }
+
+    return $.main(
+      marquees,
+      {
+        id: 'main',
+        class: 'layout'
+      }
+    )
   }
 
 
 
 
-  layout()
 
   setMetadata()
 
-  const $main = $.main(components, { id: 'main', class: 'layout'})
 
-  $.render($body, $main)
+  $.render($body, marqueeLayout())
 
 
 
