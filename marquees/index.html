@@ -5,21 +5,6 @@ Things are moving fast, and if you want to make the most of this opportunity you
 
 
 
-👈👉
-irregular grids
-text animating getting bigger/smaller
-
-
-
-
-https://gorillasun.de/blog/an-algorithm-for-irregular-grids
-https://gorillasun.de/blog/an-algorithm-for-irregular-grids
-https://gorillasun.de/blog/an-algorithm-for-irregular-grids
-https://gorillasun.de/blog/an-algorithm-for-irregular-grids
-https://gorillasun.de/blog/an-algorithm-for-irregular-grids
-
-
-
 By using this website you agree to the terms...
 
 
@@ -27,6 +12,10 @@ Best viewed in Chrome X.X.XXX
 
 
 
+
+
+TODO
+  when viewed headlessly, maybe add a fake address bar to the thumbnail
 
 
 
@@ -79,553 +68,21 @@ MARQUEES TODO
 
 </body>
 
-<script>
-  // UTILS
-
-let __randomSeed = parseInt(tokenData.hash.slice(50, 58), 16)
-
-function rnd(mn, mx) {
-  __randomSeed ^= __randomSeed << 13
-  __randomSeed ^= __randomSeed >> 17
-  __randomSeed ^= __randomSeed << 5
-  const out = (((__randomSeed < 0) ? ~__randomSeed + 1 : __randomSeed) % 1000) / 1000
-  if (mx != null) return mn + out * (mx - mn)
-  else if (mn != null) return out * mn
-  else return out
-}
-
-const rndint = (mn, mx) => parseInt(rnd(mn, mx))
-const prb = x => rnd() < x
-const posOrNeg = () => prb(0.5) ? 1 : -1
-const sample = (a) => a[Math.floor(rnd(a.length))]
-const min = Math.min
-const max = Math.max
-
-function chance(...chances) {
-  const total = chances.reduce((t, c) => t + c[0], 0)
-  const seed = rnd()
-  let sum = 0
-  for (let i = 0; i < chances.length; i++) {
-    sum += chances[i][0] / total
-    if (seed <= sum) return chances[i][1]
-  }
-}
-
-function times(t, fn) {
-  const out = []
-  for (let i = 0; i < t; i++) out.push(fn(i))
-  return out
-}
-</script>
+<script src="./utils.js"></script>
+<script src="./$.js"></script>
+<script src="./globals.js"></script>
+<script src="./components.js"></script>
+<script src="./text.js"></script>
 
 
 <script>
-  // METADATA
-// METADATA
 
-const $ = (elem, prop, value) => elem.style[prop] = value
-$.qsa = document.querySelectorAll.bind(document)
-$.id = document.getElementById.bind(document)
-$.tag = document.getElementsByTagName.bind(document)
-$.class = $.cls = (className) => [].slice.call(document.getElementsByClassName(className))
 
-$.render = (e, children) => {
-  if (!children) return
-  else if (typeof children === 'string') e.innerHTML = children
-  else if (Array.isArray(children)) {
-    children.forEach(child => e.innerHTML += child.outerHTML)
-  }
-  else e.appendChild(children)
-}
 
 
-$.create = elType => (children, attrs={}) => {
-  const e = document.createElement(elType)
-  $.render(e, children)
-
-  Object.keys(attrs).forEach(a => {
-    e.setAttribute(a, attrs[a])
-  })
-
-  return e
-}
-
-$.div = $.create('div')
-$.span = $.create('span')
-$.main = $.create('div')
-
-
-
-
-const $html = $.tag('html')[0]
-const $head = document.head
-const $body = document.body
-
-
-
-const addMetaTag = (args) => {
-  const meta = document.createElement('meta')
-  Object.keys(args).forEach(arg => {
-    meta[arg] = args[arg]
-  })
-
-  $head.appendChild(meta)
-}
-
-function css(style) {
-  const s = document.createElement('style')
-  s.innerHTML = style
-  $head.appendChild(s)
-}
-
-
-function setMetadata() {
-  $html.translate = false
-  $html.lang = 'en'
-  $html.className = 'notranslate'
-
-  document.title = 'World Wide Web'
-
-  addMetaTag({ name: 'google', content: 'notranslate'})
-
-  css`
-    * {margin: 0; padding: 0}
-
-    .marquee {
-      display: inline-block;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .marqueeInner {
-      display: inline-flex;
-    }
-
-    .marqueeForward {
-      animation: Marquee 50s linear infinite;
-    }
-
-    .updown {
-      animation: UpDown 2s ease-in-out infinite;
-      display: inline-block;
-    }
-
-    .rotate {
-      animation: Rotate 10s linear infinite;
-    }
-
-
-    .blink {
-      animation: Blink 1.5s steps(2, start) infinite;
-    }
-
-    .borderBlink {
-      border-width: 0.05em;
-      animation: BorderBlink 1.5s steps(2, start) infinite;
-      box-sizing: border-box;
-    }
-
-    .marqueeInner > * {
-      display: inline-block;
-      white-space: nowrap;
-    }
-
-    @keyframes UpDown {
-      0%, 100% {
-        transform: translate3d(0%, 10%, 0);
-      }
-
-      50% {
-        transform: translate3d(0%, -10%, 0);
-      }
-    }
-
-    @keyframes Marquee {
-      0% {
-        transform: translate3d(-50%, 0, 0);
-      }
-
-      100% {
-        transform: translate3d(0%, 0, 0);
-      }
-    }
-
-
-    .fullColorRotate {
-      animation: FullColorRotate 25s linear infinite;
-    }
-
-
-
-    @keyframes FullColorRotate {
-      0% {
-        color: #ff0000;
-        background-color: #00ffff;
-      }
-
-      17% {
-        color: #ffff00;
-        background-color: #0000ff;
-      }
-
-      33% {
-        color: #00ff00;
-        background-color: #ff00ff;
-      }
-
-      50% {
-        color: #00ffff;
-        background-color: #ff0000;
-      }
-
-      66% {
-        color: #0000ff;
-        background-color: #ffff00;
-      }
-
-      83% {
-        color: #ff00ff;
-        background-color: #00ff00;
-      }
-
-      100% {
-        color: #ff0000;
-        background-color: #00ffff;
-      }
-    }
-
-
-    @keyframes Rotate {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes Blink {
-      to {
-        visibility: hidden;
-      }
-    }
-
-    @keyframes BorderBlink {
-
-
-      50% {
-        border-style: hidden;
-      }
-    }
-
-  `
-
-  console.log('Welcome to the World Wide Web!')
-}
-
-</script>
-
-<script>
-  function marquee(text, args) {
-    const className = args.className || ''
-    const style = args.style || ''
-    const direction = args.direction || 1
-    const delay = args.delay || 0
-    const duration = args.duration || 1
-    const sideways = args.sideways || false
-
-    const inner = $.div(
-      times(40, _ => text),
-      {
-        class: `marqueeInner marqueeForward`,
-        style: `
-          animation-delay: ${Math.floor(delay)}ms;
-          animation-duration: ${duration*50}s;
-          animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
-        `
-      }
-    )
-
-    return $.div(
-      inner,
-      {
-        style: style + (sideways ? `transform: rotate(${sample([90, 270])}deg);` : ''),
-        class: `component marquee ${className}`,
-      }
-    )
-  }
-
-  const divisor = window.innerHeight/window.innerWidth > 1.5
-    ? 3
-    : 1
-
-  const rows = chance(
-    [1, 1],
-    [3, rndint(2, 10)],
-    [3, rndint(10, 25)],
-    [1, rndint(25, 65)],
-  )
-
-
-  const cols = Math.round(20/divisor)
-
-  const sidewaysPrb = prb(0.75) ? 0 : rnd(0.5, 1)
-
-  const speed = prb(0.05) ? 100 : 3
-  const sat = 100
-  const colMax = prb(0.05) ? 1 : cols
-  const rowMax = prb(0.25) ? rows : min(4, rows)
-  const italicRate = chance(
-    [1, rnd()],
-    [1, 1],
-    [8, 0],
-  )
-
-  const fontWeight = chance(
-    [1, 100],
-    [8, 500],
-    [1, 900],
-  )
-
-  const fontFamily = chance(
-    [5, 'serif'],
-    [5, 'cursive'],
-    [15, 'monospace'],
-    [75, 'sans-serif'],
-  )
-
-  const animation = chance(
-    [1, 'borderBlink'],
-    [1, 'blink'],
-    [1, 'rotate'],
-    [1, 'updown'],
-    [32, ''],
-  )
-
-  const animationDirection = chance(
-    [1, () => 'normal'],
-    [1, () => 'reverse'],
-    [1, () => prb(0.5) ? 'normal' : 'reverse'],
-  )
-
-  const animationDuration = chance(
-    [1, () => animation === 'blink' ? 3 : 5],
-    [1, () => animation === 'blink' ? 1.5 : 2],
-    [1, () => animation === 'blink' ? rnd(0.5, 5) : rnd(0.25, 20)],
-  )
-
-  const borderStyle = chance(
-    [1, () => 'solid'],
-    [1, () => 'dashed'],
-    [1, () => 'dotted'],
-    [1, () => 'double'],
-    [1, () => sample(['solid', 'dashed', 'dotted', 'double'])],
-  )
-
-  const shadowType = chance(
-    [1, 1],
-    [1, 2],
-    [1, 3],
-    [1, 4],
-    [1, 5],
-    [1, 6],
-  )
-
-  const showBorder = prb(0.1)
-  const rotateColor = rows < 11 && prb(0.05)
-
-  const deepShadows = prb(0.1)
-  const gradientBg = prb(0.2)
-
-  css(`
-    * {
-      font-family: ${fontFamily};
-    }
-
-    .layout {
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: repeat(${rows}, 1fr);
-      grid-template-columns: repeat(${cols}, 1fr);
-    }
-
-    .clickhere {
-      cursor: pointer;
-      text-decoration: underline;
-      user-select: none;
-    }
-  `)
-
-
-  const updown = (txt) => txt
-    .split('')
-    .map((c, i) => `
-      <span class="updown" style="animation-delay: -${i* 400}ms">${c}</span>
-    `)
-    .join('')
-
-  const word = (txt, slow, margin=1, fontSize=1) => `
-    <span style="margin-right: ${margin}em; font-size: ${fontSize}em" ${slow ? `slow=${slow.toFixed(1)}` : ''}>
-      ${txt}
-    </span>
-  `
-
-  const emoji = e => word(e, 1, 0, 0.9)
-
-  const emojis = es => es.split(' ').map(emoji)
-
-
-
-  const allContent = [
-    ['→', '←'],
-    ['★'],
-    ['$$$$'],
-    ['$$$$'],
-    ['$$$$'],
-    ['$$$$'],
-    [emoji(`💸`)],
-    [emoji(`🤑`)],
-    [emoji(`🔥`)],
-    [emoji(`😂`)],
-    [emoji(`💥`)],
-    emojis(`🍻 🎉 🕺 💃 🎊 🍾 🥂 🥳 🎈`),
-    emojis(`💸 💶 💰 💎 👑 💍 🤑 🎁 🥇 💲`),
-    emojis(`🌟 🚀 🙌 ⚡️ ❤️‍🔥 💫 🚨 💥 🔥 🤯 ✨ 🤩 🏎`),
-    emojis(`🔟 🦄 🌈 ❓ 🍀 🏋️‍♀️ 💪 🌋 🏖 🌎 🕸 👁 👁‍🗨 📛 😍 💩`),
-    emojis(`👨‍💻 🧑‍💻 👩‍💻`),
-
-    ['>>>>', '<<<<'],
-    ['!!!!', ...emojis(`‼️ ❗️`)],
-
-    [word(`WINNER`), word(`LOSER`)],
-    [word(`WOW`)],
-    [word(`WOW!`)],
-    [word(`NFTs`)],
-    [word(`HOT!`)],
-    [word(`LUCKY`)],
-    [word(`SEXY`), word(`XXX`), ...emojis(`💋 🍆 🍑`)],
-    [word(`FREE`)],
-    [word(`FOMO`)],
-    [word(`DEALS`)],
-    [word(`DEGEN`)],
-    [word(`CRYPTO`)],
-    [word(`SO HOT`)],
-    [word(`SO COOL`)],
-    [word(`BUY NOW`)],
-    [word(`AMAZING!`)],
-    [word(`BARGAIN`)],
-    [word(`WARNING`)],
-    [word(`JACKPOT`)],
-    [word(`ACT NOW`)],
-    [word(`EXCITING!`)],
-    [word(`MILLIONAIRE`)],
-    [word(`BILLIONAIRE`)],
-    [word(`TRILLIONAIRE`)],
-    [word(`WTF`), word(`LOL`), word(`OMG`), word(`WAGMI`)],
-    [word(`DYOR`), word(`DO YOUR OWN RESEARCH`, 3)],
-    [word(`NFA`), word(`NOT FINANCIAL ADVICE`, 3)],
-    // [word(`<a class="clickhere">CLICK HERE</a>`)],
-    [word(`DON'T WAIT`, 2)],
-    [word(`DANGER ZONE`, 2)],
-    [word(`WHAT A DEAL!`, 2)],
-    [word(`CRAZY DEALS!`, 2)],
-    [word(`SAFE + SECURE`, 2)],
-    [word(`UNBELIEVABLE!`, 2)],
-    [word(`INSANE PRICES!`, 2)],
-    [word(`DON'T MISS OUT`, 2)],
-    [word(`CRYPTO FORTUNE`, 2)],
-    [word(`GET RICH QUICK`, 2)],
-    [word(`YIELD EXPLOSION`, 2)],
-    [word(`THROBBING GAINS`, 2)],
-    [word(`THIS WON'T LAST`, 2)],
-    [word(`CONGRATULATIONS`, 2)],
-    // [word(`<a href="http://fastcashmoneyplus.biz" target="_blank">MAKE FAST CASH NOW</a>`, 3)],
-    [word(`MAKE FAST CASH NOW`, 3)],
-    [word(`TOO GOOD TO BE TRUE`, 3)],
-    [word(`FEAR OF MISSING OUT`, 3)],
-    [word(`DEAL OF THE CENTURY`, 3)],
-    [word(`NEVER LOOKED SO GOOD`, 3)],
-    [word(`TOO GOOD TO BE TRUE!`, 3)],
-    [word(`Do you CRAVE YIELD?!`, 3)],
-    [word(`THINGS ARE MOVING FAST`, 3)],
-    [word(`FEAR UNCERTAINTY DOUBT`, 3)],
-    [word(`[object HTMLDivElement]`, 3)],
-    [word(`YOU WON'T BELIEVE THIS!`, 3)],
-    [word(`OPPORTUNITY OF A LIFETIME`, 3.5)],
-    [word(`MAKE GENERATIONAL WEALTH NOW`, 4)],
-    [word(`I COULDN'T BELIEVE IT EITHER!`, 4)],
-    [word(`ACT NOW (Before It's Too Late)`, 4.5)],
-    [word(`Stop THROWING YOUR MONEY AWAY!`, 4.5)],
-    [word(`YOU CAN'T AFFORD TO PASS THIS UP`, 4.5)],
-    [word(`PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`, 8)],
-    [word(`BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`, 8)]
-  ]
-
-
-  const content = chance(
-    [15, allContent.flat()],
-    [15, sample(allContent)],
-    [25, [sample(allContent), sample(allContent)].flat()],
-    [35, [sample(allContent), sample(allContent), sample(allContent)].flat()],
-    [8, [word(`FEAR`), word(`UNCERTAINTY`), word(`DOUBT`)]],
-    [2, emojis(`💸 🤑 🔥 😂 💥`)]
-  )
-
-
-
-  const lineRotation = chance(
-    [80, () => 0],
-    [5, () => rnd(20)],
-    [13, () => rnd(20, 180)],
-    [2, () => 180],
-  )
-
-  const freeFloating = ![0, 180].includes(lineRotation())
-
-  const hideBg = freeFloating ? prb(0.5) : false
-  const threeDRotations = (freeFloating && prb(0.15)) || prb(0.01)
-
-
-  const bw = prb(0.1)
-  const sH = rnd(360)
-
-  const chooseHue = sample([
-    () => rnd(360),
-    () => sH + sample([0, 180]) % 360,
-    () => sH + sample([60, 120, 240, 300]) % 360,
-    () => sH + sample([0, 120, 150]) % 360,
-    () => sH + sample([0, 120, 240]) % 360,
-    () => sH + sample([0, 150, 210]) % 360,
-    () => sH + sample([0, 150, 180, 210]) % 360,
-    () => sH + sample([0, 75]) % 360,
-  ])
-
-  css(`
-    body {
-      background: ${sample([`hsl(${chooseHue()}deg, ${sat}%, 50%)`, `#fff`, `#000`])}
-    }
-  `)
-
-
-  const chooseAltHue = (h) => {
-    const alt = chooseHue()
-    return h === alt ? chooseAltHue(h) : alt
-  }
-
-
-  function getBgColor(h) {
-    const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
-    const bg2 = `hsl(${h+sample([60, 120, 180])}deg, ${sat}%, 50%)`
-
-    return gradientBg ? `linear-gradient(to right, ${bg1} , ${bg2})` : bg1
-  }
-
-
-  function $marquee(h, cSpan, rSpan, ix) {
-    const sideways = prb(sidewaysPrb) && rSpan > rows/2
+  function marqueeContainer(rSpan, cSpan, rows, cols) {
+    const h = chooseHue()
+    const sideways = prb(sidewaysPrb) && cSpan/rSpan < 1.2
     const txtH = chooseAltHue(h)
     const shadowH = (h + 90) % 360
     const shadow2H = (h + 270) % 360
@@ -634,8 +91,8 @@ function setMetadata() {
     const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
     const shadowColor = `hsl(${shadowH}deg, ${sat}%, 20%)`
     const shadow2Color = `hsl(${shadow2H}deg, ${sat}%, 50%)`
-    const height = `calc(${100*rSpan}vh/${rows})`
-    const width = `calc(${100*cSpan}vw/${cols})`
+    const height = `calc(${100*rSpan/rows}vh)`
+    const width = `calc(${100*cSpan/cols}vw)`
 
     const shadows =
       shadowType === 1 ? `
@@ -665,7 +122,7 @@ function setMetadata() {
       : '0 0 0'
 
 
-    const child = (ix !== undefined) ? ix.toString() + '__' : sample(content)
+    const child = sample(content)
     const slowIx = child.indexOf('slow="')
     const slow = slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
     const rotation = threeDRotations
@@ -689,7 +146,7 @@ function setMetadata() {
     return $.div(
       marq,
       {
-        class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} grid-component`,
+        class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} marquee-container`,
         style: `
           border-style: ${borderStyle()};
           ${showBorder ? 'border-width: 0.03em; box-sizing: border-box;' : 'border-width: 0;'}
@@ -697,67 +154,78 @@ function setMetadata() {
           grid-row: span ${rSpan};
           background: ${hideBg ? 'none' : bgColor};
           color: ${txtColor};
-          overflow: hidden;
-          display: flex;
-          align-items: center;
           font-size: ${sideways ? width : height};
           transform: ${rotation};
           font-style: ${fontStyle};
-          font-weight: ${fontWeight};
           animation-delay: -${rnd(5)}s;
           animation-direction: ${rotateColor ?'normal' : animationDirection()};
           animation-duration: ${rotateColor ? '25' : animationDuration()}s;
         `
       }
     )
-
   }
 
 
 
 
 
-  // TODO all cols as 1 looks kinda cool
-
-  function marqueeLayout() {
+  function flexComponent(rowCells, colCells) {
     let rCursor = 0
 
     const cells = {}
-    times(rows, r => cells[r] = [])
+    times(rowCells, r => cells[r] = [])
 
     const findNextFilledCol = (rC, cC) => {
-      for (let c = cC; c < cols; c++) {
+      for (let c = cC; c < colCells; c++) {
         if (cells[rC][c]) return c
       }
-      return cols
+      return colCells
     }
 
     const findNextUnfilledCol = (rC, cC) => {
-      for (let c = cC; c < cols; c++) {
+      for (let c = cC; c < colCells; c++) {
         if (!cells[rC][c]) return c
       }
 
-      return cols
+      return colCells
     }
 
     const marquees = []
 
-    while (rCursor < rows) {
+    const colMax = prb(0.05) ? 3 : colCells
+    const colMin = 12
+    // chance(
+    //   [1, cols/3],
+    //   [3, cols/4],
+    //   [3, cols/5],
+    //   [1, int(cols/6)],
+    // )
+    const rowMax = prb(0.25) ? rowCells : min(4, rowCells)
+    const rowMin = chance(
+      [3, rows],
+      [3, int(rows/rnd(2, 5))],
+      [3, int(rows/rnd(5, 24))],
+      [1, 1],
+    )
+
+
+    while (rCursor < rowCells) {
       let cCursor = findNextUnfilledCol(rCursor, 0)
 
-      while (cCursor < cols) {
+      while (cCursor < colCells) {
         const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
-        const rowsLeft = min(rows - rCursor, rowMax)
+        const rowsLeft = min(rowCells - rCursor, rowMax)
 
-        const cSpan = rndint(min(3, colsLeft), colsLeft)
-        const rSpan = rndint(min(3, rowsLeft), max(1, rowsLeft))
-        const h = chooseHue()
+        let cSpan = rndint(min(colMin, colsLeft), colsLeft)
+        if (colsLeft - cSpan < colMin) cSpan = colsLeft
 
-        marquees.push($marquee(h, cSpan, rSpan))
+        const rSpan = rndint(min(rowMin, rowsLeft), max(1, rowsLeft))
+
+        marquees.push(marqueeContainer(rSpan, cSpan, rows, cols))
 
         times(rSpan, r =>
           times(cSpan, c =>
-            cells[rCursor+r][cCursor+c] = 1
+            cells[rCursor+r] ? cells[rCursor+r][cCursor+c] = 1 : console.log(rowCells, rCursor, r)
           )
         )
 
@@ -767,11 +235,19 @@ function setMetadata() {
       rCursor++
     }
 
-    return $.main(
+    return $.div(
       marquees,
       {
-        id: 'main',
-        class: 'layout'
+        style: `
+          width: ${100*colCells/cols}vw;
+          height: ${100*rowCells/rows}vh;
+          overflow: hidden;
+          grid-row: span ${rowCells};
+          grid-column: span ${colCells};
+          display: grid;
+          grid-template-rows: repeat(${rowCells}, 1fr);
+          grid-template-columns: repeat(${colCells}, 1fr);
+        `
       }
     )
   }
@@ -779,146 +255,160 @@ function setMetadata() {
 
 
 
+  /*
+    Potential layouts
+
+    Quarter components
+      [Q || dynamic] [Q || dynamic]
+      [Q || dynamic] [Q || dynamic]
+
+    News Layout
+      [H              ]
+      [content  ][  Ad]
+      [content  ][  Ad]
+      [content  ][  Ad]
+
+    Social Layout
+
+
+
+    news component
+    <container width/height based on grid>
+      <header width/height based on content></header>
+      <content fills remaining space></content>
+    </container>
+
+
+
+    quarter components
+      grid of emojis/symbols, size wave
+      grid of emojis/symbols, rotating wave
+      one big emoji/symbol, grow/shrink
+      emoji(s)/symbol(s) bounce around
+      single emoji/symbol rotating
+
+
+    marquee varient
+      if r > c
+        bounce left<>right
+      if c > r
+        bounce up<>down
+
+
+  */
+
+
+  // function wordLayout() {
+  //   let rCursor = 0
+
+  //   const cells = {}
+  //   times(rows, r => cells[r] = [])
+
+  //   const findNextFilledCol = (rC, cC) => {
+  //     for (let c = cC; c < cols; c++) {
+  //       if (cells[rC][c]) return c
+  //     }
+  //     return cols
+  //   }
+
+  //   const findNextUnfilledCol = (rC, cC) => {
+  //     for (let c = cC; c < cols; c++) {
+  //       if (!cells[rC][c]) return c
+  //     }
+
+  //     return cols
+  //   }
+
+
+  //   const components = [
+  //     $.div('Header Text', {
+  //       style: `
+  //         grid-column: span 10;
+  //         grid-row: span ${int(rows/2)};
+  //         background-color: red;
+  //       `
+  //     })
+  //   ]
+  //   times(int(rows/2), r =>
+  //     times(10, c =>
+  //       cells[r][c] = 1
+  //     )
+  //   )
+
+
+
+
+
+
+  //   while (rCursor < rows) {
+  //     let cCursor = findNextUnfilledCol(rCursor, 0)
+
+  //     while (cCursor < cols) {
+  //       const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
+  //       const rowsLeft = min(rows - rCursor, rowMax)
+
+  //       const cSpan = rndint(min(3, colsLeft), colsLeft)
+  //       const rSpan = rndint(min(3, rowsLeft), max(1, rowsLeft))
+
+  //       components.push(marqueeContainer(cSpan, rSpan, 100))
+
+  //       times(rSpan, r =>
+  //         times(cSpan, c =>
+  //           cells[rCursor+r][cCursor+c] = 1
+  //         )
+  //       )
+
+  //       cCursor = findNextUnfilledCol(rCursor, cCursor + cSpan)
+  //     }
+
+  //     rCursor++
+  //   }
+
+  //   return $.main(
+  //     components,
+  //     {
+  //       id: 'main',
+  //       style: `
+  //         height: 100vh;
+  //         width: 100vw;
+  //         overflow: hidden;
+  //         display: grid;
+  //         grid-template-rows: repeat(${rows}, 1fr);
+  //         grid-template-columns: repeat(${cols}, 1fr);
+  //       `
+  //     }
+  //   )
+  // }
+
 
   setMetadata()
 
 
-  $.render($body, marqueeLayout())
 
-
-
-  times(parseInt(Math.random() * 100), () => rnd())
-
-
-
-
-  function triggerSound() {
-    const startingFreq = rnd(1000, 3000)
-    const soundDuration = rnd(750, 1500)
-
-    const vMin = rnd(5, 450)
-    const vMax = vMin + rnd(5, 450)
-    const v1 = rnd(vMin, vMax)
-    const v2 = rnd(vMin, vMax)
-    const v3 = rnd(vMin, vMax)
-
-    const t1 = rnd(0.5, 1)
-    const t2 = rnd(0.5, 1)
-    const t3 = rnd(0.5, 1)
-
-    const dur2 = rnd(0.1, 0.5)
-    const dur3 = rnd(0.5, 1)
-
-    const durOffset = prb(0.25) ? rnd : () => 1
-
-
-    const smoothTo = (obj, ctx) => (value, timeInSeconds) => {
-      obj.exponentialRampToValueAtTime(value, ctx.currentTime + timeInSeconds)
+  const main = $.main(
+    flexComponent(rows, cols),
+    {
+      id: 'main',
+      style: `
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: repeat(${rows}, 1fr);
+        grid-template-columns: repeat(${cols}, 1fr);
+      `
     }
-    function createSource(freq = 500, volume = 0.04) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      const ctx = new AudioContext();
-
-      const source = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      source.connect(gain)
-      gain.connect(ctx.destination)
-
-      gain.gain.value = volume
-      source.type = 'square'
-      source.frequency.value = startingFreq
-      source.start()
-
-      return { source, gain, ctx };
-    }
-
-    const MAX_VOLUME = 0.01;
-    const { source: source1, gain: gain1, ctx: ctx1 } = createSource(1, 0.00000001)
-    const { source: source2, gain: gain2, ctx: ctx2 } = createSource(1, 0.00000001)
-    const { source: source3, gain: gain3, ctx: ctx3 } = createSource(1, 0.00000001)
-
-    // function triggerOscillator() {
-    //   const v = rnd(vMin, vMax)
-    //   const t = rnd(0.5, 1)
-    //   const dur = rnd(0.1, 0.5)
+  )
 
 
-    //   const { source, gain, ctx } = createSource(0, 0.00000001)
-
-    //   const smoothGain = smoothTo(gain.gain, ctx)
-    //   const smoothFreq = smoothTo(source.frequency, ctx)
-    //   smoothGain(MAX_VOLUME, 0.15)
-    //   const setFreq = () => {
-    //     smoothFreq(source.frequency.value * 2 || startingFreq, rnd(0.1, 0.3))
-    //     setTimeout(() => smoothFreq(v, t))
-    //   }
-
-    //   setTimeout(() => {
-    //     setFreq()
-    //     setInterval(setFreq, soundDuration)
-    //   }, soundDuration * dur)
-    // }
-
-    // times(rndint(1, 5), triggerOscillator)
-
-    const smoothGain1 = smoothTo(gain1.gain, ctx1)
-    const smoothFreq1 = smoothTo(source1.frequency, ctx1)
-
-    const smoothGain2 = smoothTo(gain2.gain, ctx2)
-    const smoothFreq2 = smoothTo(source2.frequency, ctx2)
-
-    const smoothGain3 = smoothTo(gain3.gain, ctx3)
-    const smoothFreq3 = smoothTo(source3.frequency, ctx3)
-
-    smoothGain1(MAX_VOLUME, 0.15)
-    smoothGain2(MAX_VOLUME, 0.15)
-    smoothGain3(MAX_VOLUME, 0.15)
-
-
-    const setFreq1 = () => {
-      smoothFreq1(source3.frequency.value * 2 || startingFreq, rnd(0.1, 0.3))
-      setTimeout(() => smoothFreq1(v1, t1))
-    }
-
-    const setFreq2 = () => {
-      smoothFreq2(source1.frequency.value * 2 || startingFreq, rnd(0.1, 0.3))
-      setTimeout(() => smoothFreq2(v2, t2))
-    }
-
-    const setFreq3 = () => {
-      smoothFreq3(source2.frequency.value * 2 || startingFreq, rnd(0.1, 0.3))
-      setTimeout(() => smoothFreq3(v3, t3))
-    }
+  $.render($body, main)
 
 
 
 
-    setFreq1()
-    setInterval(setFreq1, soundDuration * durOffset())
-
-    setTimeout(() => {
-      setFreq2()
-      setInterval(setFreq2, soundDuration * durOffset())
-    }, soundDuration * dur2)
-
-    setTimeout(() => {
-      setFreq3()
-      setInterval(setFreq3, soundDuration * durOffset())
-    }, soundDuration * dur3)
-  }
-
-  for (let ch of document.getElementsByClassName('clickhere')) {
-    ch.onclick = () => {triggerSound()}
-  }
-      // <div style="position: absolute; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center">
-      //   <div style="background: #fff; width: 80vw; height: 80vh"></div>
-
-      // </div>
 
 
 
-  // setTimeout(() => location.reload(), 60000)
 
 
 </script>
