@@ -1,5 +1,9 @@
 css`
 
+  .animatingComponent {
+    display: inline-block;
+  }
+
   .marquee-container {
     overflow: hidden;
     display: flex;
@@ -131,9 +135,92 @@ css`
     }
   }
 
+  .dance {
+    animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes Dance {
+    0%, 100% {
+      transform: rotate(20deg) translateY(-10%);
+    }
+    50% {
+      transform: rotate(-20deg) translateY(-10%);
+    }
+  }
+
+  .growShrink {
+    animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes GrowShrink {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.2);
+    }
+  }
+
+
+  .spin {
+    animation: Spin 2000ms linear infinite;
+  }
+
+  @keyframes Spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .pivot {
+    animation: Pivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+
+  }
+
+  @keyframes Pivot {
+    0%, 100% {
+      transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(100px);
+    }
+    50% {
+      transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(100px);
+    }
+  }
+
+  .leftRight {
+    width: 100%;
+
+    animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    font-size: 10vmin;
+  }
+
+  .leftRight > * {
+    animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    display: inline-block;
+  }
+
+  @keyframes LeftRightChild {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes LeftRight {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(100%);
+    }
+  }
 `
 
-function marquee(children, args) {
+function marquee(children, args={}) {
   const className = args.className || ''
   const style = args.style || ''
   const direction = args.direction || 1
@@ -161,6 +248,39 @@ function marquee(children, args) {
     }
   )
 }
+
+
+function genericAnimatingComponent(name) {
+  return (children, args={}) => {
+    const className = args.className || ''
+    const style = args.style || ''
+    const delay = args.delay || 0
+    const duration = args.duration || 1000
+
+    return $.div(children, {
+      class: `${name} ${className} animatingComponent`,
+      style: `
+        animation-duration: ${duration}ms;
+        animation-delay: -${delay}ms;
+        ${style}
+      `
+    })
+  }
+}
+
+const dance = genericAnimatingComponent('dance')
+const growShrink = genericAnimatingComponent('growShrink')
+const spin = genericAnimatingComponent('spin')
+const pivot = genericAnimatingComponent('pivot')
+const leftRightParent = genericAnimatingComponent('leftRight')
+const leftRight = (grandChild, args={}) => {
+  const duration = args.duration || 1000
+  const delay = args.delay || 0
+
+  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
+  return leftRightParent(child, args)
+}
+
 
 
 

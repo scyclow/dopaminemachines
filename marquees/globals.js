@@ -124,6 +124,7 @@ function getBgColor(h) {
   return gradientBg ? `linear-gradient(to right, ${bg1} , ${bg2})` : bg1
 }
 
+const bgColor = 'none'//sample([`hsl(${chooseHue()}deg, ${sat}%, 50%)`, `#fff`, `#000`])
 css(`
   * {
     font-family: ${fontFamily};
@@ -131,6 +132,6 @@ css(`
   }
 
   body {
-    background: ${sample([`hsl(${chooseHue()}deg, ${sat}%, 50%)`, `#fff`, `#000`])}
+    background: ${bgColor};
   }
 `)

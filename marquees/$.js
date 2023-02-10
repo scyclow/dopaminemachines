@@ -29,6 +29,7 @@ $.create = elType => (children, attrs={}) => {
 $.div = $.create('div')
 $.span = $.create('span')
 $.main = $.create('main')
+$.section = $.create('section')
 
 
 

@@ -1,4 +1,18 @@
 <!--
+
+Concept:
+  - some mints are "the NFT"
+  - other mings are web pages trying to sell the NFTs
+  - sales pages take to form of CTA style adverts, news articles, social media pages, etc. -- each one linking to either each other or a target NFT
+  - in all, each mint in the collection serves to hype itself up. a self-referential propaganda machine
+
+
+  this NFT is HOT HOT HOT!🔥
+  this NFT will moon🌛
+  Don't be a sucker🍬
+
+
+
 Things are moving fast, and if you want to make the most of this opportunity you need to pounce on it. Don't wait. Act Now. These deals won't last.
 
 
@@ -80,7 +94,7 @@ MARQUEES TODO
 
 
 
-  function marqueeContainer(rSpan, cSpan, rows, cols) {
+  function marqueeContainter(rSpan, cSpan, rows, cols) {
     const h = chooseHue()
     const sideways = prb(sidewaysPrb) && cSpan/rSpan < 1.2
     const txtH = chooseAltHue(h)
@@ -132,19 +146,25 @@ MARQUEES TODO
     const fontStyle = prb(italicRate) ? 'italic' : 'none'
 
 
-    const childText = $.span(child, {
+    const childSpan = $.span(child, {
       style: `text-shadow: ${shadows}`
     })
 
-    const marq = marquee(childText, {
-      direction: posOrNeg(),
-      delay: rnd(-1000, 0),
-      duration: rnd(0.01, 2) * slow * speed,
-      sideways
-    })
+
+
+    const childEl =
+    // childSpan.children[0]?.innerHTML.trim().length < 5 && prb(0.5)
+    //     ? leftRight(childSpan, {style: `font-size: ${height}`, duration: rnd(1500, 4000), delay: rnd(2000)})
+    //     :
+        marquee(childSpan, {
+          direction: posOrNeg(),
+          delay: rnd(-1000, 0),
+          duration: rnd(0.01, 2) * slow * speed,
+          sideways
+        })
 
     return $.div(
-      marq,
+      childEl,
       {
         class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} marquee-container`,
         style: `
@@ -169,7 +189,7 @@ MARQUEES TODO
 
 
 
-  function flexComponent(rowCells, colCells) {
+  function flexSection(rowCells, colCells) {
     let rCursor = 0
 
     const cells = {}
@@ -194,12 +214,7 @@ MARQUEES TODO
 
     const colMax = prb(0.05) ? 3 : colCells
     const colMin = 12
-    // chance(
-    //   [1, cols/3],
-    //   [3, cols/4],
-    //   [3, cols/5],
-    //   [1, int(cols/6)],
-    // )
+
     const rowMax = prb(0.25) ? rowCells : min(4, rowCells)
     const rowMin = chance(
       [3, rows],
@@ -221,7 +236,7 @@ MARQUEES TODO
 
         const rSpan = rndint(min(rowMin, rowsLeft), max(1, rowsLeft))
 
-        marquees.push(marqueeContainer(rSpan, cSpan, rows, cols))
+        marquees.push(marqueeContainter(rSpan, cSpan, rows, cols))
 
         times(rSpan, r =>
           times(cSpan, c =>
@@ -235,7 +250,7 @@ MARQUEES TODO
       rCursor++
     }
 
-    return $.div(
+    return $.section(
       marquees,
       {
         style: `
@@ -298,87 +313,131 @@ MARQUEES TODO
   */
 
 
-  // function wordLayout() {
-  //   let rCursor = 0
 
-  //   const cells = {}
-  //   times(rows, r => cells[r] = [])
+  function shortComponentContainer(size) {}
 
-  //   const findNextFilledCol = (rC, cC) => {
-  //     for (let c = cC; c < cols; c++) {
-  //       if (cells[rC][c]) return c
-  //     }
-  //     return cols
-  //   }
+  function tallComponentContainer(size) {}
 
-  //   const findNextUnfilledCol = (rC, cC) => {
-  //     for (let c = cC; c < cols; c++) {
-  //       if (!cells[rC][c]) return c
-  //     }
-
-  //     return cols
-  //   }
-
-
-  //   const components = [
-  //     $.div('Header Text', {
-  //       style: `
-  //         grid-column: span 10;
-  //         grid-row: span ${int(rows/2)};
-  //         background-color: red;
-  //       `
-  //     })
-  //   ]
-  //   times(int(rows/2), r =>
-  //     times(10, c =>
-  //       cells[r][c] = 1
-  //     )
-  //   )
+  function normalComponentContainer(children, size) {
+    return $.section(
+      children, {
+        class: 'normalComponentContainer',
+        style: `
+          overflow: hidden;
+          grid-row: span ${size*48};
+          grid-column: span ${size*60};
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        `
+      }
+    )
+  }
 
 
 
 
+  function singleGrowShrinkDance(content, size) {
+    return growShrink(dance(content, { style: `font-size: ${size*50}vmin` }))
+  }
 
 
-  //   while (rCursor < rows) {
-  //     let cCursor = findNextUnfilledCol(rCursor, 0)
+  function multipleGrowShrinkDance(content, size) {
+    const children = times(20, t => growShrink(
+      dance(
+        content, {
+          style: `font-size: ${size*20}vmin;`,
+          delay: t*200/20
+        }), {
+        delay: (t*1000)/20
+      })
+    )
 
-  //     while (cCursor < cols) {
-  //       const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
-  //       const rowsLeft = min(rows - rCursor, rowMax)
+    return $.div(children, {
+      style: `
+        height: ${size*100}vh;
+        width: ${size*125}vw;
+        display: grid;
+        grid-template-rows: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
+        align-items: center;
+        justify-items: center;
+      `
+    })
+  }
 
-  //       const cSpan = rndint(min(3, colsLeft), colsLeft)
-  //       const rSpan = rndint(min(3, rowsLeft), max(1, rowsLeft))
 
-  //       components.push(marqueeContainer(cSpan, rSpan, 100))
+  function multipleGrowShrinkDance2(content, size, cells) {
+    const totalCells = cells * cells * 1.25
+    const children = times(totalCells, t => growShrink(
+      dance(
+        content, {
+          style: `font-size: ${size*20 * (20/totalCells)}vmin;`,
+          delay: t*200/totalCells
+        }), {
+        delay: (t*1000)/totalCells
+      })
+    )
 
-  //       times(rSpan, r =>
-  //         times(cSpan, c =>
-  //           cells[rCursor+r][cCursor+c] = 1
-  //         )
-  //       )
 
-  //       cCursor = findNextUnfilledCol(rCursor, cCursor + cSpan)
-  //     }
+    return $.div(children, {
+      style: `
+        height: ${size*100}vh;
+        width: ${size*125}vw;
+        display: grid;
+        grid-template-rows: repeat(${cells}, 1fr);
+        grid-template-columns: repeat(${int(cells*1.25)}, 1fr);
+        align-items: center;
+        justify-items: center;
+      `
+    })
+  }
 
-  //     rCursor++
-  //   }
 
-  //   return $.main(
-  //     components,
-  //     {
-  //       id: 'main',
-  //       style: `
-  //         height: 100vh;
-  //         width: 100vw;
-  //         overflow: hidden;
-  //         display: grid;
-  //         grid-template-rows: repeat(${rows}, 1fr);
-  //         grid-template-columns: repeat(${cols}, 1fr);
-  //       `
-  //     }
-  //   )
-  // }
+
+  function singleSpin(content, size) {
+    return spin(content, { style: `font-size: ${size*50}vmin` })
+  }
+
+  function singlePivot(content, size) {
+    return pivot(content, { style: `font-size: ${size*40}vmin` })
+  }
+
+  function singleLeftRight(content, size) {
+    return leftRight(content, { style: `font-size: ${size*30}vmin`, duration: 2000 })
+  }
+
+
+
+
+
+
+
+
+
+  function componentViewerSection(size, content, delay) {
+    return $.section(
+      normalComponentContainer(
+        dance(growShrink(singlePivot(content, size), {delay, style: `text-shadow: 10px 10px 0px ${sample(['red', 'blue', 'yellow'])}`})),
+        size
+      )
+      // flexSection(rows*size, cols*size)
+
+
+      , {
+        style: `
+
+          overflow: hidden;
+          grid-row: span ${size*48};
+          grid-column: span ${size*60};
+          display: grid;
+          grid-template-rows: repeat(${size*48}, 1fr);
+          grid-template-columns: repeat(${size*60}, 1fr);
+        `
+      }
+    )
+  }
+
 
 
   setMetadata()
@@ -386,7 +445,25 @@ MARQUEES TODO
 
 
   const main = $.main(
-    flexComponent(rows, cols),
+    [
+      // flexSection(rows, cols),
+      componentViewerSection(0.5, '🍬'),
+      componentViewerSection(0.5, 'FUN', 250),
+      componentViewerSection(0.5, 'FUN', 500),
+      componentViewerSection(0.5, '🍬', 750),
+      // flexSection(0.75*rows, 0.25*cols),
+      // flexSection(0.25*rows, 0.75*cols),
+      // componentViewerSection(0.25),
+
+
+      // normalComponentContainer(multipleGrowShrinkDance(`🔥`, 0.5, 4), 0.5),
+      // normalComponentContainer(singleGrowShrinkDance(`🙂`, 0.5, 4), 0.5),
+      // normalComponentContainer(singleGrowShrinkDance(`🌎`, 0.5, 4), 0.5),
+      // normalComponentContainer(multipleGrowShrinkDance(`💸`, 0.5, 4), 0.5),
+
+
+
+    ],
     {
       id: 'main',
       style: `
@@ -401,7 +478,48 @@ MARQUEES TODO
   )
 
 
-  $.render($body, main)
+const mintDotFun = () => {
+  const container = (size, content, delay) => $.section(
+    normalComponentContainer(
+      dance(growShrink(singlePivot(content, size), {delay, style: `text-shadow: 10px 10px 0px ${sample(['red', 'blue', 'yellow'])}`})),
+      size
+    ), {
+      style: `
+
+        overflow: hidden;
+        grid-row: span ${size*48};
+        grid-column: span ${size*60};
+        display: grid;
+        grid-template-rows: repeat(${size*48}, 1fr);
+        grid-template-columns: repeat(${size*60}, 1fr);
+      `
+    }
+  )
+
+  return $.main(
+      [
+        container(0.5, '🍬'),
+        container(0.5, 'FUN', 250),
+        container(0.5, 'FUN', 500),
+        container(0.5, '🍬', 750),
+      ],
+      {
+        id: 'main',
+        style: `
+          height: 100vh;
+          width: 100vw;
+          overflow: hidden;
+          display: grid;
+          grid-template-rows: repeat(${rows}, 1fr);
+          grid-template-columns: repeat(${cols}, 1fr);
+        `
+      }
+    )
+}
+
+
+
+  $.render($body, mintDotFun())
 
 
 
