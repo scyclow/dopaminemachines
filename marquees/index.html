@@ -151,6 +151,17 @@ MARQUEES TODO
     })
 
 
+    const msgAnimation = sample([
+      dance,
+      growShrinkShort,
+      spin,
+      hSiren,
+      vSirenShort,
+      hPivot,
+      hFlip,
+      leftRight,
+    ])
+
 
     const childEl =
     // childSpan.children[0]?.innerHTML.trim().length < 5 && prb(0.5)
@@ -160,7 +171,8 @@ MARQUEES TODO
           direction: posOrNeg(),
           delay: rnd(-1000, 0),
           duration: rnd(0.01, 2) * slow * speed,
-          sideways
+          sideways,
+          msgAnimation
         })
 
     return $.div(
@@ -318,27 +330,40 @@ MARQUEES TODO
 
   function tallComponentContainer(size) {}
 
-  function normalComponentContainer(children, size) {
+  function normalComponentContainer(children, size, style) {
     return $.section(
       children, {
         class: 'normalComponentContainer',
         style: `
           overflow: hidden;
-          grid-row: span ${size*48};
-          grid-column: span ${size*60};
+          grid-row: span ${size*rows};
+          grid-column: span ${size*cols};
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          ${style}
         `
       }
     )
+  }
+  function flexboxSection(children, size, style='') {
+    return $.div(children, {
+      style: `
+        grid-row: span ${size*rows};
+        grid-column: span ${size*cols};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${style}
+      `
+    })
   }
 
 
 
 
-  function singleGrowShrinkDance(content, size) {
-    return growShrink(dance(content, { style: `font-size: ${size*50}vmin` }))
+  function singleGrowShrinkDance(content, size, delay=0) {
+    return growShrink(dance(content, { style: `font-size: ${size*50}vmin` }), {delay})
   }
 
 
@@ -410,34 +435,122 @@ MARQUEES TODO
 
 
 
+  function comment(size) {
+    return $.div([
+        $.div('🙂'),
+        $.div('Wow, what a great comment!')
+      ], {
+        style:`
+          border: 2px solid black;
+          border-radius: 4px;
+          padding: 1em;
+          display: flex;
+          align-items: center;
+        `
+      }
+    )
+  }
 
 
+
+
+
+
+
+
+
+  function socialLayout(size) {
+    return $.section([
+        $.div(
+          [],
+          {
+            style: `
+              grid-column: span 3;
+              border: 3px solid black;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              overflow: scroll;
+            `
+          }
+        ),
+
+
+
+        $.div([
+          comment(0.5),
+          comment(0.5),
+          comment(0.5),
+          comment(0.5),
+          comment(0.5),
+        ], {
+          style: `
+            grid-column: span 5;
+            border: 3px solid black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: scroll;
+          `
+        }
+      ),
+
+
+
+        $.div(times(10, t => {
+          const child = sample(content)
+
+          return growShrink(child, {delay:rnd(1000), duration: rnd(500, 4000) ,style: `font-size: ${20-child.length/6}vmin`})
+        }), {
+            style: `
+              grid-column: span 2;
+              border: 3px solid black;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              overflow: scroll;
+            `
+          }),
+      ], {
+      style: `
+        overflow: hidden;
+        grid-row: span ${size*rows};
+        grid-column: span ${size*cols};
+        display: grid;
+        grid-template-rows: 1fr;
+        grid-template-columns: repeat(10, 1fr);
+      `
+    })
+  }
 
 
 
   function componentViewerSection(size, content, delay) {
     return $.section(
       normalComponentContainer(
-        dance(growShrink(singlePivot(content, size), {delay, style: `text-shadow: 10px 10px 0px ${sample(['red', 'blue', 'yellow'])}`})),
-        size
+
+        vSiren('WOW', { style: `font-size: 10vmin`}),
+        size,
+        `
+          background: radial-gradient(#fff 0%, #eee 40%, #bbb 70%, #000 150%);
+        `
       )
       // flexSection(rows*size, cols*size)
 
 
       , {
         style: `
-
+          border: 1px solid red;
           overflow: hidden;
-          grid-row: span ${size*48};
-          grid-column: span ${size*60};
+          grid-row: span ${size*rows};
+          grid-column: span ${size*cols};
           display: grid;
-          grid-template-rows: repeat(${size*48}, 1fr);
-          grid-template-columns: repeat(${size*60}, 1fr);
+          grid-template-rows: repeat(${size*rows}, 1fr);
+          grid-template-columns: repeat(${size*cols}, 1fr);
         `
       }
     )
   }
-
 
 
   setMetadata()
@@ -446,23 +559,14 @@ MARQUEES TODO
 
   const main = $.main(
     [
-      // flexSection(rows, cols),
-      componentViewerSection(0.5, '🍬'),
-      componentViewerSection(0.5, 'FUN', 250),
-      componentViewerSection(0.5, 'FUN', 500),
-      componentViewerSection(0.5, '🍬', 750),
-      // flexSection(0.75*rows, 0.25*cols),
-      // flexSection(0.25*rows, 0.75*cols),
-      // componentViewerSection(0.25),
-
-
+      flexSection(rows, cols)
+      // socialLayout(1)
+      // componentViewerSection(0.5)
+      // normalComponentContainer(singlePivot(`🔥`, 0.5), 0.5),
       // normalComponentContainer(multipleGrowShrinkDance(`🔥`, 0.5, 4), 0.5),
       // normalComponentContainer(singleGrowShrinkDance(`🙂`, 0.5, 4), 0.5),
       // normalComponentContainer(singleGrowShrinkDance(`🌎`, 0.5, 4), 0.5),
       // normalComponentContainer(multipleGrowShrinkDance(`💸`, 0.5, 4), 0.5),
-
-
-
     ],
     {
       id: 'main',
@@ -478,48 +582,10 @@ MARQUEES TODO
   )
 
 
-const mintDotFun = () => {
-  const container = (size, content, delay) => $.section(
-    normalComponentContainer(
-      dance(growShrink(singlePivot(content, size), {delay, style: `text-shadow: 10px 10px 0px ${sample(['red', 'blue', 'yellow'])}`})),
-      size
-    ), {
-      style: `
-
-        overflow: hidden;
-        grid-row: span ${size*48};
-        grid-column: span ${size*60};
-        display: grid;
-        grid-template-rows: repeat(${size*48}, 1fr);
-        grid-template-columns: repeat(${size*60}, 1fr);
-      `
-    }
-  )
-
-  return $.main(
-      [
-        container(0.5, '🍬'),
-        container(0.5, 'FUN', 250),
-        container(0.5, 'FUN', 500),
-        container(0.5, '🍬', 750),
-      ],
-      {
-        id: 'main',
-        style: `
-          height: 100vh;
-          width: 100vw;
-          overflow: hidden;
-          display: grid;
-          grid-template-rows: repeat(${rows}, 1fr);
-          grid-template-columns: repeat(${cols}, 1fr);
-        `
-      }
-    )
-}
 
 
 
-  $.render($body, mintDotFun())
+  $.render($body, main)
 
 
 

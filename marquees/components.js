@@ -161,6 +161,19 @@ css`
     }
   }
 
+  .growShrinkShort {
+    animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes GrowShrinkShort {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.75);
+    }
+  }
+
 
   .spin {
     animation: Spin 2000ms linear infinite;
@@ -175,12 +188,53 @@ css`
     }
   }
 
-  .pivot {
-    animation: Pivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
 
+  .hSiren {
+    animation: HSiren 2000ms linear infinite;
   }
 
-  @keyframes Pivot {
+  @keyframes HSiren {
+    0% {
+      transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px);
+    }
+    100% {
+      transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px);
+    }
+  }
+
+  .vSiren {
+    animation: VSiren 2000ms linear infinite;
+  }
+
+  @keyframes VSiren {
+    0% {
+      transform: perspective(250px) rotate3d(2,0,0, 0deg) translateZ(0.75em);
+    }
+    100% {
+      transform: perspective(250px) rotate3d(2,0,0, 360deg) translateZ(0.75em);
+    }
+  }
+
+  .vSirenShort {
+    animation: VSirenShort 2000ms linear infinite;
+  }
+
+  @keyframes VSirenShort {
+    0% {
+      transform: perspective(250px) rotate3d(2,0,0, 0deg) translateZ(0.3em);
+    }
+    100% {
+      transform: perspective(250px) rotate3d(2,0,0, 360deg) translateZ(0.3em);
+    }
+  }
+
+
+
+  .hPivot {
+    animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes HPivot {
     0%, 100% {
       transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(100px);
     }
@@ -188,6 +242,52 @@ css`
       transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(100px);
     }
   }
+
+  .vPivot {
+    animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes VPivot {
+    0%, 100% {
+      transform: perspective(250px) rotate3d(2,0,0, 30deg) translateZ(0.75em);
+    }
+    50% {
+      transform: perspective(250px) rotate3d(2,0,0, -30deg) translateZ(0.75em);
+    }
+  }
+
+
+
+  .vFlip {
+    animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes VFlip {
+    0%, 100% {
+      transform: perspective(250px) rotate3d(2,0,0, 0deg);
+    }
+    100% {
+      transform: perspective(250px) rotate3d(2,0,0, 1800deg);
+    }
+  }
+
+
+  .hFlip {
+    animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes HFlip {
+    0%, 100% {
+      transform: perspective(250px) rotate3d(0,2,0, 0deg);
+    }
+    100% {
+      transform: perspective(250px) rotate3d(0,2,0, 1800deg);
+    }
+  }
+
+
+
+
 
   .leftRight {
     width: 100%;
@@ -227,9 +327,10 @@ function marquee(children, args={}) {
   const delay = args.delay || 0
   const duration = args.duration || 1
   const sideways = args.sideways || false
+  const msgAnimation = args.msgAnimation || iden
 
   const inner = $.div(
-    times(40, _ => children),
+    times(40, i => msgAnimation(children.cloneNode(true), {delay: i * 100})),
     {
       class: `marqueeInner marqueeForward`,
       style: `
@@ -270,8 +371,18 @@ function genericAnimatingComponent(name) {
 
 const dance = genericAnimatingComponent('dance')
 const growShrink = genericAnimatingComponent('growShrink')
+const growShrinkShort = genericAnimatingComponent('growShrinkShort')
 const spin = genericAnimatingComponent('spin')
-const pivot = genericAnimatingComponent('pivot')
+const hSiren = genericAnimatingComponent('hSiren')
+const vSiren = genericAnimatingComponent('vSiren')
+const vSirenShort = genericAnimatingComponent('vSirenShort')
+
+const hPivot = genericAnimatingComponent('hPivot')
+const vPivot = genericAnimatingComponent('vPivot')
+
+const vFlip = genericAnimatingComponent('vFlip')
+const hFlip = genericAnimatingComponent('hFlip')
+
 const leftRightParent = genericAnimatingComponent('leftRight')
 const leftRight = (grandChild, args={}) => {
   const duration = args.duration || 1000
