@@ -9,9 +9,13 @@ $.render = (e, children) => {
   if (!children) return
   else if (typeof children === 'string') e.innerHTML = children
   else if (Array.isArray(children)) {
-    children.forEach(child => e.innerHTML += child.outerHTML)
+    children.forEach(child => {
+      e.innerHTML += (
+        typeof child === 'string' ? child : child.outerHTML
+      )
+    })
   }
-  else e.appendChild(children)
+  else e.appendChild(children.cloneNode(true))
 }
 
 

@@ -1,0 +1,190 @@
+<style type="text/css">
+  * {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <style type="text/css">
+    .red {
+      /*fill: #ff280b;*/
+      fill: #fb4827;
+      fill: #e77e51;
+      fill: #e9ee3d;
+      fill: #eec13d;
+      animation: Blink 100ms steps(2, start) infinite, GrowShrink 3000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    }
+
+    .green {
+      /*fill: #ff280b;*/
+      fill: #06d1b7;
+      animation: Blink 100ms steps(2, start) infinite, GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+      animation-delay: -2050ms;
+    }
+
+    .magenta {
+      /*fill: #ff280b;*/
+      /*fill: #fb07e8;*/
+      fill: #fc5fc4;
+      animation: Blink 100ms steps(2, start) infinite, GrowShrink 3000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+      animation-delay: -725ms;
+    }
+
+    .yellow {
+      /*fill: #ff280b;*/
+      fill: yellow;
+      animation: Blink 100ms steps(2, start) infinite, GrowShrink 3000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+      animation-delay: -1575ms;
+    }
+
+
+    .black {
+      fill:  #090221;
+    }
+
+
+  @keyframes Blink {
+    to {
+      visibility: hidden;
+    }
+  }
+
+
+
+  @keyframes GrowShrink {
+    0%, 100% {
+      transform: scale(1) ;
+    }
+    50% {
+      transform: scale(0.35) ;
+    }
+  }
+
+  .rotate {
+    animation: Rotate 90ms linear infinite;
+    animation-delay: -500ms;
+  }
+
+  @keyframes Rotate {
+    0% {
+      transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+      transform: rotate(180deg) scale(1);
+
+    }
+
+    100% {
+      transform: rotate(360deg) scale(1);
+    }
+  }
+
+  </style>
+
+
+  <rect x="0" y="0" width="100" height="100" class="black" />
+  <circle cx="50" cy="50" r="33" class="green" transform-origin="50 50" />
+  <circle cx="50" cy="50" r="33" class="magenta" transform-origin="50 50" />
+  <circle cx="50" cy="50" r="33" class="red" transform-origin="50 50" />
+
+
+<!--   <path
+    d="
+      M 50 83
+      A 33 33 0 0 0 83 50
+    "
+    stroke-width="0.25"
+    stroke-linecap="round"
+    stroke="#fb4827"
+    fill="none"
+    transform-origin="50 50"
+    class="rotate"
+  />
+
+  <path
+    d="
+      M 50 80
+      A 30 30 0 0 0 80 50
+    "
+    stroke-width="0.25"
+    stroke-linecap="round"
+    stroke="#fb4827"
+    fill="none"
+    transform-origin="50 50"
+    style="animation-delay: -100ms;"
+    class="rotate"
+  /> -->
+
+  <!-- <path
+    d="
+      M 50 83
+      A 33 33 0 0 0 83 50
+    "
+    stroke-width="0.25"
+    stroke-linecap="round"
+    stroke="#fb4827"
+    fill="none"
+    transform-origin="50 50"
+    style="animation-delay: -200ms;"
+    class="rotate"
+  /> -->
+</svg>
+
+<script type="text/javascript">
+
+const MAX_VOLUME = 0.008;
+
+document.onclick = () => {
+  createSource(250)
+  createSource(252.5)
+  createSource(251.25)
+  createSource(300)
+  createSource(302.5)
+  createSource(305)
+
+  // createSource(407)
+  // createSource(508)
+  // createSource(750)
+}
+
+// const waveType = 'triangle'
+// const waveType = 'square'
+const waveType = 'sine'
+
+
+function createSource(startingFreq = 500, fadein = 0.15, offsync=0, volX=1) {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const ctx = new AudioContext();
+
+  const source = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  source.connect(gain)
+  gain.connect(ctx.destination)
+
+  gain.gain.value = 0.00000001
+  source.type = waveType
+  source.frequency.value = startingFreq * (1+offsync)
+  source.start()
+
+  const smoothGain = smoothTo(gain.gain, ctx)
+  const smoothFreq = smoothTo(source.frequency, ctx)
+
+
+  smoothGain(MAX_VOLUME*volX, fadein)
+
+  return {
+    offsync,
+    source,
+    gain,
+    ctx,
+    smoothGain,
+    smoothFreq,
+  }
+}
+
+const smoothTo = (obj, ctx) => (value, timeInSeconds) => {
+  obj.exponentialRampToValueAtTime(value, ctx.currentTime + timeInSeconds)
+}
+</script>

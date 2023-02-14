@@ -91,54 +91,12 @@ MARQUEES TODO
 
 <script>
 
-
-
-
-  function marqueeContainter(rSpan, cSpan, rows, cols) {
-    const h = chooseHue()
-    const sideways = prb(sidewaysPrb) && cSpan/rSpan < 1.2
-    const txtH = chooseAltHue(h)
-    const shadowH = (h + 90) % 360
-    const shadow2H = (h + 270) % 360
+  function sectionContainer(child, rSpan, cSpan, h, txtH, style) {
     const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-    const bgColor = bw ? bwc.bg : getBgColor(h)
     const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
-    const shadowColor = `hsl(${shadowH}deg, ${sat}%, 20%)`
-    const shadow2Color = `hsl(${shadow2H}deg, ${sat}%, 50%)`
-    const height = `calc(${100*rSpan/rows}vh)`
-    const width = `calc(${100*cSpan/cols}vw)`
-
-    const shadows =
-      shadowType === 1 ? `
-          0.025em 0.025em ${shadowColor},
-          -0.025em 0.025em ${shadowColor},
-          0.025em -0.025em ${shadowColor},
-          -0.025em -0.025em ${shadowColor},
-          0.025em 0 ${shadowColor},
-          -0.025em 0 ${shadowColor},
-          0 -0.025em ${shadowColor},
-          0 0.025em ${shadowColor},
-          0 0 0.1em ${shadowColor}
-      ` :
-
-      shadowType === 2 ?
-        `calc(1vh/${rows}) calc(1vh/${rows}) ${shadowColor}` :
-
-      shadowType === 3 ?
-        `0.1em 0.1em ${shadowColor}` :
-
-      shadowType === 4 ?
-        `0.05em 0.05em ${shadowColor}, 0.1em 0.1em ${shadow2Color}` :
-
-      shadowType === 5 ?
-        `0 0 0.05em ${shadowColor}`
-
-      : '0 0 0'
+    const bgColor = bw ? bwc.bg : getBgColor(h)
 
 
-    const child = sample(content)
-    const slowIx = child.indexOf('slow="')
-    const slow = slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
     const rotation = threeDRotations
       ? `perspective(500px) rotate3d(1,1,1,${lineRotation()}deg)`
       : `rotate(${lineRotation()}deg)`
@@ -146,28 +104,68 @@ MARQUEES TODO
     const fontStyle = prb(italicRate) ? 'italic' : 'none'
 
 
-    const childSpan = $.span(child, {
-      style: `text-shadow: ${shadows}`
-    })
+    const borderWidth = min(rSpan, cSpan) * .05
+
+    return $.div(
+      withBgAnimation(child, rSpan, cSpan),
+      {
+        class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} sectionContainer`,
+        style: `
+          border-style: ${borderStyle()};
+          ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
+          grid-column: span ${cSpan};
+          grid-row: span ${rSpan};
+          background: ${hideBg ? 'none' : bgColor};
+          color: ${txtColor};
+          transform: ${rotation};
+          font-style: ${fontStyle};
+          animation-delay: -${rnd(5)}s;
+          animation-direction: ${rotateColor ?'normal' : animationDirection()};
+          animation-duration: ${rotateColor ? '25' : animationDuration()}s;
+          ${style || ''}
+        `
+      }
+    )
+  }
 
 
-    const msgAnimation = sample([
-      dance,
-      growShrinkShort,
-      spin,
-      hSiren,
-      vSirenShort,
-      hPivot,
-      hFlip,
-      leftRight,
-    ])
+  function marqueeContainter(rSpan, cSpan) {
+    const child = sample(content)
+    const height = `calc(${100*rSpan/rows}vh)`
+    const width = `calc(${100*cSpan/cols}vw)`
+    const slow = 1 + child.innerHTML.length/9
+    const h = chooseHue()
+    const txtH = chooseAltHue(h)
+
+
+    // const slowIx = child.indexOf('slow="')
+    // slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
+    const sideways = prb(sidewaysPrb) && cSpan/rSpan < 1.2
+
+    const msgAnimation = iden
+      //rSpan >= rows * 0.25 && prb(0.5)
+      // ? sample([
+      //   dance,
+      //   growShrinkShort,
+      //   spin,
+      //   hSiren,
+      //   vSirenShort,
+      //   hPivot,
+      //   hFlip,
+      //   leftRight,
+      // ])
+      // : iden
 
 
     const childEl =
     // childSpan.children[0]?.innerHTML.trim().length < 5 && prb(0.5)
     //     ? leftRight(childSpan, {style: `font-size: ${height}`, duration: rnd(1500, 4000), delay: rnd(2000)})
     //     :
-        marquee(childSpan, {
+        marquee(child, {
+          style: `
+            font-size: ${sideways ? width : height};
+            text-shadow: ${getShadow(txtH)};
+          `,
           direction: posOrNeg(),
           delay: rnd(-1000, 0),
           duration: rnd(0.01, 2) * slow * speed,
@@ -175,28 +173,89 @@ MARQUEES TODO
           msgAnimation
         })
 
-    return $.div(
-      childEl,
-      {
-        class: `${animation} ${rotateColor ? 'fullColorRotate' : ''} marquee-container`,
-        style: `
-          border-style: ${borderStyle()};
-          ${showBorder ? 'border-width: 0.03em; box-sizing: border-box;' : 'border-width: 0;'}
-          grid-column: span ${cSpan};
-          grid-row: span ${rSpan};
-          background: ${hideBg ? 'none' : bgColor};
-          color: ${txtColor};
-          font-size: ${sideways ? width : height};
-          transform: ${rotation};
-          font-style: ${fontStyle};
-          animation-delay: -${rnd(5)}s;
-          animation-direction: ${rotateColor ?'normal' : animationDirection()};
-          animation-duration: ${rotateColor ? '25' : animationDuration()}s;
-        `
-      }
-    )
+
+    return sectionContainer(childEl, rSpan, cSpan, h, txtH)
   }
 
+  function animationContainer(rSpan, cSpan) {
+    const child = sample(content)
+    const height = `calc(${100*rSpan/rows}vh)`
+    const width = `calc(${100*cSpan/cols}vw)`
+    const h = chooseHue()
+    const txtH = chooseAltHue(h)
+
+    const animation = sample([
+      dance,
+      growShrink,
+      spin,
+      hSiren,
+      vSiren,
+      hPivot,
+      vPivot,
+      vFlip,
+      hFlip,
+      updown,
+      wave,
+      climb,
+    ])
+
+    const words = child.innerHTML.split(' ')
+    const shortest = words.reduce((shortest, word) => word.length < shortest.length ? word : shortest , words[0])
+
+    const rowSizeMax = 5.5/(child.innerHTML.length)
+    const colSizeMax = 7 *(cSpan/(cols*shortest.length))
+
+    // if (child.innerHTML === 'EXCITING!!') debugger
+
+    const fontAdj = (
+      emojiList.includes(child.innerHTML)
+        ? 1
+        : min(colSizeMax, rowSizeMax)
+    ) * (animation === vPivot ? 0.5 : 1)
+
+    const secondAnimation = prb(0.75) ? iden : sample([
+      dance,
+      growShrink,
+      spin,
+      hSiren,
+      vSiren,
+      hPivot,
+      vPivot,
+      vFlip,
+      hFlip,
+      updown,
+      wave,
+      climb,
+    ])
+
+    const childEl = $.div(
+      secondAnimation(
+        animation(child,
+          {
+            delay: rnd(3500),
+            duration: rnd(750, 5000)
+          }
+        ),
+        {
+          delay: rnd(3500),
+          duration: rnd(750, 5000)
+        }
+      ),
+      {
+        style: `
+          font-size: ${fontAdj*100*min(rSpan/rows, cSpan/cols)}vmin;
+          text-shadow: ${getShadow(h)};
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `,
+      }
+    )
+    // console.log(childEl, animation(child))
+
+    return sectionContainer(childEl, rSpan, cSpan, h, txtH)
+  }
 
 
 
@@ -227,11 +286,11 @@ MARQUEES TODO
     const colMax = prb(0.05) ? 3 : colCells
     const colMin = 12
 
-    const rowMax = prb(0.25) ? rowCells : min(4, rowCells)
+    const rowMax = rowCells//prb(0.25) ? rowCells : min(4, rowCells)
     const rowMin = chance(
-      [3, rows],
-      [3, int(rows/rnd(2, 5))],
-      [3, int(rows/rnd(5, 24))],
+      [3, sample([24, 48])],
+      [3, sample([6, 8, 12, 16])],
+      [1, sample([2, 3, 4])],
       [1, 1],
     )
 
@@ -248,7 +307,11 @@ MARQUEES TODO
 
         const rSpan = rndint(min(rowMin, rowsLeft), max(1, rowsLeft))
 
-        marquees.push(marqueeContainter(rSpan, cSpan, rows, cols))
+        marquees.push(
+          cSpan / rSpan < 1.25 && cSpan / rSpan > 0.8
+            ? animationContainer(rSpan, cSpan)
+            : marqueeContainter(rSpan, cSpan)
+        )
 
         times(rSpan, r =>
           times(cSpan, c =>
@@ -341,7 +404,7 @@ MARQUEES TODO
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          ${style}
+          ${style || ''}
         `
       }
     )
@@ -354,7 +417,7 @@ MARQUEES TODO
         display: flex;
         align-items: center;
         justify-content: center;
-        ${style}
+        ${style || ''}
       `
     })
   }
@@ -529,7 +592,8 @@ MARQUEES TODO
     return $.section(
       normalComponentContainer(
 
-        vSiren('WOW', { style: `font-size: 10vmin`}),
+        (wave('HOLY MOLY', { style: `font-size: 10vmin`, duration: 2000 })),
+        // vSiren('WOW', { style: `font-size: 10vmin`}),
         size,
         `
           background: radial-gradient(#fff 0%, #eee 40%, #bbb 70%, #000 150%);

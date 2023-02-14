@@ -4,10 +4,11 @@ css`
     display: inline-block;
   }
 
-  .marquee-container {
+  .sectionContainer {
     overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: center;
   }
 
   .marquee {
@@ -40,18 +41,32 @@ css`
   }
 
 
-  .updown {
-    animation: UpDown 2s ease-in-out infinite;
+  .updownChars {
+    animation: UpDownChars 2s ease-in-out infinite;
     display: inline-block;
   }
 
-  @keyframes UpDown {
+  @keyframes UpDownChars {
     0%, 100% {
       transform: translate3d(0%, 10%, 0);
     }
 
     50% {
       transform: translate3d(0%, -10%, 0);
+    }
+  }
+
+  .updown {
+    animation: UpDown 1000ms ease-in-out infinite;
+  }
+
+  @keyframes UpDown {
+    0%, 100% {
+      transform: translate3d(0%, 30%, 0);
+    }
+
+    50% {
+      transform: translate3d(0%, -30%, 0);
     }
   }
 
@@ -141,10 +156,10 @@ css`
 
   @keyframes Dance {
     0%, 100% {
-      transform: rotate(20deg) translateY(-10%);
+      transform: rotate(20deg);
     }
     50% {
-      transform: rotate(-20deg) translateY(-10%);
+      transform: rotate(-20deg);
     }
   }
 
@@ -277,7 +292,7 @@ css`
   }
 
   @keyframes HFlip {
-    0%, 100% {
+    0% {
       transform: perspective(250px) rotate3d(0,2,0, 0deg);
     }
     100% {
@@ -318,6 +333,64 @@ css`
       transform: translateX(100%);
     }
   }
+
+
+  .shrinkingBorder {
+    animation: ShrinkingBorder 2000ms linear infinite;
+  }
+  .spinningBorder {
+    animation: Spin 2000ms linear infinite;
+  }
+
+  @keyframes ShrinkingBorder {
+    0% {
+      transform: scale(105%);
+    }
+    100% {
+      transform: scale(0%);
+    }
+  }
+
+  .shrinkingSpinningBorder {
+    animation: SpinningShrinkingBorder 2000ms linear infinite;
+  }
+
+  @keyframes SpinningShrinkingBorder {
+    0% {
+      transform: scale(105%) rotate(0deg);
+    }
+    100% {
+      transform: scale(0%) rotate(90deg);
+    }
+  }
+
+
+
+  .wave {
+    animation: Wave 4500ms linear infinite;
+  }
+  .climb {
+    animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes Wave {
+    0%, 100% {
+      transform: translate3d(0%, 30%, 0) rotate(0deg);
+    }
+
+    25% {
+      transform: translate3d(0%, 0%, 0) rotate(12deg);
+    }
+
+    50% {
+      transform: translate3d(0%, -30%, 0) rotate(0deg);
+    }
+
+
+    75% {
+      transform: translate3d(0%, 0%, 0) rotate(-12deg);
+    }
+  }
 `
 
 function marquee(children, args={}) {
@@ -328,9 +401,18 @@ function marquee(children, args={}) {
   const duration = args.duration || 1
   const sideways = args.sideways || false
   const msgAnimation = args.msgAnimation || iden
+  const isEmoji = emojiList.includes(children.innerHTML)
 
   const inner = $.div(
-    times(40, i => msgAnimation(children.cloneNode(true), {delay: i * 100})),
+    times(40, i => msgAnimation(
+      $.span(
+        children, {
+          style: `margin-left: ${isEmoji ? 0.2 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;`
+        }
+      ).cloneNode(true), {
+        delay: i * 100,
+      }
+    )),
     {
       class: `marqueeInner marqueeForward`,
       style: `
@@ -357,12 +439,15 @@ function genericAnimatingComponent(name) {
     const style = args.style || ''
     const delay = args.delay || 0
     const duration = args.duration || 1000
+    const direction = args.direction || 1
+
 
     return $.div(children, {
       class: `${name} ${className} animatingComponent`,
       style: `
         animation-duration: ${duration}ms;
         animation-delay: -${delay}ms;
+        animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
         ${style}
       `
     })
@@ -383,6 +468,17 @@ const vPivot = genericAnimatingComponent('vPivot')
 const vFlip = genericAnimatingComponent('vFlip')
 const hFlip = genericAnimatingComponent('hFlip')
 
+const updown = genericAnimatingComponent('updown')
+const wave = genericAnimatingComponent('wave')
+const climb = genericAnimatingComponent('climb')
+
+// const wave = (grandChild, args={}) => {
+//   const delay = args.delay || 0
+
+//   return dance(updown(grandChild, { style: `font-size: 10vmin`, delay: 200 + delay }), args)
+// }
+
+
 const leftRightParent = genericAnimatingComponent('leftRight')
 const leftRight = (grandChild, args={}) => {
   const duration = args.duration || 1000
@@ -393,14 +489,92 @@ const leftRight = (grandChild, args={}) => {
 }
 
 
+const bgAnimationPrb = chance(
+  [14, 0],
+  [5, rnd(0.25, 0.5)],
+  [1, 1],
+)
+const bgAnimationFn = sample([
+  staticBgsMultiple,
+  shrinkingBorderSingle,
+  shrinkingBorderMultiple,
+  // spinningBorderMultiple,
+  shrinkingSpinningBorderMultiple,
+])
+
+const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
+    class: className,
+    style: `
+      border: 1vmin ${borderStyle()};
+      position: absolute;
+      height: ${100*rSpan/rows}vh;
+      width: ${100*cSpan/cols}vw;
+      animation-delay: -${args.delay || 0}ms;
+      animation-duration: -${args.duration || 2000}ms;
+      animation-direction: ${args.direction === -1 ? 'reverse' : 'normal'};
+      ${args.style || ''}
+    `
+  })
+
+function staticBgsMultiple(rSpan, cSpan) {
+  return times(6, i => bgAnimation('',rSpan, cSpan, { style: `transform: scale(${i/6});`}))
+}
+function shrinkingBorderSingle(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return [bgAnimation('shrinkingBorder', rSpan, cSpan, {
+    duration,
+    direction
+  })]
+}
+
+function shrinkingBorderMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return times(4, i => bgAnimation('shrinkingBorder',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction
+  }))
+}
+
+function spinningBorderMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return times(2, i => bgAnimation('spinningBorder',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction
+  }))
+}
+
+function shrinkingSpinningBorderMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return times(4, i => bgAnimation('shrinkingSpinningBorder',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction
+  }))
+}
+
+
+function withBgAnimation(child, rSpan, cSpan) {
+  return [
+    ...(prb(bgAnimationPrb) ? bgAnimationFn(rSpan, cSpan) : []),
+    child
+  ]
+
+}
+
 
 
 
 // unused?
-const updown = (txt) => txt
+const updownChars = (txt) => txt
   .split('')
   .map((c, i) => `
-    <span class="updown" style="animation-delay: -${i* 400}ms">${c}</span>
+    <span class="updownChars" style="animation-delay: -${i* 400}ms">${c}</span>
   `)
   .join('')
 

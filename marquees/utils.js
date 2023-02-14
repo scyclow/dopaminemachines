@@ -15,6 +15,7 @@ function rnd(mn, mx) {
   else return out
 }
 
+const iden = x => x
 const rndint = (mn, mx) => int(rnd(mn, mx))
 const prb = x => rnd() < x
 const posOrNeg = () => prb(0.5) ? 1 : -1
