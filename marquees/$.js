@@ -60,12 +60,12 @@ function css(style) {
 }
 
 
-function setMetadata() {
+function setMetadata(title) {
   $html.translate = false
   $html.lang = 'en'
   $html.className = 'notranslate'
 
-  document.title = 'World Wide Web'
+  document.title = title
 
   addMetaTag({ name: 'google', content: 'notranslate'})
 
@@ -79,5 +79,5 @@ function setMetadata() {
     }
   `
 
-  console.log('Welcome to the World Wide Web!')
+  console.log(title)
 }

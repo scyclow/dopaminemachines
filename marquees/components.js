@@ -150,6 +150,42 @@ css`
     }
   }
 
+
+
+  .colorShift {
+    animation: ColorRotate 25s linear infinite;
+  }
+
+  @keyframes ColorRotate {
+    0% {
+      color: #ff0000;
+    }
+
+    17% {
+      color: #ffff00;
+    }
+
+    33% {
+      color: #00ff00;
+    }
+
+    50% {
+      color: #00ffff;
+    }
+
+    66% {
+      color: #0000ff;
+    }
+
+    83% {
+      color: #ff00ff;
+    }
+
+    100% {
+      color: #ff0000;
+    }
+  }
+
   .dance {
     animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
   }
@@ -314,6 +350,7 @@ css`
   .leftRight > * {
     animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
     display: inline-block;
+    white-space: nowrap;
   }
 
   @keyframes LeftRightChild {
@@ -403,8 +440,10 @@ function marquee(children, args={}) {
   const msgAnimation = args.msgAnimation || iden
   const isEmoji = emojiList.includes(children.innerHTML)
 
+  const repeat = isEmoji ? 80 : 40
+
   const inner = $.div(
-    times(40, i => msgAnimation(
+    times(repeat, i => msgAnimation(
       $.span(
         children, {
           style: `margin-left: ${isEmoji ? 0.2 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;`
@@ -416,8 +455,8 @@ function marquee(children, args={}) {
     {
       class: `marqueeInner marqueeForward`,
       style: `
-        animation-delay: ${Math.floor(delay)}ms;
-        animation-duration: ${duration*50}s;
+        animation-delay: -${delay}s;
+        animation-duration: ${duration/(repeat/40)}s;
         animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
       `
     }
@@ -454,6 +493,7 @@ function genericAnimatingComponent(name) {
   }
 }
 
+const blink = genericAnimatingComponent('blink')
 const dance = genericAnimatingComponent('dance')
 const growShrink = genericAnimatingComponent('growShrink')
 const growShrinkShort = genericAnimatingComponent('growShrinkShort')
@@ -490,16 +530,17 @@ const leftRight = (grandChild, args={}) => {
 
 
 const bgAnimationPrb = chance(
-  [14, 0],
-  [5, rnd(0.25, 0.5)],
-  [1, 1],
+  [12, 0],
+  [6, rnd(0.25, 0.5)],
+  [2, 1],
 )
 const bgAnimationFn = sample([
+  colorShiftingBgMultiple,
   staticBgsMultiple,
-  shrinkingBorderSingle,
-  shrinkingBorderMultiple,
-  // spinningBorderMultiple,
-  shrinkingSpinningBorderMultiple,
+  shrinkingBgSingle,
+  shrinkingBgMultiple,
+  // spinningBgMultiple,
+  shrinkingSpinningBgMultiple,
 ])
 
 const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
@@ -510,7 +551,7 @@ const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
       height: ${100*rSpan/rows}vh;
       width: ${100*cSpan/cols}vw;
       animation-delay: -${args.delay || 0}ms;
-      animation-duration: -${args.duration || 2000}ms;
+      animation-duration: ${args.duration || 2000}ms;
       animation-direction: ${args.direction === -1 ? 'reverse' : 'normal'};
       ${args.style || ''}
     `
@@ -519,7 +560,7 @@ const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
 function staticBgsMultiple(rSpan, cSpan) {
   return times(6, i => bgAnimation('',rSpan, cSpan, { style: `transform: scale(${i/6});`}))
 }
-function shrinkingBorderSingle(rSpan, cSpan) {
+function shrinkingBgSingle(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
   const duration = rnd(750, 3000)
   return [bgAnimation('shrinkingBorder', rSpan, cSpan, {
@@ -528,7 +569,7 @@ function shrinkingBorderSingle(rSpan, cSpan) {
   })]
 }
 
-function shrinkingBorderMultiple(rSpan, cSpan) {
+function shrinkingBgMultiple(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
   const duration = rnd(750, 3000)
   return times(4, i => bgAnimation('shrinkingBorder',rSpan, cSpan, {
@@ -538,7 +579,7 @@ function shrinkingBorderMultiple(rSpan, cSpan) {
   }))
 }
 
-function spinningBorderMultiple(rSpan, cSpan) {
+function spinningBgMultiple(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
   const duration = rnd(750, 3000)
   return times(2, i => bgAnimation('spinningBorder',rSpan, cSpan, {
@@ -548,13 +589,27 @@ function spinningBorderMultiple(rSpan, cSpan) {
   }))
 }
 
-function shrinkingSpinningBorderMultiple(rSpan, cSpan) {
+function shrinkingSpinningBgMultiple(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
   const duration = rnd(750, 3000)
   return times(4, i => bgAnimation('shrinkingSpinningBorder',rSpan, cSpan, {
     delay: i * 500,
     duration,
     direction
+  }))
+}
+
+function colorShiftingBgMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(4000, 16000)
+  const squares = rndint(8, 20)
+  return times(squares, i => bgAnimation('colorShift',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction,
+    style: `
+      transform: scale(${0.95 - i/squares});
+    `
   }))
 }
 

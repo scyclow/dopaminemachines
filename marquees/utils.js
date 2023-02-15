@@ -20,6 +20,7 @@ const rndint = (mn, mx) => int(rnd(mn, mx))
 const prb = x => rnd() < x
 const posOrNeg = () => prb(0.5) ? 1 : -1
 const sample = (a) => a[Math.floor(rnd(a.length))]
+const noop = () => {}
 
 function chance(...chances) {
   const total = chances.reduce((t, c) => t + c[0], 0)

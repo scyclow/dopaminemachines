@@ -41,12 +41,12 @@ const fontFamily = chance(
   [75, 'sans-serif'],
 )
 
-const animation = chance(
-  [1, 'borderBlink'],
-  [1, 'blink'],
+const sectionAnimation = chance(
+  [3, 'borderBlink'],
+  [5, 'blink'],
   [1, 'rotate'],
-  [1, 'updown'],
-  [32, ''],
+  [2, 'updown'],
+  [89, ''],
 )
 
 const animationDirection = chance(
@@ -56,9 +56,16 @@ const animationDirection = chance(
 )
 
 const animationDuration = chance(
-  [1, () => animation === 'blink' ? 3 : 5],
-  [1, () => animation === 'blink' ? 1.5 : 2],
-  [1, () => animation === 'blink' ? rnd(0.5, 5) : rnd(0.25, 20)],
+  [1, () => sectionAnimation === 'blink' ? 3 : 5],
+  [1, () => sectionAnimation === 'blink' ? 1.5 : 2],
+  [1, () => sectionAnimation === 'blink' ? rnd(0.5, 5) : rnd(0.25, 20)],
+)
+
+
+const marqueeAnimationRate = chance(
+  [85, 0],
+  [10, rnd(.25, .75)],
+  [5, 1],
 )
 
 const borderStyle = chance(
@@ -123,7 +130,6 @@ const getShadow = (h) => {
 }
 
 
-const gradientBg = prb(0.2)
 
 const lineRotation = chance(
   [80, () => 0],
@@ -135,7 +141,7 @@ const lineRotation = chance(
 const freeFloating = ![0, 180].includes(lineRotation())
 
 const hideBg = freeFloating ? prb(0.5) : false
-const threeDRotations = (freeFloating && prb(0.15)) || prb(0.01)
+const threeDRotations = freeFloating && prb(0.02)
 
 
 const bw = prb(0.1)
@@ -161,12 +167,14 @@ const chooseAltHue = (h) => {
   return h === alt ? chooseAltHue(h) : alt
 }
 
+const gradientBg = prb(0.2)
 
 function getBgColor(h) {
   const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
   const bg2 = `hsl(${h+sample([60, 120, 180])}deg, ${sat}%, 50%)`
 
-  return gradientBg ? `linear-gradient(to right, ${bg1} , ${bg2})` : bg1
+  // return gradientBg ? `linear-gradient(to right, ${bg1} , ${bg2})` : bg1
+  return gradientBg ? `radial-gradient(${bg1}, ${bg2});` : bg1
 }
 
 const bgColor = sample([`hsl(${chooseHue()}deg, ${sat}%, 50%)`, `#fff`, `#000`])
