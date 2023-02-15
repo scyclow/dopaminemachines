@@ -1,0 +1,1611 @@
+<!--
+NAMES
+  Marquees
+  Dopamine Machines
+  All Sizzle No Steak
+  Style Over Substance
+  Hottest Art Around
+  Too Good To Be True
+  Things Are Moving Fast
+  Generational Wealth
+  Pump + Dump
+  Everyone's A Winner
+  Pay Attention
+
+
+Themes:
+  nausia
+  advertisements
+  the stripped down illusion of two dimensions pretending to be three dimensions
+  meaninglessness
+  overwhelming
+  attention grabbing
+
+
+Concept:
+  - some mints are "the NFT"
+  - other mings are web pages trying to sell the NFTs
+  - sales pages take to form of CTA style adverts, news articles, social media pages, etc. -- each one linking to either each other or a target NFT
+  - in all, each mint in the collection serves to hype itself up. a self-referential propaganda machine
+
+
+  this NFT is HOT HOT HOT!🔥
+  this NFT will moon🌛
+  Don't be a sucker🍬
+
+
+
+Things are moving fast, and if you want to make the most of this opportunity you need to pounce on it. Don't wait. Act Now. These deals won't last.
+
+
+
+
+
+By using this website you agree to the terms...
+
+
+Best viewed in Chrome X.X.XXX
+
+
+
+
+
+TODO
+  when viewed headlessly, maybe add a fake address bar to the thumbnail
+
+
+
+MARQUEES TODO
+  - generally slow down, espescially the slimmer ones
+  - have more single grid components animate (instead of all of them animating)
+  - split emojis up into better categories
+
+
+
+ -->
+
+<!DOCTYPE html>
+<html translate="no" lang="en" class="notranslate">
+<head>
+  <meta charset="utf-8">
+  <meta name="google" content="notranslate" />
+  <title>$$$</title>
+    <script>
+      function genTokenData(projectNum) {
+
+        const tokenId = String(projectNum * 1000000 + Math.floor(Math.random() * 1000))
+        let hash = '0x'
+        if (window.location.search.includes('?hash=')) {
+          hash = window.location.search.slice(6)
+        } else {
+          for (let i = 0; i < 64; i++) {
+            hash += Math.floor(Math.random() * 16).toString(16)
+          }
+          window.location.hash = '#' + hash
+
+          const last10hashes = JSON.parse(localStorage.getItem('last10Hashes')) || []
+          last10hashes.unshift(hash)
+
+          localStorage.setItem('last10Hashes', JSON.stringify(last10hashes.slice(0, 10)))
+        }
+        return {
+          hash,
+          // hash: '0xfeff8806ffe0ff004900b6104392c062d40f238839029c82ed000ffff3cb2003',
+          tokenId
+        }
+      }
+
+      const tokenData = genTokenData(999)
+      console.log(tokenData.hash)
+    </script>
+
+</head>
+<body>
+
+</body>
+
+<script>
+  const min = Math.min
+const max = Math.max
+const round = Math.round
+const int = parseInt
+
+let __randomSeed = int(tokenData.hash.slice(50, 58), 16)
+
+function rnd(mn, mx) {
+  __randomSeed ^= __randomSeed << 13
+  __randomSeed ^= __randomSeed >> 17
+  __randomSeed ^= __randomSeed << 5
+  const out = (((__randomSeed < 0) ? ~__randomSeed + 1 : __randomSeed) % 1000) / 1000
+  if (mx != null) return mn + out * (mx - mn)
+  else if (mn != null) return out * mn
+  else return out
+}
+
+const iden = x => x
+const rndint = (mn, mx) => int(rnd(mn, mx))
+const prb = x => rnd() < x
+const posOrNeg = () => prb(0.5) ? 1 : -1
+const sample = (a) => a[Math.floor(rnd(a.length))]
+const noop = () => {}
+
+function chance(...chances) {
+  const total = chances.reduce((t, c) => t + c[0], 0)
+  const seed = rnd()
+  let sum = 0
+  for (let i = 0; i < chances.length; i++) {
+    sum += chances[i][0] / total
+    if (seed <= sum) return chances[i][1]
+  }
+}
+
+function times(t, fn) {
+  const out = []
+  for (let i = 0; i < t; i++) out.push(fn(i))
+  return out
+}
+</script>
+<script>
+
+const $ = (elem, prop, value) => elem.style[prop] = value
+$.qsa = document.querySelectorAll.bind(document)
+$.id = document.getElementById.bind(document)
+$.tag = document.getElementsByTagName.bind(document)
+$.class = $.cls = (className) => [].slice.call(document.getElementsByClassName(className))
+
+$.render = (e, children) => {
+  if (!children) return
+  else if (typeof children === 'string') e.innerHTML = children
+  else if (Array.isArray(children)) {
+    children.forEach(child => {
+      e.innerHTML += (
+        typeof child === 'string' ? child : child.outerHTML
+      )
+    })
+  }
+  else e.appendChild(children.cloneNode(true))
+}
+
+
+$.create = elType => (children, attrs={}) => {
+  const e = document.createElement(elType)
+  $.render(e, children)
+
+  Object.keys(attrs).forEach(a => {
+    e.setAttribute(a, attrs[a])
+  })
+
+  return e
+}
+
+$.div = $.create('div')
+$.span = $.create('span')
+$.main = $.create('main')
+$.section = $.create('section')
+
+
+
+
+const $html = $.tag('html')[0]
+const $head = document.head
+const $body = document.body
+
+
+
+const addMetaTag = (args) => {
+  const meta = document.createElement('meta')
+  Object.keys(args).forEach(arg => {
+    meta[arg] = args[arg]
+  })
+
+  $head.appendChild(meta)
+}
+
+function css(style) {
+  const s = document.createElement('style')
+  s.innerHTML = style
+  $head.appendChild(s)
+}
+
+
+function setMetadata(title) {
+  $html.translate = false
+  $html.lang = 'en'
+  $html.className = 'notranslate'
+
+  document.title = title
+
+  addMetaTag({ name: 'google', content: 'notranslate'})
+
+  css`
+    * {margin: 0; padding: 0}
+
+    .clickhere {
+      cursor: pointer;
+      text-decoration: underline;
+      user-select: none;
+    }
+  `
+
+  console.log(title)
+}
+</script>
+<script>
+  const divisor = window.innerHeight/window.innerWidth > 1.5
+  ? 3
+  : 1
+
+const cols = int(60/divisor)
+const rows = 48
+
+
+
+
+// const rows = chance(
+//   [1, 1],
+//   [3, rndint(2, 10)],
+//   [3, rndint(10, 25)],
+//   [1, rndint(25, 65)],
+// )
+
+
+
+
+const sidewaysPrb = prb(0.5) ? 0 : rnd(0.5, 1)
+
+const speed = prb(0.05) ? 100 : 3
+const sat = 100
+const italicRate = chance(
+  [1, rnd()],
+  [1, 1],
+  [8, 0],
+)
+
+const fontWeight = chance(
+  [1, 100],
+  [8, 500],
+  [1, 900],
+)
+
+const fontFamily = chance(
+  [5, 'serif'],
+  [5, 'cursive'],
+  [15, 'monospace'],
+  [75, 'sans-serif'],
+)
+
+const sectionAnimation = chance(
+  [3, 'borderBlink'],
+  [5, 'blink'],
+  [1, 'rotate'],
+  [2, 'updown'],
+  [89, ''],
+)
+
+const animationDirection = chance(
+  [1, () => 'normal'],
+  [1, () => 'reverse'],
+  [1, () => prb(0.5) ? 'normal' : 'reverse'],
+)
+
+const animationDuration = chance(
+  [1, () => sectionAnimation === 'blink' ? 3 : 5],
+  [1, () => sectionAnimation === 'blink' ? 1.5 : 2],
+  [1, () => sectionAnimation === 'blink' ? rnd(0.5, 5) : rnd(0.25, 20)],
+)
+
+
+const marqueeAnimationRate = chance(
+  [85, 0],
+  [10, rnd(.25, .75)],
+  [5, 1],
+)
+
+const borderStyle = chance(
+  [1, () => 'solid'],
+  [1, () => 'dashed'],
+  [1, () => 'dotted'],
+  [1, () => 'double'],
+  [1, () => sample(['solid', 'dashed', 'dotted', 'double'])],
+)
+
+const shadowType = chance(
+  [2, 1],
+  [2, 2],
+  [2, 3],
+  [2, 4],
+  [2, 5],
+  [1, 6],
+  [2, 7],
+)
+
+const showBorder = prb(0.25)
+const rotateColor = rows < 11 && prb(0.05)
+
+const deepShadows = prb(0.1)
+
+
+const getShadowColor = (h, l) => `hsl(${h%360}deg, ${sat}%, ${l}%)`
+const getShadow = (h) => {
+  const shadowColor = getShadowColor(h+90, 20)
+
+  return (
+    shadowType === 1 ? `
+        0.025em 0.025em ${shadowColor},
+        -0.025em 0.025em ${shadowColor},
+        0.025em -0.025em ${shadowColor},
+        -0.025em -0.025em ${shadowColor},
+        0.025em 0 ${shadowColor},
+        -0.025em 0 ${shadowColor},
+        0 -0.025em ${shadowColor},
+        0 0.025em ${shadowColor},
+        0 0 0.1em ${shadowColor}
+    ` :
+
+    shadowType === 2 ?
+      `0.05em 0.05em ${shadowColor}` :
+
+    shadowType === 3 ?
+      `0.1em 0.1em ${shadowColor}` :
+
+    shadowType === 4 ?
+      `0.05em 0.05em ${shadowColor}, 0.1em 0.1em ${getShadowColor(h+270, 50)}` :
+
+    shadowType === 5 ?
+      `0 0 0.05em ${shadowColor}` :
+
+    shadowType === 6 ?
+      times(4, s => `${s/20 - 0.1}em ${s/20 - 0.1}em ${getShadowColor(h + 180 + s*30, 50)}`).join(', ')
+
+
+    : '0 0 0'
+  )
+}
+
+
+
+const lineRotation = chance(
+  [80, () => 0],
+  [5, () => rnd(20)],
+  [13, () => rnd(20, 180)],
+  [2, () => 180],
+)
+
+const freeFloating = ![0, 180].includes(lineRotation())
+
+const hideBg = freeFloating ? prb(0.5) : false
+const threeDRotations = freeFloating && prb(0.02)
+
+
+const bw = prb(0.1)
+const sH = rnd(360)
+
+const possibleHues = sample([
+  [0, 180],
+  [60, 120, 240, 300],
+  [0, 120, 150],
+  [0, 120, 240],
+  [0, 150, 210],
+  [0, 150, 180, 210],
+  [0, 75],
+])
+
+const randomHue = prb(0.05)
+
+const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
+
+
+const chooseAltHue = (h) => {
+  const alt = chooseHue()
+  return h === alt ? chooseAltHue(h) : alt
+}
+
+const gradientBg = prb(0.2)
+
+function getBgColor(h) {
+  const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
+  const bg2 = `hsl(${h+sample([60, 120, 180])}deg, ${sat}%, 50%)`
+
+  // return gradientBg ? `linear-gradient(to right, ${bg1} , ${bg2})` : bg1
+  return gradientBg ? `radial-gradient(${bg1}, ${bg2});` : bg1
+}
+
+const bgColor = sample([`hsl(${chooseHue()}deg, ${sat}%, 50%)`, `#fff`, `#000`])
+css(`
+  * {
+    font-family: ${fontFamily};
+    font-weight: ${fontWeight};
+  }
+
+  body {
+    background: ${bgColor};
+  }
+`)
+
+</script>
+<script>
+  css`
+
+  .animatingComponent {
+    display: inline-block;
+  }
+
+  .sectionContainer {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .marquee {
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .marqueeInner {
+    display: inline-flex;
+  }
+
+  .marqueeForward {
+    animation: Marquee 50s linear infinite;
+  }
+
+  .marqueeInner > * {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  @keyframes Marquee {
+    0% {
+      transform: translate3d(-50%, 0, 0);
+    }
+
+    100% {
+      transform: translate3d(0%, 0, 0);
+    }
+  }
+
+
+  .updownChars {
+    animation: UpDownChars 2s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes UpDownChars {
+    0%, 100% {
+      transform: translate3d(0%, 10%, 0);
+    }
+
+    50% {
+      transform: translate3d(0%, -10%, 0);
+    }
+  }
+
+  .updown {
+    animation: UpDown 1000ms ease-in-out infinite;
+  }
+
+  @keyframes UpDown {
+    0%, 100% {
+      transform: translate3d(0%, 30%, 0);
+    }
+
+    50% {
+      transform: translate3d(0%, -30%, 0);
+    }
+  }
+
+
+  .rotate {
+    animation: Rotate 10s linear infinite;
+  }
+
+  @keyframes Rotate {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+
+  .blink {
+    animation: Blink 1.5s steps(2, start) infinite;
+  }
+
+  @keyframes Blink {
+    to {
+      visibility: hidden;
+    }
+  }
+
+  .borderBlink {
+    border-width: 0.05em;
+    animation: BorderBlink 1.5s steps(2, start) infinite;
+    box-sizing: border-box;
+  }
+
+  @keyframes BorderBlink {
+    50% {
+      border-style: hidden;
+    }
+  }
+
+
+  .fullColorRotate {
+    animation: FullColorRotate 25s linear infinite;
+  }
+
+  @keyframes FullColorRotate {
+    0% {
+      color: #ff0000;
+      background-color: #00ffff;
+    }
+
+    17% {
+      color: #ffff00;
+      background-color: #0000ff;
+    }
+
+    33% {
+      color: #00ff00;
+      background-color: #ff00ff;
+    }
+
+    50% {
+      color: #00ffff;
+      background-color: #ff0000;
+    }
+
+    66% {
+      color: #0000ff;
+      background-color: #ffff00;
+    }
+
+    83% {
+      color: #ff00ff;
+      background-color: #00ff00;
+    }
+
+    100% {
+      color: #ff0000;
+      background-color: #00ffff;
+    }
+  }
+
+
+
+  .colorShift {
+    animation: ColorRotate 25s linear infinite;
+  }
+
+  @keyframes ColorRotate {
+    0% {
+      color: #ff0000;
+    }
+
+    17% {
+      color: #ffff00;
+    }
+
+    33% {
+      color: #00ff00;
+    }
+
+    50% {
+      color: #00ffff;
+    }
+
+    66% {
+      color: #0000ff;
+    }
+
+    83% {
+      color: #ff00ff;
+    }
+
+    100% {
+      color: #ff0000;
+    }
+  }
+
+  .dance {
+    animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes Dance {
+    0%, 100% {
+      transform: rotate(20deg);
+    }
+    50% {
+      transform: rotate(-20deg);
+    }
+  }
+
+  .growShrink {
+    animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes GrowShrink {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.2);
+    }
+  }
+
+  .growShrinkShort {
+    animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes GrowShrinkShort {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.75);
+    }
+  }
+
+
+  .spin {
+    animation: Spin 2000ms linear infinite;
+  }
+
+  @keyframes Spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+
+  .hSiren {
+    animation: HSiren 2000ms linear infinite;
+  }
+
+  @keyframes HSiren {
+    0% {
+      transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px);
+    }
+    100% {
+      transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px);
+    }
+  }
+
+  .vSiren {
+    animation: VSiren 2000ms linear infinite;
+  }
+
+  @keyframes VSiren {
+    0% {
+      transform: perspective(250px) rotate3d(2,0,0, 0deg) translateZ(0.75em);
+    }
+    100% {
+      transform: perspective(250px) rotate3d(2,0,0, 360deg) translateZ(0.75em);
+    }
+  }
+
+  .vSirenShort {
+    animation: VSirenShort 2000ms linear infinite;
+  }
+
+  @keyframes VSirenShort {
+    0% {
+      transform: perspective(250px) rotate3d(2,0,0, 0deg) translateZ(0.3em);
+    }
+    100% {
+      transform: perspective(250px) rotate3d(2,0,0, 360deg) translateZ(0.3em);
+    }
+  }
+
+
+
+  .hPivot {
+    animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes HPivot {
+    0%, 100% {
+      transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(100px);
+    }
+    50% {
+      transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(100px);
+    }
+  }
+
+  .vPivot {
+    animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes VPivot {
+    0%, 100% {
+      transform: perspective(250px) rotate3d(2,0,0, 30deg) translateZ(0.75em);
+    }
+    50% {
+      transform: perspective(250px) rotate3d(2,0,0, -30deg) translateZ(0.75em);
+    }
+  }
+
+
+
+  .vFlip {
+    animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes VFlip {
+    0%, 100% {
+      transform: perspective(250px) rotate3d(2,0,0, 0deg);
+    }
+    100% {
+      transform: perspective(250px) rotate3d(2,0,0, 1800deg);
+    }
+  }
+
+
+  .hFlip {
+    animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes HFlip {
+    0% {
+      transform: perspective(250px) rotate3d(0,2,0, 0deg);
+    }
+    100% {
+      transform: perspective(250px) rotate3d(0,2,0, 1800deg);
+    }
+  }
+
+
+
+
+
+  .leftRight {
+    width: 100%;
+
+    animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    font-size: 10vmin;
+  }
+
+  .leftRight > * {
+    animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  @keyframes LeftRightChild {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes LeftRight {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(100%);
+    }
+  }
+
+
+  .shrinkingBorder {
+    animation: ShrinkingBorder 2000ms linear infinite;
+  }
+  .spinningBorder {
+    animation: Spin 2000ms linear infinite;
+  }
+
+  @keyframes ShrinkingBorder {
+    0% {
+      transform: scale(105%);
+    }
+    100% {
+      transform: scale(0%);
+    }
+  }
+
+  .shrinkingSpinningBorder {
+    animation: SpinningShrinkingBorder 2000ms linear infinite;
+  }
+
+  @keyframes SpinningShrinkingBorder {
+    0% {
+      transform: scale(105%) rotate(0deg);
+    }
+    100% {
+      transform: scale(0%) rotate(90deg);
+    }
+  }
+
+
+
+  .wave {
+    animation: Wave 4500ms linear infinite;
+  }
+  .climb {
+    animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes Wave {
+    0%, 100% {
+      transform: translate3d(0%, 30%, 0) rotate(0deg);
+    }
+
+    25% {
+      transform: translate3d(0%, 0%, 0) rotate(12deg);
+    }
+
+    50% {
+      transform: translate3d(0%, -30%, 0) rotate(0deg);
+    }
+
+
+    75% {
+      transform: translate3d(0%, 0%, 0) rotate(-12deg);
+    }
+  }
+`
+
+function marquee(children, args={}) {
+  const className = args.className || ''
+  const style = args.style || ''
+  const direction = args.direction || 1
+  const delay = args.delay || 0
+  const duration = args.duration || 1
+  const sideways = args.sideways || false
+  const msgAnimation = args.msgAnimation || iden
+  const isEmoji = emojiList.includes(children.innerHTML)
+
+  const repeat = isEmoji ? 80 : 40
+
+  const inner = $.div(
+    times(repeat, i => msgAnimation(
+      $.span(
+        children, {
+          style: `margin-left: ${isEmoji ? 0.2 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;`
+        }
+      ).cloneNode(true), {
+        delay: i * 100,
+      }
+    )),
+    {
+      class: `marqueeInner marqueeForward`,
+      style: `
+        animation-delay: -${delay}s;
+        animation-duration: ${duration/(repeat/40)}s;
+        animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
+      `
+    }
+  )
+
+  return $.div(
+    inner,
+    {
+      style: style + (sideways ? `transform: rotate(${sample([90, 270])}deg);` : ''),
+      class: `component marquee ${className}`,
+    }
+  )
+}
+
+
+function genericAnimatingComponent(name) {
+  return (children, args={}) => {
+    const className = args.className || ''
+    const style = args.style || ''
+    const delay = args.delay || 0
+    const duration = args.duration || 1000
+    const direction = args.direction || 1
+
+
+    return $.div(children, {
+      class: `${name} ${className} animatingComponent`,
+      style: `
+        animation-duration: ${duration}ms;
+        animation-delay: -${delay}ms;
+        animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
+        ${style}
+      `
+    })
+  }
+}
+
+const blink = genericAnimatingComponent('blink')
+const dance = genericAnimatingComponent('dance')
+const growShrink = genericAnimatingComponent('growShrink')
+const growShrinkShort = genericAnimatingComponent('growShrinkShort')
+const spin = genericAnimatingComponent('spin')
+const hSiren = genericAnimatingComponent('hSiren')
+const vSiren = genericAnimatingComponent('vSiren')
+const vSirenShort = genericAnimatingComponent('vSirenShort')
+
+const hPivot = genericAnimatingComponent('hPivot')
+const vPivot = genericAnimatingComponent('vPivot')
+
+const vFlip = genericAnimatingComponent('vFlip')
+const hFlip = genericAnimatingComponent('hFlip')
+
+const updown = genericAnimatingComponent('updown')
+const wave = genericAnimatingComponent('wave')
+const climb = genericAnimatingComponent('climb')
+
+// const wave = (grandChild, args={}) => {
+//   const delay = args.delay || 0
+
+//   return dance(updown(grandChild, { style: `font-size: 10vmin`, delay: 200 + delay }), args)
+// }
+
+
+const leftRightParent = genericAnimatingComponent('leftRight')
+const leftRight = (grandChild, args={}) => {
+  const duration = args.duration || 1000
+  const delay = args.delay || 0
+
+  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
+  return leftRightParent(child, args)
+}
+
+
+const bgAnimationPrb = chance(
+  [12, 0],
+  [6, rnd(0.25, 0.5)],
+  [2, 1],
+)
+const bgAnimationFn = sample([
+  colorShiftingBgMultiple,
+  staticBgsMultiple,
+  shrinkingBgSingle,
+  shrinkingBgMultiple,
+  // spinningBgMultiple,
+  shrinkingSpinningBgMultiple,
+])
+
+const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
+    class: className,
+    style: `
+      border: 1vmin ${borderStyle()};
+      position: absolute;
+      height: ${100*rSpan/rows}vh;
+      width: ${100*cSpan/cols}vw;
+      animation-delay: -${args.delay || 0}ms;
+      animation-duration: ${args.duration || 2000}ms;
+      animation-direction: ${args.direction === -1 ? 'reverse' : 'normal'};
+      ${args.style || ''}
+    `
+  })
+
+function staticBgsMultiple(rSpan, cSpan) {
+  return times(6, i => bgAnimation('',rSpan, cSpan, { style: `transform: scale(${i/6});`}))
+}
+function shrinkingBgSingle(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return [bgAnimation('shrinkingBorder', rSpan, cSpan, {
+    duration,
+    direction
+  })]
+}
+
+function shrinkingBgMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return times(4, i => bgAnimation('shrinkingBorder',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction
+  }))
+}
+
+function spinningBgMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return times(2, i => bgAnimation('spinningBorder',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction
+  }))
+}
+
+function shrinkingSpinningBgMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return times(4, i => bgAnimation('shrinkingSpinningBorder',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction
+  }))
+}
+
+function colorShiftingBgMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(4000, 16000)
+  const squares = rndint(8, 20)
+  return times(squares, i => bgAnimation('colorShift',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction,
+    style: `
+      transform: scale(${0.95 - i/squares});
+    `
+  }))
+}
+
+
+function withBgAnimation(child, rSpan, cSpan) {
+  return [
+    ...(prb(bgAnimationPrb) ? bgAnimationFn(rSpan, cSpan) : []),
+    child
+  ]
+
+}
+
+
+
+
+// unused?
+const updownChars = (txt) => txt
+  .split('')
+  .map((c, i) => `
+    <span class="updownChars" style="animation-delay: -${i* 400}ms">${c}</span>
+  `)
+  .join('')
+
+
+</script>
+<script>
+
+const word = (txt, slow, margin=1, fontSize=1) =>
+  $.span(txt, {
+    style: `
+      margin-right: ${
+        // margin
+        0
+      }em;
+      font-size: ${fontSize}em;
+    `
+  })
+
+
+// `
+//   <span style="margin-right: ${margin}em; font-size: ${fontSize}em" ${slow ? `slow=${slow.toFixed(1)}` : ''}>
+//     ${txt}
+//   </span>
+// `
+
+const emoji = e => word(e, 1, 0.1, 0.9)
+
+const emojis = es => es.split(' ').map(emoji)
+
+
+
+/*
+  content categories
+    - sexy
+    - exciting
+    - fearful
+    - money
+
+*/
+
+const emojiList = `💸 🤑 🔥 😂 💥 🍻 🎉 🕺 💃 🎊 🍾 🥂 🥳 🎈 💸 💶 💰 💎 👑 💍 🤑 🎁 🥇 💲 🌟 🚀 🙌 ⚡️ ❤️‍🔥 💫 🚨 💥 🔥 🤯 ✨ 🤩 🏎 🔟 🦄 🌈 ❓ 🍀 💪 🌋 🏖 📛 😍 💩 👨‍💻 🧑‍💻 👩‍💻 🌎 🕸 👁 👁‍🗨 → ← ★ ‼️ ❗️ 💋 🍆 🍑 💥 🍬 🍭 🎂 🍫 🏄‍♂️`
+  .split(' ')
+
+const allContent = [
+  [word('→'), word('←')],
+  [word('★', false, 0.5)],
+  [word('$$$$')],
+  [word('$$$$')],
+  [word('$$$$')],
+  [word('$$$$')],
+  [emoji(`💸`)],
+  [emoji(`🤑`)],
+  [emoji(`🔥`)],
+  [emoji(`😂`)],
+  [emoji(`💥`)],
+  emojis(`🍻 🎉 🕺 💃 🎊 🍾 🥂 🥳 🎈`),
+  emojis(`💸 💶 💰 💎 👑 💍 🤑 🎁 🥇 💲`),
+  emojis(`🌟 🚀 🙌 ⚡️ ❤️‍🔥 💫 🚨 💥 🔥 🤯 ✨ 🤩 🏎`),
+  emojis(`🔟 🦄 🌈 ❓ 🍀 💪 🌋 🏖 📛 😍 💩 🏄‍♂️`),
+  emojis(`🍬 🍭 🎂 🍫`),
+  emojis(`👨‍💻 🧑‍💻 👩‍💻 🌎 🕸 👁 👁‍🗨`),
+
+  [word('>>>>'), word('<<<<')],
+  [word('!!!!'), ...emojis(`‼️ ❗️`)],
+
+  [word(`WINNER`), word(`LOSER`)],
+  [word(`FUN`)],
+  [word(`WOW`)],
+  [word(`NFTs`)],
+  [word(`HOT!`)],
+  [word(`LUCKY`)],
+  [word(`SEXY`), word(`XXX`), ...emojis(`💋 🍆 🍑`)],
+  [word(`FREE`)],
+  [word(`FOMO`)],
+  [word(`DEALS`)],
+  [word(`DEGEN`)],
+  [word(`CRYPTO`)],
+  [word(`SO HOT`)],
+  [word(`SO COOL`)],
+  [word(`BUY NOW`)],
+  [word(`SO CHEAP`)],
+  [word(`AMAZING`)],
+  [word(`BARGAIN`)],
+  [word(`WARNING`)],
+  [word(`JACKPOT`)],
+  [word(`ACT NOW`)],
+  [word(`UNDEFINED`)],
+  [word(`EXCITING!`)],
+  [word(`HOLY MOLY`)],
+  [word(`GOLD MINE`)],
+  [word(`WTF`), word(`LOL`), word(`OMG`), word(`WAGMI`)],
+  [word(`DYOR`), word(`DO YOUR OWN RESEARCH`, 3)],
+  [word(`NFA`), word(`NOT FINANCIAL ADVICE`, 3)],
+  // [word(`<a class="clickhere">CLICK HERE</a>`)],
+  [word(`DON'T WAIT`, 2)],
+  [word(`DANGER ZONE`, 2)],
+  [word(`MILLIONAIRE`, 2)],
+  [word(`BILLIONAIRE`, 2)],
+  [word(`TRILLIONAIRE`, 2)],
+  [word(`WHAT A DEAL`, 2)],
+  [word(`GOOD PRICES`, 2)],
+  [word(`CRAZY DEALS`, 2)],
+  [word(`PUMP + DUMP`, 2)],
+  [word(`SAFE + SECURE`, 2)],
+  [word(`UNBELIEVABLE`, 2)],
+  [word(`PAY ATTENTION`, 2)],
+  [word(`INSANE PRICES!`, 2)],
+  [word(`DON'T MISS OUT`, 2)],
+  [word(`CRYPTO FORTUNE`, 2)],
+  [word(`GET RICH QUICK`, 2)],
+  [word(`YIELD EXPLOSION`, 2), emoji`💥`],
+  [word(`THROBBING GAINS`, 2)],
+  [word(`THIS WON'T LAST`, 2)],
+  [word(`CONGRATULATIONS`, 2)],
+  // [word(`<a href="http://fastcashmoneyplus.biz" target="_blank">MAKE FAST CASH NOW</a>`, 3)],
+  [word(`MAKE FAST CASH NOW`, 3)],
+  [word(`HOTTEST ART AROUND`, 3)],
+  [word(`LIMITED TIME OFFER`, 3)],
+  [word(`TOO GOOD TO BE TRUE`, 3)],
+  [word(`FEAR OF MISSING OUT`, 3)],
+  [word(`DEAL OF THE CENTURY`, 3)],
+  [word(`NEVER LOOKED SO GOOD`, 3)],
+  [word(`TOO GOOD TO BE TRUE`, 3)],
+  [word(`STRAIGHT TO THE MOON`, 3), ...emojis(`🌜 🌛 🌝`)],
+  [word(`Do you CRAVE YIELD?`, 3)],
+  [word(`THINGS ARE MOVING FAST`, 3)],
+  // [word(`FEAR UNCERTAINTY DOUBT`, 3)],
+  [word(`[object HTMLDivElement]`, 3)],
+  [word(`YOU WON'T BELIEVE THIS!`, 3)],
+  [word(`OPPORTUNITY OF A LIFETIME`, 3.5)],
+  [word(`MAKE GENERATIONAL WEALTH NOW`, 4)],
+  [word(`I COULDN'T BELIEVE IT EITHER`, 4)],
+  [word(`ACT NOW (Before It's Too Late)`, 4.5)],
+  [word(`Stop THROWING YOUR MONEY AWAY`, 4.5)],
+  [word(`YOU CAN'T AFFORD TO PASS THIS UP`, 4.5)],
+  [word(`PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`, 8)],
+  [word(`BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`, 8)]
+]
+
+const content = chance(
+  [15, allContent.flat()],
+  [15, sample(allContent)],
+  [25, [sample(allContent), sample(allContent)].flat()],
+  [35, [sample(allContent), sample(allContent), sample(allContent)].flat()],
+  // [8, [word(`FEAR`), word(`UNCERTAINTY`), word(`DOUBT`)]],
+  [2, emojis(`💸 🤑 🔥 😂 💥`)]
+)
+.map(c => {
+  if (
+    ![...emojiList, '$$$$', 'XXX', '<<<<', '>>>>', '!!!!'].includes(c.innerHTML)
+    && prb(0.25)
+  ) {
+    c.innerHTML += '!'
+  }
+
+  return c
+})
+</script>
+
+
+<script>
+
+  function sectionContainer(child, rSpan, cSpan, h, txtH, style) {
+    const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
+    const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
+    const bgColor = bw ? bwc.bg : getBgColor(h)
+
+
+    const rotation = threeDRotations
+      ? `perspective(500px) rotate3d(1,1,1,${lineRotation()}deg)`
+      : `rotate(${lineRotation()}deg)`
+
+    const fontStyle = prb(italicRate) ? 'italic' : 'none'
+
+
+    const borderWidth = min(rSpan, cSpan) * .05
+
+    return $.div(
+      withBgAnimation(child, rSpan, cSpan),
+      {
+        class: `${sectionAnimation} ${rotateColor ? 'fullColorRotate' : ''} sectionContainer`,
+        style: `
+          border-style: ${borderStyle()};
+          ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
+          grid-column: span ${cSpan};
+          grid-row: span ${rSpan};
+          background: ${hideBg ? 'none' : bgColor};
+          color: ${txtColor};
+          transform: ${rotation};
+          font-style: ${fontStyle};
+          animation-delay: -${rnd(5)}s;
+          animation-direction: ${rotateColor ?'normal' : animationDirection()};
+          animation-duration: ${rotateColor ? '25' : animationDuration()}s;
+          ${style || ''}
+        `
+      }
+    )
+  }
+
+
+  function marqueeContainter(rSpan, cSpan) {
+    const child = sample(content)
+    const height = `calc(${100*rSpan/rows}vh)`
+    const width = `calc(${100*cSpan/cols}vw)`
+    const slow = 1 + child.innerHTML.length/9
+    const h = chooseHue()
+    const txtH = chooseAltHue(h)
+
+
+    // const slowIx = child.indexOf('slow="')
+    // slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
+
+    const canShowAltAnimation = rSpan >= 2 && cSpan/rSpan >= 6 && child.innerHTML.length < 8
+    const sideways = prb(sidewaysPrb) && cSpan/rSpan < 1.2
+
+    const msgAnimation = prb(marqueeAnimationRate) && canShowAltAnimation
+      ? chance(
+        [1, growShrinkShort],
+        [1, vSirenShort],
+        [1, dance],
+        [1, spin],
+        [1, hSiren],
+        [1, hPivot],
+        [1, hFlip],
+        [1, blink],
+      )
+      : iden
+
+    const r = rnd(750, 1500)
+    const duration = rnd(0.5, 100) * slow * speed
+    const delay = rnd(duration/2) + (duration / 3)
+
+    const childEl = canShowAltAnimation && prb(0.1)
+        ? leftRight(child, {
+          style: `font-size: ${height}`,
+          duration: r * slow * speed,
+          delay: rnd(2000)
+        })
+        : marquee(child, {
+          style: `
+            font-size: ${sideways ? width : height};
+            text-shadow: ${getShadow(txtH)};
+          `,
+          direction: posOrNeg(),
+          delay,
+          duration,
+          sideways,
+          msgAnimation
+        })
+
+
+    return sectionContainer(childEl, rSpan, cSpan, h, txtH)
+  }
+
+  function animationContainer(rSpan, cSpan) {
+    const child = sample(content)
+    const height = `calc(${100*rSpan/rows}vh)`
+    const width = `calc(${100*cSpan/cols}vw)`
+    const h = chooseHue()
+    const txtH = chooseAltHue(h)
+
+    const animation = sample([
+      dance,
+      growShrink,
+      spin,
+      hSiren,
+      vSiren,
+      hPivot,
+      vPivot,
+      vFlip,
+      hFlip,
+      updown,
+      wave,
+      climb,
+    ])
+
+    const words = child.innerHTML.split(' ')
+    const shortest = words.reduce((shortest, word) => word.length < shortest.length ? word : shortest , words[0])
+
+    const rowSizeMax = 5.5/(child.innerHTML.length)
+    const colSizeMax = 7 *(cSpan/(cols*shortest.length))
+
+    const fontAdj = (
+      emojiList.includes(child.innerHTML)
+        ? 1
+        : min(colSizeMax, rowSizeMax)
+    ) * (animation === vPivot ? 0.5 : 1)
+
+    const secondAnimation = prb(0.75) ? iden : sample([
+      dance,
+      growShrink,
+      spin,
+      hSiren,
+      vSiren,
+      hPivot,
+      vPivot,
+      vFlip,
+      hFlip,
+      updown,
+      wave,
+      climb,
+    ])
+
+    const childEl = $.div(
+      secondAnimation(
+        animation(child,
+          {
+            delay: rnd(3500),
+            duration: rnd(750, 5000)
+          }
+        ),
+        {
+          delay: rnd(3500),
+          duration: rnd(750, 5000)
+        }
+      ),
+      {
+        style: `
+          font-size: ${fontAdj*100*min(rSpan/rows, cSpan/cols)}vmin;
+          text-shadow: ${getShadow(h)};
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `,
+      }
+    )
+    // console.log(childEl, animation(child))
+
+    return sectionContainer(childEl, rSpan, cSpan, h, txtH)
+  }
+
+
+  function getEmojiGrid(rSpan, cSpan) {
+    const divisor = rndint(1, min(rSpan/2, cSpan/2))
+    return [
+      max(1, int(rSpan/divisor)),
+      max(1, int(cSpan/divisor))
+    ]
+  }
+
+  function animationGridContainer(rSpan, cSpan) {
+    const child = sample(content.filter(e => emojiList.includes(e.innerHTML)))
+
+    if (!child) return animationContainer(rSpan, cSpan)
+
+    const height = `calc(${100*rSpan/rows}vh)`
+    const width = `calc(${100*cSpan/cols}vw)`
+    const h = chooseHue()
+    const txtH = chooseAltHue(h)
+
+    const animation = chance(
+      [5, growShrink],
+      [4, spin],
+      [3, blink],
+      [3, vSiren],
+      [3, hSiren],
+      [3, vFlip],
+      [3, hFlip],
+      [1, dance],
+      [1, wave],
+      [1, climb],
+    )
+
+    const [r, c] = getEmojiGrid(rSpan, cSpan)
+
+
+    // const words = child.innerHTML.split(' ')
+    // const shortest = words.reduce((shortest, word) => word.length < shortest.length ? word : shortest , words[0])
+
+    // const rowSizeMax = 5.5/(child.innerHTML.length)
+    // const colSizeMax = 7 *(cSpan/(cols*shortest.length))
+
+    // const fontAdj = (
+    //   emojiList.includes(child.innerHTML)
+    //     ? 1
+    //     : min(colSizeMax, rowSizeMax)
+    // ) * (animation === vPivot ? 0.5 : 1)
+
+    // const secondAnimation = prb(0.75) ? iden : sample([
+    //   dance,
+    //   growShrink,
+    //   spin,
+    //   hSiren,
+    //   vSiren,
+    //   hPivot,
+    //   vPivot,
+    //   vFlip,
+    //   hFlip,
+    //   updown,
+    //   wave,
+    //   climb,
+    // ])
+
+    const duration = rnd(750, 5000)
+    const childEl = $.div(
+      // secondAnimation(
+      //   animation(child,
+      //     {
+      //       delay: rnd(3500),
+      //       duration: rnd(750, 5000)
+      //     }
+      //   ),
+      //   {
+      //     delay: rnd(3500),
+      //     duration: rnd(750, 5000)
+      //   }
+      // ),
+      times(r*c, i => animation(child, {delay: (i/(r*c))*duration, duration })),
+      {
+        class: 'animationGridContainer',
+        style: `
+          font-size: ${100*min(rSpan/rows, cSpan/cols)/min(r, c)}vmin;
+          text-shadow: ${getShadow(h)};
+          height: ${100*rSpan/rows}vh;
+          width: ${100*cSpan/cols}vw;
+          display: grid;
+          align-items: center;
+          justify-items: center;
+          grid-template-rows: repeat(${r}, 1fr);
+          grid-template-columns: repeat(${c}, 1fr);
+        `,
+      }
+    )
+    // console.log(childEl, animation(child))
+
+    return sectionContainer(childEl, rSpan, cSpan, h, txtH)
+  }
+
+
+
+
+  function flexSection(rowCells, colCells) {
+    let rCursor = 0
+
+    const cells = {}
+    times(rowCells, r => cells[r] = [])
+
+    const findNextFilledCol = (rC, cC) => {
+      for (let c = cC; c < colCells; c++) {
+        if (cells[rC][c]) return c
+      }
+      return colCells
+    }
+
+    const findNextUnfilledCol = (rC, cC) => {
+      for (let c = cC; c < colCells; c++) {
+        if (!cells[rC][c]) return c
+      }
+
+      return colCells
+    }
+
+    const marquees = []
+
+    const colMax = prb(0.05) ? 3 : colCells
+    const colMin = 12
+
+    const rowMin = chance(
+      [3, sample([24, 48])],
+      [3, sample([6, 8, 12, 16])],
+      [1, sample([2, 3, 4])],
+      [1, 1],
+    )
+    const rowMax = prb(0.85) ? rowCells : rowMin
+
+
+    while (rCursor < rowCells) {
+      let cCursor = findNextUnfilledCol(rCursor, 0)
+
+      while (cCursor < colCells) {
+        const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
+        const rowsLeft = min(rowCells - rCursor, rowMax)
+
+        let cSpan = rndint(min(colMin, colsLeft), colsLeft)
+        if (colsLeft - cSpan < colMin) cSpan = colsLeft
+
+        const rSpan = rndint(min(rowMin, rowsLeft), max(1, rowsLeft))
+
+        const aspectRatio = cSpan / rSpan
+
+        marquees.push(
+          aspectRatio < 1.25 && aspectRatio > 0.8 ?
+            prb(0.25) ? animationContainer(rSpan, cSpan) : animationGridContainer(rSpan, cSpan) :
+
+          aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
+            animationContainer(rSpan, cSpan) :
+
+          marqueeContainter(rSpan, cSpan)
+        )
+
+        times(rSpan, r =>
+          times(cSpan, c =>
+            cells[rCursor+r][cCursor+c] = 1
+          )
+        )
+
+        cCursor = findNextUnfilledCol(rCursor, cCursor + cSpan)
+      }
+
+      rCursor++
+    }
+
+    return $.section(
+      marquees,
+      {
+        style: `
+          width: ${100*colCells/cols}vw;
+          height: ${100*rowCells/rows}vh;
+          overflow: hidden;
+          grid-row: span ${rowCells};
+          grid-column: span ${colCells};
+          display: grid;
+          grid-template-rows: repeat(${rowCells}, 1fr);
+          grid-template-columns: repeat(${colCells}, 1fr);
+        `
+      }
+    )
+  }
+
+
+
+
+  setMetadata(content.map(c => c.innerHTML).join(' '))
+
+
+
+  const main = $.main(
+    [
+      flexSection(rows, cols)
+    ],
+    {
+      id: 'main',
+      style: `
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: repeat(${rows}, 1fr);
+        grid-template-columns: repeat(${cols}, 1fr);
+      `
+    }
+  )
+
+
+
+
+
+  $.render($body, main)
+
+
+</script>
+</html>
