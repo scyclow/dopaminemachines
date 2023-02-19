@@ -77,13 +77,13 @@ const borderStyle = chance(
 )
 
 const shadowType = chance(
-  [2, 1],
-  [2, 2],
-  [2, 3],
-  [2, 4],
-  [2, 5],
-  [1, 6],
-  [2, 7],
+  [4, 1],
+  [4, 2],
+  [4, 3],
+  [4, 4],
+  [4, 5],
+  [2, 6],
+  [1, 7],
 )
 
 const showBorder = prb(0.25)
@@ -144,7 +144,7 @@ const hideBg = freeFloating ? prb(0.5) : false
 const threeDRotations = freeFloating && prb(0.02)
 
 
-const bw = prb(0.1)
+const bw = prb(0.15)
 const sH = rnd(360)
 
 const possibleHues = sample([

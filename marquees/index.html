@@ -11,6 +11,8 @@ NAMES
   Pump + Dump
   Everyone's A Winner
   Pay Attention
+  Hypermedia
+  What You See Is What You Get
 
 
 Themes:
@@ -20,6 +22,43 @@ Themes:
   meaninglessness
   overwhelming
   attention grabbing
+  commodification
+    - everything is put into a box
+    - feelings and broad categories are boiled down to symbols and slogans
+
+
+
+TODO
+  - figure out text sizing for animation sections
+  - off kilter layouts should either have borders around sections or visible overflow
+  - all spinning should spin at different rates
+    OR use standard component animations on sections
+  - be smarter with arrows
+  - marquees with high rSpan should generally be slower
+    Maybe the smaller rSpan marquees should be faster
+  - should have text shadow with border bg (otherwise can't read text)
+  - maybe Pointers easter egg with animation grid section
+  - layouts with high degree of density look the best -- shoudl make those more common
+  - animation sections should have visible overflow sometimes
+  - small rSpan shouldn't have backgrounds
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Concept:
@@ -105,6 +144,7 @@ MARQUEES TODO
 </body>
 
 <script src="./utils.js"></script>
+<script src="./sound.js"></script>
 <script src="./$.js"></script>
 <script src="./globals.js"></script>
 <script src="./components.js"></script>
@@ -113,7 +153,7 @@ MARQUEES TODO
 
 <script>
 
-  function sectionContainer(child, rSpan, cSpan, h, txtH, style) {
+  function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
     const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
     const bgColor = bw ? bwc.bg : getBgColor(h)
@@ -128,10 +168,10 @@ MARQUEES TODO
 
     const borderWidth = min(rSpan, cSpan) * .05
 
-    return $.div(
+    const container = $.div(
       withBgAnimation(child, rSpan, cSpan),
       {
-        class: `${sectionAnimation} ${rotateColor ? 'fullColorRotate' : ''} sectionContainer`,
+        class: `sectionContainer ${sectionAnimation}${rotateColor ? ' fullColorRotate' : ''}`,
         style: `
           border-style: ${borderStyle()};
           ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
@@ -144,10 +184,12 @@ MARQUEES TODO
           animation-delay: -${rnd(5)}s;
           animation-direction: ${rotateColor ?'normal' : animationDirection()};
           animation-duration: ${rotateColor ? '25' : animationDuration()}s;
-          ${style || ''}
         `
       }
     )
+
+    container.onclick = onclick
+    return container
   }
 
 
@@ -202,7 +244,9 @@ MARQUEES TODO
         })
 
 
-    return sectionContainer(childEl, rSpan, cSpan, h, txtH)
+    return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
+      utter(child.innerHTML, 30, 7)
+    })
   }
 
   function animationContainer(rSpan, cSpan) {
@@ -254,14 +298,17 @@ MARQUEES TODO
       climb,
     ])
 
+    const primaryAnimationParams = {
+      delay: rnd(3500),
+      duration: 5000
+    }
+      rnd(750, 5000)
+
+
     const childEl = $.div(
+      // vFlip(child.cloneNode(true), primaryAnimationParams),
       secondAnimation(
-        animation(child,
-          {
-            delay: rnd(3500),
-            duration: rnd(750, 5000)
-          }
-        ),
+        animation(child.cloneNode(true), primaryAnimationParams),
         {
           delay: rnd(3500),
           duration: rnd(750, 5000)
@@ -280,7 +327,14 @@ MARQUEES TODO
     )
     // console.log(childEl, animation(child))
 
-    return sectionContainer(childEl, rSpan, cSpan, h, txtH)
+    return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
+      if (animation === spin) {
+        smoothSound(primaryAnimationParams)
+      } else if ([growShrink, vPivot, hPivot].includes(animation)) {
+        growShrinkSound(primaryAnimationParams)
+      }
+      // flipSound(primaryAnimationParams)
+    })
   }
 
 
@@ -346,20 +400,9 @@ MARQUEES TODO
     // ])
 
     const duration = rnd(750, 5000)
+    const delayFactor = rnd(0.5, 2)
     const childEl = $.div(
-      // secondAnimation(
-      //   animation(child,
-      //     {
-      //       delay: rnd(3500),
-      //       duration: rnd(750, 5000)
-      //     }
-      //   ),
-      //   {
-      //     delay: rnd(3500),
-      //     duration: rnd(750, 5000)
-      //   }
-      // ),
-      times(r*c, i => animation(child, {delay: (i/(r*c))*duration, duration })),
+      times(r*c, i => animation(child.cloneNode(true), {delay: (i/(r*c))*duration*delayFactor, duration })),
       {
         class: 'animationGridContainer',
         style: `
@@ -375,7 +418,6 @@ MARQUEES TODO
         `,
       }
     )
-    // console.log(childEl, animation(child))
 
     return sectionContainer(childEl, rSpan, cSpan, h, txtH)
   }

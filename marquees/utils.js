@@ -2,6 +2,10 @@ const min = Math.min
 const max = Math.max
 const round = Math.round
 const int = parseInt
+const btwn = (mn, mx, val) => max(mn, min(mx, val))
+const map = (val, mn, mx) => mn < mx
+  ? mn + (val * (mx - mn))
+  : mn - (val * (mn - mx))
 
 let __randomSeed = int(tokenData.hash.slice(50, 58), 16)
 

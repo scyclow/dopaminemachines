@@ -5,17 +5,26 @@ $.id = document.getElementById.bind(document)
 $.tag = document.getElementsByTagName.bind(document)
 $.class = $.cls = (className) => [].slice.call(document.getElementsByClassName(className))
 
+$.toHTML = str => new DOMParser().parseFromString(str, "text/xml")
+
 $.render = (e, children) => {
+  if (children.onclick) debugger
   if (!children) return
   else if (typeof children === 'string') e.innerHTML = children
   else if (Array.isArray(children)) {
-    children.forEach(child => {
-      e.innerHTML += (
-        typeof child === 'string' ? child : child.outerHTML
-      )
-    })
+    if (typeof children[0] === 'string') {
+      children.forEach(child => {
+        e.innerHTML += (
+          typeof child === 'string' ? child : child.outerHTML
+        )
+      })
+    } else {
+      e.append(...children)
+    }
   }
-  else e.appendChild(children.cloneNode(true))
+  else {
+    e.append(children)
+  }
 }
 
 

@@ -9,6 +9,12 @@ css`
     display: flex;
     align-items: center;
     justify-content: center;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  .sectionContainer:hover {
+    filter: invert(1);
   }
 
   .marquee {
@@ -314,7 +320,7 @@ css`
   }
 
   @keyframes VFlip {
-    0%, 100% {
+    0% {
       transform: perspective(250px) rotate3d(2,0,0, 0deg);
     }
     100% {
