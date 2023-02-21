@@ -13,6 +13,8 @@ NAMES
   Pay Attention
   Hypermedia
   What You See Is What You Get
+  hyperzones
+
 
 
 Themes:
@@ -25,7 +27,18 @@ Themes:
   commodification
     - everything is put into a box
     - feelings and broad categories are boiled down to symbols and slogans
-
+  desire
+  loss of meaning through repetition
+  dopamine
+  the mechanical and disconnected nature of modenr life
+  rube goldberg machines
+  gamification of capitalism
+  pandering
+  the blending of art and capitalism/advertisements
+  hyperreality
+  hypnosis of media
+  symbols
+  oversaturation
 
 
 TODO
@@ -41,6 +54,13 @@ TODO
   - layouts with high degree of density look the best -- shoudl make those more common
   - animation sections should have visible overflow sometimes
   - small rSpan shouldn't have backgrounds
+  - for blinking sections, ensure at least 1 or two have delays >= 0
+  - should have way fewer tall/thin horizontal marquees -- really, only if 3D askew or all slim
+  - border bgs should have color schemes other than rainbow
+  - key to hide mouse
+  - key to play all sounds
+  - countdown clock (x minutes from load, x minutes until set time in the future)
+  - hFlip should be slower
 
 
 
@@ -225,24 +245,23 @@ MARQUEES TODO
     const duration = rnd(0.5, 100) * slow * speed
     const delay = rnd(duration/2) + (duration / 3)
 
-    const childEl = canShowAltAnimation && prb(0.1)
-        ? leftRight(child, {
-          style: `font-size: ${height}`,
-          duration: r * slow * speed,
-          delay: rnd(2000)
-        })
-        : marquee(child, {
-          style: `
-            font-size: ${sideways ? width : height};
-            text-shadow: ${getShadow(txtH)};
-          `,
-          direction: posOrNeg(),
-          delay,
-          duration,
-          sideways,
-          msgAnimation
-        })
-
+    const childEl = (canShowAltAnimation && prb(0.1))
+      ? leftRight(child.cloneNode(true), {
+        style: `font-size: ${height}; text-shadow: ${getShadow(txtH)};`,
+        duration: r * slow * speed,
+        delay: rnd(2000)
+      })
+      : marquee(child, {
+        style: `
+          font-size: ${sideways ? width : height};
+          text-shadow: ${getShadow(txtH)};
+        `,
+        direction: posOrNeg(),
+        delay,
+        duration,
+        sideways,
+        msgAnimation
+      })
 
     return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
       utter(child.innerHTML, 30, 7)
@@ -256,20 +275,25 @@ MARQUEES TODO
     const h = chooseHue()
     const txtH = chooseAltHue(h)
 
+    const ignoreCharAnimation = [...emojiList, '<<<<', '>>>>'].includes(child.innerHTML)
+
     const animation = sample([
-      dance,
-      growShrink,
-      spin,
-      hSiren,
-      vSiren,
-      hPivot,
-      vPivot,
-      vFlip,
-      hFlip,
+      dance, //
+      growShrink, //
+      spin, //
+      hSiren, //
+      vSiren, //
+      hPivot, //
+      vPivot, //
+      vFlip, //
+      hFlip, //
       updown,
       wave,
       climb,
-    ])
+      !ignoreCharAnimation && updownChars,
+      !ignoreCharAnimation && blinkChars, //
+      !ignoreCharAnimation && shrinkChars, //
+    ].filter(iden))
 
     const words = child.innerHTML.split(' ')
     const shortest = words.reduce((shortest, word) => word.length < shortest.length ? word : shortest , words[0])
@@ -300,9 +324,8 @@ MARQUEES TODO
 
     const primaryAnimationParams = {
       delay: rnd(3500),
-      duration: 5000
+      duration: rnd(750, 5000)
     }
-      rnd(750, 5000)
 
 
     const childEl = $.div(
@@ -325,15 +348,25 @@ MARQUEES TODO
         `,
       }
     )
-    // console.log(childEl, animation(child))
 
     return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
+
       if (animation === spin) {
         smoothSound(primaryAnimationParams)
-      } else if ([growShrink, vPivot, hPivot].includes(animation)) {
-        growShrinkSound(primaryAnimationParams)
+      } else if ([growShrink, vPivot, hPivot, dance, hSiren, vSiren].includes(animation)) {
+
+        sirenSound({
+          delay: primaryAnimationParams.delay,
+          duration: animation === dance ? primaryAnimationParams.duration/2 : primaryAnimationParams.duration,
+        })
+      } else if ([hFlip, vFlip].includes(animation)) {
+        flipSound(primaryAnimationParams)
+
+      } else if (animation === blinkChars) {
+        blinkCharSound(primaryAnimationParams)
+      } else if ([shrinkChars, updownChars].includes(animation)) {
+        shrinkCharSound(primaryAnimationParams)
       }
-      // flipSound(primaryAnimationParams)
     })
   }
 

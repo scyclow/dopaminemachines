@@ -630,12 +630,22 @@ function withBgAnimation(child, rSpan, cSpan) {
 
 
 
+function genericCharacterComponent(name, durMin, durMax) {
+  return (children, args={}) => {
+    const duration = args.duration ? map(args.duration, 750, 5000, durMin, durMax) : rnd(durMin, durMax)
 
-// unused?
-const updownChars = (txt) => txt
-  .split('')
-  .map((c, i) => `
-    <span class="updownChars" style="animation-delay: -${i* 400}ms">${c}</span>
-  `)
-  .join('')
+    return children.innerHTML
+      .split('')
+      .map((c, i) => $.span(c, {
+        class: name,
+        style: `animation-delay: -${i * duration}ms; ${c === ' ' ? 'margin-right: 0.5em' : ''}`
+      }))
+  }
+}
+
+
+const updownChars = genericCharacterComponent('updownChars', 100, 500)
+const shrinkChars = genericCharacterComponent('growShrinkShort', 100, 300)
+const blinkChars = genericCharacterComponent('blink', 50, 200)
+
 

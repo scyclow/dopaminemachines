@@ -1,11 +1,12 @@
 const min = Math.min
 const max = Math.max
+const abs = Math.abs
 const round = Math.round
 const int = parseInt
 const btwn = (mn, mx, val) => max(mn, min(mx, val))
-const map = (val, mn, mx) => mn < mx
-  ? mn + (val * (mx - mn))
-  : mn - (val * (mn - mx))
+const map = (val, low, high, mn, mx) => mn < mx
+  ? mn + ((val - low)/(high-low)) * (mx - mn)
+  : mn - ((val - low)/(high-low)) * (mn - mx)
 
 let __randomSeed = int(tokenData.hash.slice(50, 58), 16)
 
@@ -40,4 +41,13 @@ function times(t, fn) {
   const out = []
   for (let i = 0; i < t; i++) out.push(fn(i))
   return out
+}
+
+function setRunInterval(fn, interval) {
+  let i = 0
+  fn(i)
+  return setInterval(() => {
+    i++
+    fn(i)
+  }, interval)
 }

@@ -83,7 +83,9 @@ const shadowType = chance(
   [4, 4],
   [4, 5],
   [2, 6],
-  [1, 7],
+  [2, 7],
+  [1, 8],
+  [1, 9],
 )
 
 const showBorder = prb(0.25)
@@ -92,12 +94,12 @@ const rotateColor = rows < 11 && prb(0.05)
 const deepShadows = prb(0.1)
 
 
-const getShadowColor = (h, l) => `hsl(${h%360}deg, ${sat}%, ${l}%)`
+const getShadowColor = (h, l=50) => `hsl(${h%360}deg, ${sat}%, ${l}%)`
 const getShadow = (h) => {
-  const shadowColor = getShadowColor(h+90, 20)
+  const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, 20)
 
   return (
-    shadowType === 1 ? `
+    [1, 8].includes(shadowType) ? `
         0.025em 0.025em ${shadowColor},
         -0.025em 0.025em ${shadowColor},
         0.025em -0.025em ${shadowColor},
@@ -106,7 +108,7 @@ const getShadow = (h) => {
         -0.025em 0 ${shadowColor},
         0 -0.025em ${shadowColor},
         0 0.025em ${shadowColor},
-        0 0 0.1em ${shadowColor}
+        0 0 0.4em ${shadowColor}
     ` :
 
     shadowType === 2 ?
@@ -116,16 +118,18 @@ const getShadow = (h) => {
       `0.1em 0.1em ${shadowColor}` :
 
     shadowType === 4 ?
-      `0.05em 0.05em ${shadowColor}, 0.1em 0.1em ${getShadowColor(h+270, 50)}` :
+      `0.05em 0.05em ${shadowColor}, 0.1em 0.1em ${getShadowColor(h+270)}` :
 
     shadowType === 5 ?
       `0 0 0.05em ${shadowColor}` :
 
     shadowType === 6 ?
-      times(4, s => `${s/20 - 0.1}em ${s/20 - 0.1}em ${getShadowColor(h + 180 + s*30, 50)}`).join(', ')
+      times(4, s => `${s/20 - 0.1}em ${s/20 - 0.1}em ${getShadowColor(h + 180 + s*30)}`).join(', ') :
 
+    shadowType === 7 ?
+      `-0.05em -0.05em ${getShadowColor(h+60)}, 0.05em 0.025em ${getShadowColor(h+240)}`
 
-    : '0 0 0'
+    : '0 0 0.01em #000'
   )
 }
 
