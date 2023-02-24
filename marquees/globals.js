@@ -154,14 +154,14 @@ const sH = rnd(360)
 const possibleHues = sample([
   [0, 180],
   [60, 120, 240, 300],
-  [0, 120, 150],
+  [0, 150],
   [0, 120, 240],
   [0, 150, 210],
   [0, 150, 180, 210],
   [0, 75],
 ])
 
-const randomHue = prb(0.05)
+const randomHue = prb(0.02)
 
 const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
 

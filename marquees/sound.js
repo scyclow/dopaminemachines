@@ -85,6 +85,9 @@ function triggerSound() {
 const BASE_FREQ = rnd(250, 500)
 const MAJOR_SCALE = [1, 1.125, 1.25, 1.3333, 1.5, 1.6666, 1.875, 2]
 const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
+                        // E G# B E B G#
+                        // 1 1.5 1.8877 2 1.8877 1.15
+const HEXATONIC_SCALE2 = [1, 1.25, 1.5, 2, 1.5, 1.25]
 
 
 
@@ -221,7 +224,7 @@ function blinkCharSound(args, seq=null) {
   }, interval)
 }
 
-function hexSound(args) {
+function hexSound(args, soundType=1) {
   const baseFreq = BASE_FREQ
   const { smoothFreq, smoothGain } = createSource()
   const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
@@ -238,20 +241,31 @@ function hexSound(args) {
 
   setTimeout(() => {
     setRunInterval((i) => {
-      smoothFreq(baseFreq * 8)
-      smoothFreq2(baseFreq * 8)
-      smoothGain(MAX_VOLUME, 0.03)
-      smoothGain2(MAX_VOLUME, 0.03)
 
-      smoothFreq(baseFreq/4, 0.25)
-      smoothFreq2(baseFreq/4, 0.25)
+      if (soundType === 1) {
+        smoothFreq(baseFreq * 8)
+        smoothFreq2(baseFreq * 8)
+        smoothGain(MAX_VOLUME, 0.03)
+        smoothGain2(MAX_VOLUME, 0.03)
 
-      setTimeout(() => smoothGain(0, 0.05), interval*0.25)
-      setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
+        smoothFreq(baseFreq/4, 0.25)
+        smoothFreq2(baseFreq/4, 0.25)
+
+        setTimeout(() => smoothGain(0, 0.05), interval*0.25)
+        setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
+      } else {
+        // smoothFreq(baseFreq * HEXATONIC_SCALE2[i%6], 0.25)
+        // smoothGain(MAX_VOLUME, 0.03)
+
+        // setTimeout(() => smoothGain(0, 0.05), interval*0.75)
+      }
     }, interval)
 
   }, timeUntilNextNote)
 }
+
+
+
 
 function climbSound(args) {
   const baseFreq = sample(HEXATONIC_SCALE) * BASE_FREQ * 1.5

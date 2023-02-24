@@ -212,6 +212,7 @@ css`
 
   .growShrinkShort {
     animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    display: inline-block;
   }
 
   @keyframes GrowShrinkShort {
@@ -285,10 +286,10 @@ css`
 
   @keyframes HPivot {
     0%, 100% {
-      transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(100px);
+      transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75);
     }
     50% {
-      transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(100px);
+      transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75);
     }
   }
 
@@ -296,12 +297,13 @@ css`
     animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
   }
 
+
   @keyframes VPivot {
     0%, 100% {
-      transform: perspective(250px) rotate3d(2,0,0, 30deg) translateZ(0.75em);
+      transform: perspective(250px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5);
     }
     50% {
-      transform: perspective(250px) rotate3d(2,0,0, -30deg) translateZ(0.75em);
+      transform: perspective(250px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5);
     }
   }
 
@@ -691,11 +693,14 @@ function genericCharacterComponent(name, durMin, durMax) {
     if (children.innerHTML === '&lt;&lt;&lt;&lt;') split = ['<', '<', '<', '<']
     if (children.innerHTML === '&gt;&gt;&gt;&gt;') split = ['>', '>', '>', '>']
 
-    return split.map((c, i) => $.span(c, {
+    return $.div(split.map((c, i) => $.span(c, {
         class: name,
-        style: `animation-delay: -${i * duration}ms; ${c === ' ' ? 'margin-right: 0.5em' : ''}`
+        style: `
+          animation-delay: -${i * duration}ms;
+          ${c === ' ' ? 'margin-right: 0.5em;' : ''}
+        `
       })
-    )
+    ), {style: `display: inline-block`})
   }
 }
 

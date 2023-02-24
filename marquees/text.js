@@ -64,6 +64,7 @@ const allContent = [
   [word(`WINNER`), word(`LOSER`)],
   [word(`FUN`)],
   [word(`WOW`)],
+  [word(`NEW`)],
   [word(`NFTs`)],
   [word(`HOT!`)],
   [word(`LUCKY`)],
@@ -72,6 +73,7 @@ const allContent = [
   [word(`FOMO`)],
   [word(`HYPE`)],
   [word(`DEALS`)],
+  [word(`FRESH`)],
   [word(`DEGEN`)],
   [word(`GRAIL`)],
   [word(`CRYPTO`)],
@@ -113,6 +115,7 @@ const allContent = [
   [word(`SUPERCHARGED`, 2)],
   [word(`UNBELIEVABLE`, 2)],
   [word(`TRILLIONAIRE`, 2)],
+  [word(`NEW PARADIGM`, 2)],
   [word(`SAFE + SECURE`, 2)],
   [word(`PAY ATTENTION`, 2)],
   [word(`WHAT A THRILL`, 2)],
@@ -133,7 +136,7 @@ const allContent = [
   [word(`MAKE FAST CASH NOW`, 3)],
   [word(`HOTTEST ART AROUND`, 3), emoji`🎨`],
   [word(`LIMITED TIME OFFER`, 3)],
-  [word(`PASSION FOR PROFITS`, 3)],
+  // [word(`PASSION FOR PROFITS`, 3)],
   [word(`TIME IS RUNNING OUT`, 3)],
   [word(`TOO GOOD TO BE TRUE`, 3)],
   [word(`YOU ONLY LIVE ONCE`, 3), word('YOLO')],
@@ -179,3 +182,10 @@ const content = chance(
 
   return c
 })
+
+
+const adjustCharLength = txt => {
+  let lenText = txt;
+  [...emojiList, '&lt;', '&gt;'].forEach(c => lenText = lenText.replaceAll(c, '1'))
+  return lenText.length
+}
