@@ -157,7 +157,7 @@ const possibleHues = sample([
   [0, 150],
   [0, 120, 240],
   [0, 150, 210],
-  [0, 150, 180, 210],
+  // [0, 150, 180, 210],
   [0, 75],
 ])
 
@@ -173,9 +173,20 @@ const chooseAltHue = (h) => {
 
 const gradientBg = prb(0.2)
 
+const gradientHues = sample([
+  // [60, 120, 180]
+  [180],
+  [30, 330],
+  [60, 300],
+  [120, 240],
+  [90, 180, 270],
+  [180, 210, 150],
+  [60, 120, 240, 300],
+])
+
 function getBgColor(h) {
   const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
-  const bg2 = `hsl(${h+sample([60, 120, 180])}deg, ${sat}%, 50%)`
+  const bg2 = `hsl(${h+sample(gradientHues)}deg, ${sat}%, 50%)`
 
   // return gradientBg ? `linear-gradient(to right, ${bg1} , ${bg2})` : bg1
   return gradientBg ? `radial-gradient(${bg1}, ${bg2});` : bg1
