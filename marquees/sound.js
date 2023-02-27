@@ -182,7 +182,9 @@ function flipSound({ delay, duration }) {
 }
 
 function smoothSound({delay, duration}) {
-  const baseFreq = map(duration, 0, 5000, 500, 250)
+  const ix = int(map(duration, 0, 5000, 16, 0))
+  const baseFreq = BASE_FREQ * MAJOR_SCALE[ix % 8]
+  console.log(baseFreq)
   const { smoothFreq: sF1, smoothGain: sG1 } = createSource()
   sF1(baseFreq)
   sG1(MAX_VOLUME, 0.25)
@@ -224,7 +226,7 @@ function blinkCharSound(args, seq=null) {
   }, interval)
 }
 
-function hexSound(args, soundType=1) {
+function hexSound(args) {
   const baseFreq = BASE_FREQ
   const { smoothFreq, smoothGain } = createSource()
   const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
@@ -242,23 +244,17 @@ function hexSound(args, soundType=1) {
   setTimeout(() => {
     setRunInterval((i) => {
 
-      if (soundType === 1) {
-        smoothFreq(baseFreq * 8)
-        smoothFreq2(baseFreq * 8)
-        smoothGain(MAX_VOLUME, 0.03)
-        smoothGain2(MAX_VOLUME, 0.03)
+      smoothFreq(baseFreq * 8)
+      smoothFreq2(baseFreq * 8)
+      smoothGain(MAX_VOLUME, 0.03)
+      smoothGain2(MAX_VOLUME, 0.03)
 
-        smoothFreq(baseFreq/4, 0.25)
-        smoothFreq2(baseFreq/4, 0.25)
+      smoothFreq(baseFreq/4, 0.25)
+      smoothFreq2(baseFreq/4, 0.25)
 
-        setTimeout(() => smoothGain(0, 0.05), interval*0.25)
-        setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
-      } else {
-        // smoothFreq(baseFreq * HEXATONIC_SCALE2[i%6], 0.25)
-        // smoothGain(MAX_VOLUME, 0.03)
+      setTimeout(() => smoothGain(0, 0.05), interval*0.25)
+      setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
 
-        // setTimeout(() => smoothGain(0, 0.05), interval*0.75)
-      }
     }, interval)
 
   }, timeUntilNextNote)
@@ -327,11 +323,42 @@ function zoomSound({duration, delay}) {
       smoothFreq(getFreqAtTime(Date.now() + duration/4), duration/4000)
     }, duration/4)
   }, timeUntilNextQuarter)
-
-
 }
 
 
+function carSirenSound({duration, delay}) {
+  const freqMax = sample(MAJOR_SCALE) * BASE_FREQ / 2
+  const x = sample(MAJOR_SCALE.slice(1))
+
+  const freqMin = freqMax / x
+  const freqDiff = freqMax - freqMin
+  const introTimeMs = 250
+
+  const getLoopsAtTime = t => (t - (START_TIME - delay)) / duration
+
+  const getFreqAtTime = t => {
+    const loopProgress = getLoopsAtTime(t) % 1
+    return (loopProgress < 0.25 || loopProgress > 0.75) ? freqMin : freqMax
+  }
+
+
+  const { smoothFreq, smoothGain } = createSource()
+
+  smoothGain(MAX_VOLUME)
+
+  const timeUntilNextHalf = ((1 - (getLoopsAtTime(Date.now() + introTimeMs) % 1)) % 0.5) * duration
+
+  smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalf), timeUntilNextHalf/1000)
+
+  setTimeout(() => {
+    setRunInterval(i => {
+      smoothFreq(getFreqAtTime(Date.now() + introTimeMs, i), introTimeMs/1000)
+    }, duration/2)
+  }, timeUntilNextHalf)
+
+
+
+}
 
 
 

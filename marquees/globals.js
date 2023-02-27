@@ -42,11 +42,11 @@ const fontFamily = chance(
 )
 
 const sectionAnimation = chance(
-  [3, 'borderBlink'],
-  [5, 'blink'],
+  [5, 'borderBlink'],
+  [2, 'blink'],
   [1, 'rotate'],
   [2, 'updown'],
-  [89, ''],
+  [90, ''],
 )
 
 const animationDirection = chance(
@@ -136,10 +136,10 @@ const getShadow = (h) => {
 
 
 const lineRotation = chance(
-  [80, () => 0],
+  [90, () => 0],
   [5, () => rnd(20)],
-  [13, () => rnd(20, 180)],
-  [2, () => 180],
+  [4, () => rnd(20, 180)],
+  [1, () => 180],
 )
 
 const freeFloating = ![0, 180].includes(lineRotation())
@@ -173,6 +173,14 @@ const chooseAltHue = (h) => {
 
 const gradientBg = prb(0.2)
 
+const bgType = chance(
+  [60, 0],
+  [20, 1],
+  [15, 2],
+  [3, 3],
+  [2, 4],
+)
+
 const gradientHues = sample([
   // [60, 120, 180]
   [180],
@@ -184,12 +192,70 @@ const gradientHues = sample([
   [60, 120, 240, 300],
 ])
 
+const zigzagBg = (bg1, bg2, size) => `
+    background-color: ${bg1};
+    background-image:
+      linear-gradient(135deg, ${bg2} 25%, transparent 25%),
+      linear-gradient(225deg, ${bg2} 25%, transparent 25%),
+      linear-gradient(45deg, ${bg2} 25%, transparent 25%),
+      linear-gradient(315deg, ${bg2} 25%, ${bg1} 25%);
+    background-position:  ${size/2}em 0, ${size/2}em 0, 0 0, 0 0;
+    background-size: ${size}em ${size}em;
+    background-repeat: repeat;
+  `
+
+
 function getBgColor(h) {
   const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
   const bg2 = `hsl(${h+sample(gradientHues)}deg, ${sat}%, 50%)`
 
-  // return gradientBg ? `linear-gradient(to right, ${bg1} , ${bg2})` : bg1
-  return gradientBg ? `radial-gradient(${bg1}, ${bg2});` : bg1
+  if (bgType === 1) return `radial-gradient(${bg1}, ${bg2});`
+  if (bgType === 2) return zigzagBg(bg1, bg2, 0.25)
+  if (bgType === 3) return zigzagBg(bg1, bg2, rnd(8, 16))
+  if (bgType === 4) return zigzagBg(bg1, bg2, 1)
+
+  return bg1
+
+}
+
+
+
+const conicalBgPrb = chance(
+  [8.5, 0],
+  [1, 0.2],
+  [0.5, 1],
+)
+
+
+function conicalBg(h) {
+  if (!prb(conicalBgPrb)) return
+
+  const h2 = chooseHue()
+
+  const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
+  const c1 = bw ? bwc.text : `hsl(${h}deg, ${sat}%, 50%)`
+  let c2 = bw ? bwc.bg : `hsl(${h2}deg, ${sat}%, 50%)`
+  c2 = c1 === c2 ? '#fff' : c2
+
+  const cssClass = `cgBg-${int(h)}-${int(h2)}`
+  css(`
+    .${cssClass}::before {
+      content: "";
+      background: repeating-conic-gradient(${c1} 0deg 5deg,  ${c2} 5deg 10deg);
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      z-index: -1;
+      animation: BgRotate ${rnd(500, 5000)}ms linear infinite;
+      animation-direction: ${prb(0.5) ? 'normal' : 'reverse'}
+    }
+  `)
+
+
+  return cssClass
+
 }
 
 const bgColor = sample([`hsl(${chooseHue()}deg, ${sat}%, 50%)`, `#fff`, `#000`])
@@ -201,5 +267,14 @@ css(`
 
   body {
     background: ${bgColor};
+  }
+
+  @keyframes BgRotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(10deg);
+    }
   }
 `)

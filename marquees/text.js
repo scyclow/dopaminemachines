@@ -32,12 +32,12 @@ const emojis = es => es.split(' ').map(emoji)
 
 */
 
-const emojiList = `💸 🤑 🔥 😂 💥 🍻 🎉 🕺 💃 🎊 🍾 🥂 🥳 🎈 💸 💶 💰 💎 👑 💍 🤑 🎁 🥇 💲 🌟 🚀 🙌 ⚡️ ❤️‍🔥 💫 🚨 💥 🔥 🤯 ✨ 🤩 🏎 🔟 🦄 🌈 ❓ 🍀 💪 🌋 🏖 📛 😍 💩 👨‍💻 🧑‍💻 👩‍💻 🌎 🕸 👁 👁‍🗨 → ← ★ ‼️ ❗️ 💋 🍆 🍑 🌶 💥 🍬 🍭 🎂 🍫 🏄‍♂️ 😵‍💫 🤡 ☄️ 🍦 🎨 💷 💴 💵 🧨 💣 💹 🔊 🇺🇸 🌜 🌛 🌝 🌞 🐄`
+const emojiList = `💸 🤑 🔥 😂 💥 🍻 🎉 🕺 💃 🎊 🍾 🥂 🥳 🎈 💸 💶 💰 💎 👑 💍 🤑 🎁 🥇 💲 🌟 🚀 🙌 ⚡️ ❤️‍🔥 💫 🚨 💥 🔥 🤯 ✨ 🤩 🏎 🔟 🦄 🌈 ❓ 🍀 💪 🌋 🏖 📛 😍 💩 👨‍💻 🧑‍💻 👩‍💻 🌎 🕸 👁 👁‍🗨 → ← ★ ‼️ ❗️ 💋 🍆 🍑 🌶 💥 🍬 🍭 🎂 🍫 🏄‍♂️ 😵‍💫 🤡 ☄️ 🍦 🎨 💷 💴 💵 🧨 💣 💹 🔊 🇺🇸 🌜 🌛 🌝 🌞 🐄 🎰 🍒 🪙 🔔 🍉 🍇 🍋`
   .split(' ')
 
 
 
-  // boost, champion, forbidden, pure bliss, ecstacy, ecstatic, infinite joy, bonanza, extra, frenzy, treasure, double down, whopping, certified
+  // money multiplier, electric, boost, champion, forbidden, pure bliss, ecstacy, ecstatic, infinite joy, bonanza, extra, frenzy, treasure, double down, whopping, certified, galore
 
 const allContent = [
   [word('→'), word('←')],
@@ -52,9 +52,10 @@ const allContent = [
   [emoji(`😂`)],
   [emoji(`💥`)],
   emojis(`🍻 🎉 🕺 💃 🎊 🍾 🥂 🥳 🎈`),
-  emojis(`💸 💶 💷 💴 💵 💰 💎 👑 💍 🤑 🎁 🥇 💲 💹`),
+  emojis(`💸 💶 💷 💴 💵 💰 💎 👑 💍 🤑 🎁 🥇 💲 💹 📈`),
   emojis(`🌟 🚀 🙌 ⚡️ ❤️‍🔥 💫 🚨 💥 🔥 🌋 🤯 ✨ 🤩 🏎 🌞 ☄️ 🧨 💣`),
   emojis(`🔟 🦄 🌈 ❓ 🍀 💪 🏖 📛 😍 💩 🏄‍♂️ 😵‍💫 🤡 🔊 🇺🇸`),
+  emojis(`🎰 🍒 🪙 🔔 🍉 🍇 🍋`),
   emojis(`🍬 🍭 🎂 🍫 🍦`),
   // emojis(`👨‍💻 🧑‍💻 👩‍💻 🌎 🕸 👁 👁‍🗨`),
   emojis(`🌎 👁 👁‍🗨`),
@@ -81,6 +82,8 @@ const allContent = [
   [word(`SO HOT`)],
   [word(`SO COOL`)],
   [word(`BUY NOW`)],
+  [word(`WIN BIG`)],
+  [word(`HIT IT BIG`)],
   [word(`AMAZING`)],
   [word(`BARGAIN`)],
   [word(`WARNING`)],
@@ -89,6 +92,8 @@ const allContent = [
   [word(`SO CHEAP`)],
   [word(`SELL OUT`)],
   [word(`CASH COW`), emoji`🐄`],
+  [word(`SIZZLING`)],
+  [word(`MEGA WIN`)],
   // [word(`UNDEFINED`)],
   [word(`HOT STUFF`)],
   [word(`EXCITING!`)],
@@ -121,6 +126,7 @@ const allContent = [
   [word(`PAY ATTENTION`, 2)],
   [word(`WHAT A THRILL`, 2)],
   [word(`MASSIVE GAINS`, 2)],
+  [word(`WHAT A BARGAIN`, 2)],
   [word(`INSANE PRICES!`, 2)],
   [word(`DON'T MISS OUT`, 2)],
   [word(`CRYPTO FORTUNE`, 2)],

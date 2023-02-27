@@ -13,16 +13,18 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
   const borderWidth = min(rSpan, cSpan) * .05
 
+
+
   const container = $.div(
     withBgAnimation(child, rSpan, cSpan),
     {
-      class: `sectionContainer ${sectionAnimation}${rotateColor ? ' fullColorRotate' : ''}`,
+      class: `sectionContainer ${conicalBg(h) || ''} ${sectionAnimation} ${rotateColor ? ' fullColorRotate' : ''}`,
       style: `
         border-style: ${borderStyle()};
         ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
         grid-column: span ${cSpan};
         grid-row: span ${rSpan};
-        background: ${hideBg ? 'none' : bgColor};
+        background: ${(hideBg ? 'none' : bgColor)};
         color: ${txtColor};
         transform: ${rotation};
         font-style: ${fontStyle};
@@ -217,10 +219,15 @@ function animationContainer(rSpan, cSpan) {
     if (animation === spin) {
       smoothSound(primaryAnimationParams)
     } else if ([vPivot, hPivot, dance].includes(animation)) {
-      sirenSound({
-        delay: primaryAnimationParams.delay,
-        duration: primaryAnimationParams.duration/2,
-      })
+      prb(0.5)
+        ? sirenSound({
+          delay: primaryAnimationParams.delay,
+          duration: primaryAnimationParams.duration/2,
+        })
+        : carSirenSound(primaryAnimationParams)
+
+    // TODO hSiren/vSiren should also be able ot be smooth sound
+    // TODO blinking sound every rotation
     } else if ([growShrink, hSiren, vSiren].includes(animation)) {
       sirenSound(primaryAnimationParams)
     } else if ([hFlip, vFlip].includes(animation)) {
@@ -241,11 +248,12 @@ function animationContainer(rSpan, cSpan) {
         duration: primaryAnimationParams.duration/2
       })
     }
+
   }
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
     playSound()
-    if (secondAnimation !== iden || primaryAnimationParams.showTrails) playSound()
+    // if (secondAnimation !== iden || primaryAnimationParams.showTrails) playSound()
   })
 }
 
