@@ -18,7 +18,7 @@ const rows = 48
 
 
 
-const sidewaysPrb = prb(0.5) ? 0 : rnd(0.5, 1)
+const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 
 const speed = prb(0.05) ? 100 : 3
 const sat = 100
@@ -174,11 +174,17 @@ const chooseAltHue = (h) => {
 const gradientBg = prb(0.2)
 
 const bgType = chance(
-  [60, 0],
+  [70, 0],
   [20, 1],
-  [15, 2],
+  [5, 2],
   [3, 3],
   [2, 4],
+)
+
+const bgAnimationPrb = chance(
+  [12, 0],
+  [bgType < 2 && 6, rnd(0.25, 0.5)],
+  [bgType < 2 && 2, 1],
 )
 
 const gradientHues = sample([
@@ -258,7 +264,12 @@ function conicalBg(h) {
 
 }
 
-const bgColor = sample([`hsl(${chooseHue()}deg, ${sat}%, 50%)`, `#fff`, `#000`])
+const bgColor = chance(
+  [2, `hsl(${chooseHue()}deg, ${sat}%, 50%)`],
+  [1, `#fff`],
+  [1, `#000`]
+)
+
 css(`
   * {
     font-family: ${fontFamily};

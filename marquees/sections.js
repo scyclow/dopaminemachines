@@ -52,7 +52,8 @@ function marqueeContainter(rSpan, cSpan) {
   const child = sample(content)
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
-  const slow = 1 + child.innerHTML.length/9
+  const slow = 1 + adjustCharLength(child.innerHTML)/9
+
   const h = chooseHue()
   const txtH = chooseAltHue(h)
 
@@ -77,30 +78,31 @@ function marqueeContainter(rSpan, cSpan) {
     : iden
 
   const r = rnd(750, 1500)
-  const duration = rnd(0.5, 100) * slow * speed
+  const d = map(sideways ? cSpan/cols : rSpan/rows, 0, 1, 0.5, 20)
+  const duration = rnd(d, 100) * slow * speed
   const delay = rnd(duration/2) + (duration / 3)
 
   const showLeftRight = canShowAltAnimation && prb(0.1)
-  const showTrails = showLeftRight && true
+  const showTrails = showLeftRight && prb(0.5)
 
   const childEl = showLeftRight
     ? leftRight(child.cloneNode(true), {
-      style: `font-size: ${height}; text-shadow: ${getShadow(txtH)};`,
-      duration: r * slow * speed,
-      delay,
-      showTrails
-    })
+        style: `font-size: ${height}; text-shadow: ${getShadow(txtH)};`,
+        duration: r * slow * speed,
+        delay,
+        showTrails
+      })
     : marquee(child, {
-      style: `
-        font-size: ${sideways ? width : height};
-        text-shadow: ${getShadow(txtH)};
-      `,
-      direction: posOrNeg(),
-      delay,
-      duration,
-      sideways,
-      msgAnimation
-    })
+        style: `
+          font-size: ${sideways ? width : height};
+          text-shadow: ${getShadow(txtH)};
+        `,
+        direction: posOrNeg(),
+        delay,
+        duration,
+        sideways,
+        msgAnimation
+      })
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
     showLeftRight
@@ -142,6 +144,7 @@ function animationContainer(rSpan, cSpan) {
 
   const ignoreCharAnimation = [...emojiList, '<<<<', '>>>>'].includes(child.innerHTML.replace('!', ''))
 
+
   const animation = sample([
     dance, //
     growShrink, //
@@ -163,6 +166,7 @@ function animationContainer(rSpan, cSpan) {
 
   const words = child.innerHTML.split(' ')
   const shortest = words.reduce((shortest, word) => word.length < shortest.length ? word : shortest , words[0])
+
 
   const rowSizeMax = 5.5/(child.innerHTML.length)
   const colSizeMax = 7 *(cSpan/(cols*shortest.length))

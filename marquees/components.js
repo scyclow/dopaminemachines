@@ -258,10 +258,10 @@ css`
 
   @keyframes VSiren {
     0% {
-      transform: perspective(250px) rotate3d(2,0,0, 0deg) translateZ(0.75em);
+      transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em);
     }
     100% {
-      transform: perspective(250px) rotate3d(2,0,0, 360deg) translateZ(0.75em);
+      transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em);
     }
   }
 
@@ -271,10 +271,10 @@ css`
 
   @keyframes VSirenShort {
     0% {
-      transform: perspective(250px) rotate3d(2,0,0, 0deg) translateZ(0.3em);
+      transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em);
     }
     100% {
-      transform: perspective(250px) rotate3d(2,0,0, 360deg) translateZ(0.3em);
+      transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em);
     }
   }
 
@@ -300,10 +300,10 @@ css`
 
   @keyframes VPivot {
     0%, 100% {
-      transform: perspective(250px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5);
+      transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5);
     }
     50% {
-      transform: perspective(250px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5);
+      transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5);
     }
   }
 
@@ -315,10 +315,10 @@ css`
 
   @keyframes VFlip {
     0% {
-      transform: perspective(250px) rotate3d(2,0,0, 0deg);
+      transform: perspective(500px) rotate3d(2,0,0, 0deg);
     }
     100% {
-      transform: perspective(250px) rotate3d(2,0,0, 1800deg);
+      transform: perspective(500px) rotate3d(2,0,0, 1800deg);
     }
   }
 
@@ -329,10 +329,10 @@ css`
 
   @keyframes HFlip {
     0% {
-      transform: perspective(250px) rotate3d(0,2,0, 0deg);
+      transform: perspective(500px) rotate3d(0,2,0, 0deg);
     }
     100% {
-      transform: perspective(250px) rotate3d(0,2,0, 1800deg);
+      transform: perspective(500px) rotate3d(0,2,0, 1800deg);
     }
   }
 
@@ -598,11 +598,6 @@ const withTrails = (grandChild, args={}) => {
 }
 
 
-const bgAnimationPrb = chance(
-  [12, 0],
-  [6, rnd(0.25, 0.5)],
-  [2, 1],
-)
 const bgAnimationFn = sample([
   colorShiftingBgMultiple,
   staticBgsMultiple,
@@ -695,19 +690,27 @@ function withBgAnimation(child, rSpan, cSpan) {
 
 function genericCharacterComponent(name, durMin, durMax) {
   return (children, args={}) => {
-    const duration = args.duration ? map(args.duration, 750, 5000, durMin, durMax) : rnd(durMin, durMax)
-    let split = children.innerHTML.split('')
-    if (children.innerHTML === '&lt;&lt;&lt;&lt;') split = ['<', '<', '<', '<']
-    if (children.innerHTML === '&gt;&gt;&gt;&gt;') split = ['>', '>', '>', '>']
+    const splitAnimation = txt => {
+      const duration = args.duration ? map(args.duration, 750, 5000, durMin, durMax) : rnd(durMin, durMax)
+      let split = txt.split('')
+      if (txt === '&lt;&lt;&lt;&lt;') split = ['<', '<', '<', '<']
+      if (txt === '&gt;&gt;&gt;&gt;') split = ['>', '>', '>', '>']
 
-    return $.div(split.map((c, i) => $.span(c, {
-        class: name,
-        style: `
-          animation-delay: -${i * duration}ms;
-          ${c === ' ' ? 'margin-right: 0.5em;' : ''}
-        `
-      })
-    ), {style: `display: inline-block`})
+      return $.div(split.map((c, i) => $.span(c, {
+          class: name,
+          style: `
+            animation-delay: -${i * duration}ms;
+          `
+        })
+      ), {style: `display: inline-block`})
+    }
+
+    return children.innerHTML.split(' ').map(txt => $.div(splitAnimation(txt), {
+      style: `
+        display: inline-block;
+        margin-right: 0.5em;
+      `
+    }))
   }
 }
 
