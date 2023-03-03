@@ -1,5 +1,4 @@
 css`
-
   .animatingComponent {
     display: inline-block;
   }
@@ -696,21 +695,26 @@ function genericCharacterComponent(name, durMin, durMax) {
       if (txt === '&lt;&lt;&lt;&lt;') split = ['<', '<', '<', '<']
       if (txt === '&gt;&gt;&gt;&gt;') split = ['>', '>', '>', '>']
 
-      return $.div(split.map((c, i) => $.span(c, {
-          class: name,
-          style: `
-            animation-delay: -${i * duration}ms;
-          `
-        })
-      ), {style: `display: inline-block`})
+      return split.map((c, i) => $.span(c, {
+        class: name,
+        style: `animation-delay: -${i * duration}ms;`
+      }))
     }
 
-    return children.innerHTML.split(' ').map(txt => $.div(splitAnimation(txt), {
-      style: `
-        display: inline-block;
-        margin-right: 0.5em;
-      `
-    }))
+    const c = prb(0.5) ? [children.innerHTML] : children.innerHTML.split(' ')
+
+    return $.div(
+      c.map(txt => $.div(
+        splitAnimation(txt),
+        {
+          style: `
+            display: inline-block;
+            margin-left: 0.25em;
+            margin-right: 0.25em;
+          `
+        }
+      )
+    ), { style: `display: inline-block;` })
   }
 }
 

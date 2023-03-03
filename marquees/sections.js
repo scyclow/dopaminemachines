@@ -49,10 +49,11 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 function marqueeContainter(rSpan, cSpan) {
-  const child = sample(content)
+  const child = sampleContent()
+  const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
-  const slow = 1 + adjustCharLength(child.innerHTML)/9
+  const slow = 1 + adjustCharLength(child.innerHTML, pairedEmoji)/9
 
   const h = chooseHue()
   const txtH = chooseAltHue(h)
@@ -85,14 +86,21 @@ function marqueeContainter(rSpan, cSpan) {
   const showLeftRight = canShowAltAnimation && prb(0.1)
   const showTrails = showLeftRight && prb(0.5)
 
+  const childWithPairedEmoji = pairedEmoji
+    ? [
+      child.cloneNode(true),
+      $.span(pairedEmoji, { style: `margin-left: 1em;`})
+    ]
+    : child.cloneNode(true)
+
   const childEl = showLeftRight
-    ? leftRight(child.cloneNode(true), {
+    ? leftRight(childWithPairedEmoji, {
         style: `font-size: ${height}; text-shadow: ${getShadow(txtH)};`,
         duration: r * slow * speed,
         delay,
         showTrails
       })
-    : marquee(child, {
+    : marquee(childWithPairedEmoji, {
         style: `
           font-size: ${sideways ? width : height};
           text-shadow: ${getShadow(txtH)};
@@ -135,7 +143,7 @@ function getFontSize(txt, rSpan, cSpan) {
 
 
 function animationContainer(rSpan, cSpan) {
-  const child = sample(content)
+  const child = sampleContent()
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
   const h = chooseHue()
@@ -281,7 +289,7 @@ function getEmojiGrid(rSpan, cSpan) {
 }
 
 function animationGridContainer(rSpan, cSpan) {
-  const child = sample(content.filter(e => emojiList.includes(e.innerHTML)))
+  const child = sample(_content.emojis)
 
   if (!child) return animationContainer(rSpan, cSpan)
 

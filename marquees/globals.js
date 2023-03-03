@@ -73,7 +73,6 @@ const borderStyle = chance(
   [1, () => 'dashed'],
   [1, () => 'dotted'],
   [1, () => 'double'],
-  [1, () => sample(['solid', 'dashed', 'dotted', 'double'])],
 )
 
 const shadowType = chance(
@@ -84,14 +83,16 @@ const shadowType = chance(
   [4, 5],
   [2, 6],
   [2, 7],
-  [1, 8],
-  [1, 9],
+  [4, 8],
+  [2, 9],
 )
 
 const showBorder = prb(0.25)
 const rotateColor = rows < 11 && prb(0.05)
 
 const deepShadows = prb(0.1)
+
+const showEmojis = prb(0.5)
 
 
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, ${sat}%, ${l}%)`
@@ -129,10 +130,16 @@ const getShadow = (h) => {
     shadowType === 7 ?
       `-0.05em -0.05em ${getShadowColor(h+60)}, 0.05em 0.025em ${getShadowColor(h+240)}`
 
-    : '0 0 0.01em #000'
+    : '0 0 0.05em #000'
   )
 }
 
+
+const pairedEmojiPrb = chance(
+  [2, 0],
+  [1, 0.5],
+  [1, 1],
+)
 
 
 const lineRotation = chance(
