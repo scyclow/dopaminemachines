@@ -64,7 +64,7 @@ const animationDuration = chance(
 
 const marqueeAnimationRate = chance(
   [85, 0],
-  [10, rnd(.25, .75)],
+  [20, rnd(.25, .5)],
   [5, 1],
 )
 

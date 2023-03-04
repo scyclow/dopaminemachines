@@ -379,9 +379,9 @@ function flexSection(rowCells, colCells) {
   const colMin = 12
 
   const rowMin = chance(
-    [3, sample([24, 48])],
+    [1, sample([24, 48])],
     [3, sample([6, 8, 12, 16])],
-    [1, sample([2, 3, 4])],
+    [5, sample([2, 3, 4])],
     [1, 1],
   )
   const rowMax = prb(0.85) ? rowCells : rowMin
@@ -391,6 +391,7 @@ function flexSection(rowCells, colCells) {
     let cCursor = findNextUnfilledCol(rCursor, 0)
 
     while (cCursor < colCells) {
+      // TODO maybe make the max row count here dependent upon the ratio (based on the c span)
       const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
       const rowsLeft = min(rowCells - rCursor, rowMax)
 
