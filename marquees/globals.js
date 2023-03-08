@@ -7,17 +7,6 @@ const rows = 48
 
 
 
-
-// const rows = chance(
-//   [1, 1],
-//   [3, rndint(2, 10)],
-//   [3, rndint(10, 25)],
-//   [1, rndint(25, 65)],
-// )
-
-
-
-
 const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 
 const speed = prb(0.05) ? 100 : 3
@@ -182,10 +171,10 @@ const gradientBg = prb(0.2)
 
 const bgType = chance(
   [70, 0],
-  [20, 1],
-  [5, 2],
-  [3, 3],
-  [2, 4],
+  [20, 1], // radial gradiant
+  [5, 2], // zigzag small
+  [3, 3], // zigzag large
+  [2, 4], // zigzag med
 )
 
 const bgAnimationPrb = chance(
@@ -217,7 +206,6 @@ const zigzagBg = (bg1, bg2, size) => `
     background-repeat: repeat;
   `
 
-
 function getBgColor(h) {
   const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
   const bg2 = `hsl(${h+sample(gradientHues)}deg, ${sat}%, 50%)`
@@ -228,7 +216,6 @@ function getBgColor(h) {
   if (bgType === 4) return zigzagBg(bg1, bg2, 1)
 
   return bg1
-
 }
 
 
@@ -239,9 +226,13 @@ const conicalBgPrb = chance(
   [0.5, 1],
 )
 
+const ifAspectRatioLT = (r, amt) => r < amt
 
-function conicalBg(h) {
-  if (!prb(conicalBgPrb)) return
+function conicalBg(h, rSpan, cSpan) {
+  if (!prb(conicalBgPrb) || rSpan < 4) return
+  // if (cSpan/rSpan > 20) return
+
+  const aspectRatio = cSpan/rSpan
 
   const h2 = chooseHue()
 
@@ -250,19 +241,38 @@ function conicalBg(h) {
   let c2 = bw ? bwc.bg : `hsl(${h2}deg, ${sat}%, 50%)`
   c2 = c1 === c2 ? '#fff' : c2
 
+  const deg = chance(
+    [2, 2],
+    [10, 5],
+    // [8, 10],
+  )
+
+
   const cssClass = `cgBg-${int(h)}-${int(h2)}`
+
+  const size = 128
   css(`
     .${cssClass}::before {
       content: "";
-      background: repeating-conic-gradient(${c1} 0deg 5deg,  ${c2} 5deg 10deg);
+      background: repeating-conic-gradient(${c1} 0deg ${deg}deg,  ${c2} ${deg}deg ${deg*2}deg);
       position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -50%;
-      left: -50%;
+      width: ${size}00%;
+      height: ${size}00%;
+      top: -${size/2 * 100 - 50}%;
+      left: -${size/2 * 100 - 50}%;
       z-index: -1;
-      animation: BgRotate ${rnd(500, 5000)}ms linear infinite;
+      animation: BgRotate${deg} ${rnd(1000, 5000)}ms linear infinite;
       animation-direction: ${prb(0.5) ? 'normal' : 'reverse'}
+    }
+
+
+    @keyframes BgRotate${deg} {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(${deg*2}deg);
+      }
     }
   `)
 
@@ -285,14 +295,5 @@ css(`
 
   body {
     background: ${bgColor};
-  }
-
-  @keyframes BgRotate {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(10deg);
-    }
   }
 `)

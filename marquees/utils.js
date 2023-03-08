@@ -32,8 +32,12 @@ function chance(...chances) {
   const seed = rnd()
   let sum = 0
   for (let i = 0; i < chances.length; i++) {
-    sum += chances[i][0] / total
-    if (seed <= sum) return chances[i][1]
+    const val =
+      chances[i][0] === true ? 1
+      : chances[i][0] === false ? 0
+      : chances[i][0]
+    sum += val / total
+    if (seed <= sum && chances[i][0]) return chances[i][1]
   }
 }
 

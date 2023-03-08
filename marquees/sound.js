@@ -196,6 +196,46 @@ function smoothSound({delay, duration}) {
   sG2(MAX_VOLUME, 0.25)
 }
 
+function ticktockSound(args) {
+  const baseFreq = BASE_FREQ
+  const { smoothFreq, smoothGain } = createSource()
+  const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
+
+  const duration = args.duration
+  const delay = args.delay || 0
+
+  const getLoopsAtTime = t => (t - (START_TIME - delay)) / duration
+
+  const interval = duration / 2
+
+  const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now()) % 1)) % (1/2)) * duration
+  const scale = sample(MAJOR_SCALE)
+
+  const upScale = sample([1.3333, 1.5, 2])
+
+  setTimeout(() => {
+    setRunInterval((i) => {
+      smoothGain(MAX_VOLUME, 0.03)
+      smoothGain2(MAX_VOLUME, 0.03)
+
+      if (i%2) {
+        smoothFreq(baseFreq, 0.1)
+        smoothFreq2(baseFreq * upScale, 0.1)
+
+      } else {
+
+        smoothFreq(baseFreq*upScale, 0.1)
+        smoothFreq2(baseFreq * upScale**2, 0.1)
+      }
+
+      setTimeout(() => smoothGain(0, 0.05), interval*0.25)
+      setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
+
+    }, interval)
+
+  }, timeUntilNextNote)
+}
+
 
 function blinkCharSound(args, seq=null) {
   const sequence = sample([0, 1, 2])

@@ -697,7 +697,10 @@ function genericCharacterComponent(name, durMin, durMax) {
 
       return split.map((c, i) => $.span(c, {
         class: name,
-        style: `animation-delay: -${i * duration}ms;`
+        style: `
+          animation-delay: -${i * duration}ms;
+          ${c === ' ' ? 'margin-right: 0.5em;' : ''}
+        `
       }))
     }
 

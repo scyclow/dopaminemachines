@@ -8,17 +8,14 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     ? `perspective(500px) rotate3d(1,1,1,${lineRotation()}deg)`
     : `rotate(${lineRotation()}deg)`
 
-  const fontStyle = prb(italicRate) ? 'italic' : 'none'
-
+  const fontStyle = prb(italicRate) ? 'font-style: italic;' : ''
 
   const borderWidth = min(rSpan, cSpan) * .05
-
-
 
   const container = $.div(
     withBgAnimation(child, rSpan, cSpan),
     {
-      class: `sectionContainer ${conicalBg(h) || ''} ${sectionAnimation} ${rotateColor ? ' fullColorRotate' : ''}`,
+      class: `sectionContainer ${conicalBg(h, rSpan, cSpan) || ''} ${sectionAnimation} ${rotateColor ? ' fullColorRotate' : ''}`,
       style: `
         border-style: ${borderStyle()};
         ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
@@ -26,8 +23,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
         grid-row: span ${rSpan};
         background: ${(hideBg ? 'none' : bgColor)};
         color: ${txtColor};
+        ${fontStyle};
         transform: ${rotation};
-        font-style: ${fontStyle};
         animation-delay: -${rnd(5)}s;
         animation-direction: ${rotateColor ?'normal' : animationDirection()};
         animation-duration: ${rotateColor ? '25' : animationDuration()}s;
@@ -48,7 +45,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 
-function marqueeContainter(rSpan, cSpan) {
+function marqueeContainter(rSpan, cSpan, sideways=false) {
   const child = sampleContent()
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
   const height = `calc(${100*rSpan/rows}vh)`
@@ -62,18 +59,18 @@ function marqueeContainter(rSpan, cSpan) {
   // const slowIx = child.indexOf('slow="')
   // slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
 
-  const canShowAltAnimation = rSpan >= 2 && cSpan/rSpan >= 6 && child.innerHTML.length < 8
-  const sideways = prb(sidewaysPrb) && cSpan/rSpan < 1.2
+  const canShowAltAnimation = rSpan >= 2 && cSpan/rSpan >= 5
+  const msgIsShort = child.innerHTML.length < 8
 
   const msgAnimation = prb(marqueeAnimationRate) && canShowAltAnimation
     ? chance(
       [1, growShrinkShort],
       [1, vSirenShort],
-      [1, dance],
-      [1, spin],
-      [1, hSiren],
-      [1, hPivot],
-      [1, hFlip],
+      [msgIsShort && 1, dance],
+      [msgIsShort && 1, spin],
+      [msgIsShort && 1, hSiren],
+      [msgIsShort && 1, hPivot],
+      [msgIsShort && 1, hFlip],
       [1, blink],
     )
     : iden
@@ -83,7 +80,7 @@ function marqueeContainter(rSpan, cSpan) {
   const duration = rnd(d, 100) * slow * speed
   const delay = rnd(duration/2) + (duration / 3)
 
-  const showLeftRight = canShowAltAnimation && prb(0.1)
+  const showLeftRight = cSpan/rSpan >= 6 && prb(0.1)
   const showTrails = showLeftRight && prb(0.5)
 
   const childWithPairedEmoji = pairedEmoji
@@ -230,13 +227,23 @@ function animationContainer(rSpan, cSpan) {
   const playSound = () => {
     if (animation === spin) {
       smoothSound(primaryAnimationParams)
-    } else if ([vPivot, hPivot, dance].includes(animation)) {
-      prb(0.5)
-        ? sirenSound({
+    } else if ([vPivot, hPivot, dance, updown].includes(animation)) {
+
+      chance(
+        [2, () => sirenSound({
           delay: primaryAnimationParams.delay,
           duration: primaryAnimationParams.duration/2,
-        })
-        : carSirenSound(primaryAnimationParams)
+        })],
+        [1, () => carSirenSound(primaryAnimationParams)],
+        [2, () => zoomSound({
+          ...primaryAnimationParams,
+          delay: primaryAnimationParams.delay + primaryAnimationParams.duration/4,
+          duration: primaryAnimationParams.duration/2
+        })],
+        [1, () => ticktockSound(primaryAnimationParams)]
+      )()
+
+
 
     // TODO hSiren/vSiren should also be able ot be smooth sound
     // TODO blinking sound every rotation
@@ -253,12 +260,12 @@ function animationContainer(rSpan, cSpan) {
       prb(0.5) ? hexSound(primaryAnimationParams) : sirenSound(primaryAnimationParams)
     } else if (animation === climb) {
       climbSound(primaryAnimationParams)
-    } else if (animation === updown) {
-      zoomSound({
-        ...primaryAnimationParams,
-        delay: primaryAnimationParams.delay + primaryAnimationParams.duration/4,
-        duration: primaryAnimationParams.duration/2
-      })
+    // } else if (animation === updown) {
+    //   zoomSound({
+    //     ...primaryAnimationParams,
+    //     delay: primaryAnimationParams.delay + primaryAnimationParams.duration/4,
+    //     duration: primaryAnimationParams.duration/2
+    //   })
     }
 
   }
@@ -347,7 +354,8 @@ function animationGridContainer(rSpan, cSpan) {
 
 
 
-
+const evenRows = prb(0.15)
+const evenCols = prb(0.05)
 
 
 
@@ -375,8 +383,10 @@ function flexSection(rowCells, colCells) {
 
   const marquees = []
 
-  const colMax = prb(0.05) ? 3 : colCells
+
+
   const colMin = 12
+  const colMax = prb(0.05) ? 3 : colCells
 
   const rowMin = chance(
     [1, sample([24, 48])],
@@ -384,14 +394,13 @@ function flexSection(rowCells, colCells) {
     [5, sample([2, 3, 4])],
     [1, 1],
   )
-  const rowMax = prb(0.85) ? rowCells : rowMin
+  const rowMax = evenRows ? rowMin : rowCells
 
 
   while (rCursor < rowCells) {
     let cCursor = findNextUnfilledCol(rCursor, 0)
 
     while (cCursor < colCells) {
-      // TODO maybe make the max row count here dependent upon the ratio (based on the c span)
       const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
       const rowsLeft = min(rowCells - rCursor, rowMax)
 
@@ -402,6 +411,8 @@ function flexSection(rowCells, colCells) {
 
       const aspectRatio = cSpan / rSpan
 
+      const sideways = prb(sidewaysPrb) && aspectRatio < 1.2
+
       marquees.push(
         aspectRatio < 1.25 && aspectRatio > 0.8 ?
           prb(0.25) ? animationContainer(rSpan, cSpan) : animationGridContainer(rSpan, cSpan) :
@@ -409,7 +420,7 @@ function flexSection(rowCells, colCells) {
         aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
           animationContainer(rSpan, cSpan) :
 
-        marqueeContainter(rSpan, cSpan)
+        marqueeContainter(rSpan, cSpan, sideways)
       )
 
       times(rSpan, r =>
