@@ -146,9 +146,7 @@ function animationContainer(rSpan, cSpan) {
   const h = chooseHue()
   const txtH = chooseAltHue(h)
 
-
   const ignoreCharAnimation = [...emojiList, '<<<<', '>>>>'].includes(child.innerHTML.replace('!', ''))
-
 
   const animation = sample([
     dance, //
@@ -360,11 +358,123 @@ const evenCols = prb(0.05)
 
 
 
+
+
+/*
+
+LAYOUTS
+  - anything goes
+      const colMin = 1
+      const rowMin = 1
+      const colMax = colCells
+      const rowMax = rowCells
+
+  - anything goes (lean big)
+      const colMin = 12
+
+      const rowMin = chance(
+        [1, sample([24, 48])],
+        [3, sample([6, 8, 12, 16])],
+        [5, sample([2, 3, 4])],
+        [1, 1],
+      )
+
+  - scrunched up
+      const getSpan = (minCells, cellsLeft, maxCells) => {
+        const span = rndint(min(minCells, cellsLeft), cellsLeft)
+        return (cellsLeft - span < minCells) ? cellsLeft : span
+      }
+
+  - even rows
+
+  - even cols
+    (still have some non-sideways marquees)
+
+  - perfect grid
+
+  - imperfect grid
+      const colMin = 1
+      const rowMin = 1
+      const colMax = int(colCells/6)
+      const rowMax = int(rowCells/6)
+
+
+
+*/
+
+const layoutStyle = chance(
+  [73, 1], // anything goes
+  [0, 2], // anything goes (lean big)    TODO: this isn't very different. maybe eliminate or make one big thing
+  [7, 3], // anything goes (lean small)  TODO: maybe have this instead of 5?
+  [3, 4], // scrunched up                TODO: refactor this so there's a high degree of variability but not scrunched up
+  [7, 5], // even rows                   TODO: make 16, 24 less likely
+  [5, 6], // even cols
+  [2, 7], // perfect grid                TODO: maybe include some marquees in there
+  [3, 8], // imperfect grid
+)
+
+
 function flexSection(rowCells, colCells) {
-  let rCursor = 0
 
   const cells = {}
   times(rowCells, r => cells[r] = [])
+
+  const marquees = []
+
+  let colMin, colMax, rowMin, rowMax
+
+  if (layoutStyle === 1 || layoutStyle === 4) {
+    colMin = 1
+    rowMin = 1
+    colMax = colCells
+    rowMax = rowCells
+
+  } else if (layoutStyle === 2) {
+    colMin = 12
+    rowMin = chance(
+      [1, sample([24, 48])],
+      [3, sample([6, 8, 12, 16])],
+      [5, sample([2, 3, 4])],
+      [1, 1],
+    )
+    colMax = colCells
+    rowMax = rowCells
+
+  } else if (layoutStyle === 3) {
+    colMin = 1
+    rowMin = 1
+    colMax = colCells
+    rowMax = int(rowCells/8)
+
+  } else if (layoutStyle === 5) {
+    const rSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
+    rowMin = rSize
+    rowMax = rSize
+
+    colMin = 12
+    colMax = colCells
+
+  } else if (layoutStyle === 6) {
+    const cSize = sample([2, 3, 4, 6, 10, 15])
+    colMin = cSize
+    colMax = cSize
+
+    rowMin = prb(0.5) ? 16 : rowCells
+    rowMax = rowCells
+
+  } else if (layoutStyle === 7) {
+    const cellSize = sample([3, 4, 6, 12, 16])
+    colMin = cellSize
+    colMax = cellSize
+    rowMin = cellSize
+    rowMax = cellSize
+  } else if (layoutStyle === 8) {
+    colMin = 1
+    rowMin = 1
+    colMax = int(colCells/6)
+    rowMax = int(rowCells/6)
+  }
+
 
   const findNextFilledCol = (rC, cC) => {
     for (let c = cC; c < colCells; c++) {
@@ -381,53 +491,54 @@ function flexSection(rowCells, colCells) {
     return colCells
   }
 
-  const marquees = []
+
+  const getSpan = (minCells, cellsLeft, maxCells) => {
+    // const span = rndint(min(minCells, cellsLeft), cellsLeft)
+    const mx = layoutStyle === 4 ? cellsLeft : maxCells
+
+    const span = rndint(min(minCells, cellsLeft), mx)
+    return (cellsLeft - span < minCells) ? cellsLeft : span
+  }
 
 
+  const fillSection = (rCursor, cCursor) => {
+    const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
+    const rowsLeft = max(1, min(rowCells - rCursor, rowMax))
 
-  const colMin = 12
-  const colMax = prb(0.05) ? 3 : colCells
+    const cSpan = getSpan(colMin, colsLeft, colCells)
+    const rSpan = getSpan(rowMin, rowsLeft, rowCells)
 
-  const rowMin = chance(
-    [1, sample([24, 48])],
-    [3, sample([6, 8, 12, 16])],
-    [5, sample([2, 3, 4])],
-    [1, 1],
-  )
-  const rowMax = evenRows ? rowMin : rowCells
+    const aspectRatio = cSpan / rSpan
 
+    const sideways = aspectRatio < 0.333 || prb(sidewaysPrb) && aspectRatio < 1.2
+
+    marquees.push(
+      aspectRatio < 1.25 && aspectRatio > 0.8 ?
+        prb(0.25) ? animationContainer(rSpan, cSpan) : animationGridContainer(rSpan, cSpan) :
+
+      aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
+        animationContainer(rSpan, cSpan) :
+
+      marqueeContainter(rSpan, cSpan, sideways)
+    )
+
+    times(rSpan, r =>
+      times(cSpan, c =>
+        cells[rCursor+r][cCursor+c] = 1
+      )
+    )
+
+    return { cSpan, rSpan }
+  }
+
+  let rCursor = 0
 
   while (rCursor < rowCells) {
     let cCursor = findNextUnfilledCol(rCursor, 0)
 
     while (cCursor < colCells) {
-      const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
-      const rowsLeft = min(rowCells - rCursor, rowMax)
 
-      let cSpan = rndint(min(colMin, colsLeft), colsLeft)
-      if (colsLeft - cSpan < colMin) cSpan = colsLeft
-
-      const rSpan = rndint(min(rowMin, rowsLeft), max(1, rowsLeft))
-
-      const aspectRatio = cSpan / rSpan
-
-      const sideways = prb(sidewaysPrb) && aspectRatio < 1.2
-
-      marquees.push(
-        aspectRatio < 1.25 && aspectRatio > 0.8 ?
-          prb(0.25) ? animationContainer(rSpan, cSpan) : animationGridContainer(rSpan, cSpan) :
-
-        aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
-          animationContainer(rSpan, cSpan) :
-
-        marqueeContainter(rSpan, cSpan, sideways)
-      )
-
-      times(rSpan, r =>
-        times(cSpan, c =>
-          cells[rCursor+r][cCursor+c] = 1
-        )
-      )
+      const { cSpan } = fillSection(rCursor, cCursor)
 
       cCursor = findNextUnfilledCol(rCursor, cCursor + cSpan)
     }

@@ -426,9 +426,11 @@ setInterval(() => {
 }, 500)
 
 
+
 const triggerUtterance = () => {
   const ix = rndint(utteranceQueue.length)
   const [txt] = utteranceQueue.splice(ix, 1)
+  if (franticVoice) txt.pitch = sample(MAJOR_SCALE)
 
   window.speechSynthesis.speak(txt)
 

@@ -691,9 +691,7 @@ function genericCharacterComponent(name, durMin, durMax) {
   return (children, args={}) => {
     const splitAnimation = txt => {
       const duration = args.duration ? map(args.duration, 750, 5000, durMin, durMax) : rnd(durMin, durMax)
-      let split = txt.split('')
-      if (txt === '&lt;&lt;&lt;&lt;') split = ['<', '<', '<', '<']
-      if (txt === '&gt;&gt;&gt;&gt;') split = ['>', '>', '>', '>']
+      const split = txt.split('')
 
       return split.map((c, i) => $.span(c, {
         class: name,

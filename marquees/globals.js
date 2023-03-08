@@ -1,8 +1,9 @@
-const divisor = window.innerHeight/window.innerWidth > 1.5
-  ? 3
-  : 1
+// const divisor = window.innerHeight/window.innerWidth > 1.5
+//   ? 3
+//   : 1
 
-const cols = int(60/divisor)
+// const cols = int(60/divisor)
+const cols = 60
 const rows = 48
 
 
@@ -144,18 +145,41 @@ const hideBg = freeFloating ? prb(0.5) : false
 const threeDRotations = freeFloating && prb(0.02)
 
 
+
+const gradientBg = prb(0.2)
+
+const bgType = chance(
+  [60, 0],
+  [10, 1], // empty
+  [20, 2], // radial gradiant
+  [5, 3], // zigzag small
+  [3, 4], // zigzag large
+  [2, 5], // zigzag med
+)
+
+const bgAnimationPrb = chance(
+  [12, 0],
+  [bgType < 3 && 6, rnd(0.25, 0.5)],
+  [bgType < 3 && 2, 1],
+)
+
 const bw = prb(0.15)
 const sH = rnd(360)
 
-const possibleHues = sample([
-  [0, 180],
-  [60, 120, 240, 300],
-  [0, 150],
-  [0, 120, 240],
-  [0, 150, 210],
-  // [0, 150, 180, 210],
-  [0, 75],
-])
+const possibleHues = chance(
+  [bgType === 1 && 2, [0, 0.0001]],
+  [1, [0, 180]],
+  [1, [0, 120, 180]],
+  [1, [0, 180, 240]],
+  [1, [0, 150]],
+  [1, [0, 210]],
+  [1, [0, 120, 240]],
+  [1, [0, 75]],
+)
+
+
+const franticVoice = prb(0.2)
+
 
 const randomHue = prb(0.02)
 
@@ -167,32 +191,26 @@ const chooseAltHue = (h) => {
   return h === alt ? chooseAltHue(h) : alt
 }
 
-const gradientBg = prb(0.2)
 
-const bgType = chance(
-  [70, 0],
-  [20, 1], // radial gradiant
-  [5, 2], // zigzag small
-  [3, 3], // zigzag large
-  [2, 4], // zigzag med
+
+const gradientHues = chance(
+  [3 - possibleHues.length, possibleHues.slice(1)],
+  [1, [30, 330]],
+  [1, [60, 300]]
 )
 
-const bgAnimationPrb = chance(
-  [12, 0],
-  [bgType < 2 && 6, rnd(0.25, 0.5)],
-  [bgType < 2 && 2, 1],
-)
 
-const gradientHues = sample([
-  // [60, 120, 180]
-  [180],
-  [30, 330],
-  [60, 300],
-  [120, 240],
-  [90, 180, 270],
-  [180, 210, 150],
-  [60, 120, 240, 300],
-])
+
+// sample([
+//   [60, 120, 180],
+//   [180],
+//   [30, 330],
+//   [60, 300],
+//   [120, 240],
+//   [90, 180, 270],
+//   [180, 210, 150],
+//   [60, 120, 240, 300],
+// ])
 
 const zigzagBg = (bg1, bg2, size) => `
     background-color: ${bg1};
@@ -206,14 +224,23 @@ const zigzagBg = (bg1, bg2, size) => `
     background-repeat: repeat;
   `
 
+const gradientMix = sample([
+  0,  // linear
+  1,  // radial
+  0.5 // mixed
+])
+
 function getBgColor(h) {
   const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
   const bg2 = `hsl(${h+sample(gradientHues)}deg, ${sat}%, 50%)`
 
-  if (bgType === 1) return `radial-gradient(${bg1}, ${bg2});`
-  if (bgType === 2) return zigzagBg(bg1, bg2, 0.25)
-  if (bgType === 3) return zigzagBg(bg1, bg2, rnd(8, 16))
-  if (bgType === 4) return zigzagBg(bg1, bg2, 1)
+  if (bgType === 1) return 'none;'
+  if (bgType === 2) return prb(gradientMix)
+    ? `radial-gradient(${bg1}, ${bg2});`
+    : `linear-gradient(${rndint(360)}deg, ${bg1}, ${bg2});`
+  if (bgType === 3) return zigzagBg(bg1, bg2, 0.25)
+  if (bgType === 4) return zigzagBg(bg1, bg2, rnd(8, 16))
+  if (bgType === 5) return zigzagBg(bg1, bg2, 1)
 
   return bg1
 }
@@ -239,7 +266,10 @@ function conicalBg(h, rSpan, cSpan) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
   const c1 = bw ? bwc.text : `hsl(${h}deg, ${sat}%, 50%)`
   let c2 = bw ? bwc.bg : `hsl(${h2}deg, ${sat}%, 50%)`
-  c2 = c1 === c2 ? '#fff' : c2
+  c2 =
+    bgType === 1 ? '#000' :
+    c1 === c2 ? '#fff' :
+    c2
 
   const deg = chance(
     [2, 2],
@@ -282,8 +312,8 @@ function conicalBg(h, rSpan, cSpan) {
 }
 
 const bgColor = chance(
-  [2, `hsl(${chooseHue()}deg, ${sat}%, 50%)`],
-  [1, `#fff`],
+  [bgType !== 1 && 2, `hsl(${chooseHue()}deg, ${sat}%, 50%)`],
+  [bgType !== 1 && 1, `#fff`],
   [1, `#000`]
 )
 

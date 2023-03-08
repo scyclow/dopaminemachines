@@ -16,13 +16,13 @@ const emoji = e => wordExt(e, 0.2, 0.9)
 
 const emojis = es => es.split(' ').map(emoji)
 
-const hasEmoji = txt => emojiList.map(e => e.innerHTML).some(e => (typeof txt === 'string' ? txt : txt.innerHTML).includes(e))
+const hasEmoji = txt => emojiList.some(e => (typeof txt === 'string' ? txt : txt.innerHTML).includes(e))
 
 
 
 const money1 = emojis(`💸 💰 💎 👑 💍 🪙`)
 const money2 = emojis(`🤑 💷 💴 💵 💶 💲 💸 💰`)
-const moneyFull = emojis(`💹 📈`, ...money1, ...money2)
+const moneyFull = [...emojis(`💹 📈`), ...money1, ...money2]
 const fruit1 = emojis(`🍒 🍉 🍇 🍋 🍯`)
 const fruit2 = emojis(`🍆 🍑 🌶`)
 const booze = emojis(`🍻 🍾 🥂`)
