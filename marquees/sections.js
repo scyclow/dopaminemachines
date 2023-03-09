@@ -158,7 +158,7 @@ function animationContainer(rSpan, cSpan) {
     vPivot, //
     vFlip, //
     hFlip, //
-    updown, //
+    updownLong, //
     climb, //
     // wave,
     hexagon, //
@@ -186,7 +186,7 @@ function animationContainer(rSpan, cSpan) {
     vPivot,
     vFlip,
     hFlip,
-    updown,
+    updownLong,
     climb,
   ])
 
@@ -212,6 +212,7 @@ function animationContainer(rSpan, cSpan) {
     {
         // font-size: ${fontAdj*100*min(rSpan/rows, cSpan/cols)}vmin;
       style: `
+        height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
         text-shadow: ${getShadow(h)};
         text-align: center;
@@ -225,7 +226,7 @@ function animationContainer(rSpan, cSpan) {
   const playSound = () => {
     if (animation === spin) {
       smoothSound(primaryAnimationParams)
-    } else if ([vPivot, hPivot, dance, updown].includes(animation)) {
+    } else if ([vPivot, hPivot, dance, updownLong].includes(animation)) {
 
       chance(
         [2, () => sirenSound({
@@ -258,7 +259,7 @@ function animationContainer(rSpan, cSpan) {
       prb(0.5) ? hexSound(primaryAnimationParams) : sirenSound(primaryAnimationParams)
     } else if (animation === climb) {
       climbSound(primaryAnimationParams)
-    // } else if (animation === updown) {
+    // } else if (animation === updownLong) {
     //   zoomSound({
     //     ...primaryAnimationParams,
     //     delay: primaryAnimationParams.delay + primaryAnimationParams.duration/4,
@@ -402,16 +403,6 @@ LAYOUTS
 
 */
 
-const layoutStyle = chance(
-  [73, 1], // anything goes
-  [0, 2], // anything goes (lean big)    TODO: this isn't very different. maybe eliminate or make one big thing
-  [7, 3], // anything goes (lean small)  TODO: maybe have this instead of 5?
-  [3, 4], // scrunched up                TODO: refactor this so there's a high degree of variability but not scrunched up
-  [7, 5], // even rows                   TODO: make 16, 24 less likely
-  [5, 6], // even cols
-  [2, 7], // perfect grid                TODO: maybe include some marquees in there
-  [3, 8], // imperfect grid
-)
 
 
 function flexSection(rowCells, colCells) {

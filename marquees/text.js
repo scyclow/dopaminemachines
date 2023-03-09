@@ -42,7 +42,7 @@ const symbols = emojis(`★ → ←`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-// const misc = emojis(`✨ 🙌 🤩 💪 ⚠️`)
+const misc = emojis(`💪 ⚠️`)
 const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎`)
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
@@ -74,7 +74,7 @@ const emojiLists = [
   // maybe,
 ]
 
-const emojiList = emojiLists.flat().map(e => e.innerHTML)
+const emojiList = [...emojiLists, misc].flat().map(e => e.innerHTML)
 
 
 const withEmoji = (txt, possibleEmojis, emojiProb=1) => !hasEmoji(txt) && prb(emojiProb)
@@ -143,6 +143,7 @@ const sexyText = [
   'SPICY',
   'SO SEXY',
   'PURE BLISS',
+  'DELICIOUS',
 ]
 
 const gains = [
@@ -239,7 +240,8 @@ const affirmations = [
   'TOO GOOD TO BE TRUE',
   'YOU ONLY LIVE ONCE',
   'YOLO',
-  `NEVER LOOKED SO GOOD`
+  `NEVER LOOKED SO GOOD`,
+  'AS GOOD AS IT GETS'
 ]
 
 

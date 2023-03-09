@@ -24,4 +24,4 @@ const main = $.main(
 
 
 
-$.render($body, main)
+window.onload = () => $.render(document.body, main)

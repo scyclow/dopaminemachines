@@ -62,6 +62,38 @@ css`
     }
   }
 
+
+
+
+  .updownLong {
+    height: 100%;
+    animation: UpDownLong 1000ms ease-in-out infinite;
+
+  }
+
+  .updownLong > * {
+    animation: UpDownLongChild 2000ms ease-in-out infinite;
+  }
+
+
+  @keyframes UpDownLongChild {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes UpDownLong {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(100%);
+    }
+  }
+
   .updown {
     animation: UpDown 1000ms ease-in-out infinite;
   }
@@ -560,6 +592,15 @@ const hexagon = genericAnimatingComponent('hexagon')
 //   return dance(updown(grandChild, { style: `font-size: 10vmin`, delay: 200 + delay }), args)
 // }
 
+
+const updownLongParent = genericAnimatingComponent('updownLong')
+const updownLong = (grandChild, args={}) => {
+  const duration = args.duration || 1000
+  const delay = args.delay || 0
+
+  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
+  return updownLongParent(child, args)
+}
 
 const leftRightParent = genericAnimatingComponent('leftRight')
 const leftRight = (grandChild, args={}) => {

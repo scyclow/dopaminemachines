@@ -39,6 +39,18 @@ const sectionAnimation = chance(
   [90, ''],
 )
 
+const layoutStyle = chance(
+  [73, 1], // anything goes              TODO: maybe make it so there are fewer vertical marquees
+  [0, 2], // anything goes (lean big)    TODO: this isn't very different. maybe eliminate or make one big thing
+  [7, 3], // anything goes (lean small)  TODO: maybe have this instead of 5?
+  [3, 4], // scrunched up                TODO: refactor this so there's a high degree of variability but not scrunched up
+  [7, 5], // even rows                   TODO: make 16, 24 less likely
+  [5, 6], // even cols
+  [2, 7], // perfect grid                TODO: maybe include some marquees in there
+  [3, 8], // imperfect grid
+)
+
+
 const animationDirection = chance(
   [1, () => 'normal'],
   [1, () => 'reverse'],
@@ -78,7 +90,6 @@ const shadowType = chance(
 )
 
 const showBorder = prb(0.25)
-const rotateColor = rows < 11 && prb(0.05)
 
 const deepShadows = prb(0.1)
 
@@ -281,6 +292,7 @@ function conicalBg(h, rSpan, cSpan) {
   const cssClass = `cgBg-${int(h)}-${int(h2)}`
 
   const size = 128
+
   css(`
     .${cssClass}::before {
       content: "";
@@ -316,6 +328,10 @@ const bgColor = chance(
   [bgType !== 1 && 1, `#fff`],
   [1, `#000`]
 )
+
+const rotateColor = false
+// const rotateColor = [1, 2].includes(bgType) && !sectionAnimation && true//prb(0.02)
+
 
 css(`
   * {

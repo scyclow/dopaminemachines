@@ -49,7 +49,7 @@ $.section = $.create('section')
 
 const $html = $.tag('html')[0]
 const $head = document.head
-const $body = document.body
+
 
 
 

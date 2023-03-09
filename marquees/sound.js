@@ -36,49 +36,49 @@ function createSource(waveType = 'square') {
 }
 
 
-function triggerSound() {
-  console.log('blah')
-  const startingFreq = rnd(1000, 3000)
-  const soundDuration = rnd(750, 1500)
+// function triggerSound() {
+//   console.log('blah')
+//   const startingFreq = rnd(1000, 3000)
+//   const soundDuration = rnd(750, 1500)
 
-  const vMin = rnd(5, 450)
-  const vMax = vMin + rnd(5, 450)
-  const v1 = rnd(vMin, vMax)
-  // const v2 = rnd(vMin, vMax)
-  // const v3 = rnd(vMin, vMax)
+//   const vMin = rnd(5, 450)
+//   const vMax = vMin + rnd(5, 450)
+//   const v1 = rnd(vMin, vMax)
+//   // const v2 = rnd(vMin, vMax)
+//   // const v3 = rnd(vMin, vMax)
 
-  const t1 = rnd(0.5, 1)
-  // const t2 = rnd(0.5, 1)
-  // const t3 = rnd(0.5, 1)
+//   const t1 = rnd(0.5, 1)
+//   // const t2 = rnd(0.5, 1)
+//   // const t3 = rnd(0.5, 1)
 
-  // const dur2 = rnd(0.1, 0.5)
-  // const dur3 = rnd(0.5, 1)
+//   // const dur2 = rnd(0.1, 0.5)
+//   // const dur3 = rnd(0.5, 1)
 
-  const durOffset = prb(0.25) ? rnd : () => 1
-
-
-
-  const MAX_VOLUME = 0.01;
-  const { source: source1, gain: gain1, ctx: ctx1 } = createSource(1, 0.1)
-
-
-  const smoothGain1 = smoothTo(gain1.gain, ctx1)
-  const smoothFreq1 = smoothTo(source1.frequency, ctx1)
-
-  // smoothGain1(MAX_VOLUME, 0.15)
-
-  console.log(gain1.gain)
+//   const durOffset = prb(0.25) ? rnd : () => 1
 
 
 
-  const setFreq1 = () => {
-    smoothFreq1(source1.frequency.value * 2 || startingFreq, rnd(0.1, 0.3))
-    setTimeout(() => smoothFreq1(v1, t1))
-  }
+//   const MAX_VOLUME = 0.01;
+//   const { source: source1, gain: gain1, ctx: ctx1 } = createSource(1, 0.1)
 
-  setFreq1()
-  setInterval(setFreq1, soundDuration * durOffset())
-}
+
+//   const smoothGain1 = smoothTo(gain1.gain, ctx1)
+//   const smoothFreq1 = smoothTo(source1.frequency, ctx1)
+
+//   // smoothGain1(MAX_VOLUME, 0.15)
+
+//   console.log(gain1.gain)
+
+
+
+//   const setFreq1 = () => {
+//     smoothFreq1(source1.frequency.value * 2 || startingFreq, rnd(0.1, 0.3))
+//     setTimeout(() => smoothFreq1(v1, t1))
+//   }
+
+//   setFreq1()
+//   setInterval(setFreq1, soundDuration * durOffset())
+// }
 
 
 
@@ -89,7 +89,7 @@ const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
                         // 1 1.5 1.8877 2 1.8877 1.15
 const HEXATONIC_SCALE2 = [1, 1.25, 1.5, 2, 1.5, 1.25]
 
-
+const getLoopsAtTime = (t, delay, duration) => (t - (START_TIME - delay)) / duration
 
 function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1) {
   const freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ * 1.5// 500
@@ -148,10 +148,8 @@ function flipSound({ delay, duration }) {
   const introTimeMs = 250
   const { smoothFreq, smoothGain } = createSource()
 
-  const getLoopsAtTime = t => (t - (START_TIME - delay)) / duration
-
   const getFreqAtTime = (t) => {
-    const loops = getLoopsAtTime(t)
+    const loops = getLoopsAtTime(t, delay, duration)
     const loopProgress = loops % 1
 
     if (loopProgress < 0.3333) {
@@ -167,12 +165,11 @@ function flipSound({ delay, duration }) {
   smoothFreq(getFreqAtTime(Date.now() + introTimeMs), introTimeMs/1000)
 
   setTimeout(() => {
-    const timeUntilNextThird = ((1 - (getLoopsAtTime(Date.now()) % 1)) % 0.3333) * duration
+    const timeUntilNextThird = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % 0.3333) * duration
     smoothFreq(getFreqAtTime(Date.now() + timeUntilNextThird), timeUntilNextThird/1000)
 
     setTimeout(() => {
       setRunInterval((i) => {
-        console.log()
         smoothFreq(getFreqAtTime(Date.now() + duration/3), duration/3000)
       }, duration/3)
 
@@ -204,11 +201,9 @@ function ticktockSound(args) {
   const duration = args.duration
   const delay = args.delay || 0
 
-  const getLoopsAtTime = t => (t - (START_TIME - delay)) / duration
-
   const interval = duration / 2
 
-  const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now()) % 1)) % (1/2)) * duration
+  const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/2)) * duration
   const scale = sample(MAJOR_SCALE)
 
   const upScale = sample([1.3333, 1.5, 2])
@@ -274,11 +269,9 @@ function hexSound(args) {
   const duration = args.duration
   const delay = args.delay || 0
 
-  const getLoopsAtTime = t => (t - (START_TIME - delay)) / duration
-
   const interval = duration / 6
 
-  const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now()) % 1)) % (1/6)) * duration
+  const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/6)) * duration
   const scale = sample(MAJOR_SCALE)
 
   setTimeout(() => {
@@ -310,12 +303,10 @@ function climbSound(args) {
   const duration = args.duration
   const delay = args.delay || 0
 
-  const getLoopsAtTime = t => (t - (START_TIME - delay)) / duration
-
 
   const interval = duration / 4
 
-  const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now()) % 1)) % (1/4)) * duration
+  const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/4)) * duration
 
   setTimeout(() => {
     setRunInterval((i) => {
@@ -337,10 +328,8 @@ function zoomSound({duration, delay}) {
   const introTimeMs = 250
   const { smoothFreq, smoothGain } = createSource()
 
-  const getLoopsAtTime = t => (t - (START_TIME - delay)) / duration
-
   const getFreqAtTime = (t) => {
-    const loops = getLoopsAtTime(t)
+    const loops = getLoopsAtTime(t, delay, duration)
     const loopProgress = loops % 1
 
     if (loopProgress < 0.25) {
@@ -354,7 +343,7 @@ function zoomSound({duration, delay}) {
 
   smoothGain(MAX_VOLUME)
 
-  const timeUntilNextQuarter = ((1 - (getLoopsAtTime(Date.now()) % 1)) % 0.25) * duration
+  const timeUntilNextQuarter = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % 0.25) * duration
 
   smoothFreq(getFreqAtTime(Date.now() + timeUntilNextQuarter), timeUntilNextQuarter/1000)
 
@@ -374,10 +363,8 @@ function carSirenSound({duration, delay}) {
   const freqDiff = freqMax - freqMin
   const introTimeMs = 250
 
-  const getLoopsAtTime = t => (t - (START_TIME - delay)) / duration
-
   const getFreqAtTime = t => {
-    const loopProgress = getLoopsAtTime(t) % 1
+    const loopProgress = getLoopsAtTime(t, delay, duration) % 1
     return (loopProgress < 0.25 || loopProgress > 0.75) ? freqMin : freqMax
   }
 
