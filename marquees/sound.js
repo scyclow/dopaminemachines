@@ -206,7 +206,7 @@ function ticktockSound(args) {
   const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/2)) * duration
   const scale = sample(MAJOR_SCALE)
 
-  const upScale = sample([1.3333, 1.5, 2])
+  const upScale = sample(MAJOR_SCALE)
 
   setTimeout(() => {
     setRunInterval((i) => {
@@ -369,17 +369,25 @@ function carSirenSound({duration, delay}) {
   }
 
 
-  const { smoothFreq, smoothGain } = createSource()
+  const src1 = createSource()
+  const src2 = createSource()
+  const src3 = createSource()
 
-  smoothGain(MAX_VOLUME)
+  src1.smoothGain(MAX_VOLUME*0.85)
+  src2.smoothGain(MAX_VOLUME*0.85)
+  src3.smoothGain(MAX_VOLUME*0.85)
 
-  const timeUntilNextHalf = ((1 - (getLoopsAtTime(Date.now() + introTimeMs) % 1)) % 0.5) * duration
+  const timeUntilNextHalf = ((1 - (getLoopsAtTime(Date.now() + introTimeMs, delay, duration) % 1)) % 0.5) * duration
 
-  smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalf), timeUntilNextHalf/1000)
+  src1.smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalf), timeUntilNextHalf/1000)
+  src2.smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalf)*1.3333, timeUntilNextHalf/1000)
+  src3.smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalf)*1.6666, timeUntilNextHalf/1000)
 
   setTimeout(() => {
     setRunInterval(i => {
-      smoothFreq(getFreqAtTime(Date.now() + introTimeMs, i), introTimeMs/1000)
+      src1.smoothFreq(getFreqAtTime(Date.now() + introTimeMs, i), introTimeMs/1000)
+      src2.smoothFreq(getFreqAtTime(Date.now() + introTimeMs, i)*1.3333, introTimeMs/1000)
+      src3.smoothFreq(getFreqAtTime(Date.now() + introTimeMs, i)*1.6666, introTimeMs/1000)
     }, duration/2)
   }, timeUntilNextHalf)
 

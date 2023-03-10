@@ -1,18 +1,25 @@
 
+css`
+  .text {
+    font-size: 1em;
+  }
+
+  .emoji {
+    margin-right: 0.3em;
+    font-size: 0.9em;
+  }
+
+  .animationContainer .emoji {
+    margin-right: 0;
+  }
+
+`
 // const word = (txt, slow, margin=1, fontSize=1) =>
-const wordExt = (txt, margin=0, fontSize=1) =>
-  $.span(txt, {
-    style: `
-      margin-right: ${
-        margin
-      }em;
-      font-size: ${fontSize}em;
-    `
-  })
+const wordExt = (txt, className) => $.span(txt, { class: className })
 
-const word = txt => wordExt(txt)
+const word = txt => wordExt(txt, 'text')
 
-const emoji = e => wordExt(e, 0.2, 0.9)
+const emoji = e => wordExt(e, 'emoji')
 
 const emojis = es => es.split(' ').map(emoji)
 
@@ -42,7 +49,7 @@ const symbols = emojis(`★ → ←`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const misc = emojis(`💪 ⚠️`)
+const misc = emojis(`💪 ⚠️ 🐂`)
 const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎`)
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
@@ -213,6 +220,7 @@ const crypto = [
   'GRAIL',
   `THIS NFT SELLS ITSELF`,
   'STRAIGHT TO THE MOON',
+  'BULL MARKET',
 ]
 
 const disclaimer = [
@@ -241,7 +249,8 @@ const affirmations = [
   'YOU ONLY LIVE ONCE',
   'YOLO',
   `NEVER LOOKED SO GOOD`,
-  'AS GOOD AS IT GETS'
+  'AS GOOD AS IT GETS',
+  'FUCK YES',
 ]
 
 
@@ -271,7 +280,8 @@ const emojiTextRelationships = {
     'HOLY COW': emojis(`🐄`),
     'STRAIGHT TO THE MOON': emojis(`🌜 🌛 🌝 🚀`),
     'THROBBING GAINS': emojis(`💪`),
-    'MASSIVE GAINS': emojis(`💪`)
+    'MASSIVE GAINS': emojis(`💪`),
+    'BULL MARKET': emojis(`🐂`),
   },
   group: [
     [luckyText, lucky],

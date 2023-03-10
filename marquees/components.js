@@ -1,8 +1,4 @@
 css`
-  .animatingComponent {
-    display: inline-block;
-  }
-
   .sectionContainer {
     overflow: hidden;
     display: flex;

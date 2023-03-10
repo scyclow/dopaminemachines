@@ -189,7 +189,7 @@ const possibleHues = chance(
 )
 
 
-const franticVoice = prb(0.2)
+const franticVoice = prb(0.1)
 
 
 const randomHue = prb(0.02)

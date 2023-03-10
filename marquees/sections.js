@@ -78,7 +78,8 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
   const r = rnd(750, 1500)
   const d = map(sideways ? cSpan/cols : rSpan/rows, 0, 1, 0.5, 20)
   const duration = rnd(d, 100) * slow * speed
-  const delay = rnd(duration/2) + (duration / 3)
+  const delay = duration/5 + rnd(duration/5)
+  // const delay = rnd(duration/2) + (duration / 3)
 
   const showLeftRight = cSpan/rSpan >= 6 && prb(0.1)
   const showTrails = showLeftRight && prb(0.5)
@@ -136,6 +137,55 @@ function getFontSize(txt, rSpan, cSpan) {
 
 
 
+function playSound(animation, params, isGrid, extraDelay=0) {
+  params = { ...params, delay: params.delay + extraDelay }
+  if (animation === spin) {
+    smoothSound(params)
+  } else if ([vPivot, hPivot, dance, updownLong].includes(animation)) {
+
+    chance(
+      [4, () => sirenSound({
+        delay: params.delay,
+        duration: params.duration/2,
+      })],
+      [4, () => zoomSound({
+        ...params,
+        delay: params.delay + params.duration/4,
+        duration: params.duration/2
+      })],
+      [2, () => carSirenSound(params)],
+      [1, () => ticktockSound(params)]
+    )()
+
+
+
+  // TODO hSiren/vSiren should also be able ot be smooth sound
+  // TODO blinking sound every rotation
+  } else if ([growShrink, hSiren, vSiren, wave].includes(animation)) {
+    sirenSound(params)
+  } else if ([hFlip, vFlip].includes(animation)) {
+    flipSound(params)
+
+  } else if (blinkChars === animation) {
+    blinkCharSound(params)
+  } else if (blink === animation) {
+    if (isGrid) blinkCharSound(params)
+    else ticktockSound(params)
+  } else if ([shrinkChars, updownChars].includes(animation)) {
+    shrinkCharSound(params)
+  } else if (animation === hexagon) {
+    prb(0.5) ? hexSound(params) : sirenSound(params)
+  } else if (animation === climb) {
+    climbSound(params)
+  // } else if (animation === updownLong) {
+  //   zoomSound({
+  //     ...primaryAnimationParams,
+  //     delay: primaryAnimationParams.delay + primaryAnimationParams.duration/4,
+  //     duration: primaryAnimationParams.duration/2
+  //   })
+  }
+
+}
 
 
 
@@ -161,6 +211,7 @@ function animationContainer(rSpan, cSpan) {
     updownLong, //
     climb, //
     // wave,
+    blink,
     hexagon, //
     !ignoreCharAnimation && updownChars,
     !ignoreCharAnimation && blinkChars, //
@@ -176,19 +227,20 @@ function animationContainer(rSpan, cSpan) {
 
   const fontSize = getFontSize(child.innerHTML, rSpan, cSpan)
 
-  const secondAnimation = prb(0.75) ? iden : sample([
-    dance,
-    growShrink,
-    spin,
-    hSiren,
-    vSiren,
-    hPivot,
-    vPivot,
-    vFlip,
-    hFlip,
-    updownLong,
-    climb,
-  ])
+  const secondAnimation = animation === updownLong || prb(0.75)
+    ? iden
+    : sample([
+      dance,
+      growShrink,
+      spin,
+      hSiren,
+      vSiren,
+      hPivot,
+      vPivot,
+      vFlip,
+      hFlip,
+      climb,
+    ])
 
   const primaryAnimationParams = {
     delay: rnd(3500),
@@ -210,7 +262,7 @@ function animationContainer(rSpan, cSpan) {
       }
     ),
     {
-        // font-size: ${fontAdj*100*min(rSpan/rows, cSpan/cols)}vmin;
+      class: 'animationContainer',
       style: `
         height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
@@ -223,55 +275,11 @@ function animationContainer(rSpan, cSpan) {
     }
   )
 
-  const playSound = () => {
-    if (animation === spin) {
-      smoothSound(primaryAnimationParams)
-    } else if ([vPivot, hPivot, dance, updownLong].includes(animation)) {
 
-      chance(
-        [2, () => sirenSound({
-          delay: primaryAnimationParams.delay,
-          duration: primaryAnimationParams.duration/2,
-        })],
-        [1, () => carSirenSound(primaryAnimationParams)],
-        [2, () => zoomSound({
-          ...primaryAnimationParams,
-          delay: primaryAnimationParams.delay + primaryAnimationParams.duration/4,
-          duration: primaryAnimationParams.duration/2
-        })],
-        [1, () => ticktockSound(primaryAnimationParams)]
-      )()
-
-
-
-    // TODO hSiren/vSiren should also be able ot be smooth sound
-    // TODO blinking sound every rotation
-    } else if ([growShrink, hSiren, vSiren].includes(animation)) {
-      sirenSound(primaryAnimationParams)
-    } else if ([hFlip, vFlip].includes(animation)) {
-      flipSound(primaryAnimationParams)
-
-    } else if (animation === blinkChars) {
-      blinkCharSound(primaryAnimationParams)
-    } else if ([shrinkChars, updownChars].includes(animation)) {
-      shrinkCharSound(primaryAnimationParams)
-    } else if (animation === hexagon) {
-      prb(0.5) ? hexSound(primaryAnimationParams) : sirenSound(primaryAnimationParams)
-    } else if (animation === climb) {
-      climbSound(primaryAnimationParams)
-    // } else if (animation === updownLong) {
-    //   zoomSound({
-    //     ...primaryAnimationParams,
-    //     delay: primaryAnimationParams.delay + primaryAnimationParams.duration/4,
-    //     duration: primaryAnimationParams.duration/2
-    //   })
-    }
-
-  }
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
-    playSound()
-    // if (secondAnimation !== iden || primaryAnimationParams.showTrails) playSound()
+    playSound(animation, primaryAnimationParams)
+    if (primaryAnimationParams.showTrails) playSound(animation, primaryAnimationParams, 10)
   })
 }
 
@@ -321,6 +329,7 @@ function animationGridContainer(rSpan, cSpan) {
 
   const duration = rnd(750, 5000)
   const delayFactor = rnd(0.5, 2)
+
   const childEl = $.div(
     times(r*c, i => animation(
       child.cloneNode(true), {
@@ -344,7 +353,14 @@ function animationGridContainer(rSpan, cSpan) {
     }
   )
 
-  return sectionContainer(childEl, rSpan, cSpan, h, txtH)
+  return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
+    const params = {
+        delay: duration*delayFactor,
+        duration,
+      }
+    playSound(animation, params, true, )
+    playSound(animation, params, true, duration/2)
+  })
 }
 
 
