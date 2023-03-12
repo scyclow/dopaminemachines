@@ -31,6 +31,17 @@ const fontFamily = chance(
   [75, 'sans-serif'],
 )
 
+const layoutStyle = chance(
+  [72, 1], // anything goes              TODO: maybe make it so there are fewer vertical marquees
+  [3, 2],  // anything goes (micro/large)
+  [7, 3],  // anything goes (lean small)  TODO: maybe have this instead of 5?
+  [1, 4],  // macro
+  [7, 5],  // even rows                   TODO: make 16, 24 less likely
+  [5, 6],  // even cols
+  [2, 7],  // perfect grid                TODO: maybe include some marquees in there
+  [3, 8],  // imperfect grid
+)
+
 const sectionAnimation = chance(
   [5, 'borderBlink'],
   [2, 'blink'],
@@ -39,25 +50,13 @@ const sectionAnimation = chance(
   [90, ''],
 )
 
-const layoutStyle = chance(
-  [73, 1], // anything goes              TODO: maybe make it so there are fewer vertical marquees
-  [0, 2], // anything goes (lean big)    TODO: this isn't very different. maybe eliminate or make one big thing
-  [7, 3], // anything goes (lean small)  TODO: maybe have this instead of 5?
-  [3, 4], // scrunched up                TODO: refactor this so there's a high degree of variability but not scrunched up
-  [7, 5], // even rows                   TODO: make 16, 24 less likely
-  [5, 6], // even cols
-  [2, 7], // perfect grid                TODO: maybe include some marquees in there
-  [3, 8], // imperfect grid
-)
-
-
-const animationDirection = chance(
+const sectionAnimationDirection = chance(
   [1, () => 'normal'],
   [1, () => 'reverse'],
   [1, () => prb(0.5) ? 'normal' : 'reverse'],
 )
 
-const animationDuration = chance(
+const sectionAnimationDuration = chance(
   [1, () => sectionAnimation === 'blink' ? 3 : 5],
   [1, () => sectionAnimation === 'blink' ? 1.5 : 2],
   [1, () => sectionAnimation === 'blink' ? rnd(0.5, 5) : rnd(0.25, 20)],
@@ -88,8 +87,6 @@ const shadowType = chance(
   [4, 8],
   [2, 9],
 )
-
-const showBorder = prb(0.25)
 
 const deepShadows = prb(0.1)
 
@@ -143,18 +140,24 @@ const pairedEmojiPrb = chance(
 )
 
 
+const upsideDownRate = chance(
+  [9, 0],
+  [1, rnd(0.1, 0.3)]
+)
+
 const lineRotation = chance(
-  [90, () => 0],
+  [93, () => prb(upsideDownRate) ? 180 : 0],
   [5, () => rnd(20)],
-  [4, () => rnd(20, 180)],
-  [1, () => 180],
+  [2, () => rnd(20, 180)],
 )
 
 const freeFloating = ![0, 180].includes(lineRotation())
 
-const hideBg = freeFloating ? prb(0.5) : false
-const threeDRotations = freeFloating && prb(0.02)
+const threeDRotations = lineRotation() <= 20 && lineRotation() && prb(0.25)
 
+
+const hideBg = freeFloating ? prb(0.5) : false
+const showBorder = freeFloating ? prb(0.5) : prb(0.25)
 
 
 const gradientBg = prb(0.2)
@@ -210,19 +213,6 @@ const gradientHues = chance(
   [1, [60, 300]]
 )
 
-
-
-// sample([
-//   [60, 120, 180],
-//   [180],
-//   [30, 330],
-//   [60, 300],
-//   [120, 240],
-//   [90, 180, 270],
-//   [180, 210, 150],
-//   [60, 120, 240, 300],
-// ])
-
 const zigzagBg = (bg1, bg2, size) => `
     background-color: ${bg1};
     background-image:
@@ -264,11 +254,9 @@ const conicalBgPrb = chance(
   [0.5, 1],
 )
 
-const ifAspectRatioLT = (r, amt) => r < amt
 
 function conicalBg(h, rSpan, cSpan) {
   if (!prb(conicalBgPrb) || rSpan < 4) return
-  // if (cSpan/rSpan > 20) return
 
   const aspectRatio = cSpan/rSpan
 
@@ -329,10 +317,14 @@ const bgColor = chance(
   [1, `#000`]
 )
 
-const rotateColor = false
+const rotateColorPrb = chance(
+  [9, 0],
+  [1, rnd(0.1, 0.2)],
+)
 // const rotateColor = [1, 2].includes(bgType) && !sectionAnimation && true//prb(0.02)
 
 
+const invertAll = prb(0.02)
 css(`
   * {
     font-family: ${fontFamily};
@@ -342,4 +334,5 @@ css(`
   body {
     background: ${bgColor};
   }
+
 `)

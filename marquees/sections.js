@@ -5,12 +5,13 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
   const rotation = threeDRotations
-    ? `perspective(500px) rotate3d(1,1,1,${lineRotation()}deg)`
+    ? `perspective(500px) rotate3d(1,1,0.5,${lineRotation()}deg)`
     : `rotate(${lineRotation()}deg)`
 
   const fontStyle = prb(italicRate) ? 'font-style: italic;' : ''
 
   const borderWidth = min(rSpan, cSpan) * .05
+  const rotateColor = prb(rotateColorPrb)
 
   const container = $.div(
     withBgAnimation(child, rSpan, cSpan),
@@ -26,8 +27,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
         ${fontStyle};
         transform: ${rotation};
         animation-delay: -${rnd(5)}s;
-        animation-direction: ${rotateColor ?'normal' : animationDirection()};
-        animation-duration: ${rotateColor ? '25' : animationDuration()}s;
+        animation-direction: ${rotateColor ?'normal' : sectionAnimationDirection()};
+        animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s;
       `
     }
   )
@@ -55,10 +56,6 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
   const h = chooseHue()
   const txtH = chooseAltHue(h)
 
-
-  // const slowIx = child.indexOf('slow="')
-  // slowIx !== -1 ? Number(child.slice(slowIx+6, slowIx+9)) : 1
-
   const canShowAltAnimation = rSpan >= 2 && cSpan/rSpan >= 5
   const msgIsShort = child.innerHTML.length < 8
 
@@ -66,12 +63,14 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
     ? chance(
       [1, growShrinkShort],
       [1, vSirenShort],
-      [msgIsShort && 1, dance],
-      [msgIsShort && 1, spin],
-      [msgIsShort && 1, hSiren],
-      [msgIsShort && 1, hPivot],
-      [msgIsShort && 1, hFlip],
       [1, blink],
+      ...(msgIsShort ? [
+        [1, dance],
+        [1, spin],
+        [1, hSiren],
+        [1, hPivot],
+        [1, hFlip],
+      ] : [])
     )
     : iden
 
@@ -79,7 +78,6 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
   const d = map(sideways ? cSpan/cols : rSpan/rows, 0, 1, 0.5, 20)
   const duration = rnd(d, 100) * slow * speed
   const delay = duration/5 + rnd(duration/5)
-  // const delay = rnd(duration/2) + (duration / 3)
 
   const showLeftRight = cSpan/rSpan >= 6 && prb(0.1)
   const showTrails = showLeftRight && prb(0.5)
@@ -111,9 +109,13 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
       })
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
-    showLeftRight
-      ? zoomSound({duration: r * slow * speed / 2, delay, showTrails})
-      : utter(child.innerHTML, 30, 7)
+    if (showLeftRight) {
+      zoomSound({duration: r * slow * speed / 2, delay, showTrails})
+      if (showTrails) zoomSound({duration: r * slow * speed / 2, delay: delay + 20, showTrails})
+
+    } else {
+      utter(child.innerHTML, 30, 7)
+    }
   })
 }
 
@@ -141,11 +143,11 @@ function playSound(animation, params, isGrid, extraDelay=0) {
   params = { ...params, delay: params.delay + extraDelay }
   if (animation === spin) {
     smoothSound(params)
-  } else if ([vPivot, hPivot, dance, updownLong].includes(animation)) {
+  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe].includes(animation)) {
 
     chance(
       [4, () => sirenSound({
-        delay: params.delay,
+        ...params,
         duration: params.duration/2,
       })],
       [4, () => zoomSound({
@@ -161,7 +163,7 @@ function playSound(animation, params, isGrid, extraDelay=0) {
 
   // TODO hSiren/vSiren should also be able ot be smooth sound
   // TODO blinking sound every rotation
-  } else if ([growShrink, hSiren, vSiren, wave].includes(animation)) {
+  } else if ([hSiren, vSiren, wave].includes(animation)) {
     sirenSound(params)
   } else if ([hFlip, vFlip].includes(animation)) {
     flipSound(params)
@@ -213,6 +215,7 @@ function animationContainer(rSpan, cSpan) {
     // wave,
     blink,
     hexagon, //
+    prb(0.5) && breathe,
     !ignoreCharAnimation && updownChars,
     !ignoreCharAnimation && blinkChars, //
     !ignoreCharAnimation && shrinkChars, //
@@ -279,7 +282,9 @@ function animationContainer(rSpan, cSpan) {
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
     playSound(animation, primaryAnimationParams)
-    if (primaryAnimationParams.showTrails) playSound(animation, primaryAnimationParams, 10)
+    if (primaryAnimationParams.showTrails && animation !== blinkChars) {
+      playSound(animation, primaryAnimationParams, false, 10)
+    }
   })
 }
 
@@ -359,7 +364,7 @@ function animationGridContainer(rSpan, cSpan) {
         duration,
       }
     playSound(animation, params, true, )
-    playSound(animation, params, true, duration/2)
+    if (animation !== blink) playSound(animation, params, true, duration/2)
   })
 }
 
@@ -430,20 +435,9 @@ function flexSection(rowCells, colCells) {
 
   let colMin, colMax, rowMin, rowMax
 
-  if (layoutStyle === 1 || layoutStyle === 4) {
+  if ([1, 2].includes(layoutStyle)) {
     colMin = 1
     rowMin = 1
-    colMax = colCells
-    rowMax = rowCells
-
-  } else if (layoutStyle === 2) {
-    colMin = 12
-    rowMin = chance(
-      [1, sample([24, 48])],
-      [3, sample([6, 8, 12, 16])],
-      [5, sample([2, 3, 4])],
-      [1, 1],
-    )
     colMax = colCells
     rowMax = rowCells
 
@@ -452,6 +446,12 @@ function flexSection(rowCells, colCells) {
     rowMin = 1
     colMax = colCells
     rowMax = int(rowCells/8)
+
+  } else if (layoutStyle === 4) {
+    colMin = colCells * (5/12)
+    rowMin = rowCells * (5/12)
+    colMax = colCells
+    rowMax = rowCells
 
   } else if (layoutStyle === 5) {
     const rSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
@@ -500,17 +500,25 @@ function flexSection(rowCells, colCells) {
 
 
   const getSpan = (minCells, cellsLeft, maxCells) => {
-    // const span = rndint(min(minCells, cellsLeft), cellsLeft)
-    const mx = layoutStyle === 4 ? cellsLeft : maxCells
-
-    const span = rndint(min(minCells, cellsLeft), mx)
+    const span = rndint(min(minCells, cellsLeft), maxCells)
     return (cellsLeft - span < minCells) ? cellsLeft : span
   }
 
 
   const fillSection = (rCursor, cCursor) => {
-    const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, colMax)
-    const rowsLeft = max(1, min(rowCells - rCursor, rowMax))
+    let adjRowMax = rowMax
+    let adjColMax = colMax
+    if (layoutStyle === 2) {
+      if (prb(0.9)) {
+        if (prb(0.2)) {
+          adjColMax = sample([1, 2])
+        } else {
+          adjRowMax = sample([1, 2])
+        }
+      }
+    }
+    const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, adjColMax)
+    const rowsLeft = max(1, min(rowCells - rCursor, adjRowMax))
 
     const cSpan = getSpan(colMin, colsLeft, colCells)
     const rSpan = getSpan(rowMin, rowsLeft, rowCells)
@@ -544,9 +552,7 @@ function flexSection(rowCells, colCells) {
     let cCursor = findNextUnfilledCol(rCursor, 0)
 
     while (cCursor < colCells) {
-
       const { cSpan } = fillSection(rCursor, cCursor)
-
       cCursor = findNextUnfilledCol(rCursor, cCursor + cSpan)
     }
 

@@ -49,11 +49,11 @@ const symbols = emojis(`★ → ←`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const misc = emojis(`💪 ⚠️ 🐂`)
-const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎`)
+const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎`)]
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const excitingMisc = emojis(`🙌 🤩 ‼️`)
+const misc = emojis(`💪 ⚠️ 🐂 🤲`)
 
 const emojiLists = [
   moneyFull,
@@ -94,6 +94,19 @@ const withEmoji = (txt, possibleEmojis, emojiProb=1) => !hasEmoji(txt) && prb(em
 const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possibleEmojis, emojiProb)
 
 
+/*
+  boost,
+  frenzy,
+
+  whopping,
+  champion,
+  money multiplier,
+  infinite joy,
+  certified,
+  galore
+
+*/
+
 const luckyText = [
   'WINNER',
   'LUCKY',
@@ -103,6 +116,9 @@ const luckyText = [
   'JACKPOT',
   'HIT IT BIG',
   '777',
+  `YOU CAN'T LOSE`,
+  `EVERYONE'S A WINNER`,
+  'DOUBLE DOWN',
 ]
 
 const dealsText = [
@@ -122,6 +138,8 @@ const dealsText = [
   'LIMITED TIME OFFER',
   'FREE',
   'DEALS',
+  'UNLIMITED',
+  'EXTRA LARGE'
 ]
 
 const cashText = [
@@ -140,6 +158,7 @@ const cashText = [
   'CRYPTO FORTUNE',
   'GET RICH QUICK',
   `YIELD EXPLOSION`,
+  'TREASURE TROVE'
 ]
 
 const sexyText = [
@@ -178,7 +197,10 @@ const hotText = [
   'SO HOT',
   'HOT STUFF',
   'SIZZLING',
-  'HOTTEST ART AROUND'
+  'HOTTEST ART AROUND',
+  'ELECTRIC',
+  'FORBIDDEN PLEASURES',
+  'ECSTACY',
 ]
 
 const excitingText = [
@@ -191,12 +213,14 @@ const excitingText = [
   'AMAZING',
   'INCREDIBLE',
   'EXCITING',
+  'ECSTATIC',
   'THRILLING',
   'HOLY MOLY',
   'WHAT A THRILL',
   'HIGH OCTANE',
   `SUPERCHARGED`,
   'HOLY COW',
+  'BONANZA',
 ]
 
 const funText = [
@@ -207,6 +231,7 @@ const funText = [
   'SO COOL',
   'I LOVE IT',
   'HA HA HA HA',
+  'SWEET',
 ]
 
 const crypto = [
@@ -221,6 +246,7 @@ const crypto = [
   `THIS NFT SELLS ITSELF`,
   'STRAIGHT TO THE MOON',
   'BULL MARKET',
+  'DIAMOND HANDS',
 ]
 
 const disclaimer = [
@@ -251,6 +277,7 @@ const affirmations = [
   `NEVER LOOKED SO GOOD`,
   'AS GOOD AS IT GETS',
   'FUCK YES',
+  'FINALLY',
 ]
 
 
@@ -282,6 +309,9 @@ const emojiTextRelationships = {
     'THROBBING GAINS': emojis(`💪`),
     'MASSIVE GAINS': emojis(`💪`),
     'BULL MARKET': emojis(`🐂`),
+    'DIAMOND HANDS': emojis(`💎 🤲`),
+    'SWEET': yummy,
+    'ELECTRIC': emojis(`⚡️`)
   },
   group: [
     [luckyText, lucky],

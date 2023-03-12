@@ -215,12 +215,12 @@ function ticktockSound(args) {
 
       if (i%2) {
         smoothFreq(baseFreq, 0.1)
-        smoothFreq2(baseFreq * upScale, 0.1)
+        smoothFreq2(baseFreq+5, 0.1)
 
       } else {
 
         smoothFreq(baseFreq*upScale, 0.1)
-        smoothFreq2(baseFreq * upScale**2, 0.1)
+        smoothFreq2(baseFreq * upScale+5, 0.1)
       }
 
       setTimeout(() => smoothGain(0, 0.05), interval*0.25)
@@ -364,10 +364,9 @@ function carSirenSound({duration, delay}) {
   const introTimeMs = 250
 
   const getFreqAtTime = t => {
-    const loopProgress = getLoopsAtTime(t, delay, duration) % 1
+    const loopProgress = getLoopsAtTime(t + introTimeMs, delay, duration) % 1
     return (loopProgress < 0.25 || loopProgress > 0.75) ? freqMin : freqMax
   }
-
 
   const src1 = createSource()
   const src2 = createSource()
@@ -379,20 +378,17 @@ function carSirenSound({duration, delay}) {
 
   const timeUntilNextHalf = ((1 - (getLoopsAtTime(Date.now() + introTimeMs, delay, duration) % 1)) % 0.5) * duration
 
-  src1.smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalf), timeUntilNextHalf/1000)
-  src2.smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalf)*1.3333, timeUntilNextHalf/1000)
-  src3.smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalf)*1.6666, timeUntilNextHalf/1000)
+  src1.smoothFreq(getFreqAtTime(Date.now()), timeUntilNextHalf/1000)
+  src2.smoothFreq(getFreqAtTime(Date.now())*1.3333, timeUntilNextHalf/1000)
+  src3.smoothFreq(getFreqAtTime(Date.now())*1.6666, timeUntilNextHalf/1000)
 
   setTimeout(() => {
     setRunInterval(i => {
-      src1.smoothFreq(getFreqAtTime(Date.now() + introTimeMs, i), introTimeMs/1000)
-      src2.smoothFreq(getFreqAtTime(Date.now() + introTimeMs, i)*1.3333, introTimeMs/1000)
-      src3.smoothFreq(getFreqAtTime(Date.now() + introTimeMs, i)*1.6666, introTimeMs/1000)
+      src1.smoothFreq(getFreqAtTime(Date.now(), i), introTimeMs/1000)
+      src2.smoothFreq(getFreqAtTime(Date.now(), i)*1.3333, introTimeMs/1000)
+      src3.smoothFreq(getFreqAtTime(Date.now(), i)*1.6666, introTimeMs/1000)
     }, duration/2)
   }, timeUntilNextHalf)
-
-
-
 }
 
 

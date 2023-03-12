@@ -1,4 +1,4 @@
-css`
+css(`
   .sectionContainer {
     overflow: hidden;
     display: flex;
@@ -7,10 +7,11 @@ css`
     user-select: none;
     cursor: pointer;
     transition: 150ms;
+    filter: invert(${invertAll ? 1 : 0});
   }
 
   .sectionContainer:hover {
-    filter: invert(1);
+    filter: invert(${invertAll ? 0 : 1});
   }
 
   .marquee {
@@ -150,32 +151,26 @@ css`
   @keyframes FullColorRotate {
     0%, 100% {
       color: #ff0000;
-      background-color: #00ffff;
     }
 
     17% {
       color: #ffff00;
-      background-color: #0000ff;
     }
 
     33% {
       color: #00ff00;
-      background-color: #ff00ff;
     }
 
     50% {
       color: #00ffff;
-      background-color: #ff0000;
     }
 
     66% {
       color: #0000ff;
-      background-color: #ffff00;
     }
 
     83% {
       color: #ff00ff;
-      background-color: #00ff00;
     }
   }
 
@@ -364,6 +359,18 @@ css`
   }
 
 
+  .breathe {
+    animation: Breathe 2000ms ease-in-out infinite;
+  }
+
+  @keyframes Breathe {
+    0%, 100% {
+      transform: scaleX(1) scaleY(1);
+    }
+    50% {
+      transform: scaleX(0.8) scaleY(0.9);
+    }
+  }
 
 
 
@@ -486,14 +493,7 @@ css`
       transform: translate(-0.43em, 0.25em);
     }
   }
-
-
-
-
-
-
-
-`
+`)
 
 function marquee(children, args={}) {
   const className = args.className || ''
@@ -581,6 +581,7 @@ const updown = genericAnimatingComponent('updown')
 const wave = genericAnimatingComponent('wave')
 const climb = genericAnimatingComponent('climb')
 const hexagon = genericAnimatingComponent('hexagon')
+const breathe = genericAnimatingComponent('breathe')
 
 // const wave = (grandChild, args={}) => {
 //   const delay = args.delay || 0
