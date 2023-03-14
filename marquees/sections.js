@@ -108,10 +108,29 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
         msgAnimation
       })
 
+  const params = { duration: r * slow * speed / 2, delay, showTrails }
+  const playSound = zoomSound(params)
+
+  let stopSound = []
+  const ignoreStop = prb(0.1)
+
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
     if (showLeftRight) {
-      zoomSound({duration: r * slow * speed / 2, delay, showTrails})
-      if (showTrails) zoomSound({duration: r * slow * speed / 2, delay: delay + 20, showTrails})
+      if (stopSound.length) {
+        stopSound.forEach(s => s())
+        stopSound = []
+        return
+      }
+
+      const sound1 = playSound()
+      if (!ignoreStop) stopSound.push(sound1)
+
+      if (showTrails) {
+        const sound2 = ignoreStop
+          ? createSound(animation, params)(20)
+          : playSound(20)
+        if (!ignoreStop) stopSound.push(sound2)
+      }
 
     } else {
       utter(child.innerHTML, 30, 7)
@@ -139,53 +158,49 @@ function getFontSize(txt, rSpan, cSpan) {
 
 
 
-function playSound(animation, params, isGrid, extraDelay=0) {
-  params = { ...params, delay: params.delay + extraDelay }
+function createSound(animation, params, isGrid, extraDelay=0) {
+  let fn
   if (animation === spin) {
-    smoothSound(params)
+    fn = smoothSound
+
   } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe].includes(animation)) {
-
-    chance(
-      [4, () => sirenSound({
-        ...params,
-        duration: params.duration/2,
+    fn = chance(
+      [4, (p) => sirenSound({
+        ...p,
+        duration: p.duration/2,
       })],
-      [4, () => zoomSound({
-        ...params,
-        delay: params.delay + params.duration/4,
-        duration: params.duration/2
+      [4, (p) => zoomSound({
+        ...p,
+        delay: p.delay + p.duration/4,
+        duration: p.duration/2
       })],
-      [2, () => carSirenSound(params)],
-      [1, () => ticktockSound(params)]
-    )()
+      [!isGrid && 2, (p) => carSirenSound(p)],
+      [!isGrid && 1, (p) => ticktockSound(p)]
+    )
 
-
-
-  // TODO hSiren/vSiren should also be able ot be smooth sound
-  // TODO blinking sound every rotation
   } else if ([hSiren, vSiren, wave].includes(animation)) {
-    sirenSound(params)
+    fn = sirenSound
+
   } else if ([hFlip, vFlip].includes(animation)) {
-    flipSound(params)
+    fn = flipSound
 
   } else if (blinkChars === animation) {
-    blinkCharSound(params)
+    fn = blinkCharSound
+
   } else if (blink === animation) {
-    if (isGrid) blinkCharSound(params)
-    else ticktockSound(params)
+    fn = isGrid ? blinkCharSound : ticktockSound
+
   } else if ([shrinkChars, updownChars].includes(animation)) {
-    shrinkCharSound(params)
+    fn = shrinkCharSound
+
   } else if (animation === hexagon) {
-    prb(0.5) ? hexSound(params) : sirenSound(params)
+    fn = prb(0.5) ? hexSound : sirenSound
+
   } else if (animation === climb) {
-    climbSound(params)
-  // } else if (animation === updownLong) {
-  //   zoomSound({
-  //     ...primaryAnimationParams,
-  //     delay: primaryAnimationParams.delay + primaryAnimationParams.duration/4,
-  //     duration: primaryAnimationParams.duration/2
-  //   })
+    fn = climbSound
   }
+
+  return fn({ ...params, delay: params.delay + extraDelay })
 
 }
 
@@ -212,7 +227,6 @@ function animationContainer(rSpan, cSpan) {
     hFlip, //
     updownLong, //
     climb, //
-    // wave,
     blink,
     hexagon, //
     prb(0.5) && breathe,
@@ -279,11 +293,34 @@ function animationContainer(rSpan, cSpan) {
   )
 
 
+  let stopSound = []
+  const ignoreStop = prb(0.1)
+  const playSound = createSound(animation, primaryAnimationParams)
+  const playSecondSound = secondAnimation !== iden
+    ? createSound(secondAnimation, primaryAnimationParams)
+    : null
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
-    playSound(animation, primaryAnimationParams)
+    if (stopSound.length) {
+      stopSound.forEach(s => s())
+      stopSound = []
+      return
+    }
+    // createSound(animation, primaryAnimationParams)
+    const sound1 = playSound()
+    if (!ignoreStop) stopSound.push(sound1)
+
     if (primaryAnimationParams.showTrails && animation !== blinkChars) {
-      playSound(animation, primaryAnimationParams, false, 10)
+      // createSound(animation, primaryAnimationParams, false, 10)
+      const sound2 = ignoreStop
+        ? createSound(animation, primaryAnimationParams)(10)
+        : playSound(10)
+      if (!ignoreStop) stopSound.push(sound2)
+    }
+
+    if (playSecondSound) {
+      const sound1 = playSecondSound()
+      if (!ignoreStop) stopSound.push(sound1)
     }
   })
 }
@@ -345,7 +382,7 @@ function animationGridContainer(rSpan, cSpan) {
     {
       class: 'animationGridContainer',
       style: `
-        font-size: ${100*min(rSpan/rows, cSpan/cols)/min(r, c)}vmin;
+        font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
         text-shadow: ${getShadow(h)};
         height: ${100*rSpan/rows}vh;
         width: ${100*cSpan/cols}vw;
@@ -358,24 +395,35 @@ function animationGridContainer(rSpan, cSpan) {
     }
   )
 
+  const params = {
+    delay: duration*delayFactor,
+    duration,
+  }
+
+  let stopSound = []
+  const ignoreStop = prb(0.1)
+  const playSound = createSound(animation, params, true)
+
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
-    const params = {
-        delay: duration*delayFactor,
-        duration,
-      }
-    playSound(animation, params, true, )
-    if (animation !== blink) playSound(animation, params, true, duration/2)
+    if (stopSound.length) {
+      stopSound.forEach(s => s())
+      stopSound = []
+      return
+    }
+
+
+    const sound1 = playSound()
+    if (!ignoreStop) stopSound.push(sound1)
+
+    if (animation !== blink) {
+      const sound2 = ignoreStop
+        ? createSound(animation, params)(duration/4)
+        : playSound(duration/4)
+      if (!ignoreStop) stopSound.push(sound2)
+    }
   })
 }
 
-
-
-
-
-
-
-const evenRows = prb(0.15)
-const evenCols = prb(0.05)
 
 
 

@@ -165,7 +165,7 @@ const gradientBg = prb(0.2)
 const bgType = chance(
   [60, 0],
   [10, 1], // empty
-  [20, 2], // radial gradiant
+  [20, 2], // gradiant
   [5, 3], // zigzag small
   [3, 4], // zigzag large
   [2, 5], // zigzag med

@@ -9,7 +9,9 @@ css`
     font-size: 0.9em;
   }
 
-  .animationContainer .emoji {
+  .animationContainer .emoji,
+  .animationGridContainer .emoji
+  {
     margin-right: 0;
   }
 
@@ -218,6 +220,7 @@ const excitingText = [
   'HOLY MOLY',
   'WHAT A THRILL',
   'HIGH OCTANE',
+  'HIGH VOLTAGE',
   `SUPERCHARGED`,
   'HOLY COW',
   'BONANZA',
@@ -232,6 +235,7 @@ const funText = [
   'I LOVE IT',
   'HA HA HA HA',
   'SWEET',
+  'DOPE',
 ]
 
 const crypto = [
@@ -304,6 +308,7 @@ const emojiTextRelationships = {
     'YIELD EXPLOSION': explosion1,
     'HOTTEST ART AROUND': emojis(`🎨 🔥`),
     'SUPERCHARGED': emojis(`⚡️`),
+    'HIGH VOLTAGE': emojis(`⚡️`),
     'HOLY COW': emojis(`🐄`),
     'STRAIGHT TO THE MOON': emojis(`🌜 🌛 🌝 🚀`),
     'THROBBING GAINS': emojis(`💪`),

@@ -621,14 +621,6 @@ const withTrails = (grandChild, args={}) => {
 }
 
 
-const bgAnimationFn = sample([
-  colorShiftingBgMultiple,
-  staticBgsMultiple,
-  shrinkingBgSingle,
-  shrinkingBgMultiple,
-  // spinningBgMultiple,
-  shrinkingSpinningBgMultiple,
-])
 
 const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
     class: className,
@@ -700,10 +692,27 @@ function colorShiftingBgMultiple(rSpan, cSpan) {
   }))
 }
 
+const bgAnimationFn = sample([
+  colorShiftingBgMultiple,
+  staticBgsMultiple,
+  shrinkingBgSingle,
+  shrinkingBgMultiple,
+  // spinningBgMultiple,
+  shrinkingSpinningBgMultiple,
+])
 
 function withBgAnimation(child, rSpan, cSpan) {
+  const aspectRatio = cSpan / rSpan
+  const invalidAspectRatio = aspectRatio > 3 || aspectRatio < 0.3333
+
+  if (bgAnimationFn !== colorShiftingBgMultiple && invalidAspectRatio) return child
+
   return [
-    ...(prb(bgAnimationPrb) ? bgAnimationFn(rSpan, cSpan) : []),
+    ...(
+      prb(bgAnimationPrb)
+        ? bgAnimationFn(rSpan, cSpan)
+        : []
+    ),
     child
   ]
 
