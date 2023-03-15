@@ -82,16 +82,20 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
   const showLeftRight = cSpan/rSpan >= 6 && prb(0.1)
   const showTrails = showLeftRight && prb(0.5)
 
+
+  const clonedNode = $.span(child.cloneNode(true), { style: getShadow(txtH, !emojiList.includes(child.innerHTML)) })
+
+
   const childWithPairedEmoji = pairedEmoji
     ? [
-      child.cloneNode(true),
-      $.span(pairedEmoji, { style: `margin-left: 1em;`})
+      clonedNode,
+      $.span(pairedEmoji, { style: `margin-left: 1em; ${getShadow(txtH, false)}`})
     ]
-    : child.cloneNode(true)
+    : clonedNode
 
   const childEl = showLeftRight
     ? leftRight(childWithPairedEmoji, {
-        style: `font-size: ${height}; text-shadow: ${getShadow(txtH)};`,
+        style: `font-size: ${height};`,
         duration: r * slow * speed,
         delay,
         showTrails
@@ -99,7 +103,6 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
     : marquee(childWithPairedEmoji, {
         style: `
           font-size: ${sideways ? width : height};
-          text-shadow: ${getShadow(txtH)};
         `,
         direction: posOrNeg(),
         delay,
@@ -283,7 +286,7 @@ function animationContainer(rSpan, cSpan) {
       style: `
         height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
-        text-shadow: ${getShadow(h)};
+        ${getShadow(h, !ignoreCharAnimation)}
         text-align: center;
         display: flex;
         align-items: center;
@@ -383,7 +386,6 @@ function animationGridContainer(rSpan, cSpan) {
       class: 'animationGridContainer',
       style: `
         font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
-        text-shadow: ${getShadow(h)};
         height: ${100*rSpan/rows}vh;
         width: ${100*cSpan/cols}vw;
         display: grid;
@@ -391,6 +393,7 @@ function animationGridContainer(rSpan, cSpan) {
         justify-items: center;
         grid-template-rows: repeat(${r}, 1fr);
         grid-template-columns: repeat(${c}, 1fr);
+        ${getShadow(h, false)}
       `,
     }
   )

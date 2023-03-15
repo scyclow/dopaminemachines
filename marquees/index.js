@@ -24,4 +24,13 @@ const main = $.main(
 
 
 
-window.onload = () => $.render(document.body, main)
+window.onload = () => {
+  $.render(document.body, main)
+  if (USE_EMOJI_POLYFILL) {
+    twemoji.parse(document.body, {
+      folder: 'svg',
+      ext: '.svg',
+      className: 'emojiPolyfill'
+    })
+  }
+}

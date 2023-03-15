@@ -417,7 +417,7 @@ css(`
       transform: scale(105%) rotate(0deg);
     }
     100% {
-      transform: scale(0%) rotate(90deg);
+      transform: scale(0%) rotate(70deg);
     }
   }
 
@@ -491,18 +491,28 @@ function marquee(children, args={}) {
   const msgAnimation = args.msgAnimation || iden
   const isEmoji = emojiList.includes(children.innerHTML)
 
+
   const repeat = isEmoji ? 80 : 40
 
-  const inner = $.div(
-    times(repeat, i => msgAnimation(
+  const handleAnimation = (child, i, j) => {
+    const isEmoji = emojiList.includes(child.innerHTML)
+
+    return msgAnimation(
       $.span(
-        children, {
-          style: `margin-left: ${isEmoji ? 0.2 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;`
-        }
-      ).cloneNode(true), {
-        delay: i * 100,
-      }
-    )),
+        child,
+        { style: `margin-left: ${(isEmoji || j > 0) ? 0 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;` }
+      ).cloneNode(true),
+      { delay: i*100 + j/2}
+    )
+  }
+
+
+
+  const inner = $.div(
+    times(repeat, i => Array.isArray(children)
+      ? children.map((c, j) => handleAnimation(c, i, j))
+      : handleAnimation(children, i, 0)
+    ).flat(),
     {
       class: `marqueeInner marqueeForward`,
       style: `

@@ -6,6 +6,8 @@
 const cols = 60
 const rows = 48
 
+const USE_EMOJI_POLYFILL = true
+
 
 
 const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
@@ -42,7 +44,7 @@ const layoutStyle = chance(
   [3, 8],  // imperfect grid
 )
 
-const sectionAnimation = prb(0.93) ? '' : sample([
+const sectionAnimation = prb(0.95) ? '' : sample([
     'borderBlink',
     'blink',
     'updown',
@@ -94,43 +96,56 @@ const showEmojis = prb(0.5)
 
 
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, ${sat}%, ${l}%)`
-const getShadow = (h) => {
+const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, 20)
 
+  const adjustedCoord = polyfillShadow ? 0.0125 : 0.025
   return (
-    [1, 8].includes(shadowType) ? `
-        0.025em 0.025em ${shadowColor},
-        -0.025em 0.025em ${shadowColor},
-        0.025em -0.025em ${shadowColor},
-        -0.025em -0.025em ${shadowColor},
-        0.025em 0 ${shadowColor},
-        -0.025em 0 ${shadowColor},
-        0 -0.025em ${shadowColor},
-        0 0.025em ${shadowColor},
-        0 0 0.4em ${shadowColor}
-    ` :
+    [1, 8].includes(shadowType) ? [
+        `${adjustedCoord}em ${adjustedCoord}em ${shadowColor}`,
+        `-${adjustedCoord}em ${adjustedCoord}em ${shadowColor}`,
+        `${adjustedCoord}em -${adjustedCoord}em ${shadowColor}`,
+        `-${adjustedCoord}em -${adjustedCoord}em ${shadowColor}`,
+        `${adjustedCoord}em 0 ${shadowColor}`,
+        `-${adjustedCoord}em 0 ${shadowColor}`,
+        `0 -${adjustedCoord}em ${shadowColor}`,
+        `0 ${adjustedCoord}em ${shadowColor}`,
+        `0 0 0.4em ${shadowColor}`,
+      ] :
 
     shadowType === 2 ?
-      `0.05em 0.05em ${shadowColor}` :
+      [`0.05em 0.05em 0 ${shadowColor}`] :
 
     shadowType === 3 ?
-      `0.1em 0.1em ${shadowColor}` :
+      [`0.1em 0.1em 0 ${shadowColor}`] :
 
     shadowType === 4 ?
-      `0.05em 0.05em ${shadowColor}, 0.1em 0.1em ${getShadowColor(h+270)}` :
+      [
+        `0.05em 0.05em 0 ${shadowColor}`,
+        `${polyfillShadow ? '0.05em 0.05em' : '0.1em 0.1em'} 0 ${getShadowColor(h+270)}`
+      ] :
 
     shadowType === 5 ?
-      `0 0 0.05em ${shadowColor}` :
+      [`0 0 0.05em ${shadowColor}`] :
 
     shadowType === 6 ?
-      times(4, s => `${s/20 - 0.1}em ${s/20 - 0.1}em ${getShadowColor(h + 180 + s*30)}`).join(', ') :
+      times(4, s => `${s/20 - 0.1}em ${s/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
 
     shadowType === 7 ?
-      `-0.05em -0.05em ${getShadowColor(h+60)}, 0.05em 0.025em ${getShadowColor(h+240)}`
+      [
+        `-0.05em -0.05em 0 ${getShadowColor(h+60)}`,
+        `0.05em 0.025em 0 ${getShadowColor(h+240)}`
+      ] :
 
-    : '0 0 0.05em #000'
+    ['0 0 0.05em #000']
   )
 }
+
+const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
+  ? `filter: ${getShadowText(h, true).map(s => `drop-shadow(${s})`).join(' ')};`
+  : `text-shadow: ${getShadowText(h).join(',')};`
+
+
 
 
 const pairedEmojiPrb = chance(

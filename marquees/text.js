@@ -1,12 +1,12 @@
 
-css`
+css(`
   .text {
     font-size: 1em;
   }
 
   .emoji {
     margin-right: 0.3em;
-    font-size: 0.9em;
+    font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em;
   }
 
   .animationContainer .emoji,
@@ -15,7 +15,12 @@ css`
     margin-right: 0;
   }
 
-`
+  .emojiPolyfill {
+    width: 1em;
+    height: 1em;
+  }
+
+`)
 // const word = (txt, slow, margin=1, fontSize=1) =>
 const wordExt = (txt, className) => $.span(txt, { class: className })
 
@@ -106,7 +111,8 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
   infinite joy,
   certified,
   galore
-
+  instant
+  new and improved
 */
 
 const luckyText = [
@@ -172,6 +178,7 @@ const sexyText = [
   'SO SEXY',
   'PURE BLISS',
   'DELICIOUS',
+  'FORBIDDEN PLEASURES',
 ]
 
 const gains = [
@@ -201,7 +208,6 @@ const hotText = [
   'SIZZLING',
   'HOTTEST ART AROUND',
   'ELECTRIC',
-  'FORBIDDEN PLEASURES',
   'ECSTACY',
 ]
 
