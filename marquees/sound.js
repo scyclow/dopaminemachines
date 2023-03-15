@@ -135,7 +135,7 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
     }, introTimeMs)
 
 
-    return () => smoothGain(0)
+    return () => smoothGain(0, 0.04)
   }
 
 }
@@ -200,7 +200,7 @@ function flipSound({ delay, duration }) {
 
     }, introTimeMs)
 
-    return () => smoothGain(0)
+    return () => smoothGain(0, 0.04)
   }
 
 }
@@ -309,11 +309,11 @@ function blinkCharSound(args, seq=null) {
 
       smoothFreq(baseFreq * freq)
 
-      if (!isSmooth) setTimeout(() => smoothGain(0), interval*0.75)
+      if (!isSmooth) setTimeout(() => smoothGain(0, 0.04), interval*0.75)
     }, interval)
 
     return () => {
-      smoothGain(0)
+      smoothGain(0, 0.04)
       clearInterval(int)
     }
   }
@@ -393,7 +393,7 @@ function climbSound(args) {
 
     return () => {
       clearInterval(int)
-      smoothGain(0)
+      smoothGain(0, 0.04)
     }
   }
 }
@@ -432,7 +432,7 @@ function zoomSound({duration, delay}) {
       }, duration/4)
     }, timeUntilNextQuarter)
 
-    return () => smoothGain(0)
+    return () => smoothGain(0, 0.04)
   }
 }
 
@@ -474,9 +474,9 @@ function carSirenSound({duration, delay}) {
     }, timeUntilNextHalf)
 
     return () => {
-      src1.smoothGain(0)
-      src2.smoothGain(0)
-      src3.smoothGain(0)
+      src1.smoothGain(0, 0.04)
+      src2.smoothGain(0, 0.04)
+      src3.smoothGain(0, 0.04)
     }
   }
 }
