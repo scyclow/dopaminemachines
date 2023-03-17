@@ -83,13 +83,17 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
   const showTrails = showLeftRight && prb(0.5)
 
 
-  const clonedNode = $.span(child.cloneNode(true), { style: getShadow(txtH, !emojiList.includes(child.innerHTML)) })
+  const isEmoji = !emojiList.includes(child.innerHTML)
+  const clonedNode = $.span(child.cloneNode(true), {
+    class: isEmoji ? 'emojiShadow' : '',
+    style: getShadow(txtH, isEmoji)
+  })
 
 
   const childWithPairedEmoji = pairedEmoji
     ? [
       clonedNode,
-      $.span(pairedEmoji, { style: `margin-left: 1em; ${getShadow(txtH, false)}`})
+      $.span(pairedEmoji, { class: 'emojiShadow', style: `margin-left: 1em; ${getShadow(txtH, false)}`})
     ]
     : clonedNode
 
@@ -284,7 +288,7 @@ function animationContainer(rSpan, cSpan) {
       secondaryAnimationParams
     ),
     {
-      class: 'animationContainer',
+      class: 'animationContainer' + (ignoreCharAnimation ? ' emojiShadow' : ''),
       style: `
         height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
@@ -385,7 +389,7 @@ function animationGridContainer(rSpan, cSpan) {
       }
     )),
     {
-      class: 'animationGridContainer',
+      class: 'animationGridContainer emojiShadow',
       style: `
         font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
         height: ${100*rSpan/rows}vh;

@@ -78,7 +78,5 @@ function setMetadata(title) {
 
   addMetaTag({ name: 'google', content: 'notranslate'})
 
-  css`* {margin: 0; padding: 0}`
-
   console.log(title)
 }

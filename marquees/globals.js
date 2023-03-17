@@ -6,7 +6,7 @@
 const cols = 60
 const rows = 48
 
-const USE_EMOJI_POLYFILL = true
+const USE_EMOJI_POLYFILL = false
 
 
 
@@ -342,12 +342,15 @@ const rotateColorPrb = chance(
 const invertAll = prb(0.02)
 css(`
   * {
+    margin: 0;
+    padding: 0;
     font-family: ${fontFamily};
     font-weight: ${fontWeight};
   }
 
   body {
     background: ${bgColor};
+    margin: 0;
   }
 
 `)

@@ -1,12 +1,7 @@
 
-setMetadata(content.map(c => c.innerHTML).join(' '))
-
-
 
 const main = $.main(
-  [
-    flexSection(rows, cols)
-  ],
+  flexSection(rows, cols) ,
   {
     id: 'main',
     style: `
@@ -20,17 +15,50 @@ const main = $.main(
   }
 )
 
+const usedContent = Array.from(
+  new Set(
+    Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
+
+  )
+)
+
+
+setMetadata(usedContent.join(' '))
 
 
 
 
 window.onload = () => {
+
   $.render(document.body, main)
-  if (USE_EMOJI_POLYFILL) {
-    twemoji.parse(document.body, {
-      folder: 'svg',
-      ext: '.svg',
-      className: 'emojiPolyfill'
-    })
+
+  let usingPolyfill = USE_EMOJI_POLYFILL
+
+  document.onkeydown = (event) => {
+    if (event.key === 'e') {
+      if (usingPolyfill) {
+        Array.from(document.getElementsByTagName('img')).forEach(img => {
+          img.replaceWith(img.alt)
+        })
+      } else {
+        twemoji.parse(
+          document.body, {
+            folder: 'svg',
+            ext: '.svg',
+            className: 'emojiPolyfill'
+          }
+        )
+      }
+
+      usingPolyfill = !usingPolyfill
+    }
   }
+
+  // if (USE_EMOJI_POLYFILL) {
+  //   twemoji.parse(document.body, {
+  //     folder: 'svg',
+  //     ext: '.svg',
+  //     className: 'emojiPolyfill'
+  //   })
+  // }
 }

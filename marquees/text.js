@@ -24,9 +24,9 @@ css(`
 // const word = (txt, slow, margin=1, fontSize=1) =>
 const wordExt = (txt, className) => $.span(txt, { class: className })
 
-const word = txt => wordExt(txt, 'text')
+const word = txt => wordExt(txt, 'text content')
 
-const emoji = e => wordExt(e, 'emoji')
+const emoji = e => wordExt(e, 'emoji content')
 
 const emojis = es => es.split(' ').map(emoji)
 
@@ -257,6 +257,7 @@ const crypto = [
   'STRAIGHT TO THE MOON',
   'BULL MARKET',
   'DIAMOND HANDS',
+  'ALL TIME HIGH',
 ]
 
 const disclaimer = [
