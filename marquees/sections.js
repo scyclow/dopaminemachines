@@ -219,23 +219,23 @@ function animationContainer(rSpan, cSpan) {
   const ignoreCharAnimation = [...emojiList, '<<<<', '>>>>'].includes(child.innerHTML.replace('!', ''))
 
   const animation = sample([
-    dance, //
-    growShrink, //
-    spin, //
-    hSiren, //
-    vSiren, //
-    hPivot, //
-    vPivot, //
-    vFlip, //
-    hFlip, //
-    updownLong, //
-    climb, //
+    dance,
+    growShrink,
+    spin,
+    hSiren,
+    vSiren,
+    hPivot,
+    vPivot,
+    vFlip,
+    hFlip,
+    updownLong,
+    climb,
     blink,
-    hexagon, //
+    hexagon,
     prb(0.5) && breathe,
     !ignoreCharAnimation && updownChars,
-    !ignoreCharAnimation && blinkChars, //
-    !ignoreCharAnimation && shrinkChars, //
+    !ignoreCharAnimation && blinkChars,
+    !ignoreCharAnimation && shrinkChars,
   ].filter(iden))
 
   const words = child.innerHTML.split(' ')
@@ -269,17 +269,19 @@ function animationContainer(rSpan, cSpan) {
     showTrails: prb(0.2)
   }
 
+  const secondaryAnimationParams = {
+    delay: rnd(3500),
+    duration: rnd(750, 5000),
+    showTrails: primaryAnimationParams.showTrails
+  }
+
   const childEl = $.div(
     secondAnimation(
       animation(
         child.cloneNode(true),
         primaryAnimationParams
       ),
-      {
-        delay: rnd(3500),
-        duration: rnd(750, 5000),
-        showTrails: primaryAnimationParams.showTrails
-      }
+      secondaryAnimationParams
     ),
     {
       class: 'animationContainer',
@@ -300,7 +302,7 @@ function animationContainer(rSpan, cSpan) {
   const ignoreStop = prb(0.1)
   const playSound = createSound(animation, primaryAnimationParams)
   const playSecondSound = secondAnimation !== iden
-    ? createSound(secondAnimation, primaryAnimationParams)
+    ? createSound(secondAnimation, secondaryAnimationParams)
     : null
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {

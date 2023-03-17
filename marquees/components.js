@@ -91,22 +91,6 @@ css(`
     }
   }
 
-  .updown {
-    animation: UpDown 1000ms ease-in-out infinite;
-  }
-
-  @keyframes UpDown {
-    0%, 100% {
-      transform: translate3d(0%, 30%, 0);
-    }
-
-    50% {
-      transform: translate3d(0%, -30%, 0);
-    }
-  }
-
-
-
   .blink {
     animation: Blink 1.5s steps(2, start) infinite;
   }
@@ -573,7 +557,6 @@ const vPivot = genericAnimatingComponent('vPivot')
 const vFlip = genericAnimatingComponent('vFlip')
 const hFlip = genericAnimatingComponent('hFlip')
 
-const updown = genericAnimatingComponent('updown')
 const wave = genericAnimatingComponent('wave')
 const climb = genericAnimatingComponent('climb')
 const hexagon = genericAnimatingComponent('hexagon')

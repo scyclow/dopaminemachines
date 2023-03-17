@@ -171,10 +171,6 @@ const freeFloating = ![0, 180].includes(lineRotation())
 const threeDRotations = lineRotation() <= 20 && lineRotation() && prb(0.25)
 
 
-const hideBg = freeFloating ? prb(0.5) : false
-const showBorder = freeFloating ? prb(0.5) : prb(0.25)
-
-
 const gradientBg = prb(0.2)
 
 const bgType = chance(
@@ -219,6 +215,10 @@ const chooseAltHue = (h) => {
   const alt = chooseHue()
   return h === alt ? chooseAltHue(h) : alt
 }
+
+
+const hideBg = freeFloating ? prb(0.5) : false
+const showBorder = freeFloating ? prb(0.5) : prb(0.25)
 
 
 

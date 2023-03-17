@@ -35,63 +35,11 @@ function createSource(waveType = 'square') {
   return { source, gain, ctx, smoothFreq, smoothGain };
 }
 
-
-// function triggerSound() {
-//   console.log('blah')
-//   const startingFreq = rnd(1000, 3000)
-//   const soundDuration = rnd(750, 1500)
-
-//   const vMin = rnd(5, 450)
-//   const vMax = vMin + rnd(5, 450)
-//   const v1 = rnd(vMin, vMax)
-//   // const v2 = rnd(vMin, vMax)
-//   // const v3 = rnd(vMin, vMax)
-
-//   const t1 = rnd(0.5, 1)
-//   // const t2 = rnd(0.5, 1)
-//   // const t3 = rnd(0.5, 1)
-
-//   // const dur2 = rnd(0.1, 0.5)
-//   // const dur3 = rnd(0.5, 1)
-
-//   const durOffset = prb(0.25) ? rnd : () => 1
-
-
-
-//   const MAX_VOLUME = 0.01;
-//   const { source: source1, gain: gain1, ctx: ctx1 } = createSource(1, 0.1)
-
-
-//   const smoothGain1 = smoothTo(gain1.gain, ctx1)
-//   const smoothFreq1 = smoothTo(source1.frequency, ctx1)
-
-//   // smoothGain1(MAX_VOLUME, 0.15)
-
-//   console.log(gain1.gain)
-
-
-
-//   const setFreq1 = () => {
-//     smoothFreq1(source1.frequency.value * 2 || startingFreq, rnd(0.1, 0.3))
-//     setTimeout(() => smoothFreq1(v1, t1))
-//   }
-
-//   setFreq1()
-//   setInterval(setFreq1, soundDuration * durOffset())
-// }
-
-
-
 const BASE_FREQ = rnd(250, 500)
 const MAJOR_SCALE = [1, 1.125, 1.25, 1.3333, 1.5, 1.6666, 1.875, 2]
 const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
-                        // E G# B E B G#
-                        // 1 1.5 1.8877 2 1.8877 1.15
-const HEXATONIC_SCALE2 = [1, 1.25, 1.5, 2, 1.5, 1.25]
-
 const JACK_DUMP_SCALE = [1, 1, 1.25, 1.3333, 1.5, 1.3333, 1.25, 1]
 
-// CCEFGGEC
 
 const getLoopsAtTime = (t, delay, duration) => (t - (START_TIME - delay)) / duration
 
@@ -510,7 +458,8 @@ setInterval(() => {
 
 const triggerUtterance = () => {
   const ix = rndint(utteranceQueue.length)
-  const [txt] = utteranceQueue.splice(ix, 1)
+  const txt = utteranceQueue.splice(ix, 1)[0] || ''
+
   if (franticVoice) txt.pitch = sample(MAJOR_SCALE)
 
   window.speechSynthesis.speak(txt)
