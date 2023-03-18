@@ -54,11 +54,11 @@ window.onload = () => {
     }
   }
 
-  // if (USE_EMOJI_POLYFILL) {
-  //   twemoji.parse(document.body, {
-  //     folder: 'svg',
-  //     ext: '.svg',
-  //     className: 'emojiPolyfill'
-  //   })
-  // }
+  if (USE_EMOJI_POLYFILL) {
+    twemoji.parse(document.body, {
+      folder: 'svg',
+      ext: '.svg',
+      className: 'emojiPolyfill'
+    })
+  }
 }

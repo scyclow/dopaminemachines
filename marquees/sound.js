@@ -6,14 +6,16 @@ const START_TIME = Date.now()
 const MAX_VOLUME = 0.04
 
 function createSource(waveType = 'square') {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const ctx = new AudioContext();
+  const AudioContext = window.AudioContext || window.webkitAudioContext
+  const ctx = new AudioContext()
 
-  const source = ctx.createOscillator();
-  const gain = ctx.createGain();
+  const source = ctx.createOscillator()
+  const gain = ctx.createGain()
+  const panner = new StereoPannerNode(ctx)
 
   source.connect(gain)
-  gain.connect(ctx.destination)
+  gain.connect(panner)
+  panner.connect(ctx.destination)
 
   gain.gain.value = 0
   source.type = waveType
@@ -25,6 +27,11 @@ function createSource(waveType = 'square') {
     ctx.currentTime + timeInSeconds
   )
 
+  const smoothPanner = (value, timeInSeconds=0.00001) => panner.pan.exponentialRampToValueAtTime(
+    value,
+    ctx.currentTime + timeInSeconds
+  )
+
   const smoothGain = (value, timeInSeconds=0.00001) => gain.gain.setTargetAtTime(
     min(value, MAX_VOLUME),
     ctx.currentTime,
@@ -32,7 +39,7 @@ function createSource(waveType = 'square') {
   )
 
 
-  return { source, gain, ctx, smoothFreq, smoothGain };
+  return { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner };
 }
 
 const BASE_FREQ = rnd(250, 500)
@@ -90,17 +97,28 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
 
 
 function shrinkCharSound({delay, duration}) {
-  const start1 = sirenSound({duration, delay}, 0.5, 'sine')
-  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 0.5, 'sine', 0.5)
-  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 0.5, 'sine', 0.5)
-  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 0.5, 'sine', 0.5)
+  const start1 = sirenSound({duration, delay}, 0.75, 'sine')
+  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 0.75, 'sine', 0.5)
+  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 0.75, 'sine', 0.5)
+  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 0.75, 'sine', 0.5)
 
   return () => {
+    const src1 = createSource('sine')
+    const src2 = createSource('sine')
+
+    src1.smoothFreq(BASE_FREQ/2)
+    src2.smoothFreq(BASE_FREQ/1.98)
+    src1.smoothGain(MAX_VOLUME, 0.1)
+    src2.smoothGain(MAX_VOLUME, 0.1)
+
+
     const stop1 = start1()
     const stop2 = start2()
     const stop3 = start3()
     const stop4 = start4()
     return () => {
+      src1.smoothGain(0, 0.1)
+      src2.smoothGain(0, 0.1)
       stop1()
       stop2()
       stop3()
@@ -156,22 +174,30 @@ function flipSound({ delay, duration }) {
 function smoothSound({delay, duration}) {
   const ix = int(map(duration, 0, 5000, 5, 0))
   const baseFreq = BASE_FREQ * [0.5, 1, 1.25, 1.5, 2][ix]
-
+  const isLow = prb(0.3)
+  const volAdj = isLow ? 1 : 0.8
 
   return (extraDelay=0) => {
-    const { smoothFreq: sF1, smoothGain: sG1 } = createSource()
-    sF1(baseFreq)
-    sG1(MAX_VOLUME, 0.25)
+    const src1 = createSource()
+    const src2 = createSource()
 
-    const { smoothFreq: sF2, smoothGain: sG2 } = createSource()
+    if (isLow) {
+      src1.smoothFreq(BASE_FREQ/8)
+      src2.smoothFreq(BASE_FREQ/7.98)
 
-    const offset = 1000000 / (duration * baseFreq)
-    sF2(baseFreq + offset)
-    sG2(MAX_VOLUME, 0.25)
+    } else {
+      const offset = 1000000 / (duration * baseFreq)
+      src1.smoothFreq(baseFreq)
+      src2.smoothFreq(baseFreq + offset)
+    }
+
+    src1.smoothGain(MAX_VOLUME * volAdj, 0.25)
+    src2.smoothGain(MAX_VOLUME * volAdj, 0.25)
+
 
     return () => {
-      sG1(0, 0.25)
-      sG2(0, 0.25)
+      src1.smoothGain(0, 0.25)
+      src2.smoothGain(0, 0.25)
     }
   }
 }
@@ -337,7 +363,7 @@ function climbSound(args) {
         setTimeout(() => smoothGain(0, 0.05), interval*0.75 + extraDelay)
       }, duration/4)
 
-    }, timeUntilNextNote)
+    }, timeUntilNextNote + extraDelay*4)
 
     return () => {
       clearInterval(int)
@@ -346,7 +372,7 @@ function climbSound(args) {
   }
 }
 
-function zoomSound({duration, delay}) {
+function zoomSound({duration, delay, switchChannels}) {
   const freqMax = sample(MAJOR_SCALE) * BASE_FREQ * 4
   const freqMin = freqMax / 16
   const freqDiff = freqMax - freqMin
@@ -366,10 +392,10 @@ function zoomSound({duration, delay}) {
   }
 
 
-
   return (extraDelay=0) => {
-    const { smoothFreq, smoothGain } = createSource()
+    const { smoothFreq, smoothGain, smoothPanner, panner } = createSource()
     const timeUntilNextQuarter = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % 0.25) * duration
+
 
     smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + timeUntilNextQuarter), timeUntilNextQuarter/1000)
@@ -378,6 +404,14 @@ function zoomSound({duration, delay}) {
       setRunInterval(i => {
         smoothFreq(getFreqAtTime(Date.now() + duration/4 + extraDelay), duration/4000)
       }, duration/4)
+
+      if (switchChannels) {
+        setRunInterval(i => {
+          const p = map(i%200, 0, 200, 0, Math.PI)
+          const val = 2 * (Math.sin(p) - 0.5)
+          smoothPanner(val)
+        }, duration/100)
+      }
     }, timeUntilNextQuarter)
 
     return () => smoothGain(0, 0.04)

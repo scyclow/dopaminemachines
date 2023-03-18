@@ -116,7 +116,7 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
       })
 
   const params = { duration: r * slow * speed / 2, delay, showTrails }
-  const playSound = zoomSound(params)
+  const playSound = zoomSound({ params, switchChannels: true })
 
   let stopSound = []
   const ignoreStop = prb(0.1)

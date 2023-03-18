@@ -6,7 +6,7 @@
 const cols = 60
 const rows = 48
 
-const USE_EMOJI_POLYFILL = false
+const USE_EMOJI_POLYFILL = true
 
 
 

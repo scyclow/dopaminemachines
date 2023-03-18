@@ -179,6 +179,7 @@ const sexyText = [
   'PURE BLISS',
   'DELICIOUS',
   'FORBIDDEN PLEASURES',
+  'JUICY',
 ]
 
 const gains = [
@@ -323,7 +324,8 @@ const emojiTextRelationships = {
     'BULL MARKET': emojis(`🐂`),
     'DIAMOND HANDS': emojis(`💎 🤲`),
     'SWEET': yummy,
-    'ELECTRIC': emojis(`⚡️`)
+    'ELECTRIC': emojis(`⚡️`),
+    'JUICY': fruit1
   },
   group: [
     [luckyText, lucky],
