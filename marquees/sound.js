@@ -396,7 +396,6 @@ function zoomSound({duration, delay, switchChannels}) {
     const { smoothFreq, smoothGain, smoothPanner, panner } = createSource()
     const timeUntilNextQuarter = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % 0.25) * duration
 
-
     smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + timeUntilNextQuarter), timeUntilNextQuarter/1000)
 
@@ -481,7 +480,7 @@ const getVoices = () => {
 }
 getVoices()
 
-const utteranceQueue = []
+let utteranceQueue = []
 
 setInterval(() => {
   if (utteranceQueue.length) {
@@ -504,6 +503,9 @@ const triggerUtterance = () => {
 }
 
 
+const stopUtter = txt => {
+  utteranceQueue = utteranceQueue.filter(u => u.text !== txt.toLowerCase())
+}
 
 const utter = (txt, t=1, i=7) => {
   try {

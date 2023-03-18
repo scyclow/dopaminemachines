@@ -116,10 +116,12 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
       })
 
   const params = { duration: r * slow * speed / 2, delay, showTrails }
-  const playSound = zoomSound({ params, switchChannels: true })
+  const playSound = zoomSound({ ...params, switchChannels: true })
 
   let stopSound = []
   const ignoreStop = prb(0.1)
+
+  let talkingActive = false
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
     if (showLeftRight) {
@@ -140,7 +142,13 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
       }
 
     } else {
-      utter(child.innerHTML, 30, 7)
+      if (talkingActive) {
+        stopUtter(child.innerHTML)
+        talkingActive = false
+      } else {
+        utter(child.innerHTML, 30, 7)
+        talkingActive = true
+      }
     }
   })
 }
