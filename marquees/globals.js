@@ -221,7 +221,7 @@ const chooseAltHue = (h) => {
 
 
 const hideBg = freeFloating ? prb(0.5) : false
-const showBorder = freeFloating ? prb(0.5) : prb(0.25)
+const showBorder = freeFloating ? prb(0.5) : prb(0.3333)
 
 
 
@@ -249,9 +249,10 @@ const gradientMix = sample([
   0.5 // mixed
 ])
 
+const getColorFromHue = h => `hsl(${h%360}deg, ${sat}%, 50%)`
 function getBgColor(h) {
-  const bg1 = `hsl(${h}deg, ${sat}%, 50%)`
-  const bg2 = `hsl(${h+sample(gradientHues)}deg, ${sat}%, 50%)`
+  const bg1 = getColorFromHue(h)
+  const bg2 = getColorFromHue(h+sample(gradientHues))
 
   if (bgType === 1) return 'none;'
   if (bgType === 2) return prb(gradientMix)
@@ -339,7 +340,13 @@ const rotateColorPrb = chance(
   [9, 0],
   [1, rnd(0.1, 0.2)],
 )
-// const rotateColor = [1, 2].includes(bgType) && !sectionAnimation && true//prb(0.02)
+
+const colorBlinkPrb = chance(
+  [95, 0],
+  [4, rnd(0.1, 0.2)],
+  [1, 1],
+)
+
 
 
 const invertAll = prb(0.02)

@@ -48,7 +48,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
 
 function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-  const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
+  const txtColor = bw ? bwc.text : getColorFromHue(txtH)
   const bgColor = bw ? bwc.bg : getBgColor(h)
 
 
@@ -59,12 +59,20 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const fontStyle = prb(italicRate) ? 'font-style: italic;' : ''
 
   const borderWidth = min(rSpan, cSpan) * .05
-  const rotateColor = prb(rotateColorPrb)
+  const rotateColor = prb(rotateColorPrb) ? 'fullColorRotate' : ''
+  const colorBlink = prb(colorBlinkPrb) ? 'colorBlink' : ''
+
+  const classes = [
+    'sectionContainer',
+    conicalBg(h, rSpan, cSpan),
+    rotateColor,
+    colorBlink
+  ].filter(iden).join(' ')
 
   const container = $.div(
     withBgAnimation(child, rSpan, cSpan),
     {
-      class: `sectionContainer ${conicalBg(h, rSpan, cSpan) || ''} ${sectionAnimation} ${rotateColor ? ' fullColorRotate' : ''}`,
+      class: classes,
       style: `
         border-style: ${borderStyle()};
         ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
@@ -75,7 +83,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
         ${fontStyle};
         transform: ${rotation};
         animation-delay: -${rnd(5)}s;
-        animation-direction: ${rotateColor ?'normal' : sectionAnimationDirection()};
+        animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()};
         animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s;
       `
     }

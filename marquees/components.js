@@ -126,6 +126,40 @@ css(`
     }
   }
 
+  .colorBlink {
+    animation: ColorBlink 4s steps(1, start) infinite;
+  }
+
+  @keyframes ColorBlink {
+    ${(() => {
+      const h = chooseHue()
+      const start = `
+        0%, 100% {
+          color: ${getColorFromHue(h)};
+          background-color: ${getColorFromHue(h + possibleHues[1])};
+        }
+      `
+      return start + possibleHues.length === 2
+        ? `
+          50% {
+            color: ${getColorFromHue(h + possibleHues[1])};
+            background-color: ${getColorFromHue(h)};
+          }
+        `
+        : `
+          33% {
+            color: ${getColorFromHue(h + possibleHues[1])};
+            background-color: ${getColorFromHue(h + possibleHues[2])};
+          }
+
+          66% {
+            color: ${getColorFromHue(h + possibleHues[2])};
+            background-color: ${getColorFromHue(h)};
+          }
+        `
+
+    })()}
+  }
 
   .fullColorRotate {
     animation: FullColorRotate 25s linear infinite;

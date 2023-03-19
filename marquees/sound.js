@@ -410,8 +410,10 @@ function zoomSound({duration, delay, switchChannels}) {
       }, duration/4)
 
       if (switchChannels) {
+        const startingAdj = int(getLoopsAtTime(Date.now(), delay, duration)) % 2 ? 150 : 50
+
         setRunInterval(i => {
-          const p = map(i%200, 0, 200, 0, Math.PI)
+          const p = map((i + startingAdj)%200, 0, 200, 0, Math.PI)
           const val = 2 * (Math.sin(p) - 0.5)
           smoothPanner(val)
         }, duration/100)
@@ -424,8 +426,9 @@ function zoomSound({duration, delay, switchChannels}) {
 
 
 function carSirenSound({duration, delay}) {
-  const freqMax = sample(MAJOR_SCALE) * BASE_FREQ / 2
-  const x = sample(MAJOR_SCALE.slice(1))
+  const baseScale = sample(MAJOR_SCALE)
+  const freqMax = baseScale * BASE_FREQ / 2
+  const x = sample(MAJOR_SCALE.filter(s => s !== baseScale))
 
   const freqMin = freqMax / x
   const freqDiff = freqMax - freqMin
@@ -479,8 +482,8 @@ const getVoices = () => {
     setTimeout(() => {
       if (!voices.length) getVoices()
     }, 200)
-  } catch(a) {
-    console.log(a)
+  } catch(e) {
+    console.log(e)
   }
 }
 getVoices()
