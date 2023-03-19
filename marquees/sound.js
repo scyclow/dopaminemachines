@@ -51,8 +51,10 @@ const JACK_DUMP_SCALE = [1, 1, 1.25, 1.3333, 1.5, 1.3333, 1.25, 1]
 const getLoopsAtTime = (t, delay, duration) => (t - (START_TIME - delay)) / duration
 
 function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1) {
-  const freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
-  const freqMin = freqAdj * freqMax / 5
+  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
+  let freqMin = freqAdj * freqMax / 5
+  if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
+
   const freqDiff = freqMax - freqMin
   const introTimeMs = 250
   gainAdj = min(1, gainAdj)
@@ -72,7 +74,7 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
     }
   }
 
-
+  const brokenDivisor = prb(0.1) ? rnd(1000, 2500) : 2000
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource(waveType)
     smoothGain(MAX_VOLUME * gainAdj)
@@ -83,8 +85,11 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
       smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalfLoop), timeUntilNextHalfLoop/1000)
 
       setTimeout(() => {
-        setRunInterval(() => {
-          smoothFreq(getFreqAtTime(Date.now() + duration/2 + extraDelay), duration/2000)
+        setRunInterval((i) => {
+          smoothFreq(
+            getFreqAtTime(Date.now() + duration/2 + extraDelay),
+            i % 2 ? duration/2000 : duration/brokenDivisor
+          )
         }, duration/2)
       }, timeUntilNextHalfLoop)
     }, introTimeMs)

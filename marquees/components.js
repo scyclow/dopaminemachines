@@ -8,16 +8,29 @@ css(`
     cursor: pointer;
     transition: 150ms;
     filter: invert(${invertAll ? 1 : 0});
+    transition: 250ms;
   }
 
   .sectionContainer:hover {
     filter: invert(${invertAll ? 0 : 1});
   }
 
+  .fullScreen {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 100;
+  }
+
   .marquee {
     display: inline-block;
     width: 100%;
     box-sizing: border-box;
+    line-height: 1;
   }
 
   .marqueeInner {
@@ -473,18 +486,17 @@ function marquee(children, args={}) {
   const duration = args.duration || 1
   const sideways = args.sideways || false
   const msgAnimation = args.msgAnimation || iden
-  const isEmoji = emojiList.includes(children.innerHTML)
+  const isEmoji = elementIsEmoji(children)
 
 
-  const repeat = isEmoji ? 80 : 40
+  const repeat = isEmoji ? 60 : 40
 
   const handleAnimation = (child, i, j) => {
-    const isEmoji = emojiList.includes(child.innerHTML)
-
+    const isEmoji = elementIsEmoji(child)
     return msgAnimation(
       $.span(
         child,
-        { style: `margin-left: ${(isEmoji || j > 0) ? 0 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;` }
+        { style: `margin-left: ${(isEmoji || j > 0) ? 0.2 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;` }
       ).cloneNode(true),
       { delay: i*100 + j/2}
     )

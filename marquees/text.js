@@ -18,6 +18,7 @@ css(`
   .emojiPolyfill {
     width: 1em;
     height: 1em;
+    transform: translateY(7%);
   }
 
 `)
@@ -30,13 +31,21 @@ const emoji = e => wordExt(e, 'emoji content')
 
 const emojis = es => es.split(' ').map(emoji)
 
-const hasEmoji = txt => emojiList.some(e => (typeof txt === 'string' ? txt : txt.innerHTML).includes(e))
+const elementIsEmoji = elem => {
+  if (Array.isArray(elem)) return false
+  return (
+    elem.getElementsByClassName('emoji').length
+    || elem.className.includes('emoji')
+  )
+}
+
+
 
 
 
 const money1 = emojis(`💸 💰 💎 👑 💍 🪙`)
 const money2 = emojis(`🤑 💷 💴 💵 💶 💲 💸 💰`)
-const moneyFull = [...emojis(`💹 📈`), ...money1, ...money2]
+const moneyFull = [...emojis(`💹 📈 💯`), ...money1, ...money2]
 const fruit1 = emojis(`🍒 🍉 🍇 🍋 🍯`)
 const fruit2 = emojis(`🍆 🍑 🌶`)
 const booze = emojis(`🍻 🍾 🥂`)
@@ -59,8 +68,8 @@ const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
 const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎`)]
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
-const excitingMisc = emojis(`🙌 🤩 ‼️`)
-const misc = emojis(`💪 ⚠️ 🐂 🤲`)
+const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃`)
+const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐`)
 
 const emojiLists = [
   moneyFull,
@@ -102,18 +111,9 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
 
 
 /*
-  boost,
-  frenzy,
+  boost, frenzy, multiplier, infinite, joy, certified, passion
 
-  whopping,
-  champion,
-  money multiplier,
-  infinite joy,
-  certified,
-  galore
-  instant
-  new and improved
-*/
+   */
 
 const luckyText = [
   'WINNER',
@@ -132,6 +132,7 @@ const luckyText = [
 const dealsText = [
   'DEAL OF THE CENTURY',
   'DEALS',
+  'DEALS GALORE',
   'WHAT A BARGAIN',
   'WHAT A DEAL',
   'BARGAIN',
@@ -147,7 +148,10 @@ const dealsText = [
   'FREE',
   'DEALS',
   'UNLIMITED',
-  'EXTRA LARGE'
+  'EXTRA LARGE',
+  'NEW AND IMPROVED',
+  `RUN, DON'T WALK`,
+  'SENSATIONAL'
 ]
 
 const cashText = [
@@ -180,11 +184,13 @@ const sexyText = [
   'DELICIOUS',
   'FORBIDDEN PLEASURES',
   'JUICY',
+  'PASSION'
 ]
 
 const gains = [
   'THROBBING GAINS',
   'MASSIVE GAINS',
+  'WHOPPING GAINS',
 ]
 
 const fomo = [
@@ -231,6 +237,11 @@ const excitingText = [
   `SUPERCHARGED`,
   'HOLY COW',
   'BONANZA',
+  'PURE ENERGY',
+  'PARTY TIME',
+  'INSTANT GRATIFICATION',
+  'MIND = BLOWN',
+  'DOPAMINE RUSH'
 ]
 
 const funText = [
@@ -259,6 +270,7 @@ const crypto = [
   'BULL MARKET',
   'DIAMOND HANDS',
   'ALL TIME HIGH',
+  '100%'
 ]
 
 const disclaimer = [
@@ -269,6 +281,7 @@ const disclaimer = [
   'DANGER ZONE',
   'DO YOUR OWN RESEARCH',
   'DYOR',
+  'ALL NATURAL',
   'SAFE + SECURE',
   `BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`,
   `PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`,
@@ -290,6 +303,8 @@ const affirmations = [
   'AS GOOD AS IT GETS',
   'FUCK YES',
   'FINALLY',
+  'CHAMPION',
+  'GREATEST OF ALL TIME'
 ]
 
 
@@ -325,7 +340,13 @@ const emojiTextRelationships = {
     'DIAMOND HANDS': emojis(`💎 🤲`),
     'SWEET': yummy,
     'ELECTRIC': emojis(`⚡️`),
-    'JUICY': fruit1
+    'JUICY': fruit1,
+    'ALL NATURAL': fruit1,
+    'PURE ENERGY': energy,
+    [`RUN, DON'T WALK`]: emojis(`🏃`),
+    'MIND = BLOWN': emojis(`🤯`),
+    '100%': emojis(`💯`),
+    'GREATEST OF ALL TIME': emojis(`🐐`)
   },
   group: [
     [luckyText, lucky],

@@ -36,9 +36,15 @@ window.onload = () => {
 
   document.onkeydown = (event) => {
     if (event.key === 'e') {
+      const emojiShadows = Array.from(document.getElementsByClassName('emojiShadow'))
+
       if (usingPolyfill) {
         Array.from(document.getElementsByTagName('img')).forEach(img => {
           img.replaceWith(img.alt)
+        })
+        emojiShadows.forEach(e => {
+          e.style.textShadow = getTextShadowValue(Number(e.dataset.h) || 0)
+          e.style.filter = ''
         })
       } else {
         twemoji.parse(
@@ -48,6 +54,10 @@ window.onload = () => {
             className: 'emojiPolyfill'
           }
         )
+        emojiShadows.forEach(e => {
+          e.style.filter = getDropShadowValue(Number(e.dataset.h) || 0)
+          e.style.textShadow = ''
+        })
       }
 
       usingPolyfill = !usingPolyfill

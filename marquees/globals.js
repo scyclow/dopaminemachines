@@ -6,7 +6,7 @@
 const cols = 60
 const rows = 48
 
-const USE_EMOJI_POLYFILL = true
+const USE_EMOJI_POLYFILL = false
 
 
 
@@ -141,9 +141,12 @@ const getShadowText = (h, polyfillShadow) => {
   )
 }
 
+const getDropShadowValue = h => getShadowText(h, true).map(s => `drop-shadow(${s})`).join(' ')
+const getTextShadowValue = h => getShadowText(h).join(',')
+
 const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
-  ? `filter: ${getShadowText(h, true).map(s => `drop-shadow(${s})`).join(' ')};`
-  : `text-shadow: ${getShadowText(h).join(',')};`
+  ? `filter: ${getDropShadowValue(h)};`
+  : `text-shadow: ${getTextShadowValue(h)};`
 
 
 

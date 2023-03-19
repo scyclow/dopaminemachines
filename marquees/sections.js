@@ -1,3 +1,51 @@
+function createSound(animation, params, isGrid, extraDelay=0) {
+  let fn
+
+  if (animation === spin) {
+    fn = smoothSound
+
+  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe].includes(animation)) {
+    fn = chance(
+      [4, (p) => sirenSound({
+        ...p,
+        duration: p.duration/2,
+      })],
+      [4, (p) => zoomSound({
+        ...p,
+        delay: p.delay + p.duration/4,
+        duration: p.duration/2
+      })],
+      [!isGrid && 2, (p) => carSirenSound(p)],
+      [!isGrid && 1, (p) => ticktockSound(p)]
+    )
+
+  } else if ([hSiren, vSiren, wave].includes(animation)) {
+    fn = sirenSound
+
+  } else if ([hFlip, vFlip].includes(animation)) {
+    fn = flipSound
+
+  } else if (blinkChars === animation) {
+    fn = blinkCharSound
+
+  } else if (blink === animation) {
+    fn = isGrid ? blinkCharSound : ticktockSound
+
+  } else if ([shrinkChars, updownChars].includes(animation)) {
+    fn = shrinkCharSound
+
+  } else if (animation === hexagon) {
+    fn = prb(0.5) ? hexSound : sirenSound
+
+  } else if (animation === climb) {
+    fn = climbSound
+  }
+
+  return fn({ ...params, delay: params.delay + extraDelay })
+
+}
+
+
 function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
   const txtColor = bw ? bwc.text : `hsl(${txtH}deg, ${sat}%, 50%)`
@@ -33,7 +81,23 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     }
   )
 
-  container.onclick = onclick
+  let isFullScreen
+  const canFullScreen = prb(0.01)
+  container.onclick = () => {
+    onclick()
+
+    try {
+      if (canFullScreen) {
+        const method = isFullScreen ? 'remove' : 'add'
+        container.classList[method]('fullScreen')
+        console.log(isFullScreen, container.classList)
+        isFullScreen = !isFullScreen
+      }
+
+      const childContent = child.getElementsByClassName('content')[0].innerHTML
+      if (childContent.includes('FAST CASH')) window.open('http://fastcashmoneyplus.biz', '_blank')
+    } catch (e) {}
+  }
   return container
 }
 
@@ -83,17 +147,21 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
   const showTrails = showLeftRight && prb(0.5)
 
 
-  const isEmoji = !emojiList.includes(child.innerHTML)
+  const isEmoji = elementIsEmoji(child)
   const clonedNode = $.span(child.cloneNode(true), {
     class: isEmoji ? 'emojiShadow' : '',
-    style: getShadow(txtH, isEmoji)
+    style: getShadow(txtH, !isEmoji),
+    'data-h': txtH,
   })
-
 
   const childWithPairedEmoji = pairedEmoji
     ? [
       clonedNode,
-      $.span(pairedEmoji, { class: 'emojiShadow', style: `margin-left: 1em; ${getShadow(txtH, false)}`})
+      $.span(pairedEmoji, {
+        class: 'emojiShadow',
+        style: `margin-left: 1em; ${getShadow(txtH, false)}`,
+        'data-h': txtH,
+      })
     ]
     : clonedNode
 
@@ -136,7 +204,7 @@ function marqueeContainter(rSpan, cSpan, sideways=false) {
 
       if (showTrails) {
         const sound2 = ignoreStop
-          ? createSound(animation, params)(20)
+          ? zoomSound({ ...params, switchChannels: true })(20)
           : playSound(20)
         if (!ignoreStop) stopSound.push(sound2)
       }
@@ -173,51 +241,6 @@ function getFontSize(txt, rSpan, cSpan) {
 
 
 
-function createSound(animation, params, isGrid, extraDelay=0) {
-  let fn
-  if (animation === spin) {
-    fn = smoothSound
-
-  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe].includes(animation)) {
-    fn = chance(
-      [4, (p) => sirenSound({
-        ...p,
-        duration: p.duration/2,
-      })],
-      [4, (p) => zoomSound({
-        ...p,
-        delay: p.delay + p.duration/4,
-        duration: p.duration/2
-      })],
-      [!isGrid && 2, (p) => carSirenSound(p)],
-      [!isGrid && 1, (p) => ticktockSound(p)]
-    )
-
-  } else if ([hSiren, vSiren, wave].includes(animation)) {
-    fn = sirenSound
-
-  } else if ([hFlip, vFlip].includes(animation)) {
-    fn = flipSound
-
-  } else if (blinkChars === animation) {
-    fn = blinkCharSound
-
-  } else if (blink === animation) {
-    fn = isGrid ? blinkCharSound : ticktockSound
-
-  } else if ([shrinkChars, updownChars].includes(animation)) {
-    fn = shrinkCharSound
-
-  } else if (animation === hexagon) {
-    fn = prb(0.5) ? hexSound : sirenSound
-
-  } else if (animation === climb) {
-    fn = climbSound
-  }
-
-  return fn({ ...params, delay: params.delay + extraDelay })
-
-}
 
 
 
@@ -297,6 +320,7 @@ function animationContainer(rSpan, cSpan) {
     ),
     {
       class: 'animationContainer' + (ignoreCharAnimation ? ' emojiShadow' : ''),
+      'data-h': h,
       style: `
         height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
@@ -398,6 +422,7 @@ function animationGridContainer(rSpan, cSpan) {
     )),
     {
       class: 'animationGridContainer emojiShadow',
+      'data-h': h,
       style: `
         font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
         height: ${100*rSpan/rows}vh;
