@@ -2,7 +2,7 @@ const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
   obj.exponentialRampToValueAtTime(value, ctx.currentTime + timeInSeconds)
 }
 
-const START_TIME = Date.now()
+let START_TIME = Date.now()
 const MAX_VOLUME = 0.04
 
 function createSource(waveType = 'square') {
@@ -22,21 +22,30 @@ function createSource(waveType = 'square') {
   source.frequency.value = 3000
   source.start()
 
-  const smoothFreq = (value, timeInSeconds=0.00001) => source.frequency.exponentialRampToValueAtTime(
-    value,
-    ctx.currentTime + timeInSeconds
-  )
+  const smoothFreq = (value, timeInSeconds=0.00001) => {
+    if (PAUSED) return
+    source.frequency.exponentialRampToValueAtTime(
+      value,
+      ctx.currentTime + timeInSeconds
+    )
+  }
 
-  const smoothPanner = (value, timeInSeconds=0.00001) => panner.pan.exponentialRampToValueAtTime(
-    value,
-    ctx.currentTime + timeInSeconds
-  )
+  const smoothPanner = (value, timeInSeconds=0.00001) => {
+    if (PAUSED) return
+    panner.pan.exponentialRampToValueAtTime(
+      value,
+      ctx.currentTime + timeInSeconds
+    )
+  }
 
-  const smoothGain = (value, timeInSeconds=0.00001) => gain.gain.setTargetAtTime(
-    min(value, MAX_VOLUME),
-    ctx.currentTime,
-    timeInSeconds
-  )
+  const smoothGain = (value, timeInSeconds=0.00001) => {
+    if (PAUSED) return
+    gain.gain.setTargetAtTime(
+      min(value, MAX_VOLUME),
+      ctx.currentTime,
+      timeInSeconds
+    )
+  }
 
 
   return { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner };
@@ -490,14 +499,14 @@ getVoices()
 
 let utteranceQueue = []
 
-setInterval(() => {
-  if (utteranceQueue.length) {
-  }
-}, 500)
-
 
 
 const triggerUtterance = () => {
+  if (PAUSED) {
+    setTimeout(triggerUtterance, 250)
+    return
+  }
+
   const ix = rndint(utteranceQueue.length)
   const txt = utteranceQueue.splice(ix, 1)[0] || ''
 

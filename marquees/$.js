@@ -50,6 +50,14 @@ $.section = $.create('section')
 const $html = $.tag('html')[0]
 const $head = document.head
 
+const queryParams = window.location.search
+  ? window.location.search.replace('?', '').split('&').reduce((params, i) => {
+      const [k, v] = i.split('=')
+      params[k] = v
+      return params
+    }, {})
+  : {}
+
 
 
 

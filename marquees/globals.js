@@ -7,6 +7,7 @@ const cols = 60
 const rows = 48
 
 const USE_EMOJI_POLYFILL = false
+let PAUSED = false
 
 
 
@@ -369,5 +370,19 @@ css(`
     background: ${bgColor};
     margin: 0;
   }
+
+  .viewerMode {
+    cursor: none;
+    pointer-events: none;
+  }
+
+  .viewerMode .sectionContainer:hover {
+    filter: invert(${invertAll ? 1 : 0});
+  }
+
+  .pauseAll *, .pauseAll *::before {
+    animation-play-state: paused !important;
+  }
+
 
 `)

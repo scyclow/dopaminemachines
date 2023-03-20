@@ -23,18 +23,24 @@ const usedContent = Array.from(
 )
 
 
-setMetadata(usedContent.join(' '))
 
 
 
 
 window.onload = () => {
 
+  setMetadata(usedContent.join(' '))
   $.render(document.body, main)
 
   let usingPolyfill = USE_EMOJI_POLYFILL
+  let isFullScreen = false
+  let isHidingMouse = false
+  let isPaused = false
+
+  let lastPaused
 
   document.onkeydown = (event) => {
+    // TOGGLE EMOJIS
     if (event.key === 'e') {
       const emojiShadows = Array.from(document.getElementsByClassName('emojiShadow'))
 
@@ -61,6 +67,47 @@ window.onload = () => {
       }
 
       usingPolyfill = !usingPolyfill
+    }
+
+    // FULLSCREEN
+    else if (event.key === 'f') {
+      if (isFullScreen) document.exitFullscreen()
+      else document.body.requestFullscreen({ navigationUI: 'hide' })
+
+      isFullScreen = !isFullScreen
+    }
+
+    // DOWNLOAD HTML
+    else if (event.key === 'h') {
+      const a = document.createElement('a')
+      a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
+      a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    }
+
+    // HIDE MOUSE
+    else if (event.key === 'm') {
+      if (isHidingMouse) {
+        document.exitPointerLock()
+        document.body.classList.remove('viewerMode')
+      } else {
+        document.body.classList.add('viewerMode')
+        document.body.requestPointerLock()
+      }
+      isHidingMouse = !isHidingMouse
+    }
+
+    else if (event.key === 'p') {
+      if (PAUSED) {
+        START_TIME += Date.now() - lastPaused
+        document.body.classList.remove('pauseAll')
+      } else {
+        lastPaused = Date.now()
+        document.body.classList.add('pauseAll')
+      }
+      PAUSED = !PAUSED
     }
   }
 

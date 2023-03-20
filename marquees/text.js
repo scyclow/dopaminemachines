@@ -22,7 +22,7 @@ css(`
   }
 
 `)
-// const word = (txt, slow, margin=1, fontSize=1) =>
+
 const wordExt = (txt, className) => $.span(txt, { class: className })
 
 const word = txt => wordExt(txt, 'text content')
@@ -39,7 +39,13 @@ const elementIsEmoji = elem => {
   )
 }
 
+let emojiOverride, textOverride
 
+try {
+  emojiOverride = queryParams?.emojis?.split(',').map(decodeURI).map(emoji)
+  textOverride = queryParams?.text?.split(',').map(decodeURI)
+  console.log(textOverride, emojiOverride)
+} catch (e) {}
 
 
 
@@ -71,7 +77,7 @@ const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃`)
 const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐`)
 
-const emojiLists = [
+const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
   booze,
   hot,
@@ -308,7 +314,7 @@ const affirmations = [
 ]
 
 
-const textLists = [
+const textLists = textOverride ? [textOverride] : [
   luckyText,
   dealsText,
   cashText,
@@ -323,7 +329,6 @@ const textLists = [
   affirmations,
 ]
 
-const textList = textLists.flat()
 
 const emojiTextRelationships = {
   single: {
@@ -364,7 +369,6 @@ const emojiTextRelationships = {
 
 
 function chooseEmojiForText(txt, selectionPrb=0.1, returnAll=false) {
-
   if (emojiTextRelationships.single[txt] && prb(selectionPrb)) {
     return returnAll ? emojiTextRelationships.single[txt] : sample(emojiTextRelationships.single[txt])
   }
@@ -405,6 +409,8 @@ function chooseContent() {
       const textSample = sample(textLists)
       contentSample.text.push(textSample)
 
+      if (emojiOverride) return contentSample.emojis.push(sample(emojiOverride))
+
       const matchingEmojiSample = emojiTextRelationships.group.find(g => g[0] === textSample)
       const emojiSample = matchingEmojiSample && prb(0.5) ? matchingEmojiSample[1] : sample(emojiLists)
       contentSample.emojis.push(emojiSample)
@@ -437,7 +443,7 @@ function chooseContent() {
 
 
   content.text = content.text.flat().map(c => word(c + (prb(0.25) ? '!' : '')))
-  content.emojis = showEmojis ? content.emojis.flat() : []
+  content.emojis = (showEmojis || emojiOverride) ? content.emojis.flat() : []
   return content
 }
 
@@ -449,6 +455,6 @@ const content = [..._content.text, ..._content.emojis]
 
 const adjustCharLength = (txt, pairedEmoji) => {
   let lenText = txt;
-  [...emojiList, '&lt;', '&gt;'].forEach(c => lenText = lenText.replaceAll(c, '1'))
+  emojiList.forEach(c => lenText = lenText.replaceAll(c, '1'))
   return lenText.length + (!!pairedEmoji ? 3 : 0)
 }
