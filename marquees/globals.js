@@ -10,7 +10,6 @@ const USE_EMOJI_POLYFILL = false
 
 
 
-const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 
 const speed = prb(0.05) ? 100 : 3
 const sat = 100
@@ -42,6 +41,14 @@ const layoutStyle = chance(
   [5, 6],  // even cols
   [2, 7],  // perfect grid                TODO: maybe include some marquees in there
   [3, 8],  // imperfect grid
+)
+
+
+const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
+const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
+  [9, 0.5],
+  [9, 0.95],
+  [2, 0],
 )
 
 const sectionAnimation = prb(0.95) ? '' : sample([

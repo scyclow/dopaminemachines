@@ -118,12 +118,17 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 
-function marqueeContainter(rSpan, cSpan, sideways=false) {
+function marqueeContainter(rSpan, cSpan) {
   const child = sampleContent()
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
   const slow = 1 + adjustCharLength(child.innerHTML, pairedEmoji)/9
+  const aspectRatio = cSpan / rSpan
+  const sideways =
+    (prb(thinSidewaysPrb) && aspectRatio < 0.333)
+    || (prb(sidewaysPrb) && aspectRatio >= 0.3333 && aspectRatio < 1.2)
+
 
   const h = chooseHue()
   const txtH = chooseAltHue(h)
@@ -623,7 +628,6 @@ function flexSection(rowCells, colCells) {
 
     const aspectRatio = cSpan / rSpan
 
-    const sideways = aspectRatio < 0.333 || prb(sidewaysPrb) && aspectRatio < 1.2
 
     marquees.push(
       aspectRatio < 1.25 && aspectRatio > 0.8 ?
@@ -632,7 +636,7 @@ function flexSection(rowCells, colCells) {
       aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
         animationContainer(rSpan, cSpan) :
 
-      marqueeContainter(rSpan, cSpan, sideways)
+      marqueeContainter(rSpan, cSpan)
     )
 
     times(rSpan, r =>
