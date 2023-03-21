@@ -1,31 +1,4 @@
 css(`
-  .sectionContainer {
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    cursor: pointer;
-    transition: 150ms;
-    filter: invert(${invertAll ? 1 : 0});
-    transition: 250ms;
-  }
-
-  .sectionContainer:hover {
-    filter: invert(${invertAll ? 0 : 1});
-  }
-
-  .fullScreen {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    width: 100vw;
-    z-index: 100;
-  }
-
   .marquee {
     display: inline-block;
     width: 100%;
@@ -47,13 +20,8 @@ css(`
   }
 
   @keyframes Marquee {
-    0% {
-      transform: translate3d(-50%, 0, 0);
-    }
-
-    100% {
-      transform: translate3d(0%, 0, 0);
-    }
+    0% {transform: translate3d(-50%, 0, 0)}
+    100% {transform: translate3d(0%, 0, 0)}
   }
 
 
@@ -63,13 +31,8 @@ css(`
   }
 
   @keyframes UpDownChars {
-    0%, 100% {
-      transform: translate3d(0%, 10%, 0);
-    }
-
-    50% {
-      transform: translate3d(0%, -10%, 0);
-    }
+    0%, 100% {transform: translate3d(0%, 10%, 0)}
+    50% {transform: translate3d(0%, -10%, 0)}
   }
 
 
@@ -87,21 +50,13 @@ css(`
 
 
   @keyframes UpDownLongChild {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-100%);
-    }
+    0%, 100% {transform: translateY(0)}
+    50% {transform: translateY(-100%)}
   }
 
   @keyframes UpDownLong {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(100%);
-    }
+    0%, 100% {transform: translateY(0)}
+    50% {transform: translateY(100%)}
   }
 
   .blink {
@@ -166,29 +121,12 @@ css(`
   }
 
   @keyframes FullColorRotate {
-    0%, 100% {
-      color: #ff0000;
-    }
-
-    17% {
-      color: #ffff00;
-    }
-
-    33% {
-      color: #00ff00;
-    }
-
-    50% {
-      color: #00ffff;
-    }
-
-    66% {
-      color: #0000ff;
-    }
-
-    83% {
-      color: #ff00ff;
-    }
+    0%, 100% {color: #ff0000}
+    17% {color: #ffff00}
+    33% {color: #00ff00}
+    50% {color: #00ffff}
+    66% {color: #0000ff}
+    83% {color: #ff00ff}
   }
 
 
@@ -198,29 +136,12 @@ css(`
   }
 
   @keyframes ColorRotate {
-    0%, 100% {
-      color: #ff0000;
-    }
-
-    17% {
-      color: #ffff00;
-    }
-
-    33% {
-      color: #00ff00;
-    }
-
-    50% {
-      color: #00ffff;
-    }
-
-    66% {
-      color: #0000ff;
-    }
-
-    83% {
-      color: #ff00ff;
-    }
+    0%, 100% {color: #ff0000}
+    17% {color: #ffff00}
+    33% {color: #00ff00}
+    50% {color: #00ffff}
+    66% {color: #0000ff}
+    83% {color: #ff00ff}
   }
 
   .dance {
@@ -228,12 +149,8 @@ css(`
   }
 
   @keyframes Dance {
-    0%, 100% {
-      transform: rotate(20deg);
-    }
-    50% {
-      transform: rotate(-20deg);
-    }
+    0%, 100% {transform: rotate(20deg)}
+    50% {transform: rotate(-20deg)}
   }
 
   .growShrink {
@@ -241,12 +158,8 @@ css(`
   }
 
   @keyframes GrowShrink {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(0.2);
-    }
+    0%, 100% {transform: scale(1)}
+    50% {transform: scale(0.2)}
   }
 
   .growShrinkShort {
@@ -255,12 +168,8 @@ css(`
   }
 
   @keyframes GrowShrinkShort {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(0.75);
-    }
+    0%, 100% {transform: scale(1)}
+    50% {transform: scale(0.75)}
   }
 
 
@@ -269,12 +178,8 @@ css(`
   }
 
   @keyframes Spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+    0% {transform: rotate(0deg)}
+    100% {transform: rotate(360deg)}
   }
 
 
@@ -283,12 +188,8 @@ css(`
   }
 
   @keyframes HSiren {
-    0% {
-      transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px);
-    }
-    100% {
-      transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px);
-    }
+    0% {transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)}
+    100% {transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)}
   }
 
   .vSiren {
@@ -296,12 +197,8 @@ css(`
   }
 
   @keyframes VSiren {
-    0% {
-      transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em);
-    }
-    100% {
-      transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em);
-    }
+    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)}
+    100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)}
   }
 
   .vSirenShort {
@@ -309,12 +206,8 @@ css(`
   }
 
   @keyframes VSirenShort {
-    0% {
-      transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em);
-    }
-    100% {
-      transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em);
-    }
+    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)}
+    100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)}
   }
 
 
@@ -324,12 +217,8 @@ css(`
   }
 
   @keyframes HPivot {
-    0%, 100% {
-      transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75);
-    }
-    50% {
-      transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75);
-    }
+    0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)}
+    50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)}
   }
 
   .vPivot {
@@ -338,12 +227,8 @@ css(`
 
 
   @keyframes VPivot {
-    0%, 100% {
-      transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5);
-    }
-    50% {
-      transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5);
-    }
+    0%, 100% {transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)}
+    50% {transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)}
   }
 
 
@@ -353,12 +238,8 @@ css(`
   }
 
   @keyframes VFlip {
-    0% {
-      transform: perspective(500px) rotate3d(2,0,0, 0deg);
-    }
-    100% {
-      transform: perspective(500px) rotate3d(2,0,0, 1800deg);
-    }
+    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg)}
+    100% {transform: perspective(500px) rotate3d(2,0,0, 1800deg)}
   }
 
 
@@ -367,12 +248,8 @@ css(`
   }
 
   @keyframes HFlip {
-    0% {
-      transform: perspective(500px) rotate3d(0,2,0, 0deg);
-    }
-    100% {
-      transform: perspective(500px) rotate3d(0,2,0, 1800deg);
-    }
+    0% {transform: perspective(500px) rotate3d(0,2,0, 0deg)}
+    100% {transform: perspective(500px) rotate3d(0,2,0, 1800deg)}
   }
 
 
@@ -381,12 +258,8 @@ css(`
   }
 
   @keyframes Breathe {
-    0%, 100% {
-      transform: scaleX(1) scaleY(1);
-    }
-    50% {
-      transform: scaleX(0.8) scaleY(0.9);
-    }
+    0%, 100% {transform: scaleX(1) scaleY(1)}
+    50% {transform: scaleX(0.8) scaleY(0.9)}
   }
 
 
@@ -405,21 +278,13 @@ css(`
   }
 
   @keyframes LeftRightChild {
-    0%, 100% {
-      transform: translateX(0);
-    }
-    50% {
-      transform: translateX(-100%);
-    }
+    0%, 100% {transform: translateX(0)}
+    50% {transform: translateX(-100%)}
   }
 
   @keyframes LeftRight {
-    0%, 100% {
-      transform: translateX(0);
-    }
-    50% {
-      transform: translateX(100%);
-    }
+    0%, 100% {transform: translateX(0)}
+    50% {transform: translateX(100%)}
   }
 
 
@@ -431,12 +296,8 @@ css(`
   }
 
   @keyframes ShrinkingBorder {
-    0% {
-      transform: scale(105%);
-    }
-    100% {
-      transform: scale(0%);
-    }
+    0% {transform: scale(105%)}
+    100% {transform: scale(0%)}
   }
 
   .shrinkingSpinningBorder {
@@ -444,12 +305,8 @@ css(`
   }
 
   @keyframes SpinningShrinkingBorder {
-    0% {
-      transform: scale(105%) rotate(0deg);
-    }
-    100% {
-      transform: scale(0%) rotate(70deg);
-    }
+    0% {transform: scale(105%) rotate(0deg)}
+    100% {transform: scale(0%) rotate(70deg)}
   }
 
 
@@ -462,22 +319,10 @@ css(`
   }
 
   @keyframes Wave {
-    0%, 100% {
-      transform: translate3d(0%, 30%, 0) rotate(0deg);
-    }
-
-    25% {
-      transform: translate3d(0%, 0%, 0) rotate(12deg);
-    }
-
-    50% {
-      transform: translate3d(0%, -30%, 0) rotate(0deg);
-    }
-
-
-    75% {
-      transform: translate3d(0%, 0%, 0) rotate(-12deg);
-    }
+    0%, 100% {transform: translate3d(0%, 30%, 0) rotate(0deg)}
+    25% {transform: translate3d(0%, 0%, 0) rotate(12deg)}
+    50% {transform: translate3d(0%, -30%, 0) rotate(0deg)}
+    75% {transform: translate3d(0%, 0%, 0) rotate(-12deg)}
   }
 
 
@@ -486,29 +331,12 @@ css(`
   }
 
   @keyframes Hexagon {
-    0%, 100% {
-      transform: translate(0, 0.5em);
-    }
-
-    17% {
-      transform: translate(0.43em, 0.25em);
-    }
-
-    33% {
-      transform: translate(0.43em, -0.25em);
-    }
-
-    50% {
-      transform: translate(0, -0.5em);
-    }
-
-    66% {
-      transform: translate(-0.43em, -0.25em);
-    }
-
-    83% {
-      transform: translate(-0.43em, 0.25em);
-    }
+    0%, 100% {transform: translate(0, 0.5em)}
+    17% {transform: translate(0.43em, 0.25em)}
+    33% {transform: translate(0.43em, -0.25em)}
+    50% {transform: translate(0, -0.5em)}
+    66% {transform: translate(-0.43em, -0.25em)}
+    83% {transform: translate(-0.43em, 0.25em)}
   }
 `)
 

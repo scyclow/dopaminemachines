@@ -99,6 +99,7 @@ window.onload = () => {
       isHidingMouse = !isHidingMouse
     }
 
+    // PAUSE
     else if (event.key === 'p') {
       if (PAUSED) {
         START_TIME += Date.now() - lastPaused

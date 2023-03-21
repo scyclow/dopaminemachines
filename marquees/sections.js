@@ -1,3 +1,25 @@
+css(`
+  .sectionContainer {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+    transition: 150ms;
+    filter: invert(${invertAll ? 1 : 0});
+    transition: 250ms;
+  }
+
+  .sectionContainer:hover {
+    filter: invert(${invertAll ? 0 : 1});
+  }
+
+  .animationGridContainer {
+    line-height: 1;
+  }
+`)
+
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
 

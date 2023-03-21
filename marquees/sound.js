@@ -528,10 +528,11 @@ const utter = (txt, t=1, i=7) => {
   try {
     let a = new window.SpeechSynthesisUtterance(txt.toLowerCase())
     a.voice = voices[0]
+    const startingQueue = utteranceQueue.length
     times(t, () => {
       utteranceQueue.push(a)
     })
-    triggerUtterance()
+    if (!startingQueue) triggerUtterance()
   } catch (b) {
 
   }
