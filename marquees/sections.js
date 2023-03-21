@@ -119,8 +119,11 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 function marqueeContainter(rSpan, cSpan) {
-  const child = sampleContent()
+  let [child, replacementChild] = sampleContent()
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
+
+  if (textOverride) child = replacementChild
+
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
   const slow = 1 + adjustCharLength(child.innerHTML, pairedEmoji)/9
@@ -258,7 +261,9 @@ function getFontSize(txt, rSpan, cSpan) {
 
 
 function animationContainer(rSpan, cSpan) {
-  const child = sampleContent()
+  let [child, replacementChild] = sampleContent()
+  if (textOverride) child = replacementChild
+
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
   const h = chooseHue()

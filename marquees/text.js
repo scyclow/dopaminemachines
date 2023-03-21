@@ -314,7 +314,7 @@ const affirmations = [
 ]
 
 
-const textLists = textOverride ? [textOverride] : [
+const textLists = [
   luckyText,
   dealsText,
   cashText,
@@ -368,16 +368,17 @@ const emojiTextRelationships = {
 
 
 
-function chooseEmojiForText(txt, selectionPrb=0.1, returnAll=false) {
-  if (emojiTextRelationships.single[txt] && prb(selectionPrb)) {
-    return returnAll ? emojiTextRelationships.single[txt] : sample(emojiTextRelationships.single[txt])
+function chooseEmojiForText(txt, selectionPrb=0.1) {
+  if (prb(selectionPrb) && emojiTextRelationships.single[txt]) {
+    return sample(emojiOverride || emojiTextRelationships.single[txt])
+  } else {
+    sample([])
   }
 
   for (let [texts, emojis] of emojiTextRelationships.group) {
     if (texts.includes(txt)) {
-      return prb(selectionPrb)
-        ? returnAll ? emojis : sample(emojis)
-        : undefined
+      const e = sample(emojiOverride || emojis)
+      return prb(selectionPrb) ? e : undefined
     }
   }
 }
@@ -388,9 +389,17 @@ function chooseEmojiForText(txt, selectionPrb=0.1, returnAll=false) {
 
 
 function sampleContent() {
-  return (prb(0.3) && _content.emojis.length) || !_content.text.length
-    ? sample(_content.emojis)
-    : sample(_content.text)
+  const showEmojis = (prb(0.3) && _content.emojis.length) || !_content.text.length
+  const e = sample(_content.emojis)
+
+  const mainContent = showEmojis ? e : sample(_content.text)
+  let replacementContent = showEmojis ? e : sample((textOverride||[]).map(c => word(c)))
+  if (!textOverride) {
+    replacementContent = mainContent
+  }
+
+
+  return [mainContent, replacementContent]
 }
 
 function chooseContent() {
@@ -404,12 +413,11 @@ function chooseContent() {
     [10, 0] // everything
   )
 
+
   if (sections) {
     times(sections, s => {
       const textSample = sample(textLists)
       contentSample.text.push(textSample)
-
-      if (emojiOverride) return contentSample.emojis.push(sample(emojiOverride))
 
       const matchingEmojiSample = emojiTextRelationships.group.find(g => g[0] === textSample)
       const emojiSample = matchingEmojiSample && prb(0.5) ? matchingEmojiSample[1] : sample(emojiLists)
@@ -431,6 +439,8 @@ function chooseContent() {
   )
 
 
+  if (emojiOverride) contentSample.emojis = emojiOverride
+
   if (selections) {
     times(selections, s => {
       content.text.push(sample(contentSample.text))
@@ -441,9 +451,8 @@ function chooseContent() {
     content.emojis = contentSample.emojis
   }
 
-
   content.text = content.text.flat().map(c => word(c + (prb(0.25) ? '!' : '')))
-  content.emojis = (showEmojis || emojiOverride) ? content.emojis.flat() : []
+  content.emojis = showEmojis ? content.emojis.flat() : []
   return content
 }
 
