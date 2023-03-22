@@ -578,8 +578,13 @@ function flexSection(rowCells, colCells) {
     rowMax = int(rowCells/8)
 
   } else if (layoutStyle === 4) {
-    colMin = colCells * (5/12)
-    rowMin = rowCells * (5/12)
+    if (prb(0.5)) {
+      colMin = colCells * (5/12)
+      rowMin = rowCells * (5/12)
+    } else {
+      colMin = colCells
+      rowMin = rowCells
+    }
     colMax = colCells
     rowMax = rowCells
 
@@ -610,6 +615,12 @@ function flexSection(rowCells, colCells) {
     rowMin = 1
     colMax = int(colCells/6)
     rowMax = int(rowCells/6)
+  } else if (layoutStyle === 9) {
+    const mn = rndint(1, 7)
+    colMin = mn
+    rowMin = mn
+    colMax = colCells
+    rowMax = rowCells
   }
 
 
@@ -638,13 +649,19 @@ function flexSection(rowCells, colCells) {
   const fillSection = (rCursor, cCursor) => {
     let adjRowMax = rowMax
     let adjColMax = colMax
-    if (layoutStyle === 2) {
-      if (prb(0.9)) {
-        if (prb(0.2)) {
-          adjColMax = sample([1, 2])
-        } else {
-          adjRowMax = sample([1, 2])
-        }
+    if (
+      (layoutStyle === 2 && prb(0.9))
+    ) {
+      if (prb(0.2)) {
+        adjColMax = sample([1, 2])
+      } else {
+        adjRowMax = sample([1, 2])
+      }
+    } else if (layoutStyle === 9) {
+      if (prb(0.3)) {
+        adjColMax = rndint(1, 7)
+      } else {
+        adjRowMax = rndint(1, 7)
       }
     }
     const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, adjColMax)

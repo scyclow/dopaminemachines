@@ -34,14 +34,15 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [72, 1], // anything goes              TODO: maybe make it so there are fewer vertical marquees
-  [3, 2],  // anything goes (micro/large)
-  [7, 3],  // anything goes (lean small)  TODO: maybe have this instead of 5?
-  [1, 4],  // macro
-  [7, 5],  // even rows                   TODO: make 16, 24 less likely
+  [62, 1], // anything goes              TODO: maybe make it so there are fewer vertical marquees
+  [4, 2],  // anything goes (micro/large)
+  [7, 3],  // anything goes (lean rows)  TODO: maybe have this instead of 5?
+  [2, 4],  // macro
+  [8, 5],  // even rows                   TODO: make 16, 24 less likely
   [5, 6],  // even cols
-  [2, 7],  // perfect grid                TODO: maybe include some marquees in there
-  [3, 8],  // imperfect grid
+  [5, 7],  // perfect grid                TODO: maybe include some marquees in there
+  [2, 8],  // imperfect grid
+  [5, 9],  // anything goes micro, varying size
 )
 
 
@@ -98,7 +99,6 @@ const shadowType = chance(
   [2, 9],
 )
 
-const deepShadows = prb(0.1)
 
 const showEmojis = prb(0.5)
 
@@ -172,14 +172,14 @@ const upsideDownRate = chance(
 )
 
 const lineRotation = chance(
-  [93, () => prb(upsideDownRate) ? 180 : 0],
-  [5, () => rnd(20)],
+  [92, () => prb(upsideDownRate) ? 180 : 0],
+  [6, () => rnd(20)],
   [2, () => rnd(20, 180)],
 )
 
 const freeFloating = ![0, 180].includes(lineRotation())
 
-const threeDRotations = lineRotation() <= 20 && lineRotation() && prb(0.25)
+const threeDRotations = lineRotation() <= 20 && lineRotation() && prb(0.3333)
 
 
 const gradientBg = prb(0.2)

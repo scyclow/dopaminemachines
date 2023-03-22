@@ -268,21 +268,37 @@ function ticktockSound(args) {
 
 function blinkCharSound(args, seq=null) {
   const sequence = sample([0, 1, 2])
-  const isSmooth = prb(0.5)
+  const jackDumpScale = prb(0.1)
+  const isSmooth = !jackDumpScale && prb(0.5)
+  const twoTone = prb(0.1)
 
-  const baseFreq = sample(MAJOR_SCALE) * BASE_FREQ * 1.5
+  const baseFreq = sample(MAJOR_SCALE) * BASE_FREQ * chance(
+    [5, 1],
+    [3, 2],
+    [1, 0.5],
+    [1, 0.25],
+  )
+
+  const ttMult = sample([2, 1.5, 1.3333])
 
   const duration = args.duration ? map(args.duration, 750, 5000, 500, 2000) : rnd(500, 2000)
 
   const interval = duration / 8
 
-  const jackDumpScale = prb(0.1)
-
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource()
-    if (isSmooth) smoothGain(MAX_VOLUME)
+    const src2 = createSource()
+
+    if (isSmooth) {
+      smoothGain(MAX_VOLUME)
+      if (twoTone) src2.smoothGain(MAX_VOLUME)
+    }
+
     let int = setRunInterval((i) => {
-      if (!isSmooth) smoothGain(MAX_VOLUME)
+      if (!isSmooth) {
+        smoothGain(MAX_VOLUME)
+        if (twoTone) src2.smoothGain(MAX_VOLUME)
+      }
 
       let ix
       switch (sequence) {
@@ -296,12 +312,17 @@ function blinkCharSound(args, seq=null) {
         : MAJOR_SCALE[ix]
 
       smoothFreq(baseFreq * freq)
+      if (twoTone) src2.smoothFreq(baseFreq * freq*ttMult)
 
-      if (!isSmooth) setTimeout(() => smoothGain(0, 0.04), interval*0.75)
+      if (!isSmooth) setTimeout(() => {
+        smoothGain(0, 0.04)
+         if (twoTone)  src2.smoothGain(0, 0.04)
+      }, interval*0.75)
     }, interval)
 
     return () => {
       smoothGain(0, 0.04)
+      if (twoTone) src2.smoothGain(0, 0.04)
       clearInterval(int)
     }
   }
@@ -498,6 +519,7 @@ const getVoices = () => {
 getVoices()
 
 let utteranceQueue = []
+let utterancePriority = null
 
 
 
@@ -508,7 +530,14 @@ const triggerUtterance = () => {
   }
 
   const ix = rndint(utteranceQueue.length)
-  const txt = utteranceQueue.splice(ix, 1)[0] || ''
+
+  let txt
+  if (utterancePriority) {
+    txt = utterancePriority
+    utterancePriority = null
+  } else {
+    txt = utteranceQueue.splice(ix, 1)[0] || ''
+  }
 
   if (franticVoice) txt.pitch = sample(MAJOR_SCALE)
 
@@ -522,6 +551,7 @@ const triggerUtterance = () => {
 
 const stopUtter = txt => {
   utteranceQueue = utteranceQueue.filter(u => u.text !== txt.toLowerCase())
+  utterancePriority = null
 }
 
 const utter = (txt, t=1, i=7) => {
@@ -532,6 +562,7 @@ const utter = (txt, t=1, i=7) => {
     times(t, () => {
       utteranceQueue.push(a)
     })
+    utterancePriority = a
     if (!startingQueue) triggerUtterance()
   } catch (b) {
 
