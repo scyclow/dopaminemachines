@@ -13,7 +13,7 @@ let PAUSED = false
 
 
 const speed = prb(0.05) ? 100 : 3
-const sat = 100
+
 const italicRate = chance(
   [1, rnd()],
   [1, 1],
@@ -103,7 +103,7 @@ const shadowType = chance(
 const showEmojis = prb(0.5)
 
 
-const getShadowColor = (h, l=50) => `hsl(${h%360}deg, ${sat}%, ${l}%)`
+const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, 20)
 
@@ -185,10 +185,10 @@ const threeDRotations = lineRotation() <= 20 && lineRotation() && prb(0.3333)
 const gradientBg = prb(0.2)
 
 const bgType = chance(
-  [60, 0],
+  [57, 0],
   [10, 1], // empty
   [20, 2], // gradiant
-  [5, 3], // zigzag small
+  [8, 3], // zigzag small
   [3, 4], // zigzag large
   [2, 5], // zigzag med
 )
@@ -257,7 +257,7 @@ const gradientMix = sample([
   0.5 // mixed
 ])
 
-const getColorFromHue = h => `hsl(${h%360}deg, ${sat}%, 50%)`
+const getColorFromHue = h => `hsl(${h%360}deg, 100%, 50%)`
 function getBgColor(h) {
   const bg1 = getColorFromHue(h)
   const bg2 = getColorFromHue(h+sample(gradientHues))
@@ -275,23 +275,23 @@ function getBgColor(h) {
 
 
 
-const conicalBgPrb = chance(
+const starburstBgPrb = chance(
   [8.5, 0],
   [1, 0.2],
   [0.5, 1],
 )
 
 
-function conicalBg(h, rSpan, cSpan) {
-  if (!prb(conicalBgPrb) || rSpan < 4) return
+function starburstBg(h, rSpan, cSpan) {
+  if (!prb(starburstBgPrb) || rSpan < 4) return
 
   const aspectRatio = cSpan/rSpan
 
   const h2 = chooseHue()
 
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-  const c1 = bw ? bwc.text : `hsl(${h}deg, ${sat}%, 50%)`
-  let c2 = bw ? bwc.bg : `hsl(${h2}deg, ${sat}%, 50%)`
+  const c1 = bw ? bwc.text : `hsl(${h}deg, 100%, 50%)`
+  let c2 = bw ? bwc.bg : `hsl(${h2}deg, 100%, 50%)`
   c2 =
     bgType === 1 ? '#000' :
     c1 === c2 ? '#fff' :
@@ -339,7 +339,7 @@ function conicalBg(h, rSpan, cSpan) {
 }
 
 const bgColor = chance(
-  [bgType !== 1 && 2, `hsl(${chooseHue()}deg, ${sat}%, 50%)`],
+  [bgType !== 1 && 2, `hsl(${chooseHue()}deg, 100%, 50%)`],
   [bgType !== 1 && 1, `#fff`],
   [1, `#000`]
 )

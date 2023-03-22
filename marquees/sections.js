@@ -86,7 +86,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
   const classes = [
     'sectionContainer',
-    conicalBg(h, rSpan, cSpan),
+    starburstBg(h, rSpan, cSpan),
     rotateColor,
     colorBlink
   ].filter(iden).join(' ')

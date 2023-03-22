@@ -1,14 +1,8 @@
 
 const $ = (elem, prop, value) => elem.style[prop] = value
-$.qsa = document.querySelectorAll.bind(document)
-$.id = document.getElementById.bind(document)
-$.tag = document.getElementsByTagName.bind(document)
-$.class = $.cls = (className) => [].slice.call(document.getElementsByClassName(className))
 
-$.toHTML = str => new DOMParser().parseFromString(str, "text/xml")
 
 $.render = (e, children) => {
-  if (children.onclick) debugger
   if (!children) return
   else if (typeof children === 'string') e.innerHTML = children
   else if (Array.isArray(children)) {
@@ -47,7 +41,7 @@ $.section = $.create('section')
 
 
 
-const $html = $.tag('html')[0]
+const $html = document.getElementsByTagName('html')[0]
 const $head = document.head
 
 const queryParams = window.location.search
@@ -67,13 +61,13 @@ const addMetaTag = (args) => {
     meta[arg] = args[arg]
   })
 
-  $head.appendChild(meta)
+  document.head.appendChild(meta)
 }
 
 function css(style) {
   const s = document.createElement('style')
   s.innerHTML = style
-  $head.appendChild(s)
+  document.head.appendChild(s)
 }
 
 

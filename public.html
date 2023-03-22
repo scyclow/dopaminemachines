@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html translate="no" lang="en" class="notranslate">
+<head>
+  <meta charset="utf-8">
+  <meta name="google" content="notranslate" />
+  <title>$$$</title>
+    <script>
+      function genTokenData(projectNum) {
+        const qp = window.location.search
+          ? window.location.search.replace('?', '').split('&').reduce((params, i) => {
+              const [k, v] = i.split('=')
+              params[k] = v
+              return params
+            }, {})
+          : {}
+
+        const tokenId = String(projectNum * 1000000 + Math.floor(Math.random() * 1000))
+        let hash = '0x'
+        if (qp.hash) {
+          hash = qp.hash
+        } else {
+          for (let i = 0; i < 64; i++) {
+            hash += Math.floor(Math.random() * 16).toString(16)
+          }
+          window.location.hash = '#' + hash
+
+          const last10hashes = JSON.parse(localStorage.getItem('last10Hashes')) || []
+          last10hashes.unshift(hash)
+
+          localStorage.setItem('last10Hashes', JSON.stringify(last10hashes.slice(0, 10)))
+        }
+        return {
+          hash,
+          // hash: '0xfeff8806ffe0ff004900b6104392c062d40f238839029c82ed000ffff3cb2003',
+          tokenId
+        }
+      }
+
+      const tokenData = genTokenData(999)
+      console.log(tokenData.hash)
+
+      function LOAD_LAST(i=1) {
+        const hashes = JSON.parse(localStorage.getItem('last10Hashes'))
+        const hash = hashes[i]
+        const newLocation = window.location.href.replace(/(\#|\?).*/, '') + '?hash=' + hash
+        window.location.href = newLocation
+      }
+    </script>
+
+</head>
+
+<script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="./marquees/utils.js"></script>
+<script src="./marquees/$.js"></script>
+<script src="./marquees/globals.js"></script>
+<script src="./marquees/sound.js"></script>
+<script src="./marquees/components.js"></script>
+<script src="./marquees/text.js"></script>
+<script src="./marquees/sections.js"></script>
+<script src="./marquees/index.js"></script>
+
+<body>
+
+</body>
+</html>
