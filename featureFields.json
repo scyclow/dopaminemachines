@@ -1,7 +1,14 @@
 [
     {
         "name": "Borders",
-        "type": "boolean"
+        "type": "enum",
+        "options": [
+            "none",
+            "solid",
+            "dashed",
+            "dotted",
+            "double"
+        ]
     },
     {
         "name": "Askew",
@@ -205,10 +212,6 @@
         "type": "boolean"
     },
     {
-        "name": "DEALS",
-        "type": "boolean"
-    },
-    {
         "name": "UNLIMITED",
         "type": "boolean"
     },
@@ -405,10 +408,6 @@
         "type": "boolean"
     },
     {
-        "name": "SO HOT",
-        "type": "boolean"
-    },
-    {
         "name": "HOT STUFF",
         "type": "boolean"
     },
@@ -574,14 +573,6 @@
     },
     {
         "name": "CRYPTO",
-        "type": "boolean"
-    },
-    {
-        "name": "MAKE FAST CASH NOW",
-        "type": "boolean"
-    },
-    {
-        "name": "WAGMI",
         "type": "boolean"
     },
     {
@@ -785,14 +776,6 @@
         "type": "boolean"
     },
     {
-        "name": "💸",
-        "type": "boolean"
-    },
-    {
-        "name": "💰",
-        "type": "boolean"
-    },
-    {
         "name": "🍻",
         "type": "boolean"
     },
@@ -873,30 +856,6 @@
         "type": "boolean"
     },
     {
-        "name": "💸",
-        "type": "boolean"
-    },
-    {
-        "name": "💰",
-        "type": "boolean"
-    },
-    {
-        "name": "💎",
-        "type": "boolean"
-    },
-    {
-        "name": "👑",
-        "type": "boolean"
-    },
-    {
-        "name": "💍",
-        "type": "boolean"
-    },
-    {
-        "name": "🪙",
-        "type": "boolean"
-    },
-    {
         "name": "🎄",
         "type": "boolean"
     },
@@ -910,18 +869,6 @@
     },
     {
         "name": "😵‍💫",
-        "type": "boolean"
-    },
-    {
-        "name": "🍻",
-        "type": "boolean"
-    },
-    {
-        "name": "🍾",
-        "type": "boolean"
-    },
-    {
-        "name": "🥂",
         "type": "boolean"
     },
     {
@@ -949,23 +896,7 @@
         "type": "boolean"
     },
     {
-        "name": "🍻",
-        "type": "boolean"
-    },
-    {
-        "name": "🍾",
-        "type": "boolean"
-    },
-    {
-        "name": "🥂",
-        "type": "boolean"
-    },
-    {
         "name": "💫",
-        "type": "boolean"
-    },
-    {
-        "name": "🔥",
         "type": "boolean"
     },
     {
@@ -994,46 +925,6 @@
     },
     {
         "name": "💣",
-        "type": "boolean"
-    },
-    {
-        "name": "💥",
-        "type": "boolean"
-    },
-    {
-        "name": "🤯",
-        "type": "boolean"
-    },
-    {
-        "name": "🧨",
-        "type": "boolean"
-    },
-    {
-        "name": "💣",
-        "type": "boolean"
-    },
-    {
-        "name": "💫",
-        "type": "boolean"
-    },
-    {
-        "name": "🔥",
-        "type": "boolean"
-    },
-    {
-        "name": "🚀",
-        "type": "boolean"
-    },
-    {
-        "name": "⚡️",
-        "type": "boolean"
-    },
-    {
-        "name": "✨",
-        "type": "boolean"
-    },
-    {
-        "name": "🌋",
         "type": "boolean"
     },
     {
@@ -1061,10 +952,6 @@
         "type": "boolean"
     },
     {
-        "name": "❤️‍🔥",
-        "type": "boolean"
-    },
-    {
         "name": "❤️",
         "type": "boolean"
     },
@@ -1074,10 +961,6 @@
     },
     {
         "name": "🍑",
-        "type": "boolean"
-    },
-    {
-        "name": "🌶",
         "type": "boolean"
     },
     {
@@ -1098,42 +981,6 @@
     },
     {
         "name": "🍦",
-        "type": "boolean"
-    },
-    {
-        "name": "🍄",
-        "type": "boolean"
-    },
-    {
-        "name": "🍒",
-        "type": "boolean"
-    },
-    {
-        "name": "🍉",
-        "type": "boolean"
-    },
-    {
-        "name": "🍇",
-        "type": "boolean"
-    },
-    {
-        "name": "🍋",
-        "type": "boolean"
-    },
-    {
-        "name": "🍯",
-        "type": "boolean"
-    },
-    {
-        "name": "🍆",
-        "type": "boolean"
-    },
-    {
-        "name": "🍑",
-        "type": "boolean"
-    },
-    {
-        "name": "🌶",
         "type": "boolean"
     },
     {
@@ -1173,10 +1020,6 @@
         "type": "boolean"
     },
     {
-        "name": "★",
-        "type": "boolean"
-    },
-    {
         "name": "→",
         "type": "boolean"
     },
@@ -1205,47 +1048,7 @@
         "type": "boolean"
     },
     {
-        "name": "🌟",
-        "type": "boolean"
-    },
-    {
-        "name": "🍭",
-        "type": "boolean"
-    },
-    {
         "name": "🎨",
-        "type": "boolean"
-    },
-    {
-        "name": "🌈",
-        "type": "boolean"
-    },
-    {
-        "name": "🦄",
-        "type": "boolean"
-    },
-    {
-        "name": "🎉",
-        "type": "boolean"
-    },
-    {
-        "name": "🍒",
-        "type": "boolean"
-    },
-    {
-        "name": "🍉",
-        "type": "boolean"
-    },
-    {
-        "name": "🍇",
-        "type": "boolean"
-    },
-    {
-        "name": "🍋",
-        "type": "boolean"
-    },
-    {
-        "name": "🍯",
         "type": "boolean"
     },
     {
@@ -1258,22 +1061,6 @@
     },
     {
         "name": "🔊",
-        "type": "boolean"
-    },
-    {
-        "name": "💥",
-        "type": "boolean"
-    },
-    {
-        "name": "🤯",
-        "type": "boolean"
-    },
-    {
-        "name": "🧨",
-        "type": "boolean"
-    },
-    {
-        "name": "💣",
         "type": "boolean"
     },
     {
@@ -1293,10 +1080,6 @@
         "type": "boolean"
     },
     {
-        "name": "🌎",
-        "type": "boolean"
-    },
-    {
         "name": "🙌",
         "type": "boolean"
     },
@@ -1305,31 +1088,7 @@
         "type": "boolean"
     },
     {
-        "name": "‼️",
-        "type": "boolean"
-    },
-    {
         "name": "🏃",
-        "type": "boolean"
-    },
-    {
-        "name": "💸",
-        "type": "boolean"
-    },
-    {
-        "name": "🤑",
-        "type": "boolean"
-    },
-    {
-        "name": "🔥",
-        "type": "boolean"
-    },
-    {
-        "name": "😂",
-        "type": "boolean"
-    },
-    {
-        "name": "💥",
         "type": "boolean"
     },
     {

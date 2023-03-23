@@ -118,7 +118,7 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
 
 
 /*
-  boost, frenzy, multiplier, infinite, joy, certified, passion
+  boost, frenzy, multiplier, infinite, joy, certified
 
    */
 

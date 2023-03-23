@@ -15,6 +15,10 @@ css(`
     filter: invert(${invertAll ? 0 : 1});
   }
 
+  .sectionContainer:active {
+    opacity: 0.5;
+  }
+
   .animationGridContainer {
     line-height: 1;
   }
@@ -117,6 +121,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     onclick()
 
     try {
+      if (window.navigator) window.navigator.vibrate(50)
       if (canFullScreen) {
         const method = isFullScreen ? 'remove' : 'add'
         container.classList[method]('fullScreen')
