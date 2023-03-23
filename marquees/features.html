@@ -53,57 +53,15 @@
 
 
 
-<script src="./utils.js"></script>
+<!-- <script src="./utils.js"></script>
 <script src="./mock$.js"></script>
 <script src="./globals.js"></script>
 <script src="./sound.js"></script>
 <script src="./components.js"></script>
 <script src="./text.js"></script>
-<script src="./sections.js"></script>
+<script src="./sections.js"></script> -->
+<script src="../calculateFeatures.js"></script>
 <script type="text/javascript">
-  function calculateFeatures(tokenData) {
-    // ...
-    const main = $.main(
-      flexSection(rows, cols),
-      {
-        id: 'main',
-        style: `
-          height: 100vh;
-          width: 100vw;
-          overflow: hidden;
-          display: grid;
-          grid-template-rows: repeat(${rows}, 1fr);
-          grid-template-columns: repeat(${cols}, 1fr);
-        `
-      }
-    )
-
-    const usedContent = Array.from(
-      new Set(
-        Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
-      )
-    )
-
-    const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {
-      f[t] = false
-      return f
-    }, {})
-
-    usedContent.forEach(c => features[c] = true)
-
-    // features['Layout Type'] = layoutStyle
-    // features['Background Type'] = hideBg ? 'none' : bgType
-    // features['Shadow Type'] = shadowType
-    // features['Font'] = fontFamily
-    // features['Borders'] = showBorder ? borderStyle : 'none'
-    // features['Askew'] = freeFloating
-    // features['Hues'] = randomHue ? '???' : possibleHues.length
-    // features['Inverted'] = invertAll
-    // features['Random Calls'] = rCount
-    // features['Sections'] = sectionCount
-
-    return features
-  }
 
   const f = calculateFeatures(tokenData)
   console.log(f)

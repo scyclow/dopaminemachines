@@ -1,4 +1,6 @@
 
+let IS_HEADLESS = false
+let TWEMOJI_PRESENT = false
 const $ = (elem, prop, value) => {}
 
 
@@ -104,8 +106,8 @@ $.section = $.create('section')
 
 
 
-const $html = document.getElementsByTagName('html')[0]
-const $head = document.head
+const $html = {}
+const $head = {}
 
 const queryParams = {}
 

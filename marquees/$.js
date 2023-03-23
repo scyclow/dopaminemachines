@@ -1,4 +1,8 @@
 
+const IS_HEADLESS = ((window.navigator || {}).userAgent || []).includes('eadless')
+const TWEMOJI_PRESENT = !!window.twemoji
+
+
 const $ = (elem, prop, value) => elem.style[prop] = value
 
 
@@ -44,13 +48,19 @@ $.section = $.create('section')
 const $html = document.getElementsByTagName('html')[0]
 const $head = document.head
 
-const queryParams = window.location.search
-  ? window.location.search.replace('?', '').split('&').reduce((params, i) => {
-      const [k, v] = i.split('=')
-      params[k] = v
-      return params
-    }, {})
-  : {}
+let queryParams
+
+try {
+  queryParams = window.location.search
+    ? window.location.search.replace('?', '').split('&').reduce((params, i) => {
+        const [k, v] = i.split('=')
+        params[k] = v
+        return params
+      }, {})
+    : {}
+} catch (e) {
+  queryParams = {}
+}
 
 
 

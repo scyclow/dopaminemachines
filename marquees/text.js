@@ -42,9 +42,10 @@ const elementIsEmoji = elem => {
 let emojiOverride, textOverride
 
 try {
-  emojiOverride = queryParams?.emojis?.split(',').map(decodeURI).map(emoji)
-  textOverride = queryParams?.text?.split(',').map(decodeURI)
-  console.log(textOverride, emojiOverride)
+
+  emojiOverride = (queryParams.emojis || []).split(',').map(decodeURI).map(emoji)
+  textOverride = (queryParams.text || []).split(',').map(decodeURI)
+  if (textOverride || emojiOverride) console.log('OVERRIDES:', textOverride, emojiOverride)
 } catch (e) {}
 
 
@@ -74,7 +75,7 @@ const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
 const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎`)]
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
-const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃`)
+const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
@@ -464,6 +465,6 @@ const content = [..._content.text, ..._content.emojis]
 
 const adjustCharLength = (txt, pairedEmoji) => {
   let lenText = txt;
-  emojiList.forEach(c => lenText = lenText.replaceAll(c, '1'))
+  emojiList.forEach(c => lenText = lenText.replace(c, '1'))
   return lenText.length + (!!pairedEmoji ? 3 : 0)
 }

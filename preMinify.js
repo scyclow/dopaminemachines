@@ -12,10 +12,10 @@ const sections = fs.readFileSync('./marquees/sections.js', 'utf8')
 const index = fs.readFileSync('./marquees/index.js', 'utf8')
 
 
-const script = utils + $ + globals + sound + components + text + sections + index
+const script = [utils, $, globals, sound, components, text, sections, index].join('\n')
 
 // console.log('uglifying')
-console.log(script)
+// console.log(script)
 // const uglified = uglify.minify(script, uglfyConfig)
 
-// fs.writeFileSync('./marquees/min.js', uglified)
+fs.writeFileSync('./marquees/preMin.js', script)

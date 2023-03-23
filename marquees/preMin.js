@@ -1,6 +1,4 @@
-
-function calculateFeatures(tokenData) {
-  const min = Math.min
+const min = Math.min
 const max = Math.max
 const abs = Math.abs
 const round = Math.round
@@ -62,109 +60,48 @@ function setRunInterval(fn, interval) {
 
 function getLocalStorage(key) {
   try {
-    return JSON.parse(window?.localStorage?.getItem(key))
+    return window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem(key))
   } catch (e) {
     console.log(e)
   }
 }
 
-let IS_HEADLESS = false
-let TWEMOJI_PRESENT = false
-const $ = (elem, prop, value) => {}
+const IS_HEADLESS = ((window.navigator || {}).userAgent || []).includes('eadless')
+const TWEMOJI_PRESENT = !!window.twemoji
+
+
+const $ = (elem, prop, value) => elem.style[prop] = value
 
 
 $.render = (e, children) => {
-  // if (!children) return
-  // else if (typeof children === 'string') e.innerHTML = children
-  // else if (Array.isArray(children)) {
-  //   if (typeof children[0] === 'string') {
-  //     children.forEach(child => {
-  //       e.innerHTML += (
-  //         typeof child === 'string' ? child : child.outerHTML
-  //       )
-  //     })
-  //   } else {
-  //     e.append(...children.flat())
-  //   }
-  // }
-  // else {
-  //   e.append(children)
-  // }
+  if (!children) return
+  else if (typeof children === 'string') e.innerHTML = children
+  else if (Array.isArray(children)) {
+    if (typeof children[0] === 'string') {
+      children.forEach(child => {
+        e.innerHTML += (
+          typeof child === 'string' ? child : child.outerHTML
+        )
+      })
+    } else {
+      e.append(...children.flat())
+    }
+  }
+  else {
+    e.append(children)
+  }
 }
 
 
 $.create = elType => (children, attrs={}) => {
-  let classes = (attrs.class || '').split(' ')
-  return {
-    elType,
-    attrs,
-    children,
-    classList: {
-      add(cls) {
-        classes.push(cls)
-      },
-      remove(cls) {
-        classes = classes.filter(c => c !== cls)
-      }
-    },
-    get className(){
-      return classes.join(' ')
-    },
-    get innerHTML() {
-      return typeof children === 'string' ? children : JSON.stringify(children)
-    },
-    cloneNode() {
-      return Object.assign({}, this)
-    },
-    getElementsByClassName(className) {
-      const elements = []
+  const e = document.createElement(elType)
+  $.render(e, children)
 
-      const collectElements = children => {
-        if (Array.isArray(children)) {
-          children.forEach(child => {
-            collectElements(child)
-          })
-        } else if (typeof children === 'object') {
-          if (children.className.includes(className)) {
-            elements.push(children)
-          }
-          if (children.children) collectElements(children.children)
-        }
-      }
+  Object.keys(attrs).forEach(a => {
+    e.setAttribute(a, attrs[a])
+  })
 
-      collectElements(this.children)
-
-      // if (Array.isArray(this.children)) {
-      //   this.children.forEach(child => {
-      //     const e = child.getElementsByClassName(className)
-      //     elements.push(e)
-      //   })
-      // } else if (typeof this.children === 'object') {
-      //   // console.log(className, '||', this.children.className)
-      //   if (this.children.className.includes(className)) elements.push(this.children)
-
-      //   if (Array.isArray(this.children.children)) {
-      //     this.children.children.forEach(child => {
-      //       const e = child.getElementsByClassName(className)
-      //       elements.push(e)
-      //     })
-      //   } else if (typeof this.children.children === 'object') {
-      //     this.children.getElementsByClassName(className)
-      //   }
-      // }
-
-      return elements.flat()
-    }
-
-  }
-  // const e = document.createElement(elType)
-  // $.render(e, children)
-
-  // Object.keys(attrs).forEach(a => {
-  //   e.setAttribute(a, attrs[a])
-  // })
-
-  // return e
+  return e
 }
 
 $.div = $.create('div')
@@ -175,27 +112,39 @@ $.section = $.create('section')
 
 
 
-const $html = {}
-const $head = {}
+const $html = document.getElementsByTagName('html')[0]
+const $head = document.head
 
-const queryParams = {}
+let queryParams
+
+try {
+  queryParams = window.location.search
+    ? window.location.search.replace('?', '').split('&').reduce((params, i) => {
+        const [k, v] = i.split('=')
+        params[k] = v
+        return params
+      }, {})
+    : {}
+} catch (e) {
+  queryParams = {}
+}
 
 
 
 
 const addMetaTag = (args) => {
-  // const meta = document.createElement('meta')
-  // Object.keys(args).forEach(arg => {
-  //   meta[arg] = args[arg]
-  // })
+  const meta = document.createElement('meta')
+  Object.keys(args).forEach(arg => {
+    meta[arg] = args[arg]
+  })
 
-  // document.head.appendChild(meta)
+  document.head.appendChild(meta)
 }
 
 function css(style) {
-  // const s = document.createElement('style')
-  // s.innerHTML = style
-  // document.head.appendChild(s)
+  const s = document.createElement('style')
+  s.innerHTML = style
+  document.head.appendChild(s)
 }
 
 
@@ -207,7 +156,6 @@ function setMetadata(title) {
   document.title = title
 
   addMetaTag({ name: 'google', content: 'notranslate'})
-  addMetaTag({ charset: 'utf-8' })
 
   console.log(title)
 }
@@ -1854,9 +1802,10 @@ const elementIsEmoji = elem => {
 let emojiOverride, textOverride
 
 try {
-  emojiOverride = queryParams?.emojis?.split(',').map(decodeURI).map(emoji)
-  textOverride = queryParams?.text?.split(',').map(decodeURI)
-  if (textOverride || emojiOverride) console.log(textOverride, emojiOverride)
+
+  emojiOverride = (queryParams.emojis || []).split(',').map(decodeURI).map(emoji)
+  textOverride = (queryParams.text || []).split(',').map(decodeURI)
+  if (textOverride || emojiOverride) console.log('OVERRIDES:', textOverride, emojiOverride)
 } catch (e) {}
 
 
@@ -3008,46 +2957,132 @@ function flexSection(rowCells, colCells) {
 
 
 
-  const main = $.main(
-    flexSection(rows, cols),
-    {
-      id: 'main',
-      style: `
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-        display: grid;
-        grid-template-rows: repeat(${rows}, 1fr);
-        grid-template-columns: repeat(${cols}, 1fr);
-      `
+
+const main = $.main(
+  flexSection(rows, cols),
+  {
+    id: 'main',
+    style: `
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: repeat(${rows}, 1fr);
+      grid-template-columns: repeat(${cols}, 1fr);
+    `
+  }
+)
+
+const usedContent = Array.from(
+  new Set(
+    Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
+
+  )
+)
+
+
+
+
+window.onload = () => {
+
+  setMetadata(usedContent.join(' '))
+  $.render(document.body, main)
+
+  if (PAUSED) {
+    LAST_PAUSED = Date.now()
+    document.body.classList.add('pauseAll')
+  }
+
+  let usingEmojiPolyfill = USE_EMOJI_POLYFILL
+  let isFullScreen = false
+  let isHidingMouse = false
+
+
+  document.onkeydown = (event) => {
+    // TOGGLE EMOJIS
+    if (event.key === 'e') {
+      const emojiShadows = Array.from(document.getElementsByClassName('emojiShadow'))
+
+      if (usingEmojiPolyfill) {
+        Array.from(document.getElementsByTagName('img')).forEach(img => {
+          img.replaceWith(img.alt)
+        })
+        emojiShadows.forEach(e => {
+          e.style.textShadow = getTextShadowValue(Number(e.dataset.h) || 0)
+          e.style.filter = ''
+        })
+      } else {
+        twemoji.parse(
+          document.body, {
+            folder: 'svg',
+            ext: '.svg',
+            className: 'emojiPolyfill'
+          }
+        )
+        emojiShadows.forEach(e => {
+          e.style.filter = getDropShadowValue(Number(e.dataset.h) || 0)
+          e.style.textShadow = ''
+        })
+      }
+
+      usingEmojiPolyfill = !usingEmojiPolyfill
+
+      try {
+        window.localStorage.setItem('__DOPAMINE_EMOJI_TOGGLE__', usingEmojiPolyfill)
+      } catch(e) {}
     }
-  )
 
-  const usedContent = Array.from(
-    new Set(
-      Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
-    )
-  )
+    // FULLSCREEN
+    else if (event.key === 'f') {
+      if (isFullScreen) document.exitFullscreen()
+      else document.body.requestFullscreen({ navigationUI: 'hide' })
 
-  const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {
-    f[t] = false
-    return f
-  }, {})
+      isFullScreen = !isFullScreen
+    }
 
-  usedContent.forEach(c => features[c] = true)
+    // DOWNLOAD HTML
+    else if (event.key === 'h') {
+      const a = document.createElement('a')
+      a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
+      a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    }
 
-  features['Layout Type'] = layoutStyle
-  features['Background Type'] = hideBg ? 'none' : bgType
-  features['Shadow Type'] = shadowType
-  features['Font'] = fontFamily
-  features['Borders'] = showBorder ? borderStyle : 'none'
-  features['Askew'] = freeFloating
-  features['Hues'] = randomHue ? '???' : possibleHues.length
-  if (possibleHues[1] < 1) features['Hues'] = 1
-  features['Inverted'] = invertAll
-  features['Random Calls'] = rCount
-  features['Sections'] = sectionCount
-  features['Font Weight'] = fontWeight
+    // HIDE MOUSE
+    else if (event.key === 'm') {
+      if (isHidingMouse) {
+        document.exitPointerLock()
+        document.body.classList.remove('viewerMode')
+      } else {
+        document.body.classList.add('viewerMode')
+        document.body.requestPointerLock()
+      }
+      isHidingMouse = !isHidingMouse
+    }
 
-  return features
+    // PAUSE
+    else if (event.key === 'p') {
+      if (PAUSED) {
+        START_TIME += Date.now() - LAST_PAUSED
+        document.body.classList.remove('pauseAll')
+      } else {
+        LAST_PAUSED = Date.now()
+        document.body.classList.add('pauseAll')
+      }
+      PAUSED = !PAUSED
+      try {
+        window.localStorage.setItem('__DOPAMINE_IS_PAUSED__', PAUSED)
+      } catch(e) {}
+    }
+  }
+
+  if (USE_EMOJI_POLYFILL && window.twemoji) {
+    twemoji.parse(document.body, {
+      folder: 'svg',
+      ext: '.svg',
+      className: 'emojiPolyfill'
+    })
+  }
 }

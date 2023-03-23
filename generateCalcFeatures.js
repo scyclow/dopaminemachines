@@ -1,7 +1,7 @@
 const fs = require('fs')
 
 const utils = fs.readFileSync('./marquees/utils.js', 'utf8')
-const mock$ = fs.readFileSync('./marquees/$.js', 'utf8')
+const mock$ = fs.readFileSync('./marquees/mock$.js', 'utf8')
 const globals = fs.readFileSync('./marquees/globals.js', 'utf8')
 const sound = fs.readFileSync('./marquees/sound.js', 'utf8')
 const components = fs.readFileSync('./marquees/components.js', 'utf8')
@@ -47,10 +47,11 @@ const calcFeatures = `
   features['Inverted'] = invertAll
   features['Random Calls'] = rCount
   features['Sections'] = sectionCount
+  features['Font Weight'] = fontWeight
 `
 
 
-const script = utils + mock$ + globals + sound + components + text + sections + calcFeatures
+const script = [utils, mock$, globals, sound, components, text, sections, calcFeatures].join('\n')
 
 
 const funcString = `

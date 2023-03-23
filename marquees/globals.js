@@ -1,15 +1,15 @@
-// const divisor = window.innerHeight/window.innerWidth > 1.5
-//   ? 3
-//   : 1
 
-// const cols = int(60/divisor)
 const cols = 60
 const rows = 48
 
-const USE_EMOJI_POLYFILL = false
-let PAUSED = false
 
-
+let LAST_PAUSED
+let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
+let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
+  IS_HEADLESS
+  || getLocalStorage('__DOPAMINE_EMOJI_TOGGLE__')
+  || false
+)
 
 
 const speed = prb(0.05) ? 100 : 3

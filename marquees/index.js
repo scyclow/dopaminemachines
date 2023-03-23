@@ -25,26 +25,27 @@ const usedContent = Array.from(
 
 
 
-
-
 window.onload = () => {
 
   setMetadata(usedContent.join(' '))
   $.render(document.body, main)
 
-  let usingPolyfill = USE_EMOJI_POLYFILL
+  if (PAUSED) {
+    LAST_PAUSED = Date.now()
+    document.body.classList.add('pauseAll')
+  }
+
+  let usingEmojiPolyfill = USE_EMOJI_POLYFILL
   let isFullScreen = false
   let isHidingMouse = false
-  let isPaused = false
 
-  let lastPaused
 
   document.onkeydown = (event) => {
     // TOGGLE EMOJIS
     if (event.key === 'e') {
       const emojiShadows = Array.from(document.getElementsByClassName('emojiShadow'))
 
-      if (usingPolyfill) {
+      if (usingEmojiPolyfill) {
         Array.from(document.getElementsByTagName('img')).forEach(img => {
           img.replaceWith(img.alt)
         })
@@ -66,7 +67,11 @@ window.onload = () => {
         })
       }
 
-      usingPolyfill = !usingPolyfill
+      usingEmojiPolyfill = !usingEmojiPolyfill
+
+      try {
+        window.localStorage.setItem('__DOPAMINE_EMOJI_TOGGLE__', usingEmojiPolyfill)
+      } catch(e) {}
     }
 
     // FULLSCREEN
@@ -102,17 +107,20 @@ window.onload = () => {
     // PAUSE
     else if (event.key === 'p') {
       if (PAUSED) {
-        START_TIME += Date.now() - lastPaused
+        START_TIME += Date.now() - LAST_PAUSED
         document.body.classList.remove('pauseAll')
       } else {
-        lastPaused = Date.now()
+        LAST_PAUSED = Date.now()
         document.body.classList.add('pauseAll')
       }
       PAUSED = !PAUSED
+      try {
+        window.localStorage.setItem('__DOPAMINE_IS_PAUSED__', PAUSED)
+      } catch(e) {}
     }
   }
 
-  if (USE_EMOJI_POLYFILL) {
+  if (USE_EMOJI_POLYFILL && window.twemoji) {
     twemoji.parse(document.body, {
       folder: 'svg',
       ext: '.svg',
