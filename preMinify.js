@@ -1,6 +1,6 @@
 const fs = require('fs')
-const uglify = require('uglify-js')
-const uglfyConfig = require('./uglify.config.json')
+// const uglify = require('uglify-js')
+// const uglfyConfig = require('./uglify.config.json')
 
 const utils = fs.readFileSync('./marquees/utils.js', 'utf8')
 const $ = fs.readFileSync('./marquees/$.js', 'utf8')

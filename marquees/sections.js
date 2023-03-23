@@ -67,7 +67,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
 
 }
 
-
+let sectionCount = 0
 function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
   const txtColor = bw ? bwc.text : getColorFromHue(txtH)
@@ -128,6 +128,9 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
       if (childContent.includes('FAST CASH')) window.open('http://fastcashmoneyplus.biz', '_blank')
     } catch (e) {}
   }
+
+  sectionCount++
+
   return container
 }
 

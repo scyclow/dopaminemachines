@@ -80,13 +80,6 @@ const marqueeAnimationRate = chance(
   [5, 1],
 )
 
-const borderStyle = chance(
-  [1, () => 'solid'],
-  [1, () => 'dashed'],
-  [1, () => 'dotted'],
-  [1, () => 'double'],
-)
-
 const shadowType = chance(
   [4, 1],
   [4, 2],
@@ -231,6 +224,12 @@ const chooseAltHue = (h) => {
 const hideBg = freeFloating ? prb(0.5) : false
 const showBorder = freeFloating ? prb(0.5) : prb(0.3333)
 
+const borderStyle = chance(
+  [1, () => 'solid'],
+  [1, () => 'dashed'],
+  [1, () => 'dotted'],
+  [1, () => 'double'],
+)
 
 
 const gradientHues = chance(

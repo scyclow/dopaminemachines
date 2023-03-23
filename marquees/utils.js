@@ -10,7 +10,9 @@ const map = (val, low, high, mn, mx) => mn < mx
 
 let __randomSeed = int(tokenData.hash.slice(50, 58), 16)
 
+let rCount = 0
 function rnd(mn, mx) {
+  rCount++
   __randomSeed ^= __randomSeed << 13
   __randomSeed ^= __randomSeed >> 17
   __randomSeed ^= __randomSeed << 5

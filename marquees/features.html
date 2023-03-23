@@ -1,60 +1,3 @@
-<!--
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Concept:
-  - some mints are "the NFT"
-  - other mings are web pages trying to sell the NFTs
-  - sales pages take to form of CTA style adverts, news articles, social media pages, etc. -- each one linking to either each other or a target NFT
-  - in all, each mint in the collection serves to hype itself up. a self-referential propaganda machine
-
-
-  this NFT is HOT HOT HOT!🔥
-  this NFT will moon🌛
-  Don't be a sucker🍬
-
-
-
-Things are moving fast, and if you want to make the most of this opportunity you need to pounce on it. Don't wait. Act Now. These deals won't last.
-
-
-
-
-
-By using this website you agree to the terms...
-
-
-Best viewed in Chrome X.X.XXX
-
-
-
-
-
-TODO
-  when viewed headlessly, maybe add a fake address bar to the thumbnail
-
-
-
-MARQUEES TODO
-  - generally slow down, espescially the slimmer ones
-  - have more single grid components animate (instead of all of them animating)
-  - split emojis up into better categories
-
-
-
- -->
 
 <!DOCTYPE html>
 <html>
@@ -111,13 +54,60 @@ MARQUEES TODO
 
 
 <script src="./utils.js"></script>
-<script src="./$.js"></script>
+<script src="./mock$.js"></script>
 <script src="./globals.js"></script>
 <script src="./sound.js"></script>
 <script src="./components.js"></script>
 <script src="./text.js"></script>
 <script src="./sections.js"></script>
-<script src="./index.js"></script>
+<script type="text/javascript">
+  function calculateFeatures(tokenData) {
+    // ...
+    const main = $.main(
+      flexSection(rows, cols),
+      {
+        id: 'main',
+        style: `
+          height: 100vh;
+          width: 100vw;
+          overflow: hidden;
+          display: grid;
+          grid-template-rows: repeat(${rows}, 1fr);
+          grid-template-columns: repeat(${cols}, 1fr);
+        `
+      }
+    )
+
+    const usedContent = Array.from(
+      new Set(
+        Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
+      )
+    )
+
+    const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {
+      f[t] = false
+      return f
+    }, {})
+
+    usedContent.forEach(c => features[c] = true)
+
+    // features['Layout Type'] = layoutStyle
+    // features['Background Type'] = hideBg ? 'none' : bgType
+    // features['Shadow Type'] = shadowType
+    // features['Font'] = fontFamily
+    // features['Borders'] = showBorder ? borderStyle : 'none'
+    // features['Askew'] = freeFloating
+    // features['Hues'] = randomHue ? '???' : possibleHues.length
+    // features['Inverted'] = invertAll
+    // features['Random Calls'] = rCount
+    // features['Sections'] = sectionCount
+
+    return features
+  }
+
+  const f = calculateFeatures(tokenData)
+  console.log(f)
+</script>
 
 <body>
 

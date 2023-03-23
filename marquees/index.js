@@ -1,7 +1,7 @@
 
 
 const main = $.main(
-  flexSection(rows, cols) ,
+  flexSection(rows, cols),
   {
     id: 'main',
     style: `
