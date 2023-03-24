@@ -164,19 +164,18 @@ const upsideDownRate = chance(
   [1, rnd(0.1, 0.3)]
 )
 
+const mildRotation = () => rnd(20)
+mildRotation.isMild = true
 const lineRotation = chance(
   [92, () => prb(upsideDownRate) ? 180 : 0],
-  [6, () => rnd(20)],
+  [6, mildRotation],
   [2, () => rnd(20, 180)],
 )
 
 const freeFloating = ![0, 180].includes(lineRotation())
-
-const threeDRotations = lineRotation() <= 20 && lineRotation() && prb(0.3333)
-
+const threeDRotations = lineRotation.isMild && prb(0.3333)
 
 const gradientBg = prb(0.2)
-
 const bgType = chance(
   [57, 0],
   [10, 1], // empty
