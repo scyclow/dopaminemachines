@@ -13,7 +13,11 @@
             }, {})
           : {}
 
-        const tokenId = String(projectNum * 1000000 + Math.floor(Math.random() * 1000))
+        let tokenId = qp.tokenId
+        if (!tokenId) {
+          tokenId = String(projectNum * 1000000 + Math.floor(Math.random() * 1000))
+        }
+
         let hash = '0x'
         if (qp.hash) {
           hash = qp.hash

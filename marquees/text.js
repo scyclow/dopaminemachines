@@ -42,9 +42,9 @@ const elementIsEmoji = elem => {
 let emojiOverride, textOverride
 
 try {
+  if (queryParams.emojis) emojiOverride = queryParams.emojis.split(',').map(decodeURI).map(emoji)
+  if (queryParams.text) textOverride = queryParams.text.split(',').map(decodeURI)
 
-  emojiOverride = (queryParams.emojis || []).split(',').map(decodeURI).map(emoji)
-  textOverride = (queryParams.text || []).split(',').map(decodeURI)
   if (textOverride || emojiOverride) console.log('OVERRIDES:', textOverride, emojiOverride)
 } catch (e) {}
 
@@ -177,7 +177,8 @@ const cashText = [
   'CRYPTO FORTUNE',
   'GET RICH QUICK',
   `YIELD EXPLOSION`,
-  'TREASURE TROVE'
+  'TREASURE TROVE',
+  'PROFITS'
 ]
 
 const sexyText = [
@@ -223,6 +224,7 @@ const hotText = [
   'HOTTEST ART AROUND',
   'ELECTRIC',
   'ECSTACY',
+  'LUST',
 ]
 
 const excitingText = [
@@ -248,7 +250,10 @@ const excitingText = [
   'PARTY TIME',
   'INSTANT GRATIFICATION',
   'MIND = BLOWN',
-  'DOPAMINE RUSH'
+  'DOPAMINE RUSH',
+  'STARSTRUCK',
+  'BLAST OFF',
+  'ALL OR NOTHING',
 ]
 
 const funText = [
@@ -311,7 +316,8 @@ const affirmations = [
   'FUCK YES',
   'FINALLY',
   'CHAMPION',
-  'GREATEST OF ALL TIME'
+  'GREATEST OF ALL TIME',
+  'SPECIAL'
 ]
 
 
@@ -352,7 +358,9 @@ const emojiTextRelationships = {
     [`RUN, DON'T WALK`]: emojis(`🏃`),
     'MIND = BLOWN': emojis(`🤯`),
     '100%': emojis(`💯`),
-    'GREATEST OF ALL TIME': emojis(`🐐`)
+    'GREATEST OF ALL TIME': emojis(`🐐`),
+    'STARSTRUCK': emojis(`🤩`),
+    'BLAST OFF': emojis(`🚀`),
   },
   group: [
     [luckyText, lucky],
@@ -408,10 +416,10 @@ function chooseContent() {
   const content = { text: [], emojis: [] }
 
   const sections = chance(
-    [35, 1],
+    [30, 1],
     [30, 2],
     [25, 3],
-    [10, 0] // everything
+    [15, 0] // everything
   )
 
 
@@ -427,6 +435,11 @@ function chooseContent() {
   } else {
     contentSample.text = textLists
     contentSample.emojis = emojiLists
+  }
+
+  if (Number(tokenData.tokenId) === 69) {
+    contentSample.text = hotText
+    contentSample.emojis = sexy
   }
 
 
