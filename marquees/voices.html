@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+<body>
+
+</body>
+
+<script type="text/javascript">
+let voices;
+const getVoices = () => {
+  try {
+    voices = window.speechSynthesis.getVoices()
+    setTimeout(() => {
+      if (!voices.length) getVoices()
+      else {
+        document.body.innerHTML = JSON.stringify(voices.map(v => ({
+          default: v.default,
+          lang: v.lang,
+          name: v.name,
+          voiceURI: v.voiceURI,
+          localService: v.localService,
+        })),)
+      }
+    }, 200)
+  } catch(e) {
+    console.log(e)
+  }
+}
+getVoices()
+
+</script>
+</html>

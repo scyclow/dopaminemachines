@@ -22,8 +22,8 @@ function createSource(waveType = 'square') {
   source.frequency.value = 3000
   source.start()
 
-  const smoothFreq = (value, timeInSeconds=0.00001) => {
-    if (PAUSED) return
+  const smoothFreq = (value, timeInSeconds=0.00001, overridePaused=false) => {
+    if (PAUSED && !overridePaused) return
     source.frequency.exponentialRampToValueAtTime(
       value,
       ctx.currentTime + timeInSeconds
@@ -195,21 +195,32 @@ function smoothSound({delay, duration}) {
     const src1 = createSource()
     const src2 = createSource()
 
+    let f1, f2
     if (isLow) {
-      src1.smoothFreq(BASE_FREQ/8)
-      src2.smoothFreq(BASE_FREQ/7.98)
-
+      f1 = BASE_FREQ/8
+      f2 = BASE_FREQ/7.98
     } else {
       const offset = 1000000 / (duration * baseFreq)
-      src1.smoothFreq(baseFreq)
-      src2.smoothFreq(baseFreq + offset)
+      f1 = baseFreq
+      f2 = baseFreq + offset
     }
+
+    src1.smoothFreq(f1)
+    const int = setInterval(() => {
+      if (PAUSED) {
+        src2.smoothFreq(f1, 0.00001, true)
+      }
+      else {
+        src2.smoothFreq(f2)
+      }
+    }, 500)
 
     src1.smoothGain(MAX_VOLUME * volAdj, 0.25)
     src2.smoothGain(MAX_VOLUME * volAdj, 0.25)
 
 
     return () => {
+      clearInterval(int)
       src1.smoothGain(0, 0.25)
       src2.smoothGain(0, 0.25)
     }
@@ -505,12 +516,15 @@ function carSirenSound({duration, delay}) {
 
 
 
-let voices;
+let voices, selectedVoice
 const getVoices = () => {
   try {
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
+      else {
+        selectedVoice = voices.find(v => v.lang ? v.lang.includes('en') : false) || voices[0]
+      }
     }, 200)
   } catch(e) {
     console.log(e)
@@ -557,7 +571,7 @@ const stopUtter = txt => {
 const utter = (txt, t=1, i=7) => {
   try {
     let a = new window.SpeechSynthesisUtterance(txt.toLowerCase())
-    a.voice = voices[0]
+    a.voice = selectedVoice
     const startingQueue = utteranceQueue.length
     times(t, () => {
       utteranceQueue.push(a)
