@@ -62,7 +62,7 @@ function setRunInterval(fn, interval) {
 
 function getLocalStorage(key) {
   try {
-    return JSON.parse(window?.localStorage?.getItem(key))
+    return window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem(key))
   } catch (e) {
     console.log(e)
   }
@@ -266,26 +266,6 @@ const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
   [2, 0],
 )
 
-const sectionAnimation = prb(0.95) ? '' : sample([
-    'borderBlink',
-    'blink',
-    'updown',
-    'dance',
-    'growShrink',
-    'spin',
-    'hPivot',
-    'vPivot',
-    'breathe',
-  ])
-
-const sectionAnimationDirection = chance(
-  [1, () => 'normal'],
-  [1, () => 'reverse'],
-  [1, () => prb(0.5) ? 'normal' : 'reverse'],
-)
-
-const sectionAnimationDuration = () => rnd(2, sectionAnimation === 'blink' ? 5 : 17)
-
 
 const marqueeAnimationRate = chance(
   [85, 0],
@@ -293,10 +273,72 @@ const marqueeAnimationRate = chance(
   [5, 1],
 )
 
+const showEmojis = prb(0.5)
+
+const pairedEmojiPrb = chance(
+  [2, 0],
+  [1, 0.5],
+  [1, 1],
+)
+
+const upsideDownRate = chance(
+  [9, 0],
+  [1, rnd(0.1, 0.3)]
+)
+
+const mildRotation = () => rnd(20)
+mildRotation.isMild = true
+const lineRotation = chance(
+  [92, () => prb(upsideDownRate) ? 180 : 0],
+  [6, mildRotation],
+  [2, () => rnd(20, 180)],
+)
+
+const freeFloating = ![0, 180].includes(lineRotation())
+const threeDRotations = lineRotation.isMild && prb(0.3333)
+
+const gradientBg = prb(0.2)
+const bgType = chance(
+  [57, 0],
+  [10, 1], // empty
+  [20, 2], // gradiant
+  [8, 3], // zigzag small
+  [3, 4], // zigzag large
+  [2, 5], // zigzag med
+)
+
+const bgAnimationPrb = chance(
+  [12, 0],
+  [bgType < 3 && 6, rnd(0.25, 0.5)],
+  [bgType < 3 && 2, 1],
+)
+
+const bw = prb(0.15)
+const sH = rnd(360)
+
+const randomHue = prb(0.02)
+const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
+
+const chooseAltHue = (h) => {
+  const alt = chooseHue()
+  return h === alt ? chooseAltHue(h) : alt
+}
+
+const possibleHues = chance(
+  [bgType === 1 && 2, [0, 0.0001]],
+  [1, [0, 180]],
+  [1, [0, 120, 180]],
+  [1, [0, 180, 240]],
+  [1, [0, 150]],
+  [1, [0, 210]],
+  [1, [0, 120, 240]],
+  [1, [0, 75]],
+)
+
 const shadowType = chance(
   [4, 1],
   [4, 2],
-  [4, 3],
+  [bw ? 1 : 4, 3],
   [4, 4],
   [4, 5],
   [2, 6],
@@ -304,9 +346,6 @@ const shadowType = chance(
   [4, 8],
   [2, 9],
 )
-
-
-const showEmojis = prb(0.5)
 
 
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
@@ -364,85 +403,45 @@ const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
 
 
 
-
-const pairedEmojiPrb = chance(
-  [2, 0],
-  [1, 0.5],
-  [1, 1],
-)
-
-
-const upsideDownRate = chance(
-  [9, 0],
-  [1, rnd(0.1, 0.3)]
-)
-
-const lineRotation = chance(
-  [92, () => prb(upsideDownRate) ? 180 : 0],
-  [6, () => rnd(20)],
-  [2, () => rnd(20, 180)],
-)
-
-const freeFloating = ![0, 180].includes(lineRotation())
-
-const threeDRotations = lineRotation() <= 20 && lineRotation() && prb(0.3333)
-
-
-const gradientBg = prb(0.2)
-
-const bgType = chance(
-  [57, 0],
-  [10, 1], // empty
-  [20, 2], // gradiant
-  [8, 3], // zigzag small
-  [3, 4], // zigzag large
-  [2, 5], // zigzag med
-)
-
-const bgAnimationPrb = chance(
-  [12, 0],
-  [bgType < 3 && 6, rnd(0.25, 0.5)],
-  [bgType < 3 && 2, 1],
-)
-
-const bw = prb(0.15)
-const sH = rnd(360)
-
-const possibleHues = chance(
-  [bgType === 1 && 2, [0, 0.0001]],
-  [1, [0, 180]],
-  [1, [0, 120, 180]],
-  [1, [0, 180, 240]],
-  [1, [0, 150]],
-  [1, [0, 210]],
-  [1, [0, 120, 240]],
-  [1, [0, 75]],
-)
-
-
-const franticVoice = prb(0.1)
-
-
-const randomHue = prb(0.02)
-
-const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
-
-
-const chooseAltHue = (h) => {
-  const alt = chooseHue()
-  return h === alt ? chooseAltHue(h) : alt
-}
-
+const franticVoice = prb(0.05)
 
 const hideBg = freeFloating ? prb(0.5) : false
-const showBorder = freeFloating ? prb(0.5) : prb(0.3333)
+const showBorder = prb(0.5)
 
+const bgAnimationType = chance(
+  [3, 0], // colorShiftingBgMultiple
+  [2, 1], // staticBgsMultiple
+  [2, 2], // shrinkingBgSingle
+  [2, 3], // shrinkingBgMultiple
+  [1, 4], // shrinkingSpinningBgMultiple
+)
+
+const increasedottedBorderStyle = bgAnimationPrb && bgAnimationType  === 0
 const borderStyle = chance(
-  [1, () => 'solid'],
-  [1, () => 'dashed'],
-  [1, () => 'dotted'],
+  [4, () => 'solid'],
+  [increasedottedBorderStyle ? 5 : 1, () => 'dashed'],
+  [increasedottedBorderStyle ? 4 : 1, () => 'dotted'],
   [1, () => 'double'],
 )
+
+const sectionAnimation = prb(0.95) ? '' : sample([
+    showBorder && 'borderBlink',
+    'blink',
+    'dance',
+    'growShrink',
+    'spin',
+    'hPivot',
+    'vPivot',
+    'breathe',
+  ].filter(iden))
+
+const sectionAnimationDirection = chance(
+  [1, () => 'normal'],
+  [1, () => 'reverse'],
+  [1, () => prb(0.5) ? 'normal' : 'reverse'],
+)
+
+const sectionAnimationDuration = () => rnd(2, sectionAnimation === 'blink' ? 5 : 17)
 
 
 const gradientHues = chance(
@@ -633,8 +632,8 @@ function createSource(waveType = 'square') {
   source.frequency.value = 3000
   source.start()
 
-  const smoothFreq = (value, timeInSeconds=0.00001) => {
-    if (PAUSED) return
+  const smoothFreq = (value, timeInSeconds=0.00001, overridePaused=false) => {
+    if (PAUSED && !overridePaused) return
     source.frequency.exponentialRampToValueAtTime(
       value,
       ctx.currentTime + timeInSeconds
@@ -806,21 +805,32 @@ function smoothSound({delay, duration}) {
     const src1 = createSource()
     const src2 = createSource()
 
+    let f1, f2
     if (isLow) {
-      src1.smoothFreq(BASE_FREQ/8)
-      src2.smoothFreq(BASE_FREQ/7.98)
-
+      f1 = BASE_FREQ/8
+      f2 = BASE_FREQ/7.98
     } else {
       const offset = 1000000 / (duration * baseFreq)
-      src1.smoothFreq(baseFreq)
-      src2.smoothFreq(baseFreq + offset)
+      f1 = baseFreq
+      f2 = baseFreq + offset
     }
+
+    src1.smoothFreq(f1)
+    const int = setInterval(() => {
+      if (PAUSED) {
+        src2.smoothFreq(f1, 0.00001, true)
+      }
+      else {
+        src2.smoothFreq(f2)
+      }
+    }, 500)
 
     src1.smoothGain(MAX_VOLUME * volAdj, 0.25)
     src2.smoothGain(MAX_VOLUME * volAdj, 0.25)
 
 
     return () => {
+      clearInterval(int)
       src1.smoothGain(0, 0.25)
       src2.smoothGain(0, 0.25)
     }
@@ -1116,12 +1126,15 @@ function carSirenSound({duration, delay}) {
 
 
 
-let voices;
+let voices, selectedVoice
 const getVoices = () => {
   try {
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
+      else {
+        selectedVoice = voices.find(v => v.lang ? v.lang.includes('en') : false) || voices[0]
+      }
     }, 200)
   } catch(e) {
     console.log(e)
@@ -1168,7 +1181,7 @@ const stopUtter = txt => {
 const utter = (txt, t=1, i=7) => {
   try {
     let a = new window.SpeechSynthesisUtterance(txt.toLowerCase())
-    a.voice = voices[0]
+    a.voice = selectedVoice
     const startingQueue = utteranceQueue.length
     times(t, () => {
       utteranceQueue.push(a)
@@ -1490,7 +1503,7 @@ css(`
 
   @keyframes SpinningShrinkingBorder {
     0% {transform: scale(105%) rotate(0deg)}
-    100% {transform: scale(0%) rotate(70deg)}
+    100% {transform: scale(0%) rotate(45deg)}
   }
 
 
@@ -1709,21 +1722,12 @@ function shrinkingBgMultiple(rSpan, cSpan) {
   }))
 }
 
-function spinningBgMultiple(rSpan, cSpan) {
-  const direction = prb(0.5) ? 1 : -1
-  const duration = rnd(750, 3000)
-  return times(2, i => bgAnimation('spinningBorder',rSpan, cSpan, {
-    delay: i * 500,
-    duration,
-    direction
-  }))
-}
 
 function shrinkingSpinningBgMultiple(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
-  const duration = rnd(750, 3000)
+  const duration = rnd(3000, 10000)
   return times(4, i => bgAnimation('shrinkingSpinningBorder',rSpan, cSpan, {
-    delay: i * 500,
+    delay: i * (duration/4),
     duration,
     direction
   }))
@@ -1743,14 +1747,13 @@ function colorShiftingBgMultiple(rSpan, cSpan) {
   }))
 }
 
-const bgAnimationFn = sample([
-  colorShiftingBgMultiple,
-  staticBgsMultiple,
-  shrinkingBgSingle,
-  shrinkingBgMultiple,
-  // spinningBgMultiple,
-  shrinkingSpinningBgMultiple,
-])
+const bgAnimationFn =
+  bgAnimationType === 0 ? colorShiftingBgMultiple :
+  bgAnimationType === 1 ? staticBgsMultiple :
+  bgAnimationType === 2 ? shrinkingBgSingle :
+  bgAnimationType === 3 ? shrinkingBgMultiple :
+  shrinkingSpinningBgMultiple
+
 
 function withBgAnimation(child, rSpan, cSpan) {
   const aspectRatio = cSpan / rSpan
@@ -1854,9 +1857,10 @@ const elementIsEmoji = elem => {
 let emojiOverride, textOverride
 
 try {
-  emojiOverride = queryParams?.emojis?.split(',').map(decodeURI).map(emoji)
-  textOverride = queryParams?.text?.split(',').map(decodeURI)
-  if (textOverride || emojiOverride) console.log(textOverride, emojiOverride)
+  if (queryParams.emojis) emojiOverride = queryParams.emojis.split(',').map(decodeURI).map(emoji)
+  if (queryParams.text) textOverride = queryParams.text.split(',').map(decodeURI)
+
+  if (textOverride || emojiOverride) console.log('OVERRIDES:', textOverride, emojiOverride)
 } catch (e) {}
 
 
@@ -1874,16 +1878,17 @@ const party = [...emojis(`🎉 🕺 💃 🎊 🥳 🎈`), ...booze]
 const energy = emojis(`💫 🔥 🚀 ⚡️ ✨`)
 const explosion1 = emojis(`💥 🤯 🧨 💣`)
 const explosionFull = [...explosion1, ...energy, ...emojis(`🌋 ☄️`)]
-const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️`), ...fruit2]
+const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔞`), ...fruit2]
 const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2]
 const usa = emojis(`🏎 🇺🇸 ★`)
 const relaxing = emojis(`🏖 🏄‍♂️`)
 const funny = emojis(`🐄 🤡 💩 😂`)
 const symbols = emojis(`★ → ←`)
+const justArrows = emojis(`→ ← → ← → ←`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎`)]
+const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎 🤳`)]
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
@@ -1911,6 +1916,7 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   computer,
   excitingMisc,
   commonEmojis,
+  justArrows
   // misc,
   // maybe,
 ]
@@ -1929,7 +1935,7 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
 
 
 /*
-  boost, frenzy, multiplier, infinite, joy, certified, passion
+  boost, frenzy, multiplier, infinite, joy, certified
 
    */
 
@@ -1988,7 +1994,8 @@ const cashText = [
   'CRYPTO FORTUNE',
   'GET RICH QUICK',
   `YIELD EXPLOSION`,
-  'TREASURE TROVE'
+  'TREASURE TROVE',
+  'PROFITS'
 ]
 
 const sexyText = [
@@ -2034,6 +2041,7 @@ const hotText = [
   'HOTTEST ART AROUND',
   'ELECTRIC',
   'ECSTACY',
+  'LUST',
 ]
 
 const excitingText = [
@@ -2059,7 +2067,10 @@ const excitingText = [
   'PARTY TIME',
   'INSTANT GRATIFICATION',
   'MIND = BLOWN',
-  'DOPAMINE RUSH'
+  'DOPAMINE RUSH',
+  'STARSTRUCK',
+  'BLAST OFF',
+  'ALL OR NOTHING',
 ]
 
 const funText = [
@@ -2122,7 +2133,8 @@ const affirmations = [
   'FUCK YES',
   'FINALLY',
   'CHAMPION',
-  'GREATEST OF ALL TIME'
+  'GREATEST OF ALL TIME',
+  'SPECIAL'
 ]
 
 
@@ -2163,7 +2175,9 @@ const emojiTextRelationships = {
     [`RUN, DON'T WALK`]: emojis(`🏃`),
     'MIND = BLOWN': emojis(`🤯`),
     '100%': emojis(`💯`),
-    'GREATEST OF ALL TIME': emojis(`🐐`)
+    'GREATEST OF ALL TIME': emojis(`🐐`),
+    'STARSTRUCK': emojis(`🤩`),
+    'BLAST OFF': emojis(`🚀`),
   },
   group: [
     [luckyText, lucky],
@@ -2219,10 +2233,10 @@ function chooseContent() {
   const content = { text: [], emojis: [] }
 
   const sections = chance(
-    [35, 1],
+    [30, 1],
     [30, 2],
     [25, 3],
-    [10, 0] // everything
+    [15, 0] // everything
   )
 
 
@@ -2238,6 +2252,11 @@ function chooseContent() {
   } else {
     contentSample.text = textLists
     contentSample.emojis = emojiLists
+  }
+
+  if (Number(tokenData.tokenId) === 69) {
+    contentSample.text = hotText
+    contentSample.emojis = sexy
   }
 
 
@@ -2294,6 +2313,10 @@ css(`
 
   .sectionContainer:hover {
     filter: invert(${invertAll ? 0 : 1});
+  }
+
+  .sectionContainer:active {
+    opacity: 0.5;
   }
 
   .animationGridContainer {
@@ -2369,7 +2392,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     'sectionContainer',
     starburstBg(h, rSpan, cSpan),
     rotateColor,
-    colorBlink
+    colorBlink,
+    sectionAnimation,
   ].filter(iden).join(' ')
 
   const container = $.div(
@@ -2398,6 +2422,12 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     onclick()
 
     try {
+      if (window.navigator) window.navigator.vibrate(50)
+
+      // Notification.requestPermission().then(p => {
+
+      // })
+
       if (canFullScreen) {
         const method = isFullScreen ? 'remove' : 'add'
         container.classList[method]('fullScreen')
@@ -2933,14 +2963,20 @@ function flexSection(rowCells, colCells) {
   const fillSection = (rCursor, cCursor) => {
     let adjRowMax = rowMax
     let adjColMax = colMax
-    if (
+    if (layoutStyle === 1 && !sectionCount) {
+      if (prb(0.5)) adjRowMax = rowCells/4
+      if (prb(0.5)) adjColMax = colCells/4
+
+    } else if (
       (layoutStyle === 2 && prb(0.9))
+
     ) {
       if (prb(0.2)) {
         adjColMax = sample([1, 2])
       } else {
         adjRowMax = sample([1, 2])
       }
+
     } else if (layoutStyle === 9) {
       if (prb(0.3)) {
         adjColMax = rndint(1, 7)

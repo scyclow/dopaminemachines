@@ -69,10 +69,11 @@ const usa = emojis(`🏎 🇺🇸 ★`)
 const relaxing = emojis(`🏖 🏄‍♂️`)
 const funny = emojis(`🐄 🤡 💩 😂`)
 const symbols = emojis(`★ → ←`)
+const justArrows = emojis(`→ ← → ← → ←`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎`)]
+const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎 🤳`)]
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
@@ -100,6 +101,7 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   computer,
   excitingMisc,
   commonEmojis,
+  justArrows
   // misc,
   // maybe,
 ]

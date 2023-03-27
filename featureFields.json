@@ -104,31 +104,11 @@
         "step": 1
     },
     {
-        "name": "WINNER",
+        "name": "$$$$",
         "type": "boolean"
     },
     {
-        "name": "LUCKY",
-        "type": "boolean"
-    },
-    {
-        "name": "CONGRATULATIONS",
-        "type": "boolean"
-    },
-    {
-        "name": "WIN BIG",
-        "type": "boolean"
-    },
-    {
-        "name": "MEGA WIN",
-        "type": "boolean"
-    },
-    {
-        "name": "JACKPOT",
-        "type": "boolean"
-    },
-    {
-        "name": "HIT IT BIG",
+        "name": "100%",
         "type": "boolean"
     },
     {
@@ -136,15 +116,99 @@
         "type": "boolean"
     },
     {
-        "name": "YOU CAN'T LOSE",
+        "name": "ACT NOW",
         "type": "boolean"
     },
     {
-        "name": "EVERYONE'S A WINNER",
+        "name": "ACT NOW (Before It's Too Late)",
         "type": "boolean"
     },
     {
-        "name": "DOUBLE DOWN",
+        "name": "ALL NATURAL",
+        "type": "boolean"
+    },
+    {
+        "name": "ALL OR NOTHING",
+        "type": "boolean"
+    },
+    {
+        "name": "ALL TIME HIGH",
+        "type": "boolean"
+    },
+    {
+        "name": "ALPHA",
+        "type": "boolean"
+    },
+    {
+        "name": "AMAZING",
+        "type": "boolean"
+    },
+    {
+        "name": "AS GOOD AS IT GETS",
+        "type": "boolean"
+    },
+    {
+        "name": "BARGAIN",
+        "type": "boolean"
+    },
+    {
+        "name": "BELIEVE THE HYPE",
+        "type": "boolean"
+    },
+    {
+        "name": "BILLIONAIRE",
+        "type": "boolean"
+    },
+    {
+        "name": "BLAST OFF",
+        "type": "boolean"
+    },
+    {
+        "name": "BONANZA",
+        "type": "boolean"
+    },
+    {
+        "name": "BULL MARKET",
+        "type": "boolean"
+    },
+    {
+        "name": "BUY NOW",
+        "type": "boolean"
+    },
+    {
+        "name": "BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE",
+        "type": "boolean"
+    },
+    {
+        "name": "CASH COW",
+        "type": "boolean"
+    },
+    {
+        "name": "CHAMPION",
+        "type": "boolean"
+    },
+    {
+        "name": "CHEAP",
+        "type": "boolean"
+    },
+    {
+        "name": "CONGRATULATIONS",
+        "type": "boolean"
+    },
+    {
+        "name": "CRAZY DEALS",
+        "type": "boolean"
+    },
+    {
+        "name": "CRYPTO",
+        "type": "boolean"
+    },
+    {
+        "name": "CRYPTO FORTUNE",
+        "type": "boolean"
+    },
+    {
+        "name": "DANGER ZONE",
         "type": "boolean"
     },
     {
@@ -160,167 +224,7 @@
         "type": "boolean"
     },
     {
-        "name": "WHAT A BARGAIN",
-        "type": "boolean"
-    },
-    {
-        "name": "WHAT A DEAL",
-        "type": "boolean"
-    },
-    {
-        "name": "BARGAIN",
-        "type": "boolean"
-    },
-    {
-        "name": "BUY NOW",
-        "type": "boolean"
-    },
-    {
-        "name": "CHEAP",
-        "type": "boolean"
-    },
-    {
-        "name": "SO CHEAP",
-        "type": "boolean"
-    },
-    {
-        "name": "SELL OUT",
-        "type": "boolean"
-    },
-    {
-        "name": "GOOD PRICES",
-        "type": "boolean"
-    },
-    {
-        "name": "CRAZY DEALS",
-        "type": "boolean"
-    },
-    {
-        "name": "NEW",
-        "type": "boolean"
-    },
-    {
-        "name": "INSANE PRICES",
-        "type": "boolean"
-    },
-    {
-        "name": "LIMITED TIME OFFER",
-        "type": "boolean"
-    },
-    {
-        "name": "FREE",
-        "type": "boolean"
-    },
-    {
-        "name": "UNLIMITED",
-        "type": "boolean"
-    },
-    {
-        "name": "EXTRA LARGE",
-        "type": "boolean"
-    },
-    {
-        "name": "NEW AND IMPROVED",
-        "type": "boolean"
-    },
-    {
-        "name": "RUN, DON'T WALK",
-        "type": "boolean"
-    },
-    {
-        "name": "SENSATIONAL",
-        "type": "boolean"
-    },
-    {
-        "name": "Do you CRAVE YIELD?",
-        "type": "boolean"
-    },
-    {
-        "name": "MAKE GENERATIONAL WEALTH NOW",
-        "type": "boolean"
-    },
-    {
-        "name": "MAKE FAST CASH NOW",
-        "type": "boolean"
-    },
-    {
-        "name": "MAKE CASH FAST",
-        "type": "boolean"
-    },
-    {
-        "name": "GOLD MINE",
-        "type": "boolean"
-    },
-    {
-        "name": "FAST CASH",
-        "type": "boolean"
-    },
-    {
-        "name": "$$$$",
-        "type": "boolean"
-    },
-    {
-        "name": "CASH COW",
-        "type": "boolean"
-    },
-    {
-        "name": "MILLIONAIRE",
-        "type": "boolean"
-    },
-    {
-        "name": "BILLIONAIRE",
-        "type": "boolean"
-    },
-    {
-        "name": "TRILLIONAIRE",
-        "type": "boolean"
-    },
-    {
-        "name": "PUMP + DUMP",
-        "type": "boolean"
-    },
-    {
-        "name": "CRYPTO FORTUNE",
-        "type": "boolean"
-    },
-    {
-        "name": "GET RICH QUICK",
-        "type": "boolean"
-    },
-    {
-        "name": "YIELD EXPLOSION",
-        "type": "boolean"
-    },
-    {
-        "name": "TREASURE TROVE",
-        "type": "boolean"
-    },
-    {
-        "name": "SEXY",
-        "type": "boolean"
-    },
-    {
-        "name": "XXX",
-        "type": "boolean"
-    },
-    {
-        "name": "HOT",
-        "type": "boolean"
-    },
-    {
-        "name": "SO HOT",
-        "type": "boolean"
-    },
-    {
-        "name": "SPICY",
-        "type": "boolean"
-    },
-    {
-        "name": "SO SEXY",
-        "type": "boolean"
-    },
-    {
-        "name": "PURE BLISS",
+        "name": "DEGEN",
         "type": "boolean"
     },
     {
@@ -328,35 +232,11 @@
         "type": "boolean"
     },
     {
-        "name": "FORBIDDEN PLEASURES",
+        "name": "DIAMOND HANDS",
         "type": "boolean"
     },
     {
-        "name": "JUICY",
-        "type": "boolean"
-    },
-    {
-        "name": "PASSION",
-        "type": "boolean"
-    },
-    {
-        "name": "THROBBING GAINS",
-        "type": "boolean"
-    },
-    {
-        "name": "MASSIVE GAINS",
-        "type": "boolean"
-    },
-    {
-        "name": "WHOPPING GAINS",
-        "type": "boolean"
-    },
-    {
-        "name": "THINGS ARE MOVING FAST",
-        "type": "boolean"
-    },
-    {
-        "name": "Stop THROWING YOUR MONEY AWAY",
+        "name": "DO YOUR OWN RESEARCH",
         "type": "boolean"
     },
     {
@@ -364,11 +244,55 @@
         "type": "boolean"
     },
     {
-        "name": "YOU CAN'T AFFORD TO PASS THIS UP",
+        "name": "DON'T WAIT",
         "type": "boolean"
     },
     {
-        "name": "ACT NOW (Before It's Too Late)",
+        "name": "DOPAMINE RUSH",
+        "type": "boolean"
+    },
+    {
+        "name": "DOPE",
+        "type": "boolean"
+    },
+    {
+        "name": "DOUBLE DOWN",
+        "type": "boolean"
+    },
+    {
+        "name": "DYOR",
+        "type": "boolean"
+    },
+    {
+        "name": "Do you CRAVE YIELD?",
+        "type": "boolean"
+    },
+    {
+        "name": "ECSTACY",
+        "type": "boolean"
+    },
+    {
+        "name": "ECSTATIC",
+        "type": "boolean"
+    },
+    {
+        "name": "ELECTRIC",
+        "type": "boolean"
+    },
+    {
+        "name": "EVERYONE'S A WINNER",
+        "type": "boolean"
+    },
+    {
+        "name": "EXCITING",
+        "type": "boolean"
+    },
+    {
+        "name": "EXTRA LARGE",
+        "type": "boolean"
+    },
+    {
+        "name": "FAST CASH",
         "type": "boolean"
     },
     {
@@ -380,51 +304,19 @@
         "type": "boolean"
     },
     {
+        "name": "FINALLY",
+        "type": "boolean"
+    },
+    {
         "name": "FOMO",
         "type": "boolean"
     },
     {
-        "name": "FUD",
+        "name": "FORBIDDEN PLEASURES",
         "type": "boolean"
     },
     {
-        "name": "THIS WON'T LAST",
-        "type": "boolean"
-    },
-    {
-        "name": "TIME IS RUNNING OUT",
-        "type": "boolean"
-    },
-    {
-        "name": "ACT NOW",
-        "type": "boolean"
-    },
-    {
-        "name": "DON'T WAIT",
-        "type": "boolean"
-    },
-    {
-        "name": "TOO HOT TO HANDLE",
-        "type": "boolean"
-    },
-    {
-        "name": "HOT STUFF",
-        "type": "boolean"
-    },
-    {
-        "name": "SIZZLING",
-        "type": "boolean"
-    },
-    {
-        "name": "HOTTEST ART AROUND",
-        "type": "boolean"
-    },
-    {
-        "name": "ELECTRIC",
-        "type": "boolean"
-    },
-    {
-        "name": "ECSTACY",
+        "name": "FREE",
         "type": "boolean"
     },
     {
@@ -432,51 +324,39 @@
         "type": "boolean"
     },
     {
-        "name": "UNBELIEVABLE",
+        "name": "FUCK YES",
         "type": "boolean"
     },
     {
-        "name": "BELIEVE THE HYPE",
+        "name": "FUD",
         "type": "boolean"
     },
     {
-        "name": "WOW",
+        "name": "FUN",
         "type": "boolean"
     },
     {
-        "name": "OMG",
+        "name": "GET RICH QUICK",
         "type": "boolean"
     },
     {
-        "name": "HYPE",
+        "name": "GOLD MINE",
         "type": "boolean"
     },
     {
-        "name": "AMAZING",
+        "name": "GOOD PRICES",
         "type": "boolean"
     },
     {
-        "name": "INCREDIBLE",
+        "name": "GRAIL",
         "type": "boolean"
     },
     {
-        "name": "EXCITING",
+        "name": "GREATEST OF ALL TIME",
         "type": "boolean"
     },
     {
-        "name": "ECSTATIC",
-        "type": "boolean"
-    },
-    {
-        "name": "THRILLING",
-        "type": "boolean"
-    },
-    {
-        "name": "HOLY MOLY",
-        "type": "boolean"
-    },
-    {
-        "name": "WHAT A THRILL",
+        "name": "HA HA HA HA",
         "type": "boolean"
     },
     {
@@ -488,7 +368,7 @@
         "type": "boolean"
     },
     {
-        "name": "SUPERCHARGED",
+        "name": "HIT IT BIG",
         "type": "boolean"
     },
     {
@@ -496,175 +376,23 @@
         "type": "boolean"
     },
     {
-        "name": "BONANZA",
+        "name": "HOLY MOLY",
         "type": "boolean"
     },
     {
-        "name": "PURE ENERGY",
+        "name": "HOT",
         "type": "boolean"
     },
     {
-        "name": "PARTY TIME",
+        "name": "HOT STUFF",
         "type": "boolean"
     },
     {
-        "name": "INSTANT GRATIFICATION",
+        "name": "HOTTEST ART AROUND",
         "type": "boolean"
     },
     {
-        "name": "MIND = BLOWN",
-        "type": "boolean"
-    },
-    {
-        "name": "DOPAMINE RUSH",
-        "type": "boolean"
-    },
-    {
-        "name": "FUN",
-        "type": "boolean"
-    },
-    {
-        "name": "LOL",
-        "type": "boolean"
-    },
-    {
-        "name": "WAGMI",
-        "type": "boolean"
-    },
-    {
-        "name": "WTF",
-        "type": "boolean"
-    },
-    {
-        "name": "SO COOL",
-        "type": "boolean"
-    },
-    {
-        "name": "I LOVE IT",
-        "type": "boolean"
-    },
-    {
-        "name": "HA HA HA HA",
-        "type": "boolean"
-    },
-    {
-        "name": "SWEET",
-        "type": "boolean"
-    },
-    {
-        "name": "DOPE",
-        "type": "boolean"
-    },
-    {
-        "name": "ALPHA",
-        "type": "boolean"
-    },
-    {
-        "name": "NEW PARADIGM",
-        "type": "boolean"
-    },
-    {
-        "name": "DEGEN",
-        "type": "boolean"
-    },
-    {
-        "name": "NFTs",
-        "type": "boolean"
-    },
-    {
-        "name": "CRYPTO",
-        "type": "boolean"
-    },
-    {
-        "name": "GRAIL",
-        "type": "boolean"
-    },
-    {
-        "name": "THIS NFT SELLS ITSELF",
-        "type": "boolean"
-    },
-    {
-        "name": "STRAIGHT TO THE MOON",
-        "type": "boolean"
-    },
-    {
-        "name": "BULL MARKET",
-        "type": "boolean"
-    },
-    {
-        "name": "DIAMOND HANDS",
-        "type": "boolean"
-    },
-    {
-        "name": "ALL TIME HIGH",
-        "type": "boolean"
-    },
-    {
-        "name": "100%",
-        "type": "boolean"
-    },
-    {
-        "name": "WHAT YOU SEE IS WHAT YOU GET",
-        "type": "boolean"
-    },
-    {
-        "name": "NFA",
-        "type": "boolean"
-    },
-    {
-        "name": "NOT FINANCIAL ADVICE",
-        "type": "boolean"
-    },
-    {
-        "name": "WARNING",
-        "type": "boolean"
-    },
-    {
-        "name": "DANGER ZONE",
-        "type": "boolean"
-    },
-    {
-        "name": "DO YOUR OWN RESEARCH",
-        "type": "boolean"
-    },
-    {
-        "name": "DYOR",
-        "type": "boolean"
-    },
-    {
-        "name": "ALL NATURAL",
-        "type": "boolean"
-    },
-    {
-        "name": "SAFE + SECURE",
-        "type": "boolean"
-    },
-    {
-        "name": "BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE",
-        "type": "boolean"
-    },
-    {
-        "name": "PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS",
-        "type": "boolean"
-    },
-    {
-        "name": "THIS IS GOING TO BE HUGE",
-        "type": "boolean"
-    },
-    {
-        "name": "OPPORTUNITY OF A LIFETIME",
-        "type": "boolean"
-    },
-    {
-        "name": "YOU WON'T BELIEVE THIS!",
-        "type": "boolean"
-    },
-    {
-        "name": "THIS IS THE REAL DEAL",
-        "type": "boolean"
-    },
-    {
-        "name": "PAY ATTENTION",
+        "name": "HYPE",
         "type": "boolean"
     },
     {
@@ -672,23 +400,71 @@
         "type": "boolean"
     },
     {
-        "name": "YOU'LL LOVE IT",
+        "name": "I LOVE IT",
         "type": "boolean"
     },
     {
-        "name": "YOU DESERVE IT",
+        "name": "INCREDIBLE",
         "type": "boolean"
     },
     {
-        "name": "TOO GOOD TO BE TRUE",
+        "name": "INSANE PRICES",
         "type": "boolean"
     },
     {
-        "name": "YOU ONLY LIVE ONCE",
+        "name": "INSTANT GRATIFICATION",
         "type": "boolean"
     },
     {
-        "name": "YOLO",
+        "name": "JACKPOT",
+        "type": "boolean"
+    },
+    {
+        "name": "JUICY",
+        "type": "boolean"
+    },
+    {
+        "name": "LIMITED TIME OFFER",
+        "type": "boolean"
+    },
+    {
+        "name": "LOL",
+        "type": "boolean"
+    },
+    {
+        "name": "LUCKY",
+        "type": "boolean"
+    },
+    {
+        "name": "LUST",
+        "type": "boolean"
+    },
+    {
+        "name": "MAKE CASH FAST",
+        "type": "boolean"
+    },
+    {
+        "name": "MAKE FAST CASH NOW",
+        "type": "boolean"
+    },
+    {
+        "name": "MAKE GENERATIONAL WEALTH NOW",
+        "type": "boolean"
+    },
+    {
+        "name": "MASSIVE GAINS",
+        "type": "boolean"
+    },
+    {
+        "name": "MEGA WIN",
+        "type": "boolean"
+    },
+    {
+        "name": "MILLIONAIRE",
+        "type": "boolean"
+    },
+    {
+        "name": "MIND = BLOWN",
         "type": "boolean"
     },
     {
@@ -696,47 +472,491 @@
         "type": "boolean"
     },
     {
-        "name": "AS GOOD AS IT GETS",
+        "name": "NEW",
         "type": "boolean"
     },
     {
-        "name": "FUCK YES",
+        "name": "NEW AND IMPROVED",
         "type": "boolean"
     },
     {
-        "name": "FINALLY",
+        "name": "NEW PARADIGM",
         "type": "boolean"
     },
     {
-        "name": "CHAMPION",
+        "name": "NFA",
         "type": "boolean"
     },
     {
-        "name": "GREATEST OF ALL TIME",
+        "name": "NFTs",
         "type": "boolean"
     },
     {
-        "name": "💹",
+        "name": "NOT FINANCIAL ADVICE",
         "type": "boolean"
     },
     {
-        "name": "📈",
+        "name": "OMG",
         "type": "boolean"
     },
     {
-        "name": "💯",
+        "name": "OPPORTUNITY OF A LIFETIME",
         "type": "boolean"
     },
     {
-        "name": "💸",
+        "name": "PARTY TIME",
         "type": "boolean"
     },
     {
-        "name": "💰",
+        "name": "PASSION",
         "type": "boolean"
     },
     {
-        "name": "💎",
+        "name": "PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS",
+        "type": "boolean"
+    },
+    {
+        "name": "PAY ATTENTION",
+        "type": "boolean"
+    },
+    {
+        "name": "PROFITS",
+        "type": "boolean"
+    },
+    {
+        "name": "PUMP + DUMP",
+        "type": "boolean"
+    },
+    {
+        "name": "PURE BLISS",
+        "type": "boolean"
+    },
+    {
+        "name": "PURE ENERGY",
+        "type": "boolean"
+    },
+    {
+        "name": "RUN, DON'T WALK",
+        "type": "boolean"
+    },
+    {
+        "name": "SAFE + SECURE",
+        "type": "boolean"
+    },
+    {
+        "name": "SELL OUT",
+        "type": "boolean"
+    },
+    {
+        "name": "SENSATIONAL",
+        "type": "boolean"
+    },
+    {
+        "name": "SEXY",
+        "type": "boolean"
+    },
+    {
+        "name": "SIZZLING",
+        "type": "boolean"
+    },
+    {
+        "name": "SO CHEAP",
+        "type": "boolean"
+    },
+    {
+        "name": "SO COOL",
+        "type": "boolean"
+    },
+    {
+        "name": "SO HOT",
+        "type": "boolean"
+    },
+    {
+        "name": "SO SEXY",
+        "type": "boolean"
+    },
+    {
+        "name": "SPECIAL",
+        "type": "boolean"
+    },
+    {
+        "name": "SPICY",
+        "type": "boolean"
+    },
+    {
+        "name": "STARSTRUCK",
+        "type": "boolean"
+    },
+    {
+        "name": "STRAIGHT TO THE MOON",
+        "type": "boolean"
+    },
+    {
+        "name": "SUPERCHARGED",
+        "type": "boolean"
+    },
+    {
+        "name": "SWEET",
+        "type": "boolean"
+    },
+    {
+        "name": "Stop THROWING YOUR MONEY AWAY",
+        "type": "boolean"
+    },
+    {
+        "name": "THINGS ARE MOVING FAST",
+        "type": "boolean"
+    },
+    {
+        "name": "THIS IS GOING TO BE HUGE",
+        "type": "boolean"
+    },
+    {
+        "name": "THIS IS THE REAL DEAL",
+        "type": "boolean"
+    },
+    {
+        "name": "THIS NFT SELLS ITSELF",
+        "type": "boolean"
+    },
+    {
+        "name": "THIS WON'T LAST",
+        "type": "boolean"
+    },
+    {
+        "name": "THRILLING",
+        "type": "boolean"
+    },
+    {
+        "name": "THROBBING GAINS",
+        "type": "boolean"
+    },
+    {
+        "name": "TIME IS RUNNING OUT",
+        "type": "boolean"
+    },
+    {
+        "name": "TOO GOOD TO BE TRUE",
+        "type": "boolean"
+    },
+    {
+        "name": "TOO HOT TO HANDLE",
+        "type": "boolean"
+    },
+    {
+        "name": "TREASURE TROVE",
+        "type": "boolean"
+    },
+    {
+        "name": "TRILLIONAIRE",
+        "type": "boolean"
+    },
+    {
+        "name": "UNBELIEVABLE",
+        "type": "boolean"
+    },
+    {
+        "name": "UNLIMITED",
+        "type": "boolean"
+    },
+    {
+        "name": "WAGMI",
+        "type": "boolean"
+    },
+    {
+        "name": "WARNING",
+        "type": "boolean"
+    },
+    {
+        "name": "WHAT A BARGAIN",
+        "type": "boolean"
+    },
+    {
+        "name": "WHAT A DEAL",
+        "type": "boolean"
+    },
+    {
+        "name": "WHAT A THRILL",
+        "type": "boolean"
+    },
+    {
+        "name": "WHAT YOU SEE IS WHAT YOU GET",
+        "type": "boolean"
+    },
+    {
+        "name": "WHOPPING GAINS",
+        "type": "boolean"
+    },
+    {
+        "name": "WIN BIG",
+        "type": "boolean"
+    },
+    {
+        "name": "WINNER",
+        "type": "boolean"
+    },
+    {
+        "name": "WOW",
+        "type": "boolean"
+    },
+    {
+        "name": "WTF",
+        "type": "boolean"
+    },
+    {
+        "name": "XXX",
+        "type": "boolean"
+    },
+    {
+        "name": "YIELD EXPLOSION",
+        "type": "boolean"
+    },
+    {
+        "name": "YOLO",
+        "type": "boolean"
+    },
+    {
+        "name": "YOU CAN'T AFFORD TO PASS THIS UP",
+        "type": "boolean"
+    },
+    {
+        "name": "YOU CAN'T LOSE",
+        "type": "boolean"
+    },
+    {
+        "name": "YOU DESERVE IT",
+        "type": "boolean"
+    },
+    {
+        "name": "YOU ONLY LIVE ONCE",
+        "type": "boolean"
+    },
+    {
+        "name": "YOU WON'T BELIEVE THIS!",
+        "type": "boolean"
+    },
+    {
+        "name": "YOU'LL LOVE IT",
+        "type": "boolean"
+    },
+    {
+        "name": "‼️",
+        "type": "boolean"
+    },
+    {
+        "name": "←",
+        "type": "boolean"
+    },
+    {
+        "name": "→",
+        "type": "boolean"
+    },
+    {
+        "name": "☄️",
+        "type": "boolean"
+    },
+    {
+        "name": "★",
+        "type": "boolean"
+    },
+    {
+        "name": "⚠️",
+        "type": "boolean"
+    },
+    {
+        "name": "⚡️",
+        "type": "boolean"
+    },
+    {
+        "name": "✨",
+        "type": "boolean"
+    },
+    {
+        "name": "❄️",
+        "type": "boolean"
+    },
+    {
+        "name": "❓",
+        "type": "boolean"
+    },
+    {
+        "name": "❗️",
+        "type": "boolean"
+    },
+    {
+        "name": "❤️",
+        "type": "boolean"
+    },
+    {
+        "name": "❤️‍🔥",
+        "type": "boolean"
+    },
+    {
+        "name": "🇺🇸",
+        "type": "boolean"
+    },
+    {
+        "name": "🌈",
+        "type": "boolean"
+    },
+    {
+        "name": "🌋",
+        "type": "boolean"
+    },
+    {
+        "name": "🌎",
+        "type": "boolean"
+    },
+    {
+        "name": "🌛",
+        "type": "boolean"
+    },
+    {
+        "name": "🌜",
+        "type": "boolean"
+    },
+    {
+        "name": "🌝",
+        "type": "boolean"
+    },
+    {
+        "name": "🌞",
+        "type": "boolean"
+    },
+    {
+        "name": "🌟",
+        "type": "boolean"
+    },
+    {
+        "name": "🌶",
+        "type": "boolean"
+    },
+    {
+        "name": "🍀",
+        "type": "boolean"
+    },
+    {
+        "name": "🍄",
+        "type": "boolean"
+    },
+    {
+        "name": "🍆",
+        "type": "boolean"
+    },
+    {
+        "name": "🍇",
+        "type": "boolean"
+    },
+    {
+        "name": "🍉",
+        "type": "boolean"
+    },
+    {
+        "name": "🍋",
+        "type": "boolean"
+    },
+    {
+        "name": "🍑",
+        "type": "boolean"
+    },
+    {
+        "name": "🍒",
+        "type": "boolean"
+    },
+    {
+        "name": "🍦",
+        "type": "boolean"
+    },
+    {
+        "name": "🍫",
+        "type": "boolean"
+    },
+    {
+        "name": "🍬",
+        "type": "boolean"
+    },
+    {
+        "name": "🍭",
+        "type": "boolean"
+    },
+    {
+        "name": "🍯",
+        "type": "boolean"
+    },
+    {
+        "name": "🍻",
+        "type": "boolean"
+    },
+    {
+        "name": "🍾",
+        "type": "boolean"
+    },
+    {
+        "name": "🎁",
+        "type": "boolean"
+    },
+    {
+        "name": "🎂",
+        "type": "boolean"
+    },
+    {
+        "name": "🎄",
+        "type": "boolean"
+    },
+    {
+        "name": "🎈",
+        "type": "boolean"
+    },
+    {
+        "name": "🎉",
+        "type": "boolean"
+    },
+    {
+        "name": "🎊",
+        "type": "boolean"
+    },
+    {
+        "name": "🎨",
+        "type": "boolean"
+    },
+    {
+        "name": "🎰",
+        "type": "boolean"
+    },
+    {
+        "name": "🏃",
+        "type": "boolean"
+    },
+    {
+        "name": "🏄‍♂️",
+        "type": "boolean"
+    },
+    {
+        "name": "🏎",
+        "type": "boolean"
+    },
+    {
+        "name": "🏖",
+        "type": "boolean"
+    },
+    {
+        "name": "🐂",
+        "type": "boolean"
+    },
+    {
+        "name": "🐄",
+        "type": "boolean"
+    },
+    {
+        "name": "🐐",
+        "type": "boolean"
+    },
+    {
+        "name": "👁",
+        "type": "boolean"
+    },
+    {
+        "name": "👁‍🗨",
         "type": "boolean"
     },
     {
@@ -744,19 +964,63 @@
         "type": "boolean"
     },
     {
+        "name": "👨‍💻",
+        "type": "boolean"
+    },
+    {
+        "name": "👩‍💻",
+        "type": "boolean"
+    },
+    {
+        "name": "💃",
+        "type": "boolean"
+    },
+    {
+        "name": "💋",
+        "type": "boolean"
+    },
+    {
         "name": "💍",
         "type": "boolean"
     },
     {
-        "name": "🪙",
+        "name": "💎",
         "type": "boolean"
     },
     {
-        "name": "🤑",
+        "name": "💣",
         "type": "boolean"
     },
     {
-        "name": "💷",
+        "name": "💥",
+        "type": "boolean"
+    },
+    {
+        "name": "💦",
+        "type": "boolean"
+    },
+    {
+        "name": "💩",
+        "type": "boolean"
+    },
+    {
+        "name": "💪",
+        "type": "boolean"
+    },
+    {
+        "name": "💫",
+        "type": "boolean"
+    },
+    {
+        "name": "💯",
+        "type": "boolean"
+    },
+    {
+        "name": "💰",
+        "type": "boolean"
+    },
+    {
+        "name": "💲",
         "type": "boolean"
     },
     {
@@ -772,291 +1036,19 @@
         "type": "boolean"
     },
     {
-        "name": "💲",
+        "name": "💷",
         "type": "boolean"
     },
     {
-        "name": "🍻",
+        "name": "💸",
         "type": "boolean"
     },
     {
-        "name": "🍾",
+        "name": "💹",
         "type": "boolean"
     },
     {
-        "name": "🥂",
-        "type": "boolean"
-    },
-    {
-        "name": "🌶",
-        "type": "boolean"
-    },
-    {
-        "name": "🔥",
-        "type": "boolean"
-    },
-    {
-        "name": "❤️‍🔥",
-        "type": "boolean"
-    },
-    {
-        "name": "🌋",
-        "type": "boolean"
-    },
-    {
-        "name": "🍀",
-        "type": "boolean"
-    },
-    {
-        "name": "🎰",
-        "type": "boolean"
-    },
-    {
-        "name": "🔔",
-        "type": "boolean"
-    },
-    {
-        "name": "🚨",
-        "type": "boolean"
-    },
-    {
-        "name": "🎁",
-        "type": "boolean"
-    },
-    {
-        "name": "🥇",
-        "type": "boolean"
-    },
-    {
-        "name": "🌟",
-        "type": "boolean"
-    },
-    {
-        "name": "❓",
-        "type": "boolean"
-    },
-    {
-        "name": "🍒",
-        "type": "boolean"
-    },
-    {
-        "name": "🍉",
-        "type": "boolean"
-    },
-    {
-        "name": "🍇",
-        "type": "boolean"
-    },
-    {
-        "name": "🍋",
-        "type": "boolean"
-    },
-    {
-        "name": "🍯",
-        "type": "boolean"
-    },
-    {
-        "name": "🎄",
-        "type": "boolean"
-    },
-    {
-        "name": "🍄",
-        "type": "boolean"
-    },
-    {
-        "name": "❄️",
-        "type": "boolean"
-    },
-    {
-        "name": "😵‍💫",
-        "type": "boolean"
-    },
-    {
-        "name": "🎉",
-        "type": "boolean"
-    },
-    {
-        "name": "🕺",
-        "type": "boolean"
-    },
-    {
-        "name": "💃",
-        "type": "boolean"
-    },
-    {
-        "name": "🎊",
-        "type": "boolean"
-    },
-    {
-        "name": "🥳",
-        "type": "boolean"
-    },
-    {
-        "name": "🎈",
-        "type": "boolean"
-    },
-    {
-        "name": "💫",
-        "type": "boolean"
-    },
-    {
-        "name": "🚀",
-        "type": "boolean"
-    },
-    {
-        "name": "⚡️",
-        "type": "boolean"
-    },
-    {
-        "name": "✨",
-        "type": "boolean"
-    },
-    {
-        "name": "💥",
-        "type": "boolean"
-    },
-    {
-        "name": "🤯",
-        "type": "boolean"
-    },
-    {
-        "name": "🧨",
-        "type": "boolean"
-    },
-    {
-        "name": "💣",
-        "type": "boolean"
-    },
-    {
-        "name": "☄️",
-        "type": "boolean"
-    },
-    {
-        "name": "🦄",
-        "type": "boolean"
-    },
-    {
-        "name": "🌈",
-        "type": "boolean"
-    },
-    {
-        "name": "💋",
-        "type": "boolean"
-    },
-    {
-        "name": "💦",
-        "type": "boolean"
-    },
-    {
-        "name": "😍",
-        "type": "boolean"
-    },
-    {
-        "name": "❤️",
-        "type": "boolean"
-    },
-    {
-        "name": "🍆",
-        "type": "boolean"
-    },
-    {
-        "name": "🍑",
-        "type": "boolean"
-    },
-    {
-        "name": "🍬",
-        "type": "boolean"
-    },
-    {
-        "name": "🍭",
-        "type": "boolean"
-    },
-    {
-        "name": "🎂",
-        "type": "boolean"
-    },
-    {
-        "name": "🍫",
-        "type": "boolean"
-    },
-    {
-        "name": "🍦",
-        "type": "boolean"
-    },
-    {
-        "name": "🏎",
-        "type": "boolean"
-    },
-    {
-        "name": "🇺🇸",
-        "type": "boolean"
-    },
-    {
-        "name": "★",
-        "type": "boolean"
-    },
-    {
-        "name": "🏖",
-        "type": "boolean"
-    },
-    {
-        "name": "🏄‍♂️",
-        "type": "boolean"
-    },
-    {
-        "name": "🐄",
-        "type": "boolean"
-    },
-    {
-        "name": "🤡",
-        "type": "boolean"
-    },
-    {
-        "name": "💩",
-        "type": "boolean"
-    },
-    {
-        "name": "😂",
-        "type": "boolean"
-    },
-    {
-        "name": "→",
-        "type": "boolean"
-    },
-    {
-        "name": "←",
-        "type": "boolean"
-    },
-    {
-        "name": "🌜",
-        "type": "boolean"
-    },
-    {
-        "name": "🌛",
-        "type": "boolean"
-    },
-    {
-        "name": "🌝",
-        "type": "boolean"
-    },
-    {
-        "name": "🌞",
-        "type": "boolean"
-    },
-    {
-        "name": "🌎",
-        "type": "boolean"
-    },
-    {
-        "name": "🎨",
-        "type": "boolean"
-    },
-    {
-        "name": "‼️",
-        "type": "boolean"
-    },
-    {
-        "name": "❗️",
+        "name": "📈",
         "type": "boolean"
     },
     {
@@ -1064,7 +1056,15 @@
         "type": "boolean"
     },
     {
-        "name": "👨‍💻",
+        "name": "🔔",
+        "type": "boolean"
+    },
+    {
+        "name": "🔞",
+        "type": "boolean"
+    },
+    {
+        "name": "🔥",
         "type": "boolean"
     },
     {
@@ -1072,11 +1072,23 @@
         "type": "boolean"
     },
     {
-        "name": "👁",
+        "name": "🕺",
         "type": "boolean"
     },
     {
-        "name": "👁‍🗨",
+        "name": "😂",
+        "type": "boolean"
+    },
+    {
+        "name": "😃",
+        "type": "boolean"
+    },
+    {
+        "name": "😍",
+        "type": "boolean"
+    },
+    {
+        "name": "😵‍💫",
         "type": "boolean"
     },
     {
@@ -1084,23 +1096,27 @@
         "type": "boolean"
     },
     {
+        "name": "🚀",
+        "type": "boolean"
+    },
+    {
+        "name": "🚨",
+        "type": "boolean"
+    },
+    {
+        "name": "🤑",
+        "type": "boolean"
+    },
+    {
+        "name": "🤡",
+        "type": "boolean"
+    },
+    {
         "name": "🤩",
         "type": "boolean"
     },
     {
-        "name": "🏃",
-        "type": "boolean"
-    },
-    {
-        "name": "💪",
-        "type": "boolean"
-    },
-    {
-        "name": "⚠️",
-        "type": "boolean"
-    },
-    {
-        "name": "🐂",
+        "name": "🤯",
         "type": "boolean"
     },
     {
@@ -1108,11 +1124,35 @@
         "type": "boolean"
     },
     {
-        "name": "🐐",
+        "name": "🤳",
         "type": "boolean"
     },
     {
-        "name": "😃",
+        "name": "🥂",
+        "type": "boolean"
+    },
+    {
+        "name": "🥇",
+        "type": "boolean"
+    },
+    {
+        "name": "🥳",
+        "type": "boolean"
+    },
+    {
+        "name": "🦄",
+        "type": "boolean"
+    },
+    {
+        "name": "🧑‍💻",
+        "type": "boolean"
+    },
+    {
+        "name": "🧨",
+        "type": "boolean"
+    },
+    {
+        "name": "🪙",
         "type": "boolean"
     }
 ]
