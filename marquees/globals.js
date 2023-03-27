@@ -53,26 +53,6 @@ const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
   [2, 0],
 )
 
-const sectionAnimation = prb(0.95) ? '' : sample([
-    'borderBlink',
-    'blink',
-    'updown',
-    'dance',
-    'growShrink',
-    'spin',
-    'hPivot',
-    'vPivot',
-    'breathe',
-  ])
-
-const sectionAnimationDirection = chance(
-  [1, () => 'normal'],
-  [1, () => 'reverse'],
-  [1, () => prb(0.5) ? 'normal' : 'reverse'],
-)
-
-const sectionAnimationDuration = () => rnd(2, sectionAnimation === 'blink' ? 5 : 17)
-
 
 const marqueeAnimationRate = chance(
   [85, 0],
@@ -80,10 +60,72 @@ const marqueeAnimationRate = chance(
   [5, 1],
 )
 
+const showEmojis = prb(0.5)
+
+const pairedEmojiPrb = chance(
+  [2, 0],
+  [1, 0.5],
+  [1, 1],
+)
+
+const upsideDownRate = chance(
+  [9, 0],
+  [1, rnd(0.1, 0.3)]
+)
+
+const mildRotation = () => rnd(20)
+mildRotation.isMild = true
+const lineRotation = chance(
+  [92, () => prb(upsideDownRate) ? 180 : 0],
+  [6, mildRotation],
+  [2, () => rnd(20, 180)],
+)
+
+const freeFloating = ![0, 180].includes(lineRotation())
+const threeDRotations = lineRotation.isMild && prb(0.3333)
+
+const gradientBg = prb(0.2)
+const bgType = chance(
+  [57, 0],
+  [10, 1], // empty
+  [20, 2], // gradiant
+  [8, 3], // zigzag small
+  [3, 4], // zigzag large
+  [2, 5], // zigzag med
+)
+
+const bgAnimationPrb = chance(
+  [12, 0],
+  [bgType < 3 && 6, rnd(0.25, 0.5)],
+  [bgType < 3 && 2, 1],
+)
+
+const bw = prb(0.15)
+const sH = rnd(360)
+
+const randomHue = prb(0.02)
+const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
+
+const chooseAltHue = (h) => {
+  const alt = chooseHue()
+  return h === alt ? chooseAltHue(h) : alt
+}
+
+const possibleHues = chance(
+  [bgType === 1 && 2, [0, 0.0001]],
+  [1, [0, 180]],
+  [1, [0, 120, 180]],
+  [1, [0, 180, 240]],
+  [1, [0, 150]],
+  [1, [0, 210]],
+  [1, [0, 120, 240]],
+  [1, [0, 75]],
+)
+
 const shadowType = chance(
   [4, 1],
   [4, 2],
-  [4, 3],
+  [bw ? 1 : 4, 3],
   [4, 4],
   [4, 5],
   [2, 6],
@@ -91,9 +133,6 @@ const shadowType = chance(
   [4, 8],
   [2, 9],
 )
-
-
-const showEmojis = prb(0.5)
 
 
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
@@ -151,84 +190,45 @@ const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
 
 
 
-
-const pairedEmojiPrb = chance(
-  [2, 0],
-  [1, 0.5],
-  [1, 1],
-)
-
-
-const upsideDownRate = chance(
-  [9, 0],
-  [1, rnd(0.1, 0.3)]
-)
-
-const mildRotation = () => rnd(20)
-mildRotation.isMild = true
-const lineRotation = chance(
-  [92, () => prb(upsideDownRate) ? 180 : 0],
-  [6, mildRotation],
-  [2, () => rnd(20, 180)],
-)
-
-const freeFloating = ![0, 180].includes(lineRotation())
-const threeDRotations = lineRotation.isMild && prb(0.3333)
-
-const gradientBg = prb(0.2)
-const bgType = chance(
-  [57, 0],
-  [10, 1], // empty
-  [20, 2], // gradiant
-  [8, 3], // zigzag small
-  [3, 4], // zigzag large
-  [2, 5], // zigzag med
-)
-
-const bgAnimationPrb = chance(
-  [12, 0],
-  [bgType < 3 && 6, rnd(0.25, 0.5)],
-  [bgType < 3 && 2, 1],
-)
-
-const bw = prb(0.15)
-const sH = rnd(360)
-
-const possibleHues = chance(
-  [bgType === 1 && 2, [0, 0.0001]],
-  [1, [0, 180]],
-  [1, [0, 120, 180]],
-  [1, [0, 180, 240]],
-  [1, [0, 150]],
-  [1, [0, 210]],
-  [1, [0, 120, 240]],
-  [1, [0, 75]],
-)
-
-
-const franticVoice = prb(0.1)
-
-
-const randomHue = prb(0.02)
-
-const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
-
-
-const chooseAltHue = (h) => {
-  const alt = chooseHue()
-  return h === alt ? chooseAltHue(h) : alt
-}
-
+const franticVoice = prb(0.05)
 
 const hideBg = freeFloating ? prb(0.5) : false
-const showBorder = freeFloating ? prb(0.5) : prb(0.3333)
+const showBorder = prb(0.5)
 
+const bgAnimationType = chance(
+  [3, 0], // colorShiftingBgMultiple
+  [2, 1], // staticBgsMultiple
+  [2, 2], // shrinkingBgSingle
+  [2, 3], // shrinkingBgMultiple
+  [1, 4], // shrinkingSpinningBgMultiple
+)
+
+const increasedottedBorderStyle = bgAnimationPrb && bgAnimationType  === 0
 const borderStyle = chance(
-  [1, () => 'solid'],
-  [1, () => 'dashed'],
-  [1, () => 'dotted'],
+  [4, () => 'solid'],
+  [increasedottedBorderStyle ? 5 : 1, () => 'dashed'],
+  [increasedottedBorderStyle ? 4 : 1, () => 'dotted'],
   [1, () => 'double'],
 )
+
+const sectionAnimation = prb(0.95) ? '' : sample([
+    showBorder && 'borderBlink',
+    'blink',
+    'dance',
+    'growShrink',
+    'spin',
+    'hPivot',
+    'vPivot',
+    'breathe',
+  ].filter(iden))
+
+const sectionAnimationDirection = chance(
+  [1, () => 'normal'],
+  [1, () => 'reverse'],
+  [1, () => prb(0.5) ? 'normal' : 'reverse'],
+)
+
+const sectionAnimationDuration = () => rnd(2, sectionAnimation === 'blink' ? 5 : 17)
 
 
 const gradientHues = chance(

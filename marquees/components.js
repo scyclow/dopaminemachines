@@ -306,7 +306,7 @@ css(`
 
   @keyframes SpinningShrinkingBorder {
     0% {transform: scale(105%) rotate(0deg)}
-    100% {transform: scale(0%) rotate(70deg)}
+    100% {transform: scale(0%) rotate(45deg)}
   }
 
 
@@ -525,21 +525,12 @@ function shrinkingBgMultiple(rSpan, cSpan) {
   }))
 }
 
-function spinningBgMultiple(rSpan, cSpan) {
-  const direction = prb(0.5) ? 1 : -1
-  const duration = rnd(750, 3000)
-  return times(2, i => bgAnimation('spinningBorder',rSpan, cSpan, {
-    delay: i * 500,
-    duration,
-    direction
-  }))
-}
 
 function shrinkingSpinningBgMultiple(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
-  const duration = rnd(750, 3000)
+  const duration = rnd(3000, 10000)
   return times(4, i => bgAnimation('shrinkingSpinningBorder',rSpan, cSpan, {
-    delay: i * 500,
+    delay: i * (duration/4),
     duration,
     direction
   }))
@@ -559,14 +550,13 @@ function colorShiftingBgMultiple(rSpan, cSpan) {
   }))
 }
 
-const bgAnimationFn = sample([
-  colorShiftingBgMultiple,
-  staticBgsMultiple,
-  shrinkingBgSingle,
-  shrinkingBgMultiple,
-  // spinningBgMultiple,
-  shrinkingSpinningBgMultiple,
-])
+const bgAnimationFn =
+  bgAnimationType === 0 ? colorShiftingBgMultiple :
+  bgAnimationType === 1 ? staticBgsMultiple :
+  bgAnimationType === 2 ? shrinkingBgSingle :
+  bgAnimationType === 3 ? shrinkingBgMultiple :
+  shrinkingSpinningBgMultiple
+
 
 function withBgAnimation(child, rSpan, cSpan) {
   const aspectRatio = cSpan / rSpan

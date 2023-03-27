@@ -92,7 +92,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     'sectionContainer',
     starburstBg(h, rSpan, cSpan),
     rotateColor,
-    colorBlink
+    colorBlink,
+    sectionAnimation,
   ].filter(iden).join(' ')
 
   const container = $.div(
@@ -122,6 +123,11 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
     try {
       if (window.navigator) window.navigator.vibrate(50)
+
+      // Notification.requestPermission().then(p => {
+
+      // })
+
       if (canFullScreen) {
         const method = isFullScreen ? 'remove' : 'add'
         container.classList[method]('fullScreen')
@@ -657,14 +663,20 @@ function flexSection(rowCells, colCells) {
   const fillSection = (rCursor, cCursor) => {
     let adjRowMax = rowMax
     let adjColMax = colMax
-    if (
+    if (layoutStyle === 1 && !sectionCount) {
+      if (prb(0.5)) adjRowMax = rowCells/4
+      if (prb(0.5)) adjColMax = colCells/4
+
+    } else if (
       (layoutStyle === 2 && prb(0.9))
+
     ) {
       if (prb(0.2)) {
         adjColMax = sample([1, 2])
       } else {
         adjRowMax = sample([1, 2])
       }
+
     } else if (layoutStyle === 9) {
       if (prb(0.3)) {
         adjColMax = rndint(1, 7)
