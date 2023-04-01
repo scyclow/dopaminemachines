@@ -4,6 +4,7 @@ const TWEMOJI_PRESENT = !!window.twemoji
 
 
 const $ = (elem, prop, value) => elem.style[prop] = value
+$.cls = (elem, selector) => Array.from(elem.getElementsByClassName(selector))
 
 
 $.render = (e, children) => {

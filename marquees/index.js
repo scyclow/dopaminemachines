@@ -16,17 +16,14 @@ const main = $.main(
 )
 
 const usedContent = Array.from(
-  new Set(
-    Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
-
-  )
+  new Set([
+    ...$.cls(main, 'content').map(e => e.innerHTML),
+    ...$.cls(main, 'charContentGroup').map(getContent)
+  ])
 )
 
-
-
-
 window.onload = () => {
-
+  document.body.innerHTML = ''
   setMetadata(usedContent.join(' '))
   $.render(document.body, main)
 
@@ -43,7 +40,7 @@ window.onload = () => {
   document.onkeydown = (event) => {
     // TOGGLE EMOJIS
     if (event.key === 'e') {
-      const emojiShadows = Array.from(document.getElementsByClassName('emojiShadow'))
+      const emojiShadows = $.cls(document, 'emojiShadow')
 
       if (usingEmojiPolyfill) {
         Array.from(document.getElementsByTagName('img')).forEach(img => {
@@ -117,6 +114,16 @@ window.onload = () => {
       try {
         window.localStorage.setItem('__DOPAMINE_IS_PAUSED__', PAUSED)
       } catch(e) {}
+    }
+
+    // OVERDRIVE
+    else if (event.key === 'o') {
+      if (OVERDRIVE) {
+        document.body.classList.remove('overdrive')
+      } else {
+        document.body.classList.add('overdrive')
+      }
+      OVERDRIVE = !OVERDRIVE
     }
   }
 

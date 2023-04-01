@@ -57,7 +57,8 @@ const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
 const JACK_DUMP_SCALE = [1, 1, 1.25, 1.3333, 1.5, 1.3333, 1.25, 1]
 
 
-const getLoopsAtTime = (t, delay, duration) => (t - (START_TIME - delay)) / duration
+const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START_TIME - delay)) / duration
+
 
 function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1) {
   let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
@@ -68,7 +69,7 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
   const introTimeMs = 250
   gainAdj = min(1, gainAdj)
 
-  const halfLoopsAtTime = time => 2 * (time - START_TIME + delay) / duration
+  const halfLoopsAtTime = time => 2 * getLoopsAtTime(time, delay, duration)
   const getDirectionAtTime = time => int(halfLoopsAtTime(time)) % 2 ? 1 : -1
 
   const getFreqAtTime = time => {
@@ -99,7 +100,7 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
             getFreqAtTime(Date.now() + duration/2 + extraDelay),
             i % 2 ? duration/2000 : duration/brokenDivisor
           )
-        }, duration/2)
+        }, duration/16)
       }, timeUntilNextHalfLoop)
     }, introTimeMs)
 
@@ -174,7 +175,7 @@ function flipSound({ delay, duration }) {
       setTimeout(() => {
         setRunInterval((i) => {
           smoothFreq(getFreqAtTime(Date.now() + duration/3 + extraDelay), duration/3000)
-        }, duration/3)
+        }, duration/24)
 
       }, timeUntilNextThird)
 
@@ -206,8 +207,8 @@ function smoothSound({delay, duration}) {
     }
 
     src1.smoothFreq(f1)
-    const int = setInterval(() => {
-      if (PAUSED) {
+    const int = setRunInterval(() => {
+      if (PAUSED || OVERDRIVE) {
         src2.smoothFreq(f1, 0.00001, true)
       }
       else {
@@ -553,7 +554,7 @@ const triggerUtterance = () => {
     txt = utteranceQueue.splice(ix, 1)[0] || ''
   }
 
-  if (franticVoice) txt.pitch = sample(MAJOR_SCALE)
+  if (OVERDRIVE) txt.pitch = sample(MAJOR_SCALE)
 
   window.speechSynthesis.speak(txt)
 

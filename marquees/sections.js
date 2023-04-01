@@ -101,7 +101,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     {
       class: classes,
       style: `
-        border-style: ${borderStyle()};
+        border-style: ${borderStyle};
         ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
         grid-column: span ${cSpan};
         grid-row: span ${rSpan};
@@ -116,26 +116,43 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     }
   )
 
-  let isFullScreen
+  let isFullScreen, notifyingTimeout
   const canFullScreen = prb(0.01)
+  const triggersPopup = prb(0.01)
+  const triggersNotifications = prb(0.01)
   container.onclick = () => {
     onclick()
 
     try {
       if (window.navigator) window.navigator.vibrate(50)
 
-      // Notification.requestPermission().then(p => {
-
-      // })
-
       if (canFullScreen) {
         const method = isFullScreen ? 'remove' : 'add'
         container.classList[method]('fullScreen')
-        console.log(isFullScreen, container.classList)
         isFullScreen = !isFullScreen
       }
 
-      const childContent = child.getElementsByClassName('content')[0].innerHTML
+      const childContent = getContent(child)
+      console.log('CLICK:',childContent)
+
+      if (triggersPopup) window.alert(childContent)
+      if (triggersNotifications) {
+        const setNotification = () => {
+          notifyingTimeout = setTimeout(() => {
+            new Notification(childContent)
+            setNotification()
+          }, rndint(100, 10000))
+        }
+
+        Notification.requestPermission().then(p => {
+          setNotification()
+        })
+
+        if (notifyingTimeout) clearTimeout(notifyingTimeout)
+      }
+
+      if (navigator.clipboard) navigator.clipboard.writeText(childContent)
+
       if (childContent.includes('FAST CASH')) window.open('http://fastcashmoneyplus.biz', '_blank')
     } catch (e) {}
   }

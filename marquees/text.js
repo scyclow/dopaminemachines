@@ -55,6 +55,7 @@ const money2 = emojis(`🤑 💷 💴 💵 💶 💲 💸 💰`)
 const moneyFull = [...emojis(`💹 📈 💯`), ...money1, ...money2]
 const fruit1 = emojis(`🍒 🍉 🍇 🍋 🍯`)
 const fruit2 = emojis(`🍆 🍑 🌶`)
+const miscFood = emojis(`🥕 🍌 🥜 🧀 🍪`)
 const booze = emojis(`🍻 🍾 🥂`)
 const hot = emojis(`🌶 🔥 ❤️‍🔥 🌋`)
 const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓`), ...fruit1, ...money1]
@@ -63,8 +64,8 @@ const party = [...emojis(`🎉 🕺 💃 🎊 🥳 🎈`), ...booze]
 const energy = emojis(`💫 🔥 🚀 ⚡️ ✨`)
 const explosion1 = emojis(`💥 🤯 🧨 💣`)
 const explosionFull = [...explosion1, ...energy, ...emojis(`🌋 ☄️`)]
-const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔞`), ...fruit2]
-const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2]
+const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹`), ...fruit2]
+const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2, ...miscFood]
 const usa = emojis(`🏎 🇺🇸 ★`)
 const relaxing = emojis(`🏖 🏄‍♂️`)
 const funny = emojis(`🐄 🤡 💩 😂`)
@@ -77,6 +78,7 @@ const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emoj
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
+const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood]
 const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
@@ -101,7 +103,8 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   computer,
   excitingMisc,
   commonEmojis,
-  justArrows
+  justArrows,
+  hedonicTreadmill
   // misc,
   // maybe,
 ]
@@ -120,7 +123,7 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
 
 
 /*
-  boost, frenzy, multiplier, infinite, joy, certified
+  boost, infinite, joy, certified, alert
 
    */
 
@@ -136,6 +139,8 @@ const luckyText = [
   `YOU CAN'T LOSE`,
   `EVERYONE'S A WINNER`,
   'DOUBLE DOWN',
+  'BINGO',
+  'MULTIPLIER',
 ]
 
 const dealsText = [
@@ -197,12 +202,6 @@ const sexyText = [
   'PASSION'
 ]
 
-const gains = [
-  'THROBBING GAINS',
-  'MASSIVE GAINS',
-  'WHOPPING GAINS',
-]
-
 const fomo = [
   `THINGS ARE MOVING FAST`,
   `Stop THROWING YOUR MONEY AWAY`,
@@ -256,11 +255,15 @@ const excitingText = [
   'STARSTRUCK',
   'BLAST OFF',
   'ALL OR NOTHING',
+  `LET'S GO`,
+  'FRENZY'
 ]
 
 const funText = [
   'FUN',
   'LOL',
+  'ROFL',
+  'LMAO',
   'WAGMI',
   'WTF',
   'SO COOL',
@@ -284,7 +287,10 @@ const crypto = [
   'BULL MARKET',
   'DIAMOND HANDS',
   'ALL TIME HIGH',
-  '100%'
+  '100%',
+  'THROBBING GAINS',
+  'MASSIVE GAINS',
+  'WHOPPING GAINS',
 ]
 
 const disclaimer = [
@@ -319,7 +325,8 @@ const affirmations = [
   'FINALLY',
   'CHAMPION',
   'GREATEST OF ALL TIME',
-  'SPECIAL'
+  'SPECIAL',
+  `YOU'RE #1`
 ]
 
 
@@ -328,7 +335,6 @@ const textLists = [
   dealsText,
   cashText,
   sexyText,
-  gains,
   fomo,
   hotText,
   excitingText,
@@ -439,7 +445,7 @@ function chooseContent() {
     contentSample.emojis = emojiLists
   }
 
-  if (Number(tokenData.tokenId) === 69) {
+  if (Number(tokenData.tokenId) % 1000000 === 69) {
     contentSample.text = hotText
     contentSample.emojis = sexy
   }

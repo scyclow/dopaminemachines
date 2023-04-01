@@ -490,9 +490,9 @@ const withTrails = (grandChild, args={}) => {
 
 
 const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
-    class: className,
+    class: className + ' bgAnimation',
     style: `
-      border: 1vmin ${borderStyle()};
+      border: 1vmin ${borderStyle};
       position: absolute;
       height: ${100*rSpan/rows}vh;
       width: ${100*cSpan/cols}vw;
@@ -584,7 +584,7 @@ function genericCharacterComponent(name, durMin, durMax) {
       const split = txt.split('')
 
       return split.map((c, i) => $.span(c, {
-        class: name,
+        class: name + ' charContent',
         style: `
           animation-delay: -${i * duration}ms;
           ${c === ' ' ? 'margin-right: 0.5em;' : ''}
@@ -598,6 +598,7 @@ function genericCharacterComponent(name, durMin, durMax) {
       c.map(txt => $.div(
         splitAnimation(txt),
         {
+          class: 'charContentWord',
           style: `
             display: inline-block;
             margin-left: 0.25em;
@@ -605,7 +606,10 @@ function genericCharacterComponent(name, durMin, durMax) {
           `
         }
       )
-    ), { style: `display: inline-block;` })
+    ), {
+      class: 'charContentGroup',
+      style: `display: inline-block;`
+    })
   }
 }
 
@@ -614,4 +618,16 @@ const updownChars = genericCharacterComponent('updownChars', 100, 500)
 const shrinkChars = genericCharacterComponent('growShrinkShort', 100, 300)
 const blinkChars = genericCharacterComponent('blink', 50, 200)
 
+function getContent(elem) {
+  const child = $.cls(elem, 'content')
+  if (child.length) {
+    if (child[0].childElementCount) return child[0].children[0].alt
+    return child[0].innerHTML
+  }
+  else {
+    return $.cls(elem, 'charContentWord').map(w =>
+      $.cls(w, 'charContent').map(c => c.innerHTML).join('')
+    ).join(' ')
+  }
+}
 

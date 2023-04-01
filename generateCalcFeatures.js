@@ -24,9 +24,10 @@ const calcFeatures = `
   )
 
   const usedContent = Array.from(
-    new Set(
-      Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
-    )
+    new Set([
+      ...$.cls(main, 'content').map(e => e.innerHTML),
+      ...$.cls(main, 'charContentGroup').map(getContent)
+    ])
   )
 
   const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {

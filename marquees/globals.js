@@ -3,7 +3,7 @@ const cols = 60
 const rows = 48
 
 
-let LAST_PAUSED
+let LAST_PAUSED, OVERDRIVE
 let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
 let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   IS_HEADLESS
@@ -189,9 +189,6 @@ const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
   : `text-shadow: ${getTextShadowValue(h)};`
 
 
-
-const franticVoice = prb(0.05)
-
 const hideBg = freeFloating ? prb(0.5) : false
 const showBorder = prb(0.5)
 
@@ -205,10 +202,10 @@ const bgAnimationType = chance(
 
 const increasedottedBorderStyle = bgAnimationPrb && bgAnimationType  === 0
 const borderStyle = chance(
-  [4, () => 'solid'],
-  [increasedottedBorderStyle ? 5 : 1, () => 'dashed'],
-  [increasedottedBorderStyle ? 4 : 1, () => 'dotted'],
-  [1, () => 'double'],
+  [4, 'solid'],
+  [increasedottedBorderStyle ? 5 : 1, 'dashed'],
+  [increasedottedBorderStyle ? 4 : 1, 'dotted'],
+  [1, 'double'],
 )
 
 const sectionAnimation = prb(0.95) ? '' : sample([
@@ -391,6 +388,26 @@ css(`
     height: 100vh;
     width: 100vw;
     z-index: 100;
+  }
+
+  .overdrive .marquee * {
+    animation-duration: 10s !important;
+  }
+
+  .overdrive *::before {
+    animation-duration: 100ms !important;
+  }
+
+  .overdrive .bgAnimation {
+    animation-duration: 300ms !important;
+  }
+
+  .overdrive .animatingComponent {
+    animation-duration: 250ms !important;
+  }
+
+  .overdrive {
+    filter: contrast(300%) saturate(300%);
   }
 
 `)

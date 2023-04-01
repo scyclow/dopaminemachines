@@ -3,6 +3,9 @@ let IS_HEADLESS = false
 let TWEMOJI_PRESENT = false
 const $ = (elem, prop, value) => {}
 
+$.cls = (elem, selector) => Array.from(elem.getElementsByClassName(selector))
+
+
 
 $.render = (e, children) => {
   // if (!children) return
