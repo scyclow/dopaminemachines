@@ -34,13 +34,13 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [62, 1], // anything goes              TODO: maybe make it so there are fewer vertical marquees
-  [4, 2],  // anything goes (micro/large)
-  [7, 3],  // anything goes (lean rows)  TODO: maybe have this instead of 5?
+  [60, 1], // anything goes
+  [6, 2],  // anything goes (micro/large)
+  [7, 3],  // anything goes (lean rows)
   [2, 4],  // macro
-  [8, 5],  // even rows                   TODO: make 16, 24 less likely
+  [8, 5],  // even rows
   [5, 6],  // even cols
-  [5, 7],  // perfect grid                TODO: maybe include some marquees in there
+  [5, 7],  // perfect grid
   [2, 8],  // imperfect grid
   [5, 9],  // anything goes micro, varying size
 )
@@ -48,7 +48,7 @@ const layoutStyle = chance(
 
 const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
-  [9, 0.5],
+  [9, 0.66],
   [9, 0.95],
   [2, 0],
 )

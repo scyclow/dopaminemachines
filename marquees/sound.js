@@ -148,8 +148,6 @@ function flipSound({ delay, duration }) {
   const freqDiff = freqMax - freqMin
   const introTimeMs = 250
 
-  delay = delay
-
   const getFreqAtTime = (t) => {
     const loops = getLoopsAtTime(t, delay, duration)
     const loopProgress = loops % 1
@@ -236,10 +234,7 @@ function ticktockSound(args) {
 
   const interval = duration / 2
 
-  const scale = sample(MAJOR_SCALE)
-
   const upScale = sample(MAJOR_SCALE)
-
 
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource()
@@ -512,6 +507,23 @@ function carSirenSound({duration, delay}) {
   }
 }
 
+
+function singleSound() {
+  const startFreq = rndint(1000, 4000)
+  const playSound = () => {
+    const { smoothFreq, smoothGain } = createSource()
+    smoothGain(MAX_VOLUME)
+    smoothFreq(startFreq, 0.05)
+    setTimeout(() => {
+      smoothFreq(0.1, 1)
+    }, 50)
+
+    return () => {
+      playSound()
+    }
+  }
+  return playSound
+}
 
 
 

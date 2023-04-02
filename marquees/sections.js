@@ -30,7 +30,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   if (animation === spin) {
     fn = smoothSound
 
-  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe].includes(animation)) {
+  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe, growShrinkShort].includes(animation)) {
     fn = chance(
       [4, (p) => sirenSound({
         ...p,
@@ -45,7 +45,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
       [!isGrid && 1, (p) => ticktockSound(p)]
     )
 
-  } else if ([hSiren, vSiren, wave].includes(animation)) {
+  } else if ([hSiren, vSiren, wave, vSirenShort].includes(animation)) {
     fn = sirenSound
 
   } else if ([hFlip, vFlip].includes(animation)) {
@@ -65,9 +65,14 @@ function createSound(animation, params, isGrid, extraDelay=0) {
 
   } else if (animation === climb) {
     fn = climbSound
-  }
 
-  return fn({ ...params, delay: params.delay + extraDelay })
+  } else if (animation === iden) {
+    fn = singleSound
+
+  } else return
+
+
+  return fn({ ...params, delay: params.delay + extraDelay || 0 })
 
 }
 
@@ -234,31 +239,32 @@ function marqueeContainter(rSpan, cSpan) {
     ]
     : clonedNode
 
-  const childEl = showLeftRight
-    ? leftRight(childWithPairedEmoji, {
-        style: `font-size: ${height};`,
-        duration: r * slow * speed,
-        delay,
-        showTrails
-      })
-    : marquee(childWithPairedEmoji, {
-        style: `
-          font-size: ${sideways ? width : height};
-        `,
-        direction: posOrNeg(),
-        delay,
-        duration,
-        sideways,
-        msgAnimation
-      })
+  const zoomParams = { duration: r * slow * speed / 2, delay, showTrails }
 
-  const params = { duration: r * slow * speed / 2, delay, showTrails }
-  const playSound = zoomSound({ ...params, switchChannels: true })
+  let childEl, playSound
+  if (showLeftRight) {
+    childEl = leftRight(childWithPairedEmoji, {
+      style: `font-size: ${height};`,
+      duration: r * slow * speed,
+      delay,
+      showTrails
+    })
+    playSound = zoomSound({ ...zoomParams, switchChannels: true })
+  } else {
+    childEl = marquee(childWithPairedEmoji, {
+      style: `font-size: ${sideways ? width : height};`,
+      direction: posOrNeg(),
+      delay,
+      duration,
+      sideways,
+      msgAnimation
+    })
+    if (msgAnimation !== iden) playSound = createSound(msgAnimation, { duration: 2000 }, true)
+  }
 
   let stopSound = []
-  const ignoreStop = prb(0.1)
-
   let talkingActive = false
+  const ignoreStop = prb(0.1)
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
     if (showLeftRight) {
@@ -273,19 +279,28 @@ function marqueeContainter(rSpan, cSpan) {
 
       if (showTrails) {
         const sound2 = ignoreStop
-          ? zoomSound({ ...params, switchChannels: true })(20)
+          ? zoomSound({ ...zoomParams, switchChannels: true })(20)
           : playSound(20)
         if (!ignoreStop) stopSound.push(sound2)
       }
 
     } else {
-      if (talkingActive) {
+      if (talkingActive && !ignoreStop) {
         stopUtter(child.innerHTML)
         talkingActive = false
       } else {
         utter(child.innerHTML, 30, 7)
         talkingActive = true
       }
+
+      if (stopSound.length) {
+        stopSound.forEach(s => s())
+        stopSound = []
+      } else if (playSound) {
+        const sound = playSound()
+        if (!ignoreStop) stopSound.push(sound)
+      }
+
     }
   })
 }
@@ -338,6 +353,7 @@ function animationContainer(rSpan, cSpan) {
     climb,
     blink,
     hexagon,
+    iden,
     prb(0.5) && breathe,
     !ignoreCharAnimation && updownChars,
     !ignoreCharAnimation && blinkChars,

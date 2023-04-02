@@ -72,6 +72,9 @@ let IS_HEADLESS = false
 let TWEMOJI_PRESENT = false
 const $ = (elem, prop, value) => {}
 
+$.cls = (elem, selector) => Array.from(elem.getElementsByClassName(selector))
+
+
 
 $.render = (e, children) => {
   // if (!children) return
@@ -216,7 +219,7 @@ const cols = 60
 const rows = 48
 
 
-let LAST_PAUSED
+let LAST_PAUSED, OVERDRIVE
 let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
 let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   IS_HEADLESS
@@ -247,13 +250,13 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [62, 1], // anything goes              TODO: maybe make it so there are fewer vertical marquees
-  [4, 2],  // anything goes (micro/large)
-  [7, 3],  // anything goes (lean rows)  TODO: maybe have this instead of 5?
+  [60, 1], // anything goes
+  [6, 2],  // anything goes (micro/large)
+  [7, 3],  // anything goes (lean rows)
   [2, 4],  // macro
-  [8, 5],  // even rows                   TODO: make 16, 24 less likely
+  [8, 5],  // even rows
   [5, 6],  // even cols
-  [5, 7],  // perfect grid                TODO: maybe include some marquees in there
+  [5, 7],  // perfect grid
   [2, 8],  // imperfect grid
   [5, 9],  // anything goes micro, varying size
 )
@@ -261,7 +264,7 @@ const layoutStyle = chance(
 
 const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
-  [9, 0.5],
+  [9, 0.66],
   [9, 0.95],
   [2, 0],
 )
@@ -402,9 +405,6 @@ const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
   : `text-shadow: ${getTextShadowValue(h)};`
 
 
-
-const franticVoice = prb(0.05)
-
 const hideBg = freeFloating ? prb(0.5) : false
 const showBorder = prb(0.5)
 
@@ -418,10 +418,10 @@ const bgAnimationType = chance(
 
 const increasedottedBorderStyle = bgAnimationPrb && bgAnimationType  === 0
 const borderStyle = chance(
-  [4, () => 'solid'],
-  [increasedottedBorderStyle ? 5 : 1, () => 'dashed'],
-  [increasedottedBorderStyle ? 4 : 1, () => 'dotted'],
-  [1, () => 'double'],
+  [4, 'solid'],
+  [increasedottedBorderStyle ? 5 : 1, 'dashed'],
+  [increasedottedBorderStyle ? 4 : 1, 'dotted'],
+  [1, 'double'],
 )
 
 const sectionAnimation = prb(0.95) ? '' : sample([
@@ -606,6 +606,26 @@ css(`
     z-index: 100;
   }
 
+  .overdrive .marquee * {
+    animation-duration: 10s !important;
+  }
+
+  .overdrive *::before {
+    animation-duration: 100ms !important;
+  }
+
+  .overdrive .bgAnimation {
+    animation-duration: 300ms !important;
+  }
+
+  .overdrive .animatingComponent {
+    animation-duration: 250ms !important;
+  }
+
+  .overdrive {
+    filter: contrast(300%) saturate(300%);
+  }
+
 `)
 
 const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
@@ -667,7 +687,8 @@ const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
 const JACK_DUMP_SCALE = [1, 1, 1.25, 1.3333, 1.5, 1.3333, 1.25, 1]
 
 
-const getLoopsAtTime = (t, delay, duration) => (t - (START_TIME - delay)) / duration
+const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START_TIME - delay)) / duration
+
 
 function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1) {
   let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
@@ -678,7 +699,7 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
   const introTimeMs = 250
   gainAdj = min(1, gainAdj)
 
-  const halfLoopsAtTime = time => 2 * (time - START_TIME + delay) / duration
+  const halfLoopsAtTime = time => 2 * getLoopsAtTime(time, delay, duration)
   const getDirectionAtTime = time => int(halfLoopsAtTime(time)) % 2 ? 1 : -1
 
   const getFreqAtTime = time => {
@@ -709,7 +730,7 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
             getFreqAtTime(Date.now() + duration/2 + extraDelay),
             i % 2 ? duration/2000 : duration/brokenDivisor
           )
-        }, duration/2)
+        }, duration/16)
       }, timeUntilNextHalfLoop)
     }, introTimeMs)
 
@@ -757,8 +778,6 @@ function flipSound({ delay, duration }) {
   const freqDiff = freqMax - freqMin
   const introTimeMs = 250
 
-  delay = delay
-
   const getFreqAtTime = (t) => {
     const loops = getLoopsAtTime(t, delay, duration)
     const loopProgress = loops % 1
@@ -784,7 +803,7 @@ function flipSound({ delay, duration }) {
       setTimeout(() => {
         setRunInterval((i) => {
           smoothFreq(getFreqAtTime(Date.now() + duration/3 + extraDelay), duration/3000)
-        }, duration/3)
+        }, duration/24)
 
       }, timeUntilNextThird)
 
@@ -816,8 +835,8 @@ function smoothSound({delay, duration}) {
     }
 
     src1.smoothFreq(f1)
-    const int = setInterval(() => {
-      if (PAUSED) {
+    const int = setRunInterval(() => {
+      if (PAUSED || OVERDRIVE) {
         src2.smoothFreq(f1, 0.00001, true)
       }
       else {
@@ -845,10 +864,7 @@ function ticktockSound(args) {
 
   const interval = duration / 2
 
-  const scale = sample(MAJOR_SCALE)
-
   const upScale = sample(MAJOR_SCALE)
-
 
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource()
@@ -1122,6 +1138,23 @@ function carSirenSound({duration, delay}) {
 }
 
 
+function singleSound() {
+  const startFreq = rndint(1000, 4000)
+  const playSound = () => {
+    const { smoothFreq, smoothGain } = createSource()
+    smoothGain(MAX_VOLUME)
+    smoothFreq(startFreq, 0.05)
+    setTimeout(() => {
+      smoothFreq(0.1, 1)
+    }, 50)
+
+    return () => {
+      playSound()
+    }
+  }
+  return playSound
+}
+
 
 
 
@@ -1163,7 +1196,7 @@ const triggerUtterance = () => {
     txt = utteranceQueue.splice(ix, 1)[0] || ''
   }
 
-  if (franticVoice) txt.pitch = sample(MAJOR_SCALE)
+  if (OVERDRIVE) txt.pitch = sample(MAJOR_SCALE)
 
   window.speechSynthesis.speak(txt)
 
@@ -1687,9 +1720,9 @@ const withTrails = (grandChild, args={}) => {
 
 
 const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
-    class: className,
+    class: className + ' bgAnimation',
     style: `
-      border: 1vmin ${borderStyle()};
+      border: 1vmin ${borderStyle};
       position: absolute;
       height: ${100*rSpan/rows}vh;
       width: ${100*cSpan/cols}vw;
@@ -1781,7 +1814,7 @@ function genericCharacterComponent(name, durMin, durMax) {
       const split = txt.split('')
 
       return split.map((c, i) => $.span(c, {
-        class: name,
+        class: name + ' charContent',
         style: `
           animation-delay: -${i * duration}ms;
           ${c === ' ' ? 'margin-right: 0.5em;' : ''}
@@ -1795,6 +1828,7 @@ function genericCharacterComponent(name, durMin, durMax) {
       c.map(txt => $.div(
         splitAnimation(txt),
         {
+          class: 'charContentWord',
           style: `
             display: inline-block;
             margin-left: 0.25em;
@@ -1802,7 +1836,10 @@ function genericCharacterComponent(name, durMin, durMax) {
           `
         }
       )
-    ), { style: `display: inline-block;` })
+    ), {
+      class: 'charContentGroup',
+      style: `display: inline-block;`
+    })
   }
 }
 
@@ -1811,6 +1848,18 @@ const updownChars = genericCharacterComponent('updownChars', 100, 500)
 const shrinkChars = genericCharacterComponent('growShrinkShort', 100, 300)
 const blinkChars = genericCharacterComponent('blink', 50, 200)
 
+function getContent(elem) {
+  const child = $.cls(elem, 'content')
+  if (child.length) {
+    if (child[0].childElementCount) return child[0].children[0].alt
+    return child[0].innerHTML
+  }
+  else {
+    return $.cls(elem, 'charContentWord').map(w =>
+      $.cls(w, 'charContent').map(c => c.innerHTML).join('')
+    ).join(' ')
+  }
+}
 
 
 
@@ -1870,6 +1919,7 @@ const money2 = emojis(`🤑 💷 💴 💵 💶 💲 💸 💰`)
 const moneyFull = [...emojis(`💹 📈 💯`), ...money1, ...money2]
 const fruit1 = emojis(`🍒 🍉 🍇 🍋 🍯`)
 const fruit2 = emojis(`🍆 🍑 🌶`)
+const miscFood = emojis(`🥕 🍌 🥜 🧀 🍪`)
 const booze = emojis(`🍻 🍾 🥂`)
 const hot = emojis(`🌶 🔥 ❤️‍🔥 🌋`)
 const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓`), ...fruit1, ...money1]
@@ -1878,8 +1928,8 @@ const party = [...emojis(`🎉 🕺 💃 🎊 🥳 🎈`), ...booze]
 const energy = emojis(`💫 🔥 🚀 ⚡️ ✨`)
 const explosion1 = emojis(`💥 🤯 🧨 💣`)
 const explosionFull = [...explosion1, ...energy, ...emojis(`🌋 ☄️`)]
-const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔞`), ...fruit2]
-const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2]
+const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹`), ...fruit2]
+const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2, ...miscFood]
 const usa = emojis(`🏎 🇺🇸 ★`)
 const relaxing = emojis(`🏖 🏄‍♂️`)
 const funny = emojis(`🐄 🤡 💩 😂`)
@@ -1892,6 +1942,7 @@ const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emoj
 // const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
+const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood]
 const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
@@ -1916,7 +1967,8 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   computer,
   excitingMisc,
   commonEmojis,
-  justArrows
+  justArrows,
+  hedonicTreadmill
   // misc,
   // maybe,
 ]
@@ -1935,7 +1987,7 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
 
 
 /*
-  boost, frenzy, multiplier, infinite, joy, certified
+  boost, infinite, joy, certified, alert
 
    */
 
@@ -1951,6 +2003,8 @@ const luckyText = [
   `YOU CAN'T LOSE`,
   `EVERYONE'S A WINNER`,
   'DOUBLE DOWN',
+  'BINGO',
+  'MULTIPLIER',
 ]
 
 const dealsText = [
@@ -2012,12 +2066,6 @@ const sexyText = [
   'PASSION'
 ]
 
-const gains = [
-  'THROBBING GAINS',
-  'MASSIVE GAINS',
-  'WHOPPING GAINS',
-]
-
 const fomo = [
   `THINGS ARE MOVING FAST`,
   `Stop THROWING YOUR MONEY AWAY`,
@@ -2071,11 +2119,15 @@ const excitingText = [
   'STARSTRUCK',
   'BLAST OFF',
   'ALL OR NOTHING',
+  `LET'S GO`,
+  'FRENZY'
 ]
 
 const funText = [
   'FUN',
   'LOL',
+  'ROFL',
+  'LMAO',
   'WAGMI',
   'WTF',
   'SO COOL',
@@ -2099,7 +2151,10 @@ const crypto = [
   'BULL MARKET',
   'DIAMOND HANDS',
   'ALL TIME HIGH',
-  '100%'
+  '100%',
+  'THROBBING GAINS',
+  'MASSIVE GAINS',
+  'WHOPPING GAINS',
 ]
 
 const disclaimer = [
@@ -2134,7 +2189,8 @@ const affirmations = [
   'FINALLY',
   'CHAMPION',
   'GREATEST OF ALL TIME',
-  'SPECIAL'
+  'SPECIAL',
+  `YOU'RE #1`
 ]
 
 
@@ -2143,7 +2199,6 @@ const textLists = [
   dealsText,
   cashText,
   sexyText,
-  gains,
   fomo,
   hotText,
   excitingText,
@@ -2254,7 +2309,7 @@ function chooseContent() {
     contentSample.emojis = emojiLists
   }
 
-  if (Number(tokenData.tokenId) === 69) {
+  if (Number(tokenData.tokenId) % 1000000 === 69) {
     contentSample.text = hotText
     contentSample.emojis = sexy
   }
@@ -2330,7 +2385,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   if (animation === spin) {
     fn = smoothSound
 
-  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe].includes(animation)) {
+  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe, growShrinkShort].includes(animation)) {
     fn = chance(
       [4, (p) => sirenSound({
         ...p,
@@ -2345,7 +2400,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
       [!isGrid && 1, (p) => ticktockSound(p)]
     )
 
-  } else if ([hSiren, vSiren, wave].includes(animation)) {
+  } else if ([hSiren, vSiren, wave, vSirenShort].includes(animation)) {
     fn = sirenSound
 
   } else if ([hFlip, vFlip].includes(animation)) {
@@ -2365,9 +2420,14 @@ function createSound(animation, params, isGrid, extraDelay=0) {
 
   } else if (animation === climb) {
     fn = climbSound
-  }
 
-  return fn({ ...params, delay: params.delay + extraDelay })
+  } else if (animation === iden) {
+    fn = singleSound
+
+  } else return
+
+
+  return fn({ ...params, delay: params.delay + extraDelay || 0 })
 
 }
 
@@ -2401,7 +2461,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     {
       class: classes,
       style: `
-        border-style: ${borderStyle()};
+        border-style: ${borderStyle};
         ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
         grid-column: span ${cSpan};
         grid-row: span ${rSpan};
@@ -2416,26 +2476,43 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     }
   )
 
-  let isFullScreen
+  let isFullScreen, notifyingTimeout
   const canFullScreen = prb(0.01)
+  const triggersPopup = prb(0.01)
+  const triggersNotifications = prb(0.01)
   container.onclick = () => {
     onclick()
 
     try {
       if (window.navigator) window.navigator.vibrate(50)
 
-      // Notification.requestPermission().then(p => {
-
-      // })
-
       if (canFullScreen) {
         const method = isFullScreen ? 'remove' : 'add'
         container.classList[method]('fullScreen')
-        console.log(isFullScreen, container.classList)
         isFullScreen = !isFullScreen
       }
 
-      const childContent = child.getElementsByClassName('content')[0].innerHTML
+      const childContent = getContent(child)
+      console.log('CLICK:',childContent)
+
+      if (triggersPopup) window.alert(childContent)
+      if (triggersNotifications) {
+        const setNotification = () => {
+          notifyingTimeout = setTimeout(() => {
+            new Notification(childContent)
+            setNotification()
+          }, rndint(100, 10000))
+        }
+
+        Notification.requestPermission().then(p => {
+          setNotification()
+        })
+
+        if (notifyingTimeout) clearTimeout(notifyingTimeout)
+      }
+
+      if (navigator.clipboard) navigator.clipboard.writeText(childContent)
+
       if (childContent.includes('FAST CASH')) window.open('http://fastcashmoneyplus.biz', '_blank')
     } catch (e) {}
   }
@@ -2517,31 +2594,32 @@ function marqueeContainter(rSpan, cSpan) {
     ]
     : clonedNode
 
-  const childEl = showLeftRight
-    ? leftRight(childWithPairedEmoji, {
-        style: `font-size: ${height};`,
-        duration: r * slow * speed,
-        delay,
-        showTrails
-      })
-    : marquee(childWithPairedEmoji, {
-        style: `
-          font-size: ${sideways ? width : height};
-        `,
-        direction: posOrNeg(),
-        delay,
-        duration,
-        sideways,
-        msgAnimation
-      })
+  const zoomParams = { duration: r * slow * speed / 2, delay, showTrails }
 
-  const params = { duration: r * slow * speed / 2, delay, showTrails }
-  const playSound = zoomSound({ ...params, switchChannels: true })
+  let childEl, playSound
+  if (showLeftRight) {
+    childEl = leftRight(childWithPairedEmoji, {
+      style: `font-size: ${height};`,
+      duration: r * slow * speed,
+      delay,
+      showTrails
+    })
+    playSound = zoomSound({ ...zoomParams, switchChannels: true })
+  } else {
+    childEl = marquee(childWithPairedEmoji, {
+      style: `font-size: ${sideways ? width : height};`,
+      direction: posOrNeg(),
+      delay,
+      duration,
+      sideways,
+      msgAnimation
+    })
+    if (msgAnimation !== iden) playSound = createSound(msgAnimation, { duration: 2000 }, true)
+  }
 
   let stopSound = []
-  const ignoreStop = prb(0.1)
-
   let talkingActive = false
+  const ignoreStop = prb(0.1)
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
     if (showLeftRight) {
@@ -2556,19 +2634,28 @@ function marqueeContainter(rSpan, cSpan) {
 
       if (showTrails) {
         const sound2 = ignoreStop
-          ? zoomSound({ ...params, switchChannels: true })(20)
+          ? zoomSound({ ...zoomParams, switchChannels: true })(20)
           : playSound(20)
         if (!ignoreStop) stopSound.push(sound2)
       }
 
     } else {
-      if (talkingActive) {
+      if (talkingActive && !ignoreStop) {
         stopUtter(child.innerHTML)
         talkingActive = false
       } else {
         utter(child.innerHTML, 30, 7)
         talkingActive = true
       }
+
+      if (stopSound.length) {
+        stopSound.forEach(s => s())
+        stopSound = []
+      } else if (playSound) {
+        const sound = playSound()
+        if (!ignoreStop) stopSound.push(sound)
+      }
+
     }
   })
 }
@@ -2621,6 +2708,7 @@ function animationContainer(rSpan, cSpan) {
     climb,
     blink,
     hexagon,
+    iden,
     prb(0.5) && breathe,
     !ignoreCharAnimation && updownChars,
     !ignoreCharAnimation && blinkChars,
@@ -3060,9 +3148,10 @@ function flexSection(rowCells, colCells) {
   )
 
   const usedContent = Array.from(
-    new Set(
-      Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
-    )
+    new Set([
+      ...$.cls(main, 'content').map(e => e.innerHTML),
+      ...$.cls(main, 'charContentGroup').map(getContent)
+    ])
   )
 
   const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {
