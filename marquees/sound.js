@@ -5,6 +5,7 @@ const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
 let START_TIME = Date.now()
 const MAX_VOLUME = 0.04
 
+const allSources = []
 function createSource(waveType = 'square') {
   const AudioContext = window.AudioContext || window.webkitAudioContext
   const ctx = new AudioContext()
@@ -18,7 +19,7 @@ function createSource(waveType = 'square') {
   panner.connect(ctx.destination)
 
   gain.gain.value = 0
-  source.type = waveType
+  source.type = ANHEDONIC ? 'sine' : waveType
   source.frequency.value = 3000
   source.start()
 
@@ -47,8 +48,27 @@ function createSource(waveType = 'square') {
     )
   }
 
+  const src = { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner }
 
-  return { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner };
+  allSources.push(src)
+
+  return src
+}
+
+function sourcesToAnhedonicMode() {
+  allSources.forEach(src => {
+    if (src.gain.gain.value > 0) {
+      src.source.type = 'sine'
+    }
+  })
+}
+
+function sourcesToNormalMode() {
+  allSources.forEach(src => {
+    if (src.gain.gain.value > 0) {
+      src.source.type = 'square'
+    }
+  })
 }
 
 const BASE_FREQ = rnd(250, 500)
@@ -566,7 +586,16 @@ const triggerUtterance = () => {
     txt = utteranceQueue.splice(ix, 1)[0] || ''
   }
 
-  if (OVERDRIVE) txt.pitch = sample(MAJOR_SCALE)
+  if (ANHEDONIC) {
+    txt.rate = 0.7
+    txt.pitch = 1
+  } else if (OVERDRIVE) {
+    txt.pitch = sample(MAJOR_SCALE)
+    txt.rate = 1.2
+  } else {
+    txt.rate = 1
+    txt.pitch = 1
+  }
 
   window.speechSynthesis.speak(txt)
 

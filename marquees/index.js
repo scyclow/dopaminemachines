@@ -38,8 +38,87 @@ window.onload = () => {
 
 
   document.onkeydown = (event) => {
+    // DOWNLOAD HTML
+    if (event.key === 'd') {
+      const a = document.createElement('a')
+      a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
+      a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    }
+
+    // OVERDRIVE
+    else if (event.key === 'o') {
+      if (OVERDRIVE) {
+        document.body.classList.remove('overdrive')
+      } else {
+        document.body.classList.add('overdrive')
+      }
+      OVERDRIVE = !OVERDRIVE
+    }
+
+
+    // PAUSE
+    else if (event.key === 'p') {
+      if (PAUSED) {
+        START_TIME += Date.now() - LAST_PAUSED
+        document.body.classList.remove('pauseAll')
+      } else {
+        LAST_PAUSED = Date.now()
+        document.body.classList.add('pauseAll')
+      }
+      PAUSED = !PAUSED
+      try {
+        window.localStorage.setItem('__DOPAMINE_IS_PAUSED__', PAUSED)
+      } catch(e) {}
+    }
+
+    // ANHEDONIC MODE
+    else if (event.key === 'a') {
+      if (ANHEDONIC) {
+        document.body.classList.remove('anhedonic')
+        sourcesToNormalMode()
+      } else {
+        document.body.classList.add('anhedonic')
+        sourcesToAnhedonicMode()
+      }
+      ANHEDONIC = !ANHEDONIC
+    }
+
+    // MOUSE HIDE
+    else if (event.key === 'm') {
+      if (isHidingMouse) {
+        document.exitPointerLock()
+        document.body.classList.remove('viewerMode')
+      } else {
+        document.body.classList.add('viewerMode')
+        document.body.requestPointerLock()
+      }
+      isHidingMouse = !isHidingMouse
+    }
+
+    else if (event.key === 'i') {
+      if (INVERT_ALL) {
+        document.body.classList.remove('invertAll')
+      } else {
+        document.body.classList.add('invertAll')
+      }
+
+      INVERT_ALL = !INVERT_ALL
+    }
+
+    // NO DISTRACTION MODE
+    else if (event.key === 'n') {
+      if (isFullScreen) document.exitFullscreen()
+      else document.body.requestFullscreen({ navigationUI: 'hide' })
+
+      isFullScreen = !isFullScreen
+    }
+
+
     // TOGGLE EMOJIS
-    if (event.key === 'e') {
+    else if (event.key === 'e') {
       const emojiShadows = $.cls(document, 'emojiShadow')
 
       if (usingEmojiPolyfill) {
@@ -71,60 +150,12 @@ window.onload = () => {
       } catch(e) {}
     }
 
-    // FULLSCREEN
-    else if (event.key === 'f') {
-      if (isFullScreen) document.exitFullscreen()
-      else document.body.requestFullscreen({ navigationUI: 'hide' })
 
-      isFullScreen = !isFullScreen
-    }
 
-    // DOWNLOAD HTML
-    else if (event.key === 'h') {
-      const a = document.createElement('a')
-      a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
-      a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-    }
 
-    // HIDE MOUSE
-    else if (event.key === 'm') {
-      if (isHidingMouse) {
-        document.exitPointerLock()
-        document.body.classList.remove('viewerMode')
-      } else {
-        document.body.classList.add('viewerMode')
-        document.body.requestPointerLock()
-      }
-      isHidingMouse = !isHidingMouse
-    }
 
-    // PAUSE
-    else if (event.key === 'p') {
-      if (PAUSED) {
-        START_TIME += Date.now() - LAST_PAUSED
-        document.body.classList.remove('pauseAll')
-      } else {
-        LAST_PAUSED = Date.now()
-        document.body.classList.add('pauseAll')
-      }
-      PAUSED = !PAUSED
-      try {
-        window.localStorage.setItem('__DOPAMINE_IS_PAUSED__', PAUSED)
-      } catch(e) {}
-    }
 
-    // OVERDRIVE
-    else if (event.key === 'o') {
-      if (OVERDRIVE) {
-        document.body.classList.remove('overdrive')
-      } else {
-        document.body.classList.add('overdrive')
-      }
-      OVERDRIVE = !OVERDRIVE
-    }
+
   }
 
   if (USE_EMOJI_POLYFILL && window.twemoji) {
@@ -135,3 +166,17 @@ window.onload = () => {
     })
   }
 }
+
+/*
+D ownload HTML
+O verdrive
+P ause
+A nhedonic Mode
+M ouse Hide
+I
+N o distraction mode (live view only)
+E moji Toggle
+
+
+Fullscreen
+*/

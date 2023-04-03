@@ -3,7 +3,7 @@ const cols = 60
 const rows = 48
 
 
-let LAST_PAUSED, OVERDRIVE
+let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
 let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
 let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   IS_HEADLESS
@@ -410,4 +410,23 @@ css(`
     filter: contrast(300%) saturate(300%);
   }
 
+  .anhedonic {
+    background: #555;
+    filter: blur(0.08vw) saturate(0.15);
+  }
+  .anhedonic .marquee * {
+    animation-duration: 800s !important;
+  }
+  .anhedonic *::before {
+    animation-duration: 3s !important;
+  }
+  .anhedonic .bgAnimation {
+    animation-duration: 12s !important;
+  }
+  .anhedonic .animatingComponent {
+    animation-duration: 16s !important;
+  }
+  .invertAll {
+    filter: invert(1);
+  }
 `)
