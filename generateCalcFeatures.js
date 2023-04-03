@@ -48,7 +48,11 @@ const calcFeatures = `
   features['Inverted'] = invertAll
   features['Random Calls'] = rCount
   features['Sections'] = sectionCount
+  features['Marquees'] = marqueeCount
+  features['Animations'] = animationCount
+  features['Grids'] = gridCount
   features['Font Weight'] = fontWeight
+  features['Full Hue Rotation'] = fullHueRotation
 `
 
 

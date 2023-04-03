@@ -175,8 +175,9 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 
-
+let marqueeCount = 0
 function marqueeContainter(rSpan, cSpan) {
+  marqueeCount++
   let [child, replacementChild] = sampleContent()
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
 
@@ -328,7 +329,9 @@ function getFontSize(txt, rSpan, cSpan) {
 
 const allPlayingSounds = []
 
+let animationCount = 0
 function animationContainer(rSpan, cSpan) {
+  animationCount++
   let [child, replacementChild] = sampleContent()
   if (textOverride) child = replacementChild
 
@@ -472,7 +475,9 @@ function getEmojiGrid(rSpan, cSpan) {
   ]
 }
 
+let gridCount = 0
 function animationGridContainer(rSpan, cSpan) {
+  gridCount++
   const child = sample(_content.emojis)
 
   if (!child) return animationContainer(rSpan, cSpan)

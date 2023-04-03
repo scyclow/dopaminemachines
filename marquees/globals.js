@@ -351,7 +351,7 @@ const colorBlinkPrb = chance(
 )
 
 
-
+const fullHueRotation = prb(0.02)
 const invertAll = prb(0.02)
 css(`
   * {
@@ -364,6 +364,12 @@ css(`
   body, body::backdrop {
     background: ${bgColor};
     margin: 0;
+    ${fullHueRotation ? 'animation: HueRotation 10s linear infinite;' : ''}
+  }
+
+  @keyframes HueRotation {
+    0% { filter: hue-rotate(0deg) }
+    0% { filter: hue-rotate(360deg) }
   }
 
   .viewerMode {
@@ -405,7 +411,9 @@ css(`
   .overdrive .animatingComponent {
     animation-duration: 250ms !important;
   }
-
+  .overdrive .sectionContainer {
+    animation-duration: 750ms !important;
+  }
   .overdrive .charContent {
     animation-duration: 205ms !important;
   }
@@ -429,6 +437,9 @@ css(`
   }
   .anhedonic .animatingComponent {
     animation-duration: 16s !important;
+  }
+  .anhedonic .sectionContainer {
+    animation-duration: 32s !important;
   }
   .anhedonic .charContent {
     animation-duration: 2505ms !important;

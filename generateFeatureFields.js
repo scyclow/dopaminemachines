@@ -28,6 +28,10 @@ const features = [
     type: 'boolean',
   },
   {
+    name: 'Full Hue Rotation',
+    type: 'boolean',
+  },
+  {
     name: 'Layout Type',
     type: 'enum',
     options: [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -71,6 +75,27 @@ const features = [
   },
   {
     name: 'Sections',
+    type: 'number',
+    max: 200,
+    min: 1,
+    step: 1,
+  },
+  {
+    name: 'Marquees',
+    type: 'number',
+    max: 200,
+    min: 1,
+    step: 1,
+  },
+  {
+    name: 'Animations',
+    type: 'number',
+    max: 200,
+    min: 1,
+    step: 1,
+  },
+  {
+    name: 'Grids',
     type: 'number',
     max: 200,
     min: 1,
