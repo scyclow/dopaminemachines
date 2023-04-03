@@ -48,7 +48,7 @@ function createSource(waveType = 'square') {
     )
   }
 
-  const src = { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner }
+  const src = { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
 
   allSources.push(src)
 
@@ -66,7 +66,7 @@ function sourcesToAnhedonicMode() {
 function sourcesToNormalMode() {
   allSources.forEach(src => {
     if (src.gain.gain.value > 0) {
-      src.source.type = 'square'
+      src.source.type = src.originalSrcType
     }
   })
 }
@@ -110,12 +110,13 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
     smoothGain(MAX_VOLUME * gainAdj)
     smoothFreq(getFreqAtTime(Date.now() + introTimeMs), 0.25)
 
+    let stopInterval
     setTimeout(() => {
       const timeUntilNextHalfLoop = (1 - halfLoopsAtTime(Date.now() + extraDelay) % 1) * duration/2
       smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalfLoop), timeUntilNextHalfLoop/1000)
 
       setTimeout(() => {
-        setRunInterval((i) => {
+        stopInterval = setRunInterval((i) => {
           smoothFreq(
             getFreqAtTime(Date.now() + duration/2 + extraDelay),
             i % 2 ? duration/2000 : duration/brokenDivisor
@@ -125,7 +126,10 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
     }, introTimeMs)
 
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      stopInterval()
+    }
   }
 
 }
@@ -186,12 +190,13 @@ function flipSound({ delay, duration }) {
     smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + introTimeMs), introTimeMs/1000)
 
+    let stopInterval
     setTimeout(() => {
       const timeUntilNextThird = ((1 - (getLoopsAtTime(Date.now() + extraDelay, delay, duration) % 1)) % 0.3333) * duration
       smoothFreq(getFreqAtTime(Date.now() + timeUntilNextThird + extraDelay), timeUntilNextThird/1000)
 
       setTimeout(() => {
-        setRunInterval((i) => {
+        stopInterval = setRunInterval((i) => {
           smoothFreq(getFreqAtTime(Date.now() + duration/3 + extraDelay), duration/3000)
         }, duration/24)
 
@@ -199,7 +204,10 @@ function flipSound({ delay, duration }) {
 
     }, introTimeMs)
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      stopInterval()
+    }
   }
 
 }
@@ -268,7 +276,6 @@ function ticktockSound({duration, delay}) {
           smoothFreq2(baseFreq+5, 0.1)
 
         } else {
-
           smoothFreq(baseFreq*upScale, 0.1)
           smoothFreq2(baseFreq * upScale+5, 0.1)
         }
@@ -444,8 +451,9 @@ function zoomSound({duration, delay, switchChannels}) {
     smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + timeUntilNextQuarter), timeUntilNextQuarter/1000)
 
+    let stopInterval
     setTimeout(() => {
-      setRunInterval(i => {
+      stopInterval = setRunInterval(i => {
         smoothFreq(getFreqAtTime(Date.now() + duration/4 + extraDelay), duration/4000)
       }, duration/4)
 
@@ -460,7 +468,10 @@ function zoomSound({duration, delay, switchChannels}) {
       }
     }, timeUntilNextQuarter)
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      stopInterval()
+    }
   }
 }
 
@@ -494,8 +505,9 @@ function carSirenSound({duration, delay}) {
     src2.smoothFreq(getFreqAtTime(Date.now())*1.3333, timeUntilNextHalf/1000)
     src3.smoothFreq(getFreqAtTime(Date.now())*1.6666, timeUntilNextHalf/1000)
 
+    let stopInterval
     setTimeout(() => {
-      setRunInterval(i => {
+      stopInterval = setRunInterval(i => {
         src1.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i), introTimeMs/1000)
         src2.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i)*1.3333, introTimeMs/1000)
         src3.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i)*1.6666, introTimeMs/1000)
@@ -506,6 +518,7 @@ function carSirenSound({duration, delay}) {
       src1.smoothGain(0, 0.04)
       src2.smoothGain(0, 0.04)
       src3.smoothGain(0, 0.04)
+      stopInterval()
     }
   }
 }

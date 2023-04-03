@@ -60,7 +60,8 @@ const marqueeAnimationRate = chance(
   [5, 1],
 )
 
-const showEmojis = prb(0.5)
+const is69 = Number(tokenData.tokenId) % 1000000 === 69
+const showEmojis = is69 || prb(0.5)
 
 const pairedEmojiPrb = chance(
   [2, 0],
@@ -122,7 +123,8 @@ const possibleHues = chance(
   [1, [0, 75]],
 )
 
-const shadowType = chance(
+const shadowType = 2
+chance(
   [4, 1],
   [4, 2],
   [bw ? 1 : 4, 3],
@@ -135,9 +137,10 @@ const shadowType = chance(
 )
 
 
+const defaultShadowLightness = prb(0.75) ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
-  const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, 20)
+  const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
 
   const adjustedCoord = polyfillShadow ? 0.0125 : 0.025
   return (

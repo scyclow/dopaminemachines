@@ -445,8 +445,8 @@ function chooseContent() {
     contentSample.emojis = emojiLists
   }
 
-  if (Number(tokenData.tokenId) % 1000000 === 69) {
-    contentSample.text = hotText
+  if (is69) {
+    contentSample.text = sexyText
     contentSample.emojis = sexy
   }
 

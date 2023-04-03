@@ -56,15 +56,16 @@ function setRunInterval(fn, ms, i=0) {
   let isCleared = false
 
   let interval = setInterval(() => {
-    i++
     fn(i)
+    i++
   }, ms)
 
   const newInterval = (ms) => {
+    if (isCleared) return
     clearInterval(interval)
     interval = setInterval(() => {
-      i++
       fn(i)
+      i++
     }, ms)
   }
 
