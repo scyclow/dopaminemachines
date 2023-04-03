@@ -406,6 +406,10 @@ css(`
     animation-duration: 250ms !important;
   }
 
+  .overdrive .charContent {
+    animation-duration: 205ms !important;
+  }
+
   .overdrive {
     filter: contrast(300%) saturate(300%);
   }
@@ -425,6 +429,9 @@ css(`
   }
   .anhedonic .animatingComponent {
     animation-duration: 16s !important;
+  }
+  .anhedonic .charContent {
+    animation-duration: 2505ms !important;
   }
   .invertAll {
     filter: invert(1);

@@ -225,7 +225,7 @@ function smoothSound({delay, duration}) {
     }
 
     src1.smoothFreq(f1)
-    const int = setRunInterval(() => {
+    const stopInterval = setRunInterval(() => {
       if (PAUSED || OVERDRIVE) {
         src2.smoothFreq(f1, 0.00001, true)
       }
@@ -239,19 +239,15 @@ function smoothSound({delay, duration}) {
 
 
     return () => {
-      clearInterval(int)
+      stopInterval()
       src1.smoothGain(0, 0.25)
       src2.smoothGain(0, 0.25)
     }
   }
 }
 
-function ticktockSound(args) {
+function ticktockSound({duration, delay}) {
   const baseFreq = BASE_FREQ * sample([1, 0.5, 2])
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
   const interval = duration / 2
 
   const upScale = sample(MAJOR_SCALE)
@@ -261,9 +257,9 @@ function ticktockSound(args) {
     const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
 
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/2)) * duration
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
         smoothGain(MAX_VOLUME, 0.03)
         smoothGain2(MAX_VOLUME, 0.03)
 
@@ -287,13 +283,13 @@ function ticktockSound(args) {
     return () => {
       smoothGain(0, 0.03)
       smoothGain2(0, 0.03)
-      clearInterval(int)
+      stopInterval()
     }
   }
 }
 
 
-function blinkCharSound(args, seq=null) {
+function blinkCharSound({duration, delay}, seq=null) {
   const sequence = sample([0, 1, 2])
   const jackDumpScale = prb(0.1)
   const isSmooth = !jackDumpScale && prb(0.5)
@@ -307,9 +303,7 @@ function blinkCharSound(args, seq=null) {
   )
 
   const ttMult = sample([2, 1.5, 1.3333])
-
-  const duration = args.duration ? map(args.duration, 750, 5000, 500, 2000) : rnd(500, 2000)
-
+  duration = duration ? map(duration, 750, 5000, 500, 2000) : rnd(500, 2000)
   const interval = duration / 8
 
   return (extraDelay=0) => {
@@ -321,7 +315,7 @@ function blinkCharSound(args, seq=null) {
       if (twoTone) src2.smoothGain(MAX_VOLUME)
     }
 
-    let int = setRunInterval((i) => {
+    const stopInterval = setRunInterval((i) => {
       if (!isSmooth) {
         smoothGain(MAX_VOLUME)
         if (twoTone) src2.smoothGain(MAX_VOLUME)
@@ -350,19 +344,14 @@ function blinkCharSound(args, seq=null) {
     return () => {
       smoothGain(0, 0.04)
       if (twoTone) src2.smoothGain(0, 0.04)
-      clearInterval(int)
+      stopInterval()
     }
   }
 }
 
-function hexSound(args) {
+function hexSound({duration, delay}) {
   const baseFreq = BASE_FREQ
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
   const interval = duration / 6
-
   const scale = sample(MAJOR_SCALE)
 
   return (extraDelay=0) => {
@@ -370,9 +359,9 @@ function hexSound(args) {
     const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/6)) * duration
 
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
 
         smoothFreq(baseFreq * 8)
         smoothFreq2(baseFreq * 8)
@@ -390,7 +379,7 @@ function hexSound(args) {
     }, timeUntilNextNote)
 
     return () => {
-      clearInterval(int)
+      stopInterval()
       smoothGain(0, 0.03)
       smoothGain2(0, 0.03)
     }
@@ -400,26 +389,20 @@ function hexSound(args) {
 
 
 
-function climbSound(args) {
-  const baseFreq = sample(HEXATONIC_SCALE) * BASE_FREQ * 1.5
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
-
+function climbSound({ duration, delay }) {
+  const baseFreq = sample(HEXATONIC_SCALE) * BASE_FREQ
   const interval = duration / 4
-
 
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource()
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/4)) * duration
 
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
         smoothGain(MAX_VOLUME)
 
-        const ix = args.duration === 1 ? i%4 : 3 - i%4
+        const ix = duration === 1 ? i%4 : 3 - i%4
         smoothFreq(baseFreq * HEXATONIC_SCALE[ix])
 
         setTimeout(() => smoothGain(0, 0.05), interval*0.75 + extraDelay)
@@ -428,7 +411,7 @@ function climbSound(args) {
     }, timeUntilNextNote + extraDelay*4)
 
     return () => {
-      clearInterval(int)
+      stopInterval()
       smoothGain(0, 0.04)
     }
   }
@@ -586,15 +569,20 @@ const triggerUtterance = () => {
     txt = utteranceQueue.splice(ix, 1)[0] || ''
   }
 
+  if (OVERDRIVE) {
+    txt.pitch = sample(MAJOR_SCALE)
+  } else if (ANHEDONIC) {
+    txt.pitch = 1
+  } else {
+    txt.pitch = 1
+  }
+
   if (ANHEDONIC) {
     txt.rate = 0.7
-    txt.pitch = 1
   } else if (OVERDRIVE) {
-    txt.pitch = sample(MAJOR_SCALE)
     txt.rate = 1.2
   } else {
     txt.rate = 1
-    txt.pitch = 1
   }
 
   window.speechSynthesis.speak(txt)

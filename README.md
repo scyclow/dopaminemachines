@@ -22,14 +22,14 @@ _WARNING: Dopamine Machines contain visual effects that may induce seizures in i
 
 _None of the emojis or text contained within a Dopamine Machine constitutes financial advice. If you suspect you may have a gambling problem, please contact the National Problem Gambling Helpline Network at 1-800-522-4700. By using Dopamine Machines, you acknowledge and accept these potential risks and agree that the Artist shall not be held liable for any damages or injuries resulting from such use._
 
- Controls:
+Controls:
 [D] ⬇️ Download HTML
 [O] ⚠️ Overdrive
 [P] ✋ Pause
-[A] 😐 Anhedonic Mode
+[A] 😐 Anti-Seizure Mode
 [M] 🐁 Hide Mouse
 [I] ↔️ Invert
 [N] 🙈 No Distraction Mode
-[E] 😛 Emojis Toggle
+[E] 🙃 Emoji Toggle
 
-CONTENT OVERRIDE: `` `${url}?text=${encodeURI('first override,second override')}&emojis=${encodeURI('🦞,🐙')}`` `
+CONTENT OVERRIDE: `` `${url}?text=${encodeURI('FIRST OVERRIDE,SECOND OVERRIDE')}&emojis=${encodeURI('🦞,🐙')}`` `

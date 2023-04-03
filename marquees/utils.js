@@ -49,13 +49,39 @@ function times(t, fn) {
   return out
 }
 
-function setRunInterval(fn, interval) {
-  let i = 0
+const allRunningIntervals = []
+function setRunInterval(fn, ms, i=0) {
   fn(i)
-  return setInterval(() => {
+
+  let isCleared = false
+
+  let interval = setInterval(() => {
     i++
     fn(i)
-  }, interval)
+  }, ms)
+
+  const newInterval = (ms) => {
+    clearInterval(interval)
+    interval = setInterval(() => {
+      i++
+      fn(i)
+    }, ms)
+  }
+
+  const stopInterval = () => {
+    if (!isCleared) {
+      clearInterval(interval)
+      isCleared = true
+    }
+  }
+
+  allRunningIntervals.push({
+    newInterval,
+    stopInterval,
+    originalMs: ms
+  })
+
+  return stopInterval
 }
 
 function getLocalStorage(key) {

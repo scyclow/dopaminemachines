@@ -140,7 +140,6 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
       const childContent = getContent(child)
       console.log('CLICK:',childContent)
 
-      if (triggersPopup) window.alert(childContent)
       if (triggersNotifications) {
         const setNotification = () => {
           notifyingTimeout = setTimeout(() => {
@@ -159,6 +158,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
       if (navigator.clipboard) navigator.clipboard.writeText(childContent)
 
       if (childContent.includes('FAST CASH')) window.open('http://fastcashmoneyplus.biz', '_blank')
+      if (triggersPopup) setTimeout(() => window.alert(childContent))
     } catch (e) {}
   }
 
@@ -326,7 +326,7 @@ function getFontSize(txt, rSpan, cSpan) {
 
 
 
-
+const allPlayingSounds = []
 
 function animationContainer(rSpan, cSpan) {
   let [child, replacementChild] = sampleContent()
@@ -434,7 +434,7 @@ function animationContainer(rSpan, cSpan) {
       stopSound = []
       return
     }
-    // createSound(animation, primaryAnimationParams)
+
     const sound1 = playSound()
     if (!ignoreStop) stopSound.push(sound1)
 
