@@ -135,7 +135,7 @@ window.onload = () => {
           e.style.textShadow = getTextShadowValue(Number(e.dataset.h) || 0)
           e.style.filter = ''
         })
-      } else {
+      } else if (window.twemoji) {
         twemoji.parse(
           document.body, {
             folder: 'svg',

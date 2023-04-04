@@ -128,7 +128,7 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
 
     return () => {
       smoothGain(0, 0.04)
-      stopInterval()
+      if (stopInterval) stopInterval()
     }
   }
 
@@ -206,7 +206,7 @@ function flipSound({ delay, duration }) {
 
     return () => {
       smoothGain(0, 0.04)
-      stopInterval()
+      if (stopInterval) stopInterval()
     }
   }
 
@@ -247,7 +247,7 @@ function smoothSound({delay, duration}) {
 
 
     return () => {
-      stopInterval()
+      if (stopInterval) stopInterval()
       src1.smoothGain(0, 0.25)
       src2.smoothGain(0, 0.25)
     }
@@ -290,7 +290,7 @@ function ticktockSound({duration, delay}) {
     return () => {
       smoothGain(0, 0.03)
       smoothGain2(0, 0.03)
-      stopInterval()
+      if (stopInterval) stopInterval()
     }
   }
 }
@@ -351,7 +351,7 @@ function blinkCharSound({duration, delay}, seq=null) {
     return () => {
       smoothGain(0, 0.04)
       if (twoTone) src2.smoothGain(0, 0.04)
-      stopInterval()
+      if (stopInterval) stopInterval()
     }
   }
 }
@@ -386,7 +386,7 @@ function hexSound({duration, delay}) {
     }, timeUntilNextNote)
 
     return () => {
-      stopInterval()
+      if (stopInterval) stopInterval()
       smoothGain(0, 0.03)
       smoothGain2(0, 0.03)
     }
@@ -418,7 +418,7 @@ function climbSound({ duration, delay }) {
     }, timeUntilNextNote + extraDelay*4)
 
     return () => {
-      stopInterval()
+      if (stopInterval) stopInterval()
       smoothGain(0, 0.04)
     }
   }
@@ -470,7 +470,7 @@ function zoomSound({duration, delay, switchChannels}) {
 
     return () => {
       smoothGain(0, 0.04)
-      stopInterval()
+      if (stopInterval) stopInterval()
     }
   }
 }
@@ -518,7 +518,7 @@ function carSirenSound({duration, delay}) {
       src1.smoothGain(0, 0.04)
       src2.smoothGain(0, 0.04)
       src3.smoothGain(0, 0.04)
-      stopInterval()
+      if (stopInterval) stopInterval()
     }
   }
 }

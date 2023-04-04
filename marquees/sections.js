@@ -157,7 +157,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
       if (navigator.clipboard) navigator.clipboard.writeText(childContent)
 
-      if (childContent.includes('FAST CASH')) window.open('http://fastcashmoneyplus.biz', '_blank')
+      if (childContent.includes('FAST CASH')) setTimeout(() => window.open('http://fastcashmoneyplus.biz', '_blank'))
       if (triggersPopup) setTimeout(() => window.alert(childContent))
     } catch (e) {}
   }
