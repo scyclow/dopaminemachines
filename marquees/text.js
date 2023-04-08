@@ -64,7 +64,7 @@ const party = [...emojis(`🎉 🕺 💃 🎊 🥳 🎈`), ...booze]
 const energy = emojis(`💫 🔥 🚀 ⚡️ ✨`)
 const explosion1 = emojis(`💥 🤯 🧨 💣`)
 const explosionFull = [...explosion1, ...energy, ...emojis(`🌋 ☄️`)]
-const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹`), ...fruit2]
+const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹 🥵`), ...fruit2]
 const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2, ...miscFood]
 const usa = emojis(`🏎 🇺🇸 ★`)
 const relaxing = emojis(`🏖 🏄‍♂️`)
@@ -79,7 +79,7 @@ const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emoj
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood]
-const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐`)
+const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🤣`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -239,6 +239,7 @@ const excitingText = [
   'INCREDIBLE',
   'EXCITING',
   'ECSTATIC',
+  'EUPHORIC',
   'THRILLING',
   'HOLY MOLY',
   'WHAT A THRILL',
@@ -256,7 +257,7 @@ const excitingText = [
   'BLAST OFF',
   'ALL OR NOTHING',
   `LET'S GO`,
-  'FRENZY'
+  'FRENZY',
 ]
 
 const funText = [
@@ -369,6 +370,7 @@ const emojiTextRelationships = {
     'GREATEST OF ALL TIME': emojis(`🐐`),
     'STARSTRUCK': emojis(`🤩`),
     'BLAST OFF': emojis(`🚀`),
+    'ROFL': emojis(`🤣`),
   },
   group: [
     [luckyText, lucky],

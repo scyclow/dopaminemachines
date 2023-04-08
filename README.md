@@ -27,9 +27,9 @@ Controls:
 [O] ⚠️ Overdrive
 [P] ✋ Pause
 [A] 😐 Anti-Seizure Mode
-[M] 🐁 Hide Mouse
+[M] 🐁 Mouse Hide
 [I] ↔️ Invert
 [N] 🙈 No Distraction Mode
-[E] 🙃 Emoji Toggle
+[E] 🙃 Emoji Polyfill Toggle
 
 CONTENT OVERRIDE: `` `${url}?text=${encodeURI('FIRST OVERRIDE,SECOND OVERRIDE')}&emojis=${encodeURI('🦞,🐙')}`` `

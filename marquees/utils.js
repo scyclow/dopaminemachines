@@ -51,22 +51,21 @@ function times(t, fn) {
 
 const allRunningIntervals = []
 function setRunInterval(fn, ms, i=0) {
-  fn(i)
+  const run = () => {
+    fn(i)
+    i++
+  }
+
+  run()
 
   let isCleared = false
 
-  let interval = setInterval(() => {
-    fn(i)
-    i++
-  }, ms)
+  let interval = setInterval(run, ms)
 
   const newInterval = (ms) => {
     if (isCleared) return
     clearInterval(interval)
-    interval = setInterval(() => {
-      fn(i)
-      i++
-    }, ms)
+    interval = setInterval(run, ms)
   }
 
   const stopInterval = () => {
