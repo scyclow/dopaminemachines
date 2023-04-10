@@ -120,6 +120,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
       `
     }
   )
+  const childContent = getContent(child)
 
   let isFullScreen, notifyingTimeout
   const canFullScreen = prb(0.01)
@@ -137,7 +138,6 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
         isFullScreen = !isFullScreen
       }
 
-      const childContent = getContent(child)
       console.log('CLICK:',childContent)
 
       if (triggersNotifications) {
@@ -286,7 +286,7 @@ function marqueeContainter(rSpan, cSpan) {
       }
 
     } else {
-      if (talkingActive && !ignoreStop) {
+      if (talkingActive) {
         stopUtter(child.innerHTML)
         talkingActive = false
       } else {

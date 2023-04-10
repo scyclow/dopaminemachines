@@ -58,7 +58,7 @@ const fruit2 = emojis(`🍆 🍑 🌶`)
 const miscFood = emojis(`🥕 🍌 🥜 🧀 🍪`)
 const booze = emojis(`🍻 🍾 🥂`)
 const hot = emojis(`🌶 🔥 ❤️‍🔥 🌋`)
-const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓`), ...fruit1, ...money1]
+const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓ 🃏 🎲`), ...fruit1, ...money1]
 const drugs = [...emojis(`🎄 🍄 ❄️ 😵‍💫`), ...booze]
 const party = [...emojis(`🎉 🕺 💃 🎊 🥳 🎈`), ...booze]
 const energy = emojis(`💫 🔥 🚀 ⚡️ ✨`)
@@ -68,18 +68,17 @@ const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞
 const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2, ...miscFood]
 const usa = emojis(`🏎 🇺🇸 ★`)
 const relaxing = emojis(`🏖 🏄‍♂️`)
-const funny = emojis(`🐄 🤡 💩 😂`)
+const funny = emojis(`🐄 🤡 💩 😂 🤣`)
 const symbols = emojis(`★ → ←`)
 const justArrows = emojis(`→ ← → ← → ←`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
 const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎 🤳`)]
-// const maybe = emojis(`🔟 📛`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
-const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood]
-const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🤣`)
+const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
+const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -215,7 +214,8 @@ const fomo = [
   `THIS WON'T LAST`,
   'TIME IS RUNNING OUT',
   'ACT NOW',
-  `DON'T WAIT`
+  `DON'T WAIT`,
+  `THIS IS WHAT YOU'VE BEEN WAITING FOR`
 ]
 const hotText = [
   'TOO HOT TO HANDLE',
@@ -327,7 +327,8 @@ const affirmations = [
   'CHAMPION',
   'GREATEST OF ALL TIME',
   'SPECIAL',
-  `YOU'RE #1`
+  `YOU'RE #1`,
+  'THIS ROCKS'
 ]
 
 
@@ -371,6 +372,7 @@ const emojiTextRelationships = {
     'STARSTRUCK': emojis(`🤩`),
     'BLAST OFF': emojis(`🚀`),
     'ROFL': emojis(`🤣`),
+    'THIS ROCKS': emojis(`🎸`),
   },
   group: [
     [luckyText, lucky],
@@ -421,8 +423,9 @@ function sampleContent() {
   return [mainContent, replacementContent]
 }
 
+const contentSample = { text: [], emojis: [] }
+
 function chooseContent() {
-  const contentSample = { text: [], emojis: [] }
   const content = { text: [], emojis: [] }
 
   const sections = chance(
@@ -482,7 +485,6 @@ function chooseContent() {
 
 const _content = chooseContent()
 const content = [..._content.text, ..._content.emojis]
-
 
 
 

@@ -18,7 +18,7 @@ YOU DON'T WANT TO MISS THIS! THINGS ARE MOVING FAST, SO ACT NOW BEFORE IT'S TOO 
 🚀 💸 🚀 💸 🚀 💸 🚀 💸 🚀 💸 🚀 💸 🚀
 
 
-_WARNING: Dopamine Machines contain visual effects that may induce seizures in individuals with photosensitive epilepsy. In addition, frequent use of Dopamine Machines may lead to anxiety, psychosis, manic behavior, addiction, aggression, insomnia, and restlessness in otherwise healthy individuals. Dopamine Machines may also inhibit the production of future dopamine for some users, which may lead to depression, apathy, and/or anhedonia._
+_WARNING: Dopamine Machines contain visual effects that may induce seizures in individuals with photosensitive epilepsy. In addition, frequent use of Dopamine Machines may lead to anxiety, psychosis, manic behavior, addiction, aggression, insomnia, and restlessness in otherwise healthy individuals. Dopamine Machines may also inhibit future dopamine transmission for some users, which may lead to depression, apathy, and/or anhedonia._
 
 _None of the emojis or text contained within a Dopamine Machine constitutes financial advice. If you suspect you may have a gambling problem, please contact the National Problem Gambling Helpline Network at 1-800-522-4700. By using Dopamine Machines, you acknowledge and accept these potential risks and agree that the Artist shall not be held liable for any damages or injuries resulting from such use._
 

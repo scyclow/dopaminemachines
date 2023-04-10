@@ -4,7 +4,10 @@ const TWEMOJI_PRESENT = !!window.twemoji
 
 
 const $ = (elem, prop, value) => elem.style[prop] = value
-$.cls = (elem, selector) => Array.from(elem.getElementsByClassName(selector))
+$.cls = (elem, selector) => Array.isArray(elem)
+  ? elem.map(e => $.cls(e, selector)).flat()
+  : Array.from(elem.getElementsByClassName(selector))
+
 
 
 $.render = (e, children) => {
@@ -42,8 +45,6 @@ $.div = $.create('div')
 $.span = $.create('span')
 $.main = $.create('main')
 $.section = $.create('section')
-
-
 
 
 const $html = document.getElementsByTagName('html')[0]

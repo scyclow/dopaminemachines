@@ -80,14 +80,13 @@ const JACK_DUMP_SCALE = [1, 1, 1.25, 1.3333, 1.5, 1.3333, 1.25, 1]
 const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START_TIME - delay)) / duration
 
 
-function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1) {
+function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
   let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
   let freqMin = freqAdj * freqMax / 5
   if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
 
   const freqDiff = freqMax - freqMin
   const introTimeMs = 250
-  gainAdj = min(1, gainAdj)
 
   const halfLoopsAtTime = time => 2 * getLoopsAtTime(time, delay, duration)
   const getDirectionAtTime = time => int(halfLoopsAtTime(time)) % 2 ? 1 : -1
@@ -107,7 +106,7 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
   const brokenDivisor = prb(0.1) ? rnd(1000, 2500) : 2000
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource(waveType)
-    smoothGain(MAX_VOLUME * gainAdj)
+    smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + introTimeMs), 0.25)
 
     let stopInterval
@@ -136,10 +135,10 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
 
 
 function shrinkCharSound({delay, duration}) {
-  const start1 = sirenSound({duration, delay}, 0.75, 'sine')
-  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 0.75, 'sine', 0.5)
-  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 0.75, 'sine', 0.5)
-  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 0.75, 'sine', 0.5)
+  const start1 = sirenSound({duration, delay}, 'sine')
+  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 'sine', 0.5)
+  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 'sine', 0.5)
+  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 'sine', 0.5)
 
   return () => {
     const src1 = createSource('sine')
@@ -581,9 +580,11 @@ const triggerUtterance = () => {
   } else {
     txt = utteranceQueue.splice(ix, 1)[0] || ''
   }
+  txt.volume = 0.88
 
   if (OVERDRIVE) {
     txt.pitch = sample(MAJOR_SCALE)
+    txt.volume = 1.1
   } else if (ANHEDONIC) {
     txt.pitch = 1
   } else {
