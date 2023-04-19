@@ -51,13 +51,39 @@ function times(t, fn) {
   return out
 }
 
-function setRunInterval(fn, interval) {
-  let i = 0
-  fn(i)
-  return setInterval(() => {
-    i++
+const allRunningIntervals = []
+function setRunInterval(fn, ms, i=0) {
+  const run = () => {
     fn(i)
-  }, interval)
+    i++
+  }
+
+  run()
+
+  let isCleared = false
+
+  let interval = setInterval(run, ms)
+
+  const newInterval = (ms) => {
+    if (isCleared) return
+    clearInterval(interval)
+    interval = setInterval(run, ms)
+  }
+
+  const stopInterval = () => {
+    if (!isCleared) {
+      clearInterval(interval)
+      isCleared = true
+    }
+  }
+
+  allRunningIntervals.push({
+    newInterval,
+    stopInterval,
+    originalMs: ms
+  })
+
+  return stopInterval
 }
 
 function getLocalStorage(key) {
@@ -72,8 +98,9 @@ let IS_HEADLESS = false
 let TWEMOJI_PRESENT = false
 const $ = (elem, prop, value) => {}
 
-$.cls = (elem, selector) => Array.from(elem.getElementsByClassName(selector))
-
+$.cls = (elem, selector) => Array.isArray(elem)
+  ? elem.map(e => $.cls(e, selector)).flat()
+  : Array.from(elem.getElementsByClassName(selector))
 
 
 $.render = (e, children) => {
@@ -170,6 +197,7 @@ $.create = elType => (children, attrs={}) => {
   // return e
 }
 
+$.a = $.create('a')
 $.div = $.create('div')
 $.span = $.create('span')
 $.main = $.create('main')
@@ -217,9 +245,10 @@ function setMetadata(title) {
 
 const cols = 60
 const rows = 48
+const EDITION_SIZE = 777
 
 
-let LAST_PAUSED, OVERDRIVE
+let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
 let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
 let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   IS_HEADLESS
@@ -276,7 +305,10 @@ const marqueeAnimationRate = chance(
   [5, 1],
 )
 
-const showEmojis = prb(0.5)
+const tokenId = Number(tokenData.tokenId) % 1000000
+const is69 = tokenId === 69
+const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
+const showEmojis = is69 || prb(0.5)
 
 const pairedEmojiPrb = chance(
   [2, 0],
@@ -351,9 +383,10 @@ const shadowType = chance(
 )
 
 
+const defaultShadowLightness = prb(0.75) ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
-  const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, 20)
+  const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
 
   const adjustedCoord = polyfillShadow ? 0.0125 : 0.025
   return (
@@ -567,7 +600,7 @@ const colorBlinkPrb = chance(
 )
 
 
-
+const fullHueRotation = prb(0.02)
 const invertAll = prb(0.02)
 css(`
   * {
@@ -580,6 +613,12 @@ css(`
   body, body::backdrop {
     background: ${bgColor};
     margin: 0;
+    ${fullHueRotation ? 'animation: HueRotation 10s linear infinite;' : ''}
+  }
+
+  @keyframes HueRotation {
+    0% { filter: hue-rotate(0deg) }
+    0% { filter: hue-rotate(360deg) }
   }
 
   .viewerMode {
@@ -621,11 +660,42 @@ css(`
   .overdrive .animatingComponent {
     animation-duration: 250ms !important;
   }
+  .overdrive .sectionContainer {
+    animation-duration: 750ms !important;
+  }
+  .overdrive .charContent {
+    animation-duration: 205ms !important;
+  }
 
   .overdrive {
     filter: contrast(300%) saturate(300%);
   }
 
+  .anhedonic {
+    background: #555;
+    filter: blur(0.08vw) saturate(0.15);
+  }
+  .anhedonic .marquee * {
+    animation-duration: 800s !important;
+  }
+  .anhedonic *::before {
+    animation-duration: 3s !important;
+  }
+  .anhedonic .bgAnimation {
+    animation-duration: 12s !important;
+  }
+  .anhedonic .animatingComponent {
+    animation-duration: 16s !important;
+  }
+  .anhedonic .sectionContainer {
+    animation-duration: 32s !important;
+  }
+  .anhedonic .charContent {
+    animation-duration: 2505ms !important;
+  }
+  .invertAll {
+    filter: invert(1);
+  }
 `)
 
 const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
@@ -635,6 +705,7 @@ const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
 let START_TIME = Date.now()
 const MAX_VOLUME = 0.04
 
+const allSources = []
 function createSource(waveType = 'square') {
   const AudioContext = window.AudioContext || window.webkitAudioContext
   const ctx = new AudioContext()
@@ -648,7 +719,7 @@ function createSource(waveType = 'square') {
   panner.connect(ctx.destination)
 
   gain.gain.value = 0
-  source.type = waveType
+  source.type = ANHEDONIC ? 'sine' : waveType
   source.frequency.value = 3000
   source.start()
 
@@ -677,8 +748,27 @@ function createSource(waveType = 'square') {
     )
   }
 
+  const src = { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
 
-  return { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner };
+  allSources.push(src)
+
+  return src
+}
+
+function sourcesToAnhedonicMode() {
+  allSources.forEach(src => {
+    if (src.gain.gain.value > 0) {
+      src.source.type = 'sine'
+    }
+  })
+}
+
+function sourcesToNormalMode() {
+  allSources.forEach(src => {
+    if (src.gain.gain.value > 0) {
+      src.source.type = src.originalSrcType
+    }
+  })
 }
 
 const BASE_FREQ = rnd(250, 500)
@@ -690,14 +780,13 @@ const JACK_DUMP_SCALE = [1, 1, 1.25, 1.3333, 1.5, 1.3333, 1.25, 1]
 const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START_TIME - delay)) / duration
 
 
-function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1) {
+function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
   let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
   let freqMin = freqAdj * freqMax / 5
   if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
 
   const freqDiff = freqMax - freqMin
   const introTimeMs = 250
-  gainAdj = min(1, gainAdj)
 
   const halfLoopsAtTime = time => 2 * getLoopsAtTime(time, delay, duration)
   const getDirectionAtTime = time => int(halfLoopsAtTime(time)) % 2 ? 1 : -1
@@ -717,15 +806,16 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
   const brokenDivisor = prb(0.1) ? rnd(1000, 2500) : 2000
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource(waveType)
-    smoothGain(MAX_VOLUME * gainAdj)
+    smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + introTimeMs), 0.25)
 
+    let stopInterval
     setTimeout(() => {
       const timeUntilNextHalfLoop = (1 - halfLoopsAtTime(Date.now() + extraDelay) % 1) * duration/2
       smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalfLoop), timeUntilNextHalfLoop/1000)
 
       setTimeout(() => {
-        setRunInterval((i) => {
+        stopInterval = setRunInterval((i) => {
           smoothFreq(
             getFreqAtTime(Date.now() + duration/2 + extraDelay),
             i % 2 ? duration/2000 : duration/brokenDivisor
@@ -735,17 +825,20 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
     }, introTimeMs)
 
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
   }
 
 }
 
 
 function shrinkCharSound({delay, duration}) {
-  const start1 = sirenSound({duration, delay}, 0.75, 'sine')
-  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 0.75, 'sine', 0.5)
-  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 0.75, 'sine', 0.5)
-  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 0.75, 'sine', 0.5)
+  const start1 = sirenSound({duration, delay}, 'sine')
+  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 'sine', 0.5)
+  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 'sine', 0.5)
+  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 'sine', 0.5)
 
   return () => {
     const src1 = createSource('sine')
@@ -796,12 +889,13 @@ function flipSound({ delay, duration }) {
     smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + introTimeMs), introTimeMs/1000)
 
+    let stopInterval
     setTimeout(() => {
       const timeUntilNextThird = ((1 - (getLoopsAtTime(Date.now() + extraDelay, delay, duration) % 1)) % 0.3333) * duration
       smoothFreq(getFreqAtTime(Date.now() + timeUntilNextThird + extraDelay), timeUntilNextThird/1000)
 
       setTimeout(() => {
-        setRunInterval((i) => {
+        stopInterval = setRunInterval((i) => {
           smoothFreq(getFreqAtTime(Date.now() + duration/3 + extraDelay), duration/3000)
         }, duration/24)
 
@@ -809,7 +903,10 @@ function flipSound({ delay, duration }) {
 
     }, introTimeMs)
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
   }
 
 }
@@ -835,7 +932,7 @@ function smoothSound({delay, duration}) {
     }
 
     src1.smoothFreq(f1)
-    const int = setRunInterval(() => {
+    const stopInterval = setRunInterval(() => {
       if (PAUSED || OVERDRIVE) {
         src2.smoothFreq(f1, 0.00001, true)
       }
@@ -849,19 +946,15 @@ function smoothSound({delay, duration}) {
 
 
     return () => {
-      clearInterval(int)
+      if (stopInterval) stopInterval()
       src1.smoothGain(0, 0.25)
       src2.smoothGain(0, 0.25)
     }
   }
 }
 
-function ticktockSound(args) {
+function ticktockSound({duration, delay}) {
   const baseFreq = BASE_FREQ * sample([1, 0.5, 2])
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
   const interval = duration / 2
 
   const upScale = sample(MAJOR_SCALE)
@@ -871,9 +964,9 @@ function ticktockSound(args) {
     const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
 
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/2)) * duration
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
         smoothGain(MAX_VOLUME, 0.03)
         smoothGain2(MAX_VOLUME, 0.03)
 
@@ -882,7 +975,6 @@ function ticktockSound(args) {
           smoothFreq2(baseFreq+5, 0.1)
 
         } else {
-
           smoothFreq(baseFreq*upScale, 0.1)
           smoothFreq2(baseFreq * upScale+5, 0.1)
         }
@@ -897,13 +989,13 @@ function ticktockSound(args) {
     return () => {
       smoothGain(0, 0.03)
       smoothGain2(0, 0.03)
-      clearInterval(int)
+      if (stopInterval) stopInterval()
     }
   }
 }
 
 
-function blinkCharSound(args, seq=null) {
+function blinkCharSound({duration, delay}, seq=null) {
   const sequence = sample([0, 1, 2])
   const jackDumpScale = prb(0.1)
   const isSmooth = !jackDumpScale && prb(0.5)
@@ -917,9 +1009,7 @@ function blinkCharSound(args, seq=null) {
   )
 
   const ttMult = sample([2, 1.5, 1.3333])
-
-  const duration = args.duration ? map(args.duration, 750, 5000, 500, 2000) : rnd(500, 2000)
-
+  duration = duration ? map(duration, 750, 5000, 500, 2000) : rnd(500, 2000)
   const interval = duration / 8
 
   return (extraDelay=0) => {
@@ -931,7 +1021,7 @@ function blinkCharSound(args, seq=null) {
       if (twoTone) src2.smoothGain(MAX_VOLUME)
     }
 
-    let int = setRunInterval((i) => {
+    const stopInterval = setRunInterval((i) => {
       if (!isSmooth) {
         smoothGain(MAX_VOLUME)
         if (twoTone) src2.smoothGain(MAX_VOLUME)
@@ -960,19 +1050,14 @@ function blinkCharSound(args, seq=null) {
     return () => {
       smoothGain(0, 0.04)
       if (twoTone) src2.smoothGain(0, 0.04)
-      clearInterval(int)
+      if (stopInterval) stopInterval()
     }
   }
 }
 
-function hexSound(args) {
+function hexSound({duration, delay}) {
   const baseFreq = BASE_FREQ
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
   const interval = duration / 6
-
   const scale = sample(MAJOR_SCALE)
 
   return (extraDelay=0) => {
@@ -980,9 +1065,9 @@ function hexSound(args) {
     const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/6)) * duration
 
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
 
         smoothFreq(baseFreq * 8)
         smoothFreq2(baseFreq * 8)
@@ -1000,7 +1085,7 @@ function hexSound(args) {
     }, timeUntilNextNote)
 
     return () => {
-      clearInterval(int)
+      if (stopInterval) stopInterval()
       smoothGain(0, 0.03)
       smoothGain2(0, 0.03)
     }
@@ -1010,26 +1095,20 @@ function hexSound(args) {
 
 
 
-function climbSound(args) {
-  const baseFreq = sample(HEXATONIC_SCALE) * BASE_FREQ * 1.5
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
-
+function climbSound({ duration, delay }) {
+  const baseFreq = sample(HEXATONIC_SCALE) * BASE_FREQ
   const interval = duration / 4
-
 
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource()
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/4)) * duration
 
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
         smoothGain(MAX_VOLUME)
 
-        const ix = args.duration === 1 ? i%4 : 3 - i%4
+        const ix = duration === 1 ? i%4 : 3 - i%4
         smoothFreq(baseFreq * HEXATONIC_SCALE[ix])
 
         setTimeout(() => smoothGain(0, 0.05), interval*0.75 + extraDelay)
@@ -1038,7 +1117,7 @@ function climbSound(args) {
     }, timeUntilNextNote + extraDelay*4)
 
     return () => {
-      clearInterval(int)
+      if (stopInterval) stopInterval()
       smoothGain(0, 0.04)
     }
   }
@@ -1071,8 +1150,9 @@ function zoomSound({duration, delay, switchChannels}) {
     smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + timeUntilNextQuarter), timeUntilNextQuarter/1000)
 
+    let stopInterval
     setTimeout(() => {
-      setRunInterval(i => {
+      stopInterval = setRunInterval(i => {
         smoothFreq(getFreqAtTime(Date.now() + duration/4 + extraDelay), duration/4000)
       }, duration/4)
 
@@ -1087,7 +1167,10 @@ function zoomSound({duration, delay, switchChannels}) {
       }
     }, timeUntilNextQuarter)
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
   }
 }
 
@@ -1121,8 +1204,9 @@ function carSirenSound({duration, delay}) {
     src2.smoothFreq(getFreqAtTime(Date.now())*1.3333, timeUntilNextHalf/1000)
     src3.smoothFreq(getFreqAtTime(Date.now())*1.6666, timeUntilNextHalf/1000)
 
+    let stopInterval
     setTimeout(() => {
-      setRunInterval(i => {
+      stopInterval = setRunInterval(i => {
         src1.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i), introTimeMs/1000)
         src2.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i)*1.3333, introTimeMs/1000)
         src3.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i)*1.6666, introTimeMs/1000)
@@ -1133,6 +1217,7 @@ function carSirenSound({duration, delay}) {
       src1.smoothGain(0, 0.04)
       src2.smoothGain(0, 0.04)
       src3.smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
     }
   }
 }
@@ -1195,8 +1280,24 @@ const triggerUtterance = () => {
   } else {
     txt = utteranceQueue.splice(ix, 1)[0] || ''
   }
+  txt.volume = 0.88
 
-  if (OVERDRIVE) txt.pitch = sample(MAJOR_SCALE)
+  if (OVERDRIVE) {
+    txt.pitch = sample(MAJOR_SCALE)
+    txt.volume = 1.1
+  } else if (ANHEDONIC) {
+    txt.pitch = 1
+  } else {
+    txt.pitch = 1
+  }
+
+  if (ANHEDONIC) {
+    txt.rate = 0.7
+  } else if (OVERDRIVE) {
+    txt.rate = 1.2
+  } else {
+    txt.rate = 1
+  }
 
   window.speechSynthesis.speak(txt)
 
@@ -1585,10 +1686,15 @@ function marquee(children, args={}) {
 
   const handleAnimation = (child, i, j) => {
     const isEmoji = elementIsEmoji(child)
+    const spacing = ((isEmoji || j > 0) ? 0.1 : 0.5) + 'em'
     return msgAnimation(
       $.span(
         child,
-        { style: `margin-left: ${(isEmoji || j > 0) ? 0.2 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;` }
+        { style: `
+          margin-left: ${spacing};
+          margin-right: ${spacing};
+          font-size: ${isEmoji ? 0.9 : 1}em;
+        ` }
       ).cloneNode(true),
       { delay: i*100 + j/2}
     )
@@ -1895,6 +2001,12 @@ const emoji = e => wordExt(e, 'emoji content')
 
 const emojis = es => es.split(' ').map(emoji)
 
+const link = txt => $.a(txt, {
+  target: '_blank',
+  href: './' + (projectId * 1000000 + rndint(EDITION_SIZE)),
+  class: 'text content'
+})
+
 const elementIsEmoji = elem => {
   if (Array.isArray(elem)) return false
   return (
@@ -1922,28 +2034,27 @@ const fruit2 = emojis(`🍆 🍑 🌶`)
 const miscFood = emojis(`🥕 🍌 🥜 🧀 🍪`)
 const booze = emojis(`🍻 🍾 🥂`)
 const hot = emojis(`🌶 🔥 ❤️‍🔥 🌋`)
-const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓`), ...fruit1, ...money1]
+const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓ 🃏 🎲`), ...fruit1, ...money1]
 const drugs = [...emojis(`🎄 🍄 ❄️ 😵‍💫`), ...booze]
 const party = [...emojis(`🎉 🕺 💃 🎊 🥳 🎈`), ...booze]
 const energy = emojis(`💫 🔥 🚀 ⚡️ ✨`)
 const explosion1 = emojis(`💥 🤯 🧨 💣`)
 const explosionFull = [...explosion1, ...energy, ...emojis(`🌋 ☄️`)]
-const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹`), ...fruit2]
+const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹 🥵`), ...fruit2]
 const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2, ...miscFood]
 const usa = emojis(`🏎 🇺🇸 ★`)
-const relaxing = emojis(`🏖 🏄‍♂️`)
-const funny = emojis(`🐄 🤡 💩 😂`)
+const funny = emojis(`🐄 🤡 💩 😂 🤣`)
 const symbols = emojis(`★ → ←`)
-const justArrows = emojis(`→ ← → ← → ←`)
+const justArrows = emojis(`→ ← → ← → ← 🔴`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎 🤳`)]
-// const maybe = emojis(`🔟 📛`)
+const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
+const circusEmojis = emojis(`🎪 🦍 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
-const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood]
-const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐`)
+const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
+const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -1958,7 +2069,6 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   sexy,
   yummy,
   usa,
-  relaxing,
   funny,
   symbols,
   lunar,
@@ -1968,7 +2078,8 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   excitingMisc,
   commonEmojis,
   justArrows,
-  hedonicTreadmill
+  hedonicTreadmill,
+  circusEmojis
   // misc,
   // maybe,
 ]
@@ -1987,7 +2098,7 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
 
 
 /*
-  boost, infinite, joy, certified, alert
+  infinite, joy, certified, alert
 
    */
 
@@ -2029,7 +2140,11 @@ const dealsText = [
   'EXTRA LARGE',
   'NEW AND IMPROVED',
   `RUN, DON'T WALK`,
-  'SENSATIONAL'
+  'SENSATIONAL',
+  'AMAZING SAVINGS',
+  'MORE',
+  'MORE IS MORE',
+  'I WANT MORE',
 ]
 
 const cashText = [
@@ -2063,7 +2178,10 @@ const sexyText = [
   'DELICIOUS',
   'FORBIDDEN PLEASURES',
   'JUICY',
-  'PASSION'
+  'PASSION',
+  'ECSTACY',
+  'LUST',
+  'DESIRE',
 ]
 
 const fomo = [
@@ -2079,7 +2197,8 @@ const fomo = [
   `THIS WON'T LAST`,
   'TIME IS RUNNING OUT',
   'ACT NOW',
-  `DON'T WAIT`
+  `DON'T WAIT`,
+  `THIS IS WHAT YOU'VE BEEN WAITING FOR`
 ]
 const hotText = [
   'TOO HOT TO HANDLE',
@@ -2088,8 +2207,7 @@ const hotText = [
   'SIZZLING',
   'HOTTEST ART AROUND',
   'ELECTRIC',
-  'ECSTACY',
-  'LUST',
+  'WHITE HOT',
 ]
 
 const excitingText = [
@@ -2103,6 +2221,7 @@ const excitingText = [
   'INCREDIBLE',
   'EXCITING',
   'ECSTATIC',
+  'EUPHORIC',
   'THRILLING',
   'HOLY MOLY',
   'WHAT A THRILL',
@@ -2116,11 +2235,12 @@ const excitingText = [
   'INSTANT GRATIFICATION',
   'MIND = BLOWN',
   'DOPAMINE RUSH',
+  'DOPAMINE BOOST',
   'STARSTRUCK',
   'BLAST OFF',
   'ALL OR NOTHING',
   `LET'S GO`,
-  'FRENZY'
+  'FRENZY',
 ]
 
 const funText = [
@@ -2165,7 +2285,6 @@ const disclaimer = [
   'DANGER ZONE',
   'DO YOUR OWN RESEARCH',
   'DYOR',
-  'ALL NATURAL',
   'SAFE + SECURE',
   `BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`,
   `PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`,
@@ -2190,7 +2309,18 @@ const affirmations = [
   'CHAMPION',
   'GREATEST OF ALL TIME',
   'SPECIAL',
-  `YOU'RE #1`
+  `YOU'RE #1`,
+  'THIS ROCKS',
+  'ALL NATURAL',
+]
+
+const wwwText = [
+  'WORLD WIDE WEB',
+  'ENGAGEMENT',
+  'CLICK HERE',
+  'VIRAL',
+  'LIKE',
+  'TRENDING',
 ]
 
 
@@ -2206,6 +2336,7 @@ const textLists = [
   crypto,
   disclaimer,
   affirmations,
+  wwwText,
 ]
 
 
@@ -2233,6 +2364,8 @@ const emojiTextRelationships = {
     'GREATEST OF ALL TIME': emojis(`🐐`),
     'STARSTRUCK': emojis(`🤩`),
     'BLAST OFF': emojis(`🚀`),
+    'ROFL': emojis(`🤣`),
+    'THIS ROCKS': emojis(`🎸`),
   },
   group: [
     [luckyText, lucky],
@@ -2244,6 +2377,7 @@ const emojiTextRelationships = {
     [funText, funny],
     [crypto, [...moneyFull, ...energy]],
     [disclaimer, emojis(`⚠️ 🚨`)],
+    [wwwText, computer]
   ]
 }
 
@@ -2279,12 +2413,12 @@ function sampleContent() {
     replacementContent = mainContent
   }
 
-
   return [mainContent, replacementContent]
 }
 
+const contentSample = { text: [], emojis: [] }
+
 function chooseContent() {
-  const contentSample = { text: [], emojis: [] }
   const content = { text: [], emojis: [] }
 
   const sections = chance(
@@ -2309,8 +2443,8 @@ function chooseContent() {
     contentSample.emojis = emojiLists
   }
 
-  if (Number(tokenData.tokenId) % 1000000 === 69) {
-    contentSample.text = hotText
+  if (is69) {
+    contentSample.text = sexyText
     contentSample.emojis = sexy
   }
 
@@ -2337,14 +2471,19 @@ function chooseContent() {
     content.emojis = contentSample.emojis
   }
 
-  content.text = content.text.flat().map(c => word(c + (prb(0.25) ? '!' : '')))
+  const wordify = c => c === 'CLICK HERE'
+    ? link(c)
+    : word(c + (prb(0.25) ? '!' : ''))
+
+  content.text = content.text
+    .flat()
+    .map(wordify)
   content.emojis = showEmojis ? content.emojis.flat() : []
   return content
 }
 
 const _content = chooseContent()
 const content = [..._content.text, ..._content.emojis]
-
 
 
 
@@ -2475,6 +2614,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
       `
     }
   )
+  const childContent = getContent(child)
 
   let isFullScreen, notifyingTimeout
   const canFullScreen = prb(0.01)
@@ -2492,10 +2632,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
         isFullScreen = !isFullScreen
       }
 
-      const childContent = getContent(child)
       console.log('CLICK:',childContent)
 
-      if (triggersPopup) window.alert(childContent)
       if (triggersNotifications) {
         const setNotification = () => {
           notifyingTimeout = setTimeout(() => {
@@ -2513,7 +2651,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
       if (navigator.clipboard) navigator.clipboard.writeText(childContent)
 
-      if (childContent.includes('FAST CASH')) window.open('http://fastcashmoneyplus.biz', '_blank')
+      if (childContent.includes('FAST CASH')) setTimeout(() => window.open('http://fastcashmoneyplus.biz', '_blank'))
+      if (triggersPopup) setTimeout(() => window.alert(childContent))
     } catch (e) {}
   }
 
@@ -2530,8 +2669,9 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 
-
+let marqueeCount = 0
 function marqueeContainter(rSpan, cSpan) {
+  marqueeCount++
   let [child, replacementChild] = sampleContent()
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
 
@@ -2640,7 +2780,7 @@ function marqueeContainter(rSpan, cSpan) {
       }
 
     } else {
-      if (talkingActive && !ignoreStop) {
+      if (talkingActive) {
         stopUtter(child.innerHTML)
         talkingActive = false
       } else {
@@ -2681,9 +2821,11 @@ function getFontSize(txt, rSpan, cSpan) {
 
 
 
+const allPlayingSounds = []
 
-
+let animationCount = 0
 function animationContainer(rSpan, cSpan) {
+  animationCount++
   let [child, replacementChild] = sampleContent()
   if (textOverride) child = replacementChild
 
@@ -2789,7 +2931,7 @@ function animationContainer(rSpan, cSpan) {
       stopSound = []
       return
     }
-    // createSound(animation, primaryAnimationParams)
+
     const sound1 = playSound()
     if (!ignoreStop) stopSound.push(sound1)
 
@@ -2827,10 +2969,12 @@ function getEmojiGrid(rSpan, cSpan) {
   ]
 }
 
+let gridCount = 0
 function animationGridContainer(rSpan, cSpan) {
   const child = sample(_content.emojis)
 
   if (!child) return animationContainer(rSpan, cSpan)
+  gridCount++
 
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
@@ -3082,13 +3226,16 @@ function flexSection(rowCells, colCells) {
 
 
     marquees.push(
-      aspectRatio < 1.25 && aspectRatio > 0.8 ?
-        prb(0.25) ? animationContainer(rSpan, cSpan) : animationGridContainer(rSpan, cSpan) :
+      aspectRatio < 1.25 && aspectRatio > 0.8
 
-      aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
-        animationContainer(rSpan, cSpan) :
+      ? prb(0.75) && _content.emojis.length
+        ? animationGridContainer(rSpan, cSpan)
+        : animationContainer(rSpan, cSpan)
 
-      marqueeContainter(rSpan, cSpan)
+      : aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
+        animationContainer(rSpan, cSpan)
+
+      : marqueeContainter(rSpan, cSpan)
     )
 
     times(rSpan, r =>
@@ -3172,7 +3319,50 @@ function flexSection(rowCells, colCells) {
   features['Inverted'] = invertAll
   features['Random Calls'] = rCount
   features['Sections'] = sectionCount
+  features['Marquees'] = marqueeCount
+  features['Animations'] = animationCount
+  features['Grids'] = gridCount
   features['Font Weight'] = fontWeight
+  features['Full Hue Rotation'] = fullHueRotation
+
+
+  function classifySample(s) {
+    if ([moneyFull, cashText, crypto].includes(s)) return 'Get Rich Quick'
+    if ([lucky, luckyText].includes(s)) return 'Lucky'
+    if ([sexy, sexyText].includes(s)) return 'Sexy'
+    if ([yummy].includes(s)) return 'Yummy'
+    if ([lunar].includes(s)) return 'Lunar'
+    if ([computer, wwwText].includes(s)) return 'World Wide Web'
+    if ([excitingText, excitingMisc, explosionFull, explosion1, energy, loud, usa].includes(s)) return 'Exciting'
+    if ([drugs, party, booze].includes(s)) return 'Party Time'
+    if ([funny, funText, colorful, circusEmojis].includes(s)) return 'Fun'
+    if ([hot, hotText].includes(s)) return 'Hot Stuff'
+    if ([disclaimer].includes(s)) return 'Not Financial Advice'
+    if ([affirmations].includes(s)) return 'Positivity'
+    if ([dealsText].includes(s)) return 'Deals'
+    if ([fomo].includes(s)) return 'FOMO'
+    if ([hedonicTreadmill, symbols, justArrows].includes(s)) return 'Hedonic Treadmill'
+    return 'Filler'
+  }
+
+  const usedContentSamples = [...contentSample.text, ...contentSample.emojis].map(classifySample)
+
+  features['Content Sample: Exciting'] = usedContentSamples.includes('Exciting')
+  features['Content Sample: Lucky'] = usedContentSamples.includes('Lucky')
+  features['Content Sample: Sexy'] = usedContentSamples.includes('Sexy')
+  features['Content Sample: Party Time'] = usedContentSamples.includes('Party Time')
+  features['Content Sample: Get Rich Quick'] = usedContentSamples.includes('Get Rich Quick')
+  features['Content Sample: Yummy'] = usedContentSamples.includes('Yummy')
+  features['Content Sample: Fun'] = usedContentSamples.includes('Fun')
+  features['Content Sample: Hot Stuff'] = usedContentSamples.includes('Hot Stuff')
+  features['Content Sample: Not Financial Advice'] = usedContentSamples.includes('Not Financial Advice')
+  features['Content Sample: World Wide Web'] = usedContentSamples.includes('World Wide Web')
+  features['Content Sample: Deals'] = usedContentSamples.includes('Deals')
+  features['Content Sample: FOMO'] = usedContentSamples.includes('FOMO')
+  features['Content Sample: Lunar'] = usedContentSamples.includes('Lunar')
+  features['Content Sample: Positivity'] = usedContentSamples.includes('Positivity')
+  features['Content Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
+  features['Content Sample: Filler'] = usedContentSamples.includes('Filler')
 
   return features
 }

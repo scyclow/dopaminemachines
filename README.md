@@ -22,6 +22,8 @@ _WARNING: Dopamine Machines contain visual effects that may induce seizures in i
 
 _None of the emojis or text contained within a Dopamine Machine constitutes financial advice. If you suspect you may have a gambling problem, please contact the National Problem Gambling Helpline Network at 1-800-522-4700. By using Dopamine Machines, you acknowledge and accept these potential risks and agree that the Artist shall not be held liable for any damages or injuries resulting from such use._
 
+_All Dopamine Machiness consist soley of HTML, CSS, and JavaScript, and are presented "AS IS" without any warrenty whatsoever, either express or implied, relating to the appearance or functionality of any output in obsolete or future browsers._
+
 Controls:
 [D] ⬇️ Download HTML
 [O] ⚠️ Overdrive
@@ -29,7 +31,7 @@ Controls:
 [A] 😐 Anti-Seizure Mode
 [M] 🐁 Mouse Hide
 [I] ↔️ Invert
-[N] 🙈 No Distraction Mode
-[E] 🙃 Emoji Polyfill Toggle
+[N] 🙈 No Distraction Mode (live-view only)
+[E] 🙃 Emoji Polyfill Toggle (with global twemoji injection)
 
 CONTENT OVERRIDE: `` `${url}?text=${encodeURI('FIRST OVERRIDE,SECOND OVERRIDE')}&emojis=${encodeURI('🦞,🐙')}`` `

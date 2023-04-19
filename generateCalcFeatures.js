@@ -56,22 +56,21 @@ const calcFeatures = `
 
 
   function classifySample(s) {
-    if ([moneyFull, cashText].includes(s)) return 'Money'
-    if ([crypto].includes(s)) return 'Crypto'
+    if ([moneyFull, cashText, crypto].includes(s)) return 'Get Rich Quick'
     if ([lucky, luckyText].includes(s)) return 'Lucky'
     if ([sexy, sexyText].includes(s)) return 'Sexy'
     if ([yummy].includes(s)) return 'Yummy'
     if ([lunar].includes(s)) return 'Lunar'
-    if ([computer].includes(s)) return 'World Wide Web'
+    if ([computer, wwwText].includes(s)) return 'World Wide Web'
     if ([excitingText, excitingMisc, explosionFull, explosion1, energy, loud, usa].includes(s)) return 'Exciting'
     if ([drugs, party, booze].includes(s)) return 'Party Time'
-    if ([funny, funText, colorful].includes(s)) return 'Fun'
+    if ([funny, funText, colorful, circusEmojis].includes(s)) return 'Fun'
     if ([hot, hotText].includes(s)) return 'Hot Stuff'
     if ([disclaimer].includes(s)) return 'Not Financial Advice'
-    if ([affirmations, relaxing].includes(s)) return 'Positivity'
+    if ([affirmations].includes(s)) return 'Positivity'
     if ([dealsText].includes(s)) return 'Deals'
     if ([fomo].includes(s)) return 'FOMO'
-    if ([hedonicTreadmill, symbols, justArrows].includes(s)) return 'FOMO'
+    if ([hedonicTreadmill, symbols, justArrows].includes(s)) return 'Hedonic Treadmill'
     return 'Filler'
   }
 
@@ -81,8 +80,7 @@ const calcFeatures = `
   features['Content Sample: Lucky'] = usedContentSamples.includes('Lucky')
   features['Content Sample: Sexy'] = usedContentSamples.includes('Sexy')
   features['Content Sample: Party Time'] = usedContentSamples.includes('Party Time')
-  features['Content Sample: Money'] = usedContentSamples.includes('Money')
-  features['Content Sample: Crypto'] = usedContentSamples.includes('Crypto')
+  features['Content Sample: Get Rich Quick'] = usedContentSamples.includes('Get Rich Quick')
   features['Content Sample: Yummy'] = usedContentSamples.includes('Yummy')
   features['Content Sample: Fun'] = usedContentSamples.includes('Fun')
   features['Content Sample: Hot Stuff'] = usedContentSamples.includes('Hot Stuff')

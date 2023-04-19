@@ -1,6 +1,7 @@
 
 const cols = 60
 const rows = 48
+const EDITION_SIZE = 777
 
 
 let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
@@ -60,7 +61,9 @@ const marqueeAnimationRate = chance(
   [5, 1],
 )
 
-const is69 = Number(tokenData.tokenId) % 1000000 === 69
+const tokenId = Number(tokenData.tokenId) % 1000000
+const is69 = tokenId === 69
+const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
 const showEmojis = is69 || prb(0.5)
 
 const pairedEmojiPrb = chance(
@@ -123,8 +126,7 @@ const possibleHues = chance(
   [1, [0, 75]],
 )
 
-const shadowType = 2
-chance(
+const shadowType = chance(
   [4, 1],
   [4, 2],
   [bw ? 1 : 4, 3],

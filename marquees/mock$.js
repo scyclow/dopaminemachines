@@ -3,8 +3,9 @@ let IS_HEADLESS = false
 let TWEMOJI_PRESENT = false
 const $ = (elem, prop, value) => {}
 
-$.cls = (elem, selector) => Array.from(elem.getElementsByClassName(selector))
-
+$.cls = (elem, selector) => Array.isArray(elem)
+  ? elem.map(e => $.cls(e, selector)).flat()
+  : Array.from(elem.getElementsByClassName(selector))
 
 
 $.render = (e, children) => {
@@ -101,6 +102,7 @@ $.create = elType => (children, attrs={}) => {
   // return e
 }
 
+$.a = $.create('a')
 $.div = $.create('div')
 $.span = $.create('span')
 $.main = $.create('main')

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "split": "split -b 23k marquees/min.js minified"
+    "split": "split -b 20k marquees/min.js minified"
   },
   "repository": {
     "type": "git",

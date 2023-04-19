@@ -477,10 +477,10 @@ function getEmojiGrid(rSpan, cSpan) {
 
 let gridCount = 0
 function animationGridContainer(rSpan, cSpan) {
-  gridCount++
   const child = sample(_content.emojis)
 
   if (!child) return animationContainer(rSpan, cSpan)
+  gridCount++
 
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
@@ -732,13 +732,16 @@ function flexSection(rowCells, colCells) {
 
 
     marquees.push(
-      aspectRatio < 1.25 && aspectRatio > 0.8 ?
-        prb(0.25) ? animationContainer(rSpan, cSpan) : animationGridContainer(rSpan, cSpan) :
+      aspectRatio < 1.25 && aspectRatio > 0.8
 
-      aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
-        animationContainer(rSpan, cSpan) :
+      ? prb(0.75) && _content.emojis.length
+        ? animationGridContainer(rSpan, cSpan)
+        : animationContainer(rSpan, cSpan)
 
-      marqueeContainter(rSpan, cSpan)
+      : aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
+        animationContainer(rSpan, cSpan)
+
+      : marqueeContainter(rSpan, cSpan)
     )
 
     times(rSpan, r =>

@@ -19,6 +19,10 @@
         "type": "boolean"
     },
     {
+        "name": "Full Hue Rotation",
+        "type": "boolean"
+    },
+    {
         "name": "Layout Type",
         "type": "enum",
         "options": [
@@ -104,6 +108,95 @@
         "step": 1
     },
     {
+        "name": "Marquees",
+        "type": "number",
+        "max": 200,
+        "min": 1,
+        "step": 1
+    },
+    {
+        "name": "Animations",
+        "type": "number",
+        "max": 200,
+        "min": 1,
+        "step": 1
+    },
+    {
+        "name": "Grids",
+        "type": "number",
+        "max": 200,
+        "min": 1,
+        "step": 1
+    },
+    {
+        "name": "Content Sample: Exciting",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Lucky",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Sexy",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Party Time",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Get Rich Quick",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Crypto",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Yummy",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Fun",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Hot Stuff",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Not Financial Advice",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: World Wide Web",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Deals",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: FOMO",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Lunar",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Positivity",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Hedonic Treadmill",
+        "type": "boolean"
+    },
+    {
+        "name": "Content Sample: Filler",
+        "type": "boolean"
+    },
+    {
         "name": "$$$$",
         "type": "boolean"
     },
@@ -141,6 +234,10 @@
     },
     {
         "name": "AMAZING",
+        "type": "boolean"
+    },
+    {
+        "name": "AMAZING SAVINGS",
         "type": "boolean"
     },
     {
@@ -196,6 +293,10 @@
         "type": "boolean"
     },
     {
+        "name": "CLICK HERE",
+        "type": "boolean"
+    },
+    {
         "name": "CONGRATULATIONS",
         "type": "boolean"
     },
@@ -236,6 +337,10 @@
         "type": "boolean"
     },
     {
+        "name": "DESIRE",
+        "type": "boolean"
+    },
+    {
         "name": "DIAMOND HANDS",
         "type": "boolean"
     },
@@ -249,6 +354,10 @@
     },
     {
         "name": "DON'T WAIT",
+        "type": "boolean"
+    },
+    {
+        "name": "DOPAMINE BOOST",
         "type": "boolean"
     },
     {
@@ -281,6 +390,14 @@
     },
     {
         "name": "ELECTRIC",
+        "type": "boolean"
+    },
+    {
+        "name": "ENGAGEMENT",
+        "type": "boolean"
+    },
+    {
+        "name": "EUPHORIC",
         "type": "boolean"
     },
     {
@@ -412,6 +529,10 @@
         "type": "boolean"
     },
     {
+        "name": "I WANT MORE",
+        "type": "boolean"
+    },
+    {
         "name": "INCREDIBLE",
         "type": "boolean"
     },
@@ -433,6 +554,10 @@
     },
     {
         "name": "LET'S GO",
+        "type": "boolean"
+    },
+    {
+        "name": "LIKE",
         "type": "boolean"
     },
     {
@@ -481,6 +606,14 @@
     },
     {
         "name": "MIND = BLOWN",
+        "type": "boolean"
+    },
+    {
+        "name": "MORE",
+        "type": "boolean"
+    },
+    {
+        "name": "MORE IS MORE",
         "type": "boolean"
     },
     {
@@ -640,7 +773,15 @@
         "type": "boolean"
     },
     {
+        "name": "THIS IS WHAT YOU'VE BEEN WAITING FOR",
+        "type": "boolean"
+    },
+    {
         "name": "THIS NFT SELLS ITSELF",
+        "type": "boolean"
+    },
+    {
+        "name": "THIS ROCKS",
         "type": "boolean"
     },
     {
@@ -672,6 +813,10 @@
         "type": "boolean"
     },
     {
+        "name": "TRENDING",
+        "type": "boolean"
+    },
+    {
         "name": "TRILLIONAIRE",
         "type": "boolean"
     },
@@ -681,6 +826,10 @@
     },
     {
         "name": "UNLIMITED",
+        "type": "boolean"
+    },
+    {
+        "name": "VIRAL",
         "type": "boolean"
     },
     {
@@ -708,6 +857,10 @@
         "type": "boolean"
     },
     {
+        "name": "WHITE HOT",
+        "type": "boolean"
+    },
+    {
         "name": "WHOPPING GAINS",
         "type": "boolean"
     },
@@ -717,6 +870,10 @@
     },
     {
         "name": "WINNER",
+        "type": "boolean"
+    },
+    {
+        "name": "WORLD WIDE WEB",
         "type": "boolean"
     },
     {
@@ -817,6 +974,10 @@
     },
     {
         "name": "❤️‍🔥",
+        "type": "boolean"
+    },
+    {
+        "name": "🃏",
         "type": "boolean"
     },
     {
@@ -960,7 +1121,19 @@
         "type": "boolean"
     },
     {
+        "name": "🎪",
+        "type": "boolean"
+    },
+    {
         "name": "🎰",
+        "type": "boolean"
+    },
+    {
+        "name": "🎲",
+        "type": "boolean"
+    },
+    {
+        "name": "🎸",
         "type": "boolean"
     },
     {
@@ -972,11 +1145,15 @@
         "type": "boolean"
     },
     {
+        "name": "🏋️",
+        "type": "boolean"
+    },
+    {
         "name": "🏎",
         "type": "boolean"
     },
     {
-        "name": "🏖",
+        "name": "🏎️",
         "type": "boolean"
     },
     {
@@ -1013,6 +1190,10 @@
     },
     {
         "name": "👩‍💻",
+        "type": "boolean"
+    },
+    {
+        "name": "👯‍♀️",
         "type": "boolean"
     },
     {
@@ -1112,6 +1293,10 @@
         "type": "boolean"
     },
     {
+        "name": "🔴",
+        "type": "boolean"
+    },
+    {
         "name": "🕸",
         "type": "boolean"
     },
@@ -1156,6 +1341,10 @@
         "type": "boolean"
     },
     {
+        "name": "🤣",
+        "type": "boolean"
+    },
+    {
         "name": "🤩",
         "type": "boolean"
     },
@@ -1169,6 +1358,10 @@
     },
     {
         "name": "🤳",
+        "type": "boolean"
+    },
+    {
+        "name": "🤹",
         "type": "boolean"
     },
     {
@@ -1192,7 +1385,19 @@
         "type": "boolean"
     },
     {
+        "name": "🥵",
+        "type": "boolean"
+    },
+    {
+        "name": "🦁",
+        "type": "boolean"
+    },
+    {
         "name": "🦄",
+        "type": "boolean"
+    },
+    {
+        "name": "🦍",
         "type": "boolean"
     },
     {

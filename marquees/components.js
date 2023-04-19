@@ -355,10 +355,15 @@ function marquee(children, args={}) {
 
   const handleAnimation = (child, i, j) => {
     const isEmoji = elementIsEmoji(child)
+    const spacing = ((isEmoji || j > 0) ? 0.1 : 0.5) + 'em'
     return msgAnimation(
       $.span(
         child,
-        { style: `margin-left: ${(isEmoji || j > 0) ? 0.2 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;` }
+        { style: `
+          margin-left: ${spacing};
+          margin-right: ${spacing};
+          font-size: ${isEmoji ? 0.9 : 1}em;
+        ` }
       ).cloneNode(true),
       { delay: i*100 + j/2}
     )

@@ -31,6 +31,12 @@ const emoji = e => wordExt(e, 'emoji content')
 
 const emojis = es => es.split(' ').map(emoji)
 
+const link = txt => $.a(txt, {
+  target: '_blank',
+  href: './' + (projectId * 1000000 + rndint(EDITION_SIZE)),
+  class: 'text content'
+})
+
 const elementIsEmoji = elem => {
   if (Array.isArray(elem)) return false
   return (
@@ -67,15 +73,15 @@ const explosionFull = [...explosion1, ...energy, ...emojis(`🌋 ☄️`)]
 const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹 🥵`), ...fruit2]
 const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2, ...miscFood]
 const usa = emojis(`🏎 🇺🇸 ★`)
-const relaxing = emojis(`🏖 🏄‍♂️`)
 const funny = emojis(`🐄 🤡 💩 😂 🤣`)
 const symbols = emojis(`★ → ←`)
-const justArrows = emojis(`→ ← → ← → ←`)
+const justArrows = emojis(`→ ← → ← → ← 🔴`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎 🤳`)]
+const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
+const circusEmojis = emojis(`🎪 🦍 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
 const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸`)
@@ -93,7 +99,6 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   sexy,
   yummy,
   usa,
-  relaxing,
   funny,
   symbols,
   lunar,
@@ -103,7 +108,8 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   excitingMisc,
   commonEmojis,
   justArrows,
-  hedonicTreadmill
+  hedonicTreadmill,
+  circusEmojis
   // misc,
   // maybe,
 ]
@@ -122,7 +128,7 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
 
 
 /*
-  boost, infinite, joy, certified, alert
+  infinite, joy, certified, alert
 
    */
 
@@ -164,7 +170,11 @@ const dealsText = [
   'EXTRA LARGE',
   'NEW AND IMPROVED',
   `RUN, DON'T WALK`,
-  'SENSATIONAL'
+  'SENSATIONAL',
+  'AMAZING SAVINGS',
+  'MORE',
+  'MORE IS MORE',
+  'I WANT MORE',
 ]
 
 const cashText = [
@@ -198,7 +208,10 @@ const sexyText = [
   'DELICIOUS',
   'FORBIDDEN PLEASURES',
   'JUICY',
-  'PASSION'
+  'PASSION',
+  'ECSTACY',
+  'LUST',
+  'DESIRE',
 ]
 
 const fomo = [
@@ -224,8 +237,7 @@ const hotText = [
   'SIZZLING',
   'HOTTEST ART AROUND',
   'ELECTRIC',
-  'ECSTACY',
-  'LUST',
+  'WHITE HOT',
 ]
 
 const excitingText = [
@@ -253,6 +265,7 @@ const excitingText = [
   'INSTANT GRATIFICATION',
   'MIND = BLOWN',
   'DOPAMINE RUSH',
+  'DOPAMINE BOOST',
   'STARSTRUCK',
   'BLAST OFF',
   'ALL OR NOTHING',
@@ -302,7 +315,6 @@ const disclaimer = [
   'DANGER ZONE',
   'DO YOUR OWN RESEARCH',
   'DYOR',
-  'ALL NATURAL',
   'SAFE + SECURE',
   `BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`,
   `PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`,
@@ -328,7 +340,17 @@ const affirmations = [
   'GREATEST OF ALL TIME',
   'SPECIAL',
   `YOU'RE #1`,
-  'THIS ROCKS'
+  'THIS ROCKS',
+  'ALL NATURAL',
+]
+
+const wwwText = [
+  'WORLD WIDE WEB',
+  'ENGAGEMENT',
+  'CLICK HERE',
+  'VIRAL',
+  'LIKE',
+  'TRENDING',
 ]
 
 
@@ -344,6 +366,7 @@ const textLists = [
   crypto,
   disclaimer,
   affirmations,
+  wwwText,
 ]
 
 
@@ -384,6 +407,7 @@ const emojiTextRelationships = {
     [funText, funny],
     [crypto, [...moneyFull, ...energy]],
     [disclaimer, emojis(`⚠️ 🚨`)],
+    [wwwText, computer]
   ]
 }
 
@@ -418,7 +442,6 @@ function sampleContent() {
   if (!textOverride) {
     replacementContent = mainContent
   }
-
 
   return [mainContent, replacementContent]
 }
@@ -478,7 +501,13 @@ function chooseContent() {
     content.emojis = contentSample.emojis
   }
 
-  content.text = content.text.flat().map(c => word(c + (prb(0.25) ? '!' : '')))
+  const wordify = c => c === 'CLICK HERE'
+    ? link(c)
+    : word(c + (prb(0.25) ? '!' : ''))
+
+  content.text = content.text
+    .flat()
+    .map(wordify)
   content.emojis = showEmojis ? content.emojis.flat() : []
   return content
 }
