@@ -563,18 +563,18 @@ const bgAnimationFn =
   shrinkingSpinningBgMultiple
 
 
+let hasBgAnimation
 function withBgAnimation(child, rSpan, cSpan) {
   const aspectRatio = cSpan / rSpan
   const invalidAspectRatio = aspectRatio > 3 || aspectRatio < 0.3333
 
   if (bgAnimationFn !== colorShiftingBgMultiple && invalidAspectRatio) return child
 
+  const hasAnimation = prb(bgAnimationPrb)
+  if (hasAnimation) hasBgAnimation = true
+
   return [
-    ...(
-      prb(bgAnimationPrb)
-        ? bgAnimationFn(rSpan, cSpan)
-        : []
-    ),
+    ...(hasAnimation ? bgAnimationFn(rSpan, cSpan) : []),
     child
   ]
 

@@ -281,9 +281,11 @@ const starburstBgPrb = chance(
   [0.5, 1],
 )
 
-
+let hasStarburst
 function starburstBg(h, rSpan, cSpan) {
   if (!prb(starburstBgPrb) || rSpan < 4) return
+
+  hasStarburst = true
 
   const aspectRatio = cSpan/rSpan
 

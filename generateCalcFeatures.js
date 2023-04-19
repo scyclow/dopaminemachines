@@ -37,14 +37,37 @@ const calcFeatures = `
 
   usedContent.forEach(c => features[c] = true)
 
-  features['Layout Type'] = layoutStyle
-  features['Background Type'] = hideBg ? 'none' : bgType
-  features['Shadow Type'] = shadowType
+
+
+  features['Layout Style'] =
+    layoutStyle === 1 ? 'Anything Goes' :
+    layoutStyle === 4 ? 'Less is More' :
+    layoutStyle === 2 || layoutStyle === 9 ? 'More is More' :
+    layoutStyle === 3 || layoutStyle === 5 ? 'Horizontal' :
+    layoutStyle === 6 ? 'Vertical' :
+    'Grid'
+
+  features['Background Style'] =
+    hideBg ? 'Empty' :
+    bgType === 0 || bw ? 'Solid' :
+    bgType === 1 ? 'Empty' :
+    bgType === 2 ? 'Gradient' :
+    'ZigZag'
+
+
+
+  features['Shadow Style'] = shadowType
   features['Font'] = fontFamily
   features['Borders'] = showBorder ? borderStyle : 'none'
   features['Askew'] = freeFloating
-  features['Hues'] = randomHue ? '???' : possibleHues.length
-  if (possibleHues[1] < 1) features['Hues'] = 1
+
+  features['Base Hues'] =
+    bw ? 0 :
+    possibleHues[1] < 1 ? 1 :
+    randomHue ? '???' :
+    possibleHues.length
+
+
   features['Inverted'] = invertAll
   features['Random Calls'] = rCount
   features['Sections'] = sectionCount
@@ -53,6 +76,9 @@ const calcFeatures = `
   features['Grids'] = gridCount
   features['Font Weight'] = fontWeight
   features['Full Hue Rotation'] = fullHueRotation
+  features['Has BG Animation'] = !!hasBgAnimation
+  features['Has Starburst'] = !!hasStarburst
+  features['Has Section Animation'] = !!sectionAnimation
 
 
   function classifySample(s) {
@@ -74,7 +100,7 @@ const calcFeatures = `
     return 'Filler'
   }
 
-  const usedContentSamples = [...contentSample.text, ...contentSample.emojis].map(classifySample)
+  const usedContentSamples = [...contentSample.text, ...(showEmojis ? contentSample.emojis : [])].map(classifySample)
 
   features['Content Sample: Exciting'] = usedContentSamples.includes('Exciting')
   features['Content Sample: Lucky'] = usedContentSamples.includes('Lucky')
