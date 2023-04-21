@@ -1,5 +1,48 @@
 [
     {
+        "name": "Layout Style",
+        "type": "enum",
+        "options": [
+            "Anything Goes",
+            "Less is More",
+            "More is More",
+            "Horizontal",
+            "Vertical",
+            "Grid"
+        ]
+    },
+    {
+        "name": "Background Style",
+        "type": "enum",
+        "options": [
+            "Empty",
+            "Solid",
+            "Gradient",
+            "ZigZag"
+        ]
+    },
+    {
+        "name": "Font",
+        "type": "enum",
+        "options": [
+            "serif",
+            "cursive",
+            "monospace",
+            "sans-serif"
+        ]
+    },
+    {
+        "name": "Base Hues",
+        "type": "enum",
+        "options": [
+            "???",
+            0,
+            1,
+            2,
+            3
+        ]
+    },
+    {
         "name": "Borders",
         "type": "enum",
         "options": [
@@ -11,19 +54,7 @@
         ]
     },
     {
-        "name": "Askew",
-        "type": "boolean"
-    },
-    {
-        "name": "Inverted",
-        "type": "boolean"
-    },
-    {
-        "name": "Full Hue Rotation",
-        "type": "boolean"
-    },
-    {
-        "name": "Layout Type",
+        "name": "Shadow Style",
         "type": "enum",
         "options": [
             1,
@@ -35,43 +66,6 @@
             7,
             8,
             9
-        ]
-    },
-    {
-        "name": "Background Type",
-        "type": "enum",
-        "options": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5
-        ]
-    },
-    {
-        "name": "Shadow Type",
-        "type": "enum",
-        "options": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-        ]
-    },
-    {
-        "name": "Hues",
-        "type": "enum",
-        "options": [
-            "???",
-            1,
-            2,
-            3
         ]
     },
     {
@@ -84,14 +78,28 @@
         ]
     },
     {
-        "name": "Font",
-        "type": "enum",
-        "options": [
-            "serif",
-            "cursive",
-            "monospace",
-            "sans-serif"
-        ]
+        "name": "Has BG Animation",
+        "type": "boolean"
+    },
+    {
+        "name": "Has Starburst",
+        "type": "boolean"
+    },
+    {
+        "name": "Has Section Animation",
+        "type": "boolean"
+    },
+    {
+        "name": "Askew",
+        "type": "boolean"
+    },
+    {
+        "name": "Inverted",
+        "type": "boolean"
+    },
+    {
+        "name": "Full Hue Rotation",
+        "type": "boolean"
     },
     {
         "name": "Random Calls",
@@ -146,10 +154,6 @@
     },
     {
         "name": "Content Sample: Get Rich Quick",
-        "type": "boolean"
-    },
-    {
-        "name": "Content Sample: Crypto",
         "type": "boolean"
     },
     {
@@ -381,7 +385,11 @@
         "type": "boolean"
     },
     {
-        "name": "ECSTACY",
+        "name": "EASY AS 1 2 3",
+        "type": "boolean"
+    },
+    {
+        "name": "ECSTASY",
         "type": "boolean"
     },
     {
@@ -753,6 +761,10 @@
         "type": "boolean"
     },
     {
+        "name": "SURPRISE",
+        "type": "boolean"
+    },
+    {
         "name": "SWEET",
         "type": "boolean"
     },
@@ -862,6 +874,10 @@
     },
     {
         "name": "WHOPPING GAINS",
+        "type": "boolean"
+    },
+    {
+        "name": "WILD",
         "type": "boolean"
     },
     {
@@ -1394,10 +1410,6 @@
     },
     {
         "name": "🦄",
-        "type": "boolean"
-    },
-    {
-        "name": "🦍",
         "type": "boolean"
     },
     {

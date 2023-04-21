@@ -90,8 +90,8 @@ const threeDRotations = lineRotation.isMild && prb(0.3333)
 
 const gradientBg = prb(0.2)
 const bgType = chance(
-  [57, 0],
-  [10, 1], // empty
+  [55, 0],
+  [12, 1], // empty
   [20, 2], // gradiant
   [8, 3], // zigzag small
   [3, 4], // zigzag large
@@ -139,7 +139,7 @@ const shadowType = chance(
 )
 
 
-const defaultShadowLightness = prb(0.75) ? 20 : 50
+const defaultShadowLightness = prb(0.75) || possibleHues[1] === 75 ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
@@ -174,7 +174,7 @@ const getShadowText = (h, polyfillShadow) => {
       [`0 0 0.05em ${shadowColor}`] :
 
     shadowType === 6 ?
-      times(4, s => `${s/20 - 0.1}em ${s/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
+      times(4, s => `${(s+1)/20 - 0.1}em ${(s+1)/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
 
     shadowType === 7 ?
       [
@@ -302,7 +302,7 @@ function starburstBg(h, rSpan, cSpan) {
   const deg = chance(
     [2, 2],
     [10, 5],
-    // [8, 10],
+    [8, 10],
   )
 
 
@@ -367,13 +367,11 @@ css(`
     font-family: ${fontFamily};
     font-weight: ${fontWeight};
   }
-
   body, body::backdrop {
     background: ${bgColor};
     margin: 0;
     ${fullHueRotation ? 'animation: HueRotation 10s linear infinite;' : ''}
   }
-
   @keyframes HueRotation {
     0% { filter: hue-rotate(0deg) }
     0% { filter: hue-rotate(360deg) }

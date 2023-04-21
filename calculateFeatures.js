@@ -334,8 +334,8 @@ const threeDRotations = lineRotation.isMild && prb(0.3333)
 
 const gradientBg = prb(0.2)
 const bgType = chance(
-  [57, 0],
-  [10, 1], // empty
+  [55, 0],
+  [12, 1], // empty
   [20, 2], // gradiant
   [8, 3], // zigzag small
   [3, 4], // zigzag large
@@ -383,7 +383,7 @@ const shadowType = chance(
 )
 
 
-const defaultShadowLightness = prb(0.75) ? 20 : 50
+const defaultShadowLightness = prb(0.75) || possibleHues[1] === 75 ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
@@ -418,7 +418,7 @@ const getShadowText = (h, polyfillShadow) => {
       [`0 0 0.05em ${shadowColor}`] :
 
     shadowType === 6 ?
-      times(4, s => `${s/20 - 0.1}em ${s/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
+      times(4, s => `${(s+1)/20 - 0.1}em ${(s+1)/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
 
     shadowType === 7 ?
       [
@@ -525,9 +525,11 @@ const starburstBgPrb = chance(
   [0.5, 1],
 )
 
-
+let hasStarburst
 function starburstBg(h, rSpan, cSpan) {
   if (!prb(starburstBgPrb) || rSpan < 4) return
+
+  hasStarburst = true
 
   const aspectRatio = cSpan/rSpan
 
@@ -544,7 +546,7 @@ function starburstBg(h, rSpan, cSpan) {
   const deg = chance(
     [2, 2],
     [10, 5],
-    // [8, 10],
+    [8, 10],
   )
 
 
@@ -609,13 +611,11 @@ css(`
     font-family: ${fontFamily};
     font-weight: ${fontWeight};
   }
-
   body, body::backdrop {
     background: ${bgColor};
     margin: 0;
     ${fullHueRotation ? 'animation: HueRotation 10s linear infinite;' : ''}
   }
-
   @keyframes HueRotation {
     0% { filter: hue-rotate(0deg) }
     0% { filter: hue-rotate(360deg) }
@@ -1366,9 +1366,6 @@ css(`
     50% {transform: translate3d(0%, -10%, 0)}
   }
 
-
-
-
   .updownLong {
     height: 100%;
     animation: UpDownLong 1000ms ease-in-out infinite;
@@ -1443,7 +1440,6 @@ css(`
             background-color: ${getColorFromHue(h)};
           }
         `
-
     })()}
   }
 
@@ -1594,6 +1590,27 @@ css(`
   }
 
 
+  .flamingHot {
+    animation: FlamingHot 2000ms ease-in-out infinite;
+  }
+
+  @keyframes FlamingHot {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    75% {
+      opacity: 0;
+      transform: scale(1.15) translateY(-0.2em);
+    }
+    80% {
+      opacity: 0;
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 
   .leftRight {
     width: 100%;
@@ -1639,8 +1656,6 @@ css(`
     0% {transform: scale(105%) rotate(0deg)}
     100% {transform: scale(0%) rotate(45deg)}
   }
-
-
 
   .wave {
     animation: Wave 4500ms linear infinite;
@@ -1810,15 +1825,32 @@ const doubleSpin = (grandChild, args={}) => {
   ]
 }
 
+const flamingHotParent = genericAnimatingComponent('flamingHot')
+const flamingHot = (grandChild, args={}) => {
+  return flamingHotParent(grandChild, {
+    ...args,
+    showTrails: true,
+    baseIsPaused: true,
+    delayM: -10
+  })
+}
+
 
 const withTrails = (grandChild, args={}) => {
   const shadows = 5
+  const delayM = args.delayM || 1
   return times(shadows, t => {
     const shadow = grandChild.cloneNode(true)
     if (t < shadows-1) $(shadow, 'position', 'absolute')
     $(shadow, 'opacity', 1/shadows + t/shadows )
-    $(shadow, 'animation-delay', `${-args.delay + args.duration * 0.025 * (shadows-t)}ms`)
     $(shadow, 'text-shadow', `0 0 0.${0.25/shadows * (shadows-t)}em`)
+    if (t === shadows - 1 && args.baseIsPaused) {
+      $(shadow, 'animation-play-state', 'paused')
+      $(shadow, 'animation-delay', `0ms`)
+      $(shadow, 'animation-direction', `normal`)
+    } else {
+      $(shadow, 'animation-delay', `${-args.delay + args.duration * 0.025 * (shadows-t) * delayM}ms`)
+    }
     return shadow
   })
 }
@@ -1894,18 +1926,18 @@ const bgAnimationFn =
   shrinkingSpinningBgMultiple
 
 
+let hasBgAnimation
 function withBgAnimation(child, rSpan, cSpan) {
   const aspectRatio = cSpan / rSpan
   const invalidAspectRatio = aspectRatio > 3 || aspectRatio < 0.3333
 
   if (bgAnimationFn !== colorShiftingBgMultiple && invalidAspectRatio) return child
 
+  const hasAnimation = prb(bgAnimationPrb)
+  if (hasAnimation) hasBgAnimation = true
+
   return [
-    ...(
-      prb(bgAnimationPrb)
-        ? bgAnimationFn(rSpan, cSpan)
-        : []
-    ),
+    ...(hasAnimation ? bgAnimationFn(rSpan, cSpan) : []),
     child
   ]
 
@@ -2051,7 +2083,7 @@ const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
 const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
-const circusEmojis = emojis(`🎪 🦍 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
+const circusEmojis = emojis(`🎪 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
 const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸`)
@@ -2116,6 +2148,7 @@ const luckyText = [
   'DOUBLE DOWN',
   'BINGO',
   'MULTIPLIER',
+  'SURPRISE',
 ]
 
 const dealsText = [
@@ -2179,7 +2212,7 @@ const sexyText = [
   'FORBIDDEN PLEASURES',
   'JUICY',
   'PASSION',
-  'ECSTACY',
+  'ECSTASY',
   'LUST',
   'DESIRE',
 ]
@@ -2241,6 +2274,7 @@ const excitingText = [
   'ALL OR NOTHING',
   `LET'S GO`,
   'FRENZY',
+  'WILD',
 ]
 
 const funText = [
@@ -2312,6 +2346,7 @@ const affirmations = [
   `YOU'RE #1`,
   'THIS ROCKS',
   'ALL NATURAL',
+  'EASY AS 1 2 3'
 ]
 
 const wwwText = [
@@ -2560,7 +2595,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   } else if (animation === climb) {
     fn = climbSound
 
-  } else if (animation === iden) {
+  } else if ([iden, flamingHot].includes(animation)) {
     fn = singleSound
 
   } else return
@@ -2850,6 +2885,7 @@ function animationContainer(rSpan, cSpan) {
     climb,
     blink,
     hexagon,
+    flamingHot,
     iden,
     prb(0.5) && breathe,
     !ignoreCharAnimation && updownChars,
@@ -2908,7 +2944,7 @@ function animationContainer(rSpan, cSpan) {
       style: `
         height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
-        ${getShadow(h, !ignoreCharAnimation)}
+        ${getShadow(txtH, !ignoreCharAnimation)}
         text-align: center;
         display: flex;
         align-items: center;
@@ -3018,7 +3054,7 @@ function animationGridContainer(rSpan, cSpan) {
         justify-items: center;
         grid-template-rows: repeat(${r}, 1fr);
         grid-template-columns: repeat(${c}, 1fr);
-        ${getShadow(h, false)}
+        ${getShadow(txtH, false)}
       `,
     }
   )
@@ -3308,14 +3344,37 @@ function flexSection(rowCells, colCells) {
 
   usedContent.forEach(c => features[c] = true)
 
-  features['Layout Type'] = layoutStyle
-  features['Background Type'] = hideBg ? 'none' : bgType
-  features['Shadow Type'] = shadowType
+
+
+  features['Layout Style'] =
+    layoutStyle === 1 ? 'Anything Goes' :
+    layoutStyle === 4 ? 'Less is More' :
+    layoutStyle === 2 || layoutStyle === 9 ? 'More is More' :
+    layoutStyle === 3 || layoutStyle === 5 ? 'Horizontal' :
+    layoutStyle === 6 ? 'Vertical' :
+    'Grid'
+
+  features['Background Style'] =
+    hideBg ? 'Empty' :
+    bgType === 0 || bw ? 'Solid' :
+    bgType === 1 ? 'Empty' :
+    bgType === 2 ? 'Gradient' :
+    'ZigZag'
+
+
+
+  features['Shadow Style'] = shadowType
   features['Font'] = fontFamily
   features['Borders'] = showBorder ? borderStyle : 'none'
   features['Askew'] = freeFloating
-  features['Hues'] = randomHue ? '???' : possibleHues.length
-  if (possibleHues[1] < 1) features['Hues'] = 1
+
+  features['Base Hues'] =
+    bw ? 0 :
+    possibleHues[1] < 1 ? 1 :
+    randomHue ? '???' :
+    possibleHues.length
+
+
   features['Inverted'] = invertAll
   features['Random Calls'] = rCount
   features['Sections'] = sectionCount
@@ -3324,6 +3383,9 @@ function flexSection(rowCells, colCells) {
   features['Grids'] = gridCount
   features['Font Weight'] = fontWeight
   features['Full Hue Rotation'] = fullHueRotation
+  features['Has BG Animation'] = !!hasBgAnimation
+  features['Has Starburst'] = !!hasStarburst
+  features['Has Section Animation'] = !!sectionAnimation
 
 
   function classifySample(s) {
@@ -3345,7 +3407,7 @@ function flexSection(rowCells, colCells) {
     return 'Filler'
   }
 
-  const usedContentSamples = [...contentSample.text, ...contentSample.emojis].map(classifySample)
+  const usedContentSamples = [...contentSample.text, ...(showEmojis ? contentSample.emojis : [])].map(classifySample)
 
   features['Content Sample: Exciting'] = usedContentSamples.includes('Exciting')
   features['Content Sample: Lucky'] = usedContentSamples.includes('Lucky')

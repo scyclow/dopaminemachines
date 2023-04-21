@@ -146,6 +146,7 @@ const luckyText = [
   'DOUBLE DOWN',
   'BINGO',
   'MULTIPLIER',
+  'SURPRISE',
 ]
 
 const dealsText = [
@@ -209,7 +210,7 @@ const sexyText = [
   'FORBIDDEN PLEASURES',
   'JUICY',
   'PASSION',
-  'ECSTACY',
+  'ECSTASY',
   'LUST',
   'DESIRE',
 ]
@@ -271,6 +272,7 @@ const excitingText = [
   'ALL OR NOTHING',
   `LET'S GO`,
   'FRENZY',
+  'WILD',
 ]
 
 const funText = [
@@ -342,6 +344,7 @@ const affirmations = [
   `YOU'RE #1`,
   'THIS ROCKS',
   'ALL NATURAL',
+  'EASY AS 1 2 3'
 ]
 
 const wwwText = [

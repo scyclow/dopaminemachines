@@ -66,7 +66,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   } else if (animation === climb) {
     fn = climbSound
 
-  } else if (animation === iden) {
+  } else if ([iden, flamingHot].includes(animation)) {
     fn = singleSound
 
   } else return
@@ -356,6 +356,7 @@ function animationContainer(rSpan, cSpan) {
     climb,
     blink,
     hexagon,
+    flamingHot,
     iden,
     prb(0.5) && breathe,
     !ignoreCharAnimation && updownChars,
@@ -414,7 +415,7 @@ function animationContainer(rSpan, cSpan) {
       style: `
         height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
-        ${getShadow(h, !ignoreCharAnimation)}
+        ${getShadow(txtH, !ignoreCharAnimation)}
         text-align: center;
         display: flex;
         align-items: center;
@@ -524,7 +525,7 @@ function animationGridContainer(rSpan, cSpan) {
         justify-items: center;
         grid-template-rows: repeat(${r}, 1fr);
         grid-template-columns: repeat(${c}, 1fr);
-        ${getShadow(h, false)}
+        ${getShadow(txtH, false)}
       `,
     }
   )

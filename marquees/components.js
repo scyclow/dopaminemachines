@@ -35,9 +35,6 @@ css(`
     50% {transform: translate3d(0%, -10%, 0)}
   }
 
-
-
-
   .updownLong {
     height: 100%;
     animation: UpDownLong 1000ms ease-in-out infinite;
@@ -112,7 +109,6 @@ css(`
             background-color: ${getColorFromHue(h)};
           }
         `
-
     })()}
   }
 
@@ -263,6 +259,27 @@ css(`
   }
 
 
+  .flamingHot {
+    animation: FlamingHot 2000ms ease-in-out infinite;
+  }
+
+  @keyframes FlamingHot {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    75% {
+      opacity: 0;
+      transform: scale(1.15) translateY(-0.2em);
+    }
+    80% {
+      opacity: 0;
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 
   .leftRight {
     width: 100%;
@@ -308,8 +325,6 @@ css(`
     0% {transform: scale(105%) rotate(0deg)}
     100% {transform: scale(0%) rotate(45deg)}
   }
-
-
 
   .wave {
     animation: Wave 4500ms linear infinite;
@@ -479,15 +494,32 @@ const doubleSpin = (grandChild, args={}) => {
   ]
 }
 
+const flamingHotParent = genericAnimatingComponent('flamingHot')
+const flamingHot = (grandChild, args={}) => {
+  return flamingHotParent(grandChild, {
+    ...args,
+    showTrails: true,
+    baseIsPaused: true,
+    delayM: -10
+  })
+}
+
 
 const withTrails = (grandChild, args={}) => {
   const shadows = 5
+  const delayM = args.delayM || 1
   return times(shadows, t => {
     const shadow = grandChild.cloneNode(true)
     if (t < shadows-1) $(shadow, 'position', 'absolute')
     $(shadow, 'opacity', 1/shadows + t/shadows )
-    $(shadow, 'animation-delay', `${-args.delay + args.duration * 0.025 * (shadows-t)}ms`)
     $(shadow, 'text-shadow', `0 0 0.${0.25/shadows * (shadows-t)}em`)
+    if (t === shadows - 1 && args.baseIsPaused) {
+      $(shadow, 'animation-play-state', 'paused')
+      $(shadow, 'animation-delay', `0ms`)
+      $(shadow, 'animation-direction', `normal`)
+    } else {
+      $(shadow, 'animation-delay', `${-args.delay + args.duration * 0.025 * (shadows-t) * delayM}ms`)
+    }
     return shadow
   })
 }
