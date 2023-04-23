@@ -84,14 +84,15 @@ function css(style) {
 }
 
 
-function setMetadata(title) {
+function setMetadata(title, color='') {
   $html.translate = false
   $html.lang = 'en'
   $html.className = 'notranslate'
 
   document.title = title
 
-  addMetaTag({ name: 'google', content: 'notranslate'})
+  addMetaTag({ name: 'google', content: 'notranslate' })
+  addMetaTag({ name: 'theme-color', content: color })
 
   console.log(title)
 }

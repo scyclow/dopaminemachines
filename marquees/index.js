@@ -1,19 +1,31 @@
+const projectionPlanes = {}
 
+function generateMain(id) {
+  return $.main(
+    flexSection(rows, cols),
+    {
+      id: `main projection-plane-${id}` ,
+      style: `
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: repeat(${rows}, 1fr);
+        grid-template-columns: repeat(${cols}, 1fr);
+      `
+    }
+  )
+}
 
-const main = $.main(
-  flexSection(rows, cols),
-  {
-    id: 'main',
-    style: `
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: repeat(${rows}, 1fr);
-      grid-template-columns: repeat(${cols}, 1fr);
-    `
-  }
-)
+function renderMain(main) {
+  document.body.innerHTML = ''
+  $.render(document.body, main)
+}
+
+const main = generateMain(1)
+
+projectionPlanes['1'] = main
+projectionPlanes.projectionsRendered = false
 
 const usedContent = Array.from(
   new Set([
@@ -23,9 +35,8 @@ const usedContent = Array.from(
 )
 
 window.onload = () => {
-  document.body.innerHTML = ''
-  setMetadata(usedContent.join(' '))
-  $.render(document.body, main)
+  setMetadata(usedContent.join(' '), bgColor)
+  renderMain(main)
 
   if (PAUSED) {
     LAST_PAUSED = Date.now()
@@ -36,10 +47,9 @@ window.onload = () => {
   let isFullScreen = false
   let isHidingMouse = false
 
-
-  document.onkeydown = (event) => {
+  const keyevent = (key) => {
     // DOWNLOAD HTML
-    if (event.key === 'd') {
+    if (key === 'd') {
       const a = document.createElement('a')
       a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
       a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
@@ -49,7 +59,7 @@ window.onload = () => {
     }
 
     // OVERDRIVE
-    else if (event.key === 'o') {
+    else if (key === 'o') {
       if (OVERDRIVE) {
         document.body.classList.remove('overdrive')
         allRunningIntervals.forEach(i => {
@@ -66,7 +76,7 @@ window.onload = () => {
 
 
     // PAUSE
-    else if (event.key === 'p') {
+    else if (key === 'p') {
       if (PAUSED) {
         START_TIME += Date.now() - LAST_PAUSED
         document.body.classList.remove('pauseAll')
@@ -81,7 +91,7 @@ window.onload = () => {
     }
 
     // ANHEDONIC MODE
-    else if (event.key === 'a') {
+    else if (key === 'a') {
       if (ANHEDONIC) {
         document.body.classList.remove('anhedonic')
         sourcesToNormalMode()
@@ -93,7 +103,7 @@ window.onload = () => {
     }
 
     // MOUSE HIDE
-    else if (event.key === 'm') {
+    else if (key === 'm') {
       if (isHidingMouse) {
         document.exitPointerLock()
         document.body.classList.remove('viewerMode')
@@ -104,7 +114,7 @@ window.onload = () => {
       isHidingMouse = !isHidingMouse
     }
 
-    else if (event.key === 'i') {
+    else if (key === 'i') {
       if (INVERT_ALL) {
         document.body.classList.remove('invertAll')
       } else {
@@ -115,7 +125,7 @@ window.onload = () => {
     }
 
     // NO DISTRACTION MODE
-    else if (event.key === 'n') {
+    else if (key === 'n') {
       if (isFullScreen) document.exitFullscreen()
       else document.body.requestFullscreen({ navigationUI: 'hide' })
 
@@ -124,7 +134,7 @@ window.onload = () => {
 
 
     // TOGGLE EMOJIS
-    else if (event.key === 'e') {
+    else if (key === 'e') {
       const emojiShadows = $.cls(document, 'emojiShadow')
 
       if (usingEmojiPolyfill) {
@@ -156,13 +166,36 @@ window.onload = () => {
       } catch(e) {}
     }
 
+    else if (['1', '2', '3', '4', '5', '6', '7'].includes(key)) {
+      if (!projectionPlanes.projectionsRendered) {
+        projectionPlanes['2'] = generateMain(2)
+        projectionPlanes['3'] = generateMain(3)
+        projectionPlanes['4'] = generateMain(4)
+        projectionPlanes['5'] = generateMain(5)
+        projectionPlanes['6'] = generateMain(6)
+        projectionPlanes.projectionsRendered = true
+      }
 
+      if (key === '7') {
+        renderMain(projectionPlanes['1'])
+        $.render(document.body, projectionPlanes['2'])
+        $.render(document.body, projectionPlanes['3'])
+        $.render(document.body, projectionPlanes['4'])
+        $.render(document.body, projectionPlanes['5'])
+        $.render(document.body, projectionPlanes['6'])
+      } else {
+        renderMain(projectionPlanes[key])
+      }
+      START_TIME = Date.now()
+    }
 
-
-
-
-
+    else if (key === '0') {
+      renderMain('')
+    }
   }
+  document.onkeydown = e => keyevent(e.key)
+
+  if (queryParams.keys) queryParams.keys.split(',').filter(k => !['d', 'o'].includes(k)).forEach(keyevent)
 
   if (USE_EMOJI_POLYFILL && window.twemoji) {
     twemoji.parse(document.body, {

@@ -493,6 +493,10 @@
         "type": "boolean"
     },
     {
+        "name": "HAPPY",
+        "type": "boolean"
+    },
+    {
         "name": "HIGH OCTANE",
         "type": "boolean"
     },
@@ -694,6 +698,10 @@
     },
     {
         "name": "PURE ENERGY",
+        "type": "boolean"
+    },
+    {
+        "name": "REWARDS",
         "type": "boolean"
     },
     {

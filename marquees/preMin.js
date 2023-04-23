@@ -49,13 +49,39 @@ function times(t, fn) {
   return out
 }
 
-function setRunInterval(fn, interval) {
-  let i = 0
-  fn(i)
-  return setInterval(() => {
-    i++
+const allRunningIntervals = []
+function setRunInterval(fn, ms, i=0) {
+  const run = () => {
     fn(i)
-  }, interval)
+    i++
+  }
+
+  run()
+
+  let isCleared = false
+
+  let interval = setInterval(run, ms)
+
+  const newInterval = (ms) => {
+    if (isCleared) return
+    clearInterval(interval)
+    interval = setInterval(run, ms)
+  }
+
+  const stopInterval = () => {
+    if (!isCleared) {
+      clearInterval(interval)
+      isCleared = true
+    }
+  }
+
+  allRunningIntervals.push({
+    newInterval,
+    stopInterval,
+    originalMs: ms
+  })
+
+  return stopInterval
 }
 
 function getLocalStorage(key) {
@@ -71,6 +97,10 @@ const TWEMOJI_PRESENT = !!window.twemoji
 
 
 const $ = (elem, prop, value) => elem.style[prop] = value
+$.cls = (elem, selector) => Array.isArray(elem)
+  ? elem.map(e => $.cls(e, selector)).flat()
+  : Array.from(elem.getElementsByClassName(selector))
+
 
 
 $.render = (e, children) => {
@@ -104,12 +134,11 @@ $.create = elType => (children, attrs={}) => {
   return e
 }
 
+$.a = $.create('a')
 $.div = $.create('div')
 $.span = $.create('span')
 $.main = $.create('main')
 $.section = $.create('section')
-
-
 
 
 const $html = document.getElementsByTagName('html')[0]
@@ -162,9 +191,10 @@ function setMetadata(title) {
 
 const cols = 60
 const rows = 48
+const EDITION_SIZE = 777
 
 
-let LAST_PAUSED
+let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
 let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
 let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   IS_HEADLESS
@@ -195,13 +225,13 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [62, 1], // anything goes              TODO: maybe make it so there are fewer vertical marquees
-  [4, 2],  // anything goes (micro/large)
-  [7, 3],  // anything goes (lean rows)  TODO: maybe have this instead of 5?
+  [60, 1], // anything goes
+  [6, 2],  // anything goes (micro/large)
+  [7, 3],  // anything goes (lean rows)
   [2, 4],  // macro
-  [8, 5],  // even rows                   TODO: make 16, 24 less likely
+  [8, 5],  // even rows
   [5, 6],  // even cols
-  [5, 7],  // perfect grid                TODO: maybe include some marquees in there
+  [5, 7],  // perfect grid
   [2, 8],  // imperfect grid
   [5, 9],  // anything goes micro, varying size
 )
@@ -209,30 +239,10 @@ const layoutStyle = chance(
 
 const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
-  [9, 0.5],
+  [9, 0.66],
   [9, 0.95],
   [2, 0],
 )
-
-const sectionAnimation = prb(0.95) ? '' : sample([
-    'borderBlink',
-    'blink',
-    'updown',
-    'dance',
-    'growShrink',
-    'spin',
-    'hPivot',
-    'vPivot',
-    'breathe',
-  ])
-
-const sectionAnimationDirection = chance(
-  [1, () => 'normal'],
-  [1, () => 'reverse'],
-  [1, () => prb(0.5) ? 'normal' : 'reverse'],
-)
-
-const sectionAnimationDuration = () => rnd(2, sectionAnimation === 'blink' ? 5 : 17)
 
 
 const marqueeAnimationRate = chance(
@@ -241,10 +251,75 @@ const marqueeAnimationRate = chance(
   [5, 1],
 )
 
+const tokenId = Number(tokenData.tokenId) % 1000000
+const is69 = tokenId === 69
+const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
+const showEmojis = is69 || prb(0.5)
+
+const pairedEmojiPrb = chance(
+  [2, 0],
+  [1, 0.5],
+  [1, 1],
+)
+
+const upsideDownRate = chance(
+  [9, 0],
+  [1, rnd(0.1, 0.3)]
+)
+
+const mildRotation = () => rnd(20)
+mildRotation.isMild = true
+const lineRotation = chance(
+  [92, () => prb(upsideDownRate) ? 180 : 0],
+  [6, mildRotation],
+  [2, () => rnd(20, 180)],
+)
+
+const freeFloating = ![0, 180].includes(lineRotation())
+const threeDRotations = lineRotation.isMild && prb(0.3333)
+
+const gradientBg = prb(0.2)
+const bgType = chance(
+  [55, 0],
+  [12, 1], // empty
+  [20, 2], // gradiant
+  [8, 3], // zigzag small
+  [3, 4], // zigzag large
+  [2, 5], // zigzag med
+)
+
+const bgAnimationPrb = chance(
+  [12, 0],
+  [bgType < 3 && 6, rnd(0.25, 0.5)],
+  [bgType < 3 && 2, 1],
+)
+
+const bw = prb(0.15)
+const sH = rnd(360)
+
+const randomHue = prb(0.02)
+const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
+
+const chooseAltHue = (h) => {
+  const alt = chooseHue()
+  return h === alt ? chooseAltHue(h) : alt
+}
+
+const possibleHues = chance(
+  [bgType === 1 && 2, [0, 0.0001]],
+  [1, [0, 180]],
+  [1, [0, 120, 180]],
+  [1, [0, 180, 240]],
+  [1, [0, 150]],
+  [1, [0, 210]],
+  [1, [0, 120, 240]],
+  [1, [0, 75]],
+)
+
 const shadowType = chance(
   [4, 1],
   [4, 2],
-  [4, 3],
+  [bw ? 1 : 4, 3],
   [4, 4],
   [4, 5],
   [2, 6],
@@ -254,12 +329,10 @@ const shadowType = chance(
 )
 
 
-const showEmojis = prb(0.5)
-
-
+const defaultShadowLightness = prb(0.75) || possibleHues[1] === 75 ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
-  const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, 20)
+  const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
 
   const adjustedCoord = polyfillShadow ? 0.0125 : 0.025
   return (
@@ -291,7 +364,7 @@ const getShadowText = (h, polyfillShadow) => {
       [`0 0 0.05em ${shadowColor}`] :
 
     shadowType === 6 ?
-      times(4, s => `${s/20 - 0.1}em ${s/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
+      times(4, s => `${(s+1)/20 - 0.1}em ${(s+1)/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
 
     shadowType === 7 ?
       [
@@ -311,86 +384,43 @@ const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
   : `text-shadow: ${getTextShadowValue(h)};`
 
 
-
-
-const pairedEmojiPrb = chance(
-  [2, 0],
-  [1, 0.5],
-  [1, 1],
-)
-
-
-const upsideDownRate = chance(
-  [9, 0],
-  [1, rnd(0.1, 0.3)]
-)
-
-const lineRotation = chance(
-  [92, () => prb(upsideDownRate) ? 180 : 0],
-  [6, () => rnd(20)],
-  [2, () => rnd(20, 180)],
-)
-
-const freeFloating = ![0, 180].includes(lineRotation())
-
-const threeDRotations = lineRotation() <= 20 && lineRotation() && prb(0.3333)
-
-
-const gradientBg = prb(0.2)
-
-const bgType = chance(
-  [57, 0],
-  [10, 1], // empty
-  [20, 2], // gradiant
-  [8, 3], // zigzag small
-  [3, 4], // zigzag large
-  [2, 5], // zigzag med
-)
-
-const bgAnimationPrb = chance(
-  [12, 0],
-  [bgType < 3 && 6, rnd(0.25, 0.5)],
-  [bgType < 3 && 2, 1],
-)
-
-const bw = prb(0.15)
-const sH = rnd(360)
-
-const possibleHues = chance(
-  [bgType === 1 && 2, [0, 0.0001]],
-  [1, [0, 180]],
-  [1, [0, 120, 180]],
-  [1, [0, 180, 240]],
-  [1, [0, 150]],
-  [1, [0, 210]],
-  [1, [0, 120, 240]],
-  [1, [0, 75]],
-)
-
-
-const franticVoice = prb(0.1)
-
-
-const randomHue = prb(0.02)
-
-const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
-
-
-const chooseAltHue = (h) => {
-  const alt = chooseHue()
-  return h === alt ? chooseAltHue(h) : alt
-}
-
-
 const hideBg = freeFloating ? prb(0.5) : false
-const showBorder = freeFloating ? prb(0.5) : prb(0.3333)
+const showBorder = prb(0.5)
 
-const borderStyle = chance(
-  [1, () => 'solid'],
-  [1, () => 'dashed'],
-  [1, () => 'dotted'],
-  [1, () => 'double'],
+const bgAnimationType = chance(
+  [3, 0], // colorShiftingBgMultiple
+  [2, 1], // staticBgsMultiple
+  [2, 2], // shrinkingBgSingle
+  [2, 3], // shrinkingBgMultiple
+  [1, 4], // shrinkingSpinningBgMultiple
 )
+
+const increasedottedBorderStyle = bgAnimationPrb && bgAnimationType  === 0
+const borderStyle = chance(
+  [4, 'solid'],
+  [increasedottedBorderStyle ? 5 : 1, 'dashed'],
+  [increasedottedBorderStyle ? 4 : 1, 'dotted'],
+  [1, 'double'],
+)
+
+const sectionAnimation = prb(0.95) ? '' : sample([
+    showBorder && 'borderBlink',
+    'blink',
+    'dance',
+    'growShrink',
+    'spin',
+    'hPivot',
+    'vPivot',
+    'breathe',
+  ].filter(iden))
+
+const sectionAnimationDirection = chance(
+  [1, () => 'normal'],
+  [1, () => 'reverse'],
+  [1, () => prb(0.5) ? 'normal' : 'reverse'],
+)
+
+const sectionAnimationDuration = () => rnd(2, sectionAnimation === 'blink' ? 5 : 17)
 
 
 const gradientHues = chance(
@@ -399,17 +429,7 @@ const gradientHues = chance(
   [1, [60, 300]]
 )
 
-const zigzagBg = (bg1, bg2, size) => `
-    background-color: ${bg1};
-    background-image:
-      linear-gradient(135deg, ${bg2} 25%, transparent 25%),
-      linear-gradient(225deg, ${bg2} 25%, transparent 25%),
-      linear-gradient(45deg, ${bg2} 25%, transparent 25%),
-      linear-gradient(315deg, ${bg2} 25%, ${bg1} 25%);
-    background-position:  ${size/2}em 0, ${size/2}em 0, 0 0, 0 0;
-    background-size: ${size}em ${size}em;
-    background-repeat: repeat;
-  `
+const zigzagBg = (bg1, bg2, size) => ` background-color: ${bg1}; background-image: linear-gradient(135deg, ${bg2} 25%, transparent 25%), linear-gradient(225deg, ${bg2} 25%, transparent 25%), linear-gradient(45deg, ${bg2} 25%, transparent 25%), linear-gradient(315deg, ${bg2} 25%, ${bg1} 25%); background-position:  ${size/2}em 0, ${size/2}em 0, 0 0, 0 0; background-size: ${size}em ${size}em; background-repeat: repeat; `
 
 const gradientMix = sample([
   0,  // linear
@@ -441,9 +461,11 @@ const starburstBgPrb = chance(
   [0.5, 1],
 )
 
-
+let hasStarburst
 function starburstBg(h, rSpan, cSpan) {
   if (!prb(starburstBgPrb) || rSpan < 4) return
+
+  hasStarburst = true
 
   const aspectRatio = cSpan/rSpan
 
@@ -460,7 +482,7 @@ function starburstBg(h, rSpan, cSpan) {
   const deg = chance(
     [2, 2],
     [10, 5],
-    // [8, 10],
+    [8, 10],
   )
 
 
@@ -468,30 +490,7 @@ function starburstBg(h, rSpan, cSpan) {
 
   const size = 128
 
-  css(`
-    .${cssClass}::before {
-      content: "";
-      background: repeating-conic-gradient(${c1} 0deg ${deg}deg,  ${c2} ${deg}deg ${deg*2}deg);
-      position: absolute;
-      width: ${size}00%;
-      height: ${size}00%;
-      top: -${size/2 * 100 - 50}%;
-      left: -${size/2 * 100 - 50}%;
-      z-index: -1;
-      animation: BgRotate${deg} ${rnd(1000, 5000)}ms linear infinite;
-      animation-direction: ${prb(0.5) ? 'normal' : 'reverse'}
-    }
-
-
-    @keyframes BgRotate${deg} {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(${deg*2}deg);
-      }
-    }
-  `)
+  css(` .${cssClass}::before {content: ""; background: repeating-conic-gradient(${c1} 0deg ${deg}deg,  ${c2} ${deg}deg ${deg*2}deg); position: absolute; width: ${size}00%; height: ${size}00%; top: -${size/2 * 100 - 50}%; left: -${size/2 * 100 - 50}%; z-index: -1; animation: BgRotate${deg} ${rnd(1000, 5000)}ms linear infinite; animation-direction: ${prb(0.5) ? 'normal' : 'reverse'} } @keyframes BgRotate${deg} {0% {transform: rotate(0deg); } 100% {transform: rotate(${deg*2}deg); } } `)
 
 
   return cssClass
@@ -516,46 +515,9 @@ const colorBlinkPrb = chance(
 )
 
 
-
+const fullHueRotation = prb(0.02)
 const invertAll = prb(0.02)
-css(`
-  * {
-    margin: 0;
-    padding: 0;
-    font-family: ${fontFamily};
-    font-weight: ${fontWeight};
-  }
-
-  body, body::backdrop {
-    background: ${bgColor};
-    margin: 0;
-  }
-
-  .viewerMode {
-    cursor: none;
-    pointer-events: none;
-  }
-
-  .viewerMode .sectionContainer:hover {
-    filter: invert(${invertAll ? 1 : 0});
-  }
-
-  .pauseAll *, .pauseAll *::before {
-    animation-play-state: paused !important;
-  }
-
-  .fullScreen {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    width: 100vw;
-    z-index: 100;
-  }
-
-`)
+css(` * {margin: 0; padding: 0; font-family: ${fontFamily}; font-weight: ${fontWeight}; } body, body::backdrop {background: ${bgColor}; margin: 0; ${fullHueRotation ? 'animation: HueRotation 10s linear infinite;' : ''} } @keyframes HueRotation {0% { filter: hue-rotate(0deg) } 0% { filter: hue-rotate(360deg) } } .viewerMode {cursor: none; pointer-events: none; } .viewerMode .sectionContainer:hover {filter: invert(${invertAll ? 1 : 0}); } .pauseAll *, .pauseAll *::before {animation-play-state: paused !important; } .fullScreen {position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100vh; width: 100vw; z-index: 100; } .overdrive .marquee * {animation-duration: 10s !important; } .overdrive *::before {animation-duration: 100ms !important; } .overdrive .bgAnimation {animation-duration: 300ms !important; } .overdrive .animatingComponent {animation-duration: 250ms !important; } .overdrive .sectionContainer {animation-duration: 750ms !important; } .overdrive .charContent {animation-duration: 205ms !important; } .overdrive {filter: contrast(300%) saturate(300%); } .anhedonic {background: #555; filter: blur(0.08vw) saturate(0.15); } .anhedonic .marquee * {animation-duration: 800s !important; } .anhedonic *::before {animation-duration: 3s !important; } .anhedonic .bgAnimation {animation-duration: 12s !important; } .anhedonic .animatingComponent {animation-duration: 16s !important; } .anhedonic .sectionContainer {animation-duration: 32s !important; } .anhedonic .charContent {animation-duration: 2505ms !important; } .invertAll {filter: invert(1); } `)
 
 const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
   obj.exponentialRampToValueAtTime(value, ctx.currentTime + timeInSeconds)
@@ -564,6 +526,7 @@ const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
 let START_TIME = Date.now()
 const MAX_VOLUME = 0.04
 
+const allSources = []
 function createSource(waveType = 'square') {
   const AudioContext = window.AudioContext || window.webkitAudioContext
   const ctx = new AudioContext()
@@ -577,12 +540,12 @@ function createSource(waveType = 'square') {
   panner.connect(ctx.destination)
 
   gain.gain.value = 0
-  source.type = waveType
+  source.type = ANHEDONIC ? 'sine' : waveType
   source.frequency.value = 3000
   source.start()
 
-  const smoothFreq = (value, timeInSeconds=0.00001) => {
-    if (PAUSED) return
+  const smoothFreq = (value, timeInSeconds=0.00001, overridePaused=false) => {
+    if (PAUSED && !overridePaused) return
     source.frequency.exponentialRampToValueAtTime(
       value,
       ctx.currentTime + timeInSeconds
@@ -606,8 +569,27 @@ function createSource(waveType = 'square') {
     )
   }
 
+  const src = { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
 
-  return { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner };
+  allSources.push(src)
+
+  return src
+}
+
+function sourcesToAnhedonicMode() {
+  allSources.forEach(src => {
+    if (src.gain.gain.value > 0) {
+      src.source.type = 'sine'
+    }
+  })
+}
+
+function sourcesToNormalMode() {
+  allSources.forEach(src => {
+    if (src.gain.gain.value > 0) {
+      src.source.type = src.originalSrcType
+    }
+  })
 }
 
 const BASE_FREQ = rnd(250, 500)
@@ -616,18 +598,18 @@ const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
 const JACK_DUMP_SCALE = [1, 1, 1.25, 1.3333, 1.5, 1.3333, 1.25, 1]
 
 
-const getLoopsAtTime = (t, delay, duration) => (t - (START_TIME - delay)) / duration
+const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START_TIME - delay)) / duration
 
-function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1) {
+
+function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
   let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
   let freqMin = freqAdj * freqMax / 5
   if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
 
   const freqDiff = freqMax - freqMin
   const introTimeMs = 250
-  gainAdj = min(1, gainAdj)
 
-  const halfLoopsAtTime = time => 2 * (time - START_TIME + delay) / duration
+  const halfLoopsAtTime = time => 2 * getLoopsAtTime(time, delay, duration)
   const getDirectionAtTime = time => int(halfLoopsAtTime(time)) % 2 ? 1 : -1
 
   const getFreqAtTime = time => {
@@ -645,35 +627,39 @@ function sirenSound({ delay, duration }, gainAdj=1, waveType='square', freqAdj=1
   const brokenDivisor = prb(0.1) ? rnd(1000, 2500) : 2000
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource(waveType)
-    smoothGain(MAX_VOLUME * gainAdj)
+    smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + introTimeMs), 0.25)
 
+    let stopInterval
     setTimeout(() => {
       const timeUntilNextHalfLoop = (1 - halfLoopsAtTime(Date.now() + extraDelay) % 1) * duration/2
       smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalfLoop), timeUntilNextHalfLoop/1000)
 
       setTimeout(() => {
-        setRunInterval((i) => {
+        stopInterval = setRunInterval((i) => {
           smoothFreq(
             getFreqAtTime(Date.now() + duration/2 + extraDelay),
             i % 2 ? duration/2000 : duration/brokenDivisor
           )
-        }, duration/2)
+        }, duration/16)
       }, timeUntilNextHalfLoop)
     }, introTimeMs)
 
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
   }
 
 }
 
 
 function shrinkCharSound({delay, duration}) {
-  const start1 = sirenSound({duration, delay}, 0.75, 'sine')
-  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 0.75, 'sine', 0.5)
-  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 0.75, 'sine', 0.5)
-  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 0.75, 'sine', 0.5)
+  const start1 = sirenSound({duration, delay}, 'sine')
+  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 'sine', 0.5)
+  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 'sine', 0.5)
+  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 'sine', 0.5)
 
   return () => {
     const src1 = createSource('sine')
@@ -706,8 +692,6 @@ function flipSound({ delay, duration }) {
   const freqDiff = freqMax - freqMin
   const introTimeMs = 250
 
-  delay = delay
-
   const getFreqAtTime = (t) => {
     const loops = getLoopsAtTime(t, delay, duration)
     const loopProgress = loops % 1
@@ -726,20 +710,24 @@ function flipSound({ delay, duration }) {
     smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + introTimeMs), introTimeMs/1000)
 
+    let stopInterval
     setTimeout(() => {
       const timeUntilNextThird = ((1 - (getLoopsAtTime(Date.now() + extraDelay, delay, duration) % 1)) % 0.3333) * duration
       smoothFreq(getFreqAtTime(Date.now() + timeUntilNextThird + extraDelay), timeUntilNextThird/1000)
 
       setTimeout(() => {
-        setRunInterval((i) => {
+        stopInterval = setRunInterval((i) => {
           smoothFreq(getFreqAtTime(Date.now() + duration/3 + extraDelay), duration/3000)
-        }, duration/3)
+        }, duration/24)
 
       }, timeUntilNextThird)
 
     }, introTimeMs)
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
   }
 
 }
@@ -754,48 +742,52 @@ function smoothSound({delay, duration}) {
     const src1 = createSource()
     const src2 = createSource()
 
+    let f1, f2
     if (isLow) {
-      src1.smoothFreq(BASE_FREQ/8)
-      src2.smoothFreq(BASE_FREQ/7.98)
-
+      f1 = BASE_FREQ/8
+      f2 = BASE_FREQ/7.98
     } else {
       const offset = 1000000 / (duration * baseFreq)
-      src1.smoothFreq(baseFreq)
-      src2.smoothFreq(baseFreq + offset)
+      f1 = baseFreq
+      f2 = baseFreq + offset
     }
+
+    src1.smoothFreq(f1)
+    const stopInterval = setRunInterval(() => {
+      if (PAUSED || OVERDRIVE) {
+        src2.smoothFreq(f1, 0.00001, true)
+      }
+      else {
+        src2.smoothFreq(f2)
+      }
+    }, 500)
 
     src1.smoothGain(MAX_VOLUME * volAdj, 0.25)
     src2.smoothGain(MAX_VOLUME * volAdj, 0.25)
 
 
     return () => {
+      if (stopInterval) stopInterval()
       src1.smoothGain(0, 0.25)
       src2.smoothGain(0, 0.25)
     }
   }
 }
 
-function ticktockSound(args) {
+function ticktockSound({duration, delay}) {
   const baseFreq = BASE_FREQ * sample([1, 0.5, 2])
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
   const interval = duration / 2
 
-  const scale = sample(MAJOR_SCALE)
-
   const upScale = sample(MAJOR_SCALE)
-
 
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource()
     const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
 
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/2)) * duration
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
         smoothGain(MAX_VOLUME, 0.03)
         smoothGain2(MAX_VOLUME, 0.03)
 
@@ -804,7 +796,6 @@ function ticktockSound(args) {
           smoothFreq2(baseFreq+5, 0.1)
 
         } else {
-
           smoothFreq(baseFreq*upScale, 0.1)
           smoothFreq2(baseFreq * upScale+5, 0.1)
         }
@@ -819,13 +810,13 @@ function ticktockSound(args) {
     return () => {
       smoothGain(0, 0.03)
       smoothGain2(0, 0.03)
-      clearInterval(int)
+      if (stopInterval) stopInterval()
     }
   }
 }
 
 
-function blinkCharSound(args, seq=null) {
+function blinkCharSound({duration, delay}, seq=null) {
   const sequence = sample([0, 1, 2])
   const jackDumpScale = prb(0.1)
   const isSmooth = !jackDumpScale && prb(0.5)
@@ -839,9 +830,7 @@ function blinkCharSound(args, seq=null) {
   )
 
   const ttMult = sample([2, 1.5, 1.3333])
-
-  const duration = args.duration ? map(args.duration, 750, 5000, 500, 2000) : rnd(500, 2000)
-
+  duration = duration ? map(duration, 750, 5000, 500, 2000) : rnd(500, 2000)
   const interval = duration / 8
 
   return (extraDelay=0) => {
@@ -853,7 +842,7 @@ function blinkCharSound(args, seq=null) {
       if (twoTone) src2.smoothGain(MAX_VOLUME)
     }
 
-    let int = setRunInterval((i) => {
+    const stopInterval = setRunInterval((i) => {
       if (!isSmooth) {
         smoothGain(MAX_VOLUME)
         if (twoTone) src2.smoothGain(MAX_VOLUME)
@@ -882,19 +871,14 @@ function blinkCharSound(args, seq=null) {
     return () => {
       smoothGain(0, 0.04)
       if (twoTone) src2.smoothGain(0, 0.04)
-      clearInterval(int)
+      if (stopInterval) stopInterval()
     }
   }
 }
 
-function hexSound(args) {
+function hexSound({duration, delay}) {
   const baseFreq = BASE_FREQ
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
   const interval = duration / 6
-
   const scale = sample(MAJOR_SCALE)
 
   return (extraDelay=0) => {
@@ -902,9 +886,9 @@ function hexSound(args) {
     const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/6)) * duration
 
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
 
         smoothFreq(baseFreq * 8)
         smoothFreq2(baseFreq * 8)
@@ -922,7 +906,7 @@ function hexSound(args) {
     }, timeUntilNextNote)
 
     return () => {
-      clearInterval(int)
+      if (stopInterval) stopInterval()
       smoothGain(0, 0.03)
       smoothGain2(0, 0.03)
     }
@@ -932,26 +916,20 @@ function hexSound(args) {
 
 
 
-function climbSound(args) {
-  const baseFreq = sample(HEXATONIC_SCALE) * BASE_FREQ * 1.5
-
-  const duration = args.duration
-  const delay = args.delay || 0
-
-
+function climbSound({ duration, delay }) {
+  const baseFreq = sample(HEXATONIC_SCALE) * BASE_FREQ
   const interval = duration / 4
-
 
   return (extraDelay=0) => {
     const { smoothFreq, smoothGain } = createSource()
     const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/4)) * duration
 
-    let int
+    let stopInterval
     setTimeout(() => {
-      int = setRunInterval((i) => {
+      stopInterval = setRunInterval((i) => {
         smoothGain(MAX_VOLUME)
 
-        const ix = args.duration === 1 ? i%4 : 3 - i%4
+        const ix = duration === 1 ? i%4 : 3 - i%4
         smoothFreq(baseFreq * HEXATONIC_SCALE[ix])
 
         setTimeout(() => smoothGain(0, 0.05), interval*0.75 + extraDelay)
@@ -960,7 +938,7 @@ function climbSound(args) {
     }, timeUntilNextNote + extraDelay*4)
 
     return () => {
-      clearInterval(int)
+      if (stopInterval) stopInterval()
       smoothGain(0, 0.04)
     }
   }
@@ -993,8 +971,9 @@ function zoomSound({duration, delay, switchChannels}) {
     smoothGain(MAX_VOLUME)
     smoothFreq(getFreqAtTime(Date.now() + timeUntilNextQuarter), timeUntilNextQuarter/1000)
 
+    let stopInterval
     setTimeout(() => {
-      setRunInterval(i => {
+      stopInterval = setRunInterval(i => {
         smoothFreq(getFreqAtTime(Date.now() + duration/4 + extraDelay), duration/4000)
       }, duration/4)
 
@@ -1009,7 +988,10 @@ function zoomSound({duration, delay, switchChannels}) {
       }
     }, timeUntilNextQuarter)
 
-    return () => smoothGain(0, 0.04)
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
   }
 }
 
@@ -1043,8 +1025,9 @@ function carSirenSound({duration, delay}) {
     src2.smoothFreq(getFreqAtTime(Date.now())*1.3333, timeUntilNextHalf/1000)
     src3.smoothFreq(getFreqAtTime(Date.now())*1.6666, timeUntilNextHalf/1000)
 
+    let stopInterval
     setTimeout(() => {
-      setRunInterval(i => {
+      stopInterval = setRunInterval(i => {
         src1.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i), introTimeMs/1000)
         src2.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i)*1.3333, introTimeMs/1000)
         src3.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i)*1.6666, introTimeMs/1000)
@@ -1055,21 +1038,42 @@ function carSirenSound({duration, delay}) {
       src1.smoothGain(0, 0.04)
       src2.smoothGain(0, 0.04)
       src3.smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
     }
   }
+}
+
+
+function singleSound() {
+  const startFreq = rndint(1000, 4000)
+  const playSound = () => {
+    const { smoothFreq, smoothGain } = createSource()
+    smoothGain(MAX_VOLUME)
+    smoothFreq(startFreq, 0.05)
+    setTimeout(() => {
+      smoothFreq(0.1, 1)
+    }, 50)
+
+    return () => {
+      playSound()
+    }
+  }
+  return playSound
 }
 
 
 
 
 
-
-let voices;
+let voices, selectedVoice
 const getVoices = () => {
   try {
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
+      else {
+        selectedVoice = voices.find(v => v.lang ? v.lang.includes('en') : false) || voices[0]
+      }
     }, 200)
   } catch(e) {
     console.log(e)
@@ -1097,8 +1101,24 @@ const triggerUtterance = () => {
   } else {
     txt = utteranceQueue.splice(ix, 1)[0] || ''
   }
+  txt.volume = 0.88
 
-  if (franticVoice) txt.pitch = sample(MAJOR_SCALE)
+  if (OVERDRIVE) {
+    txt.pitch = sample(MAJOR_SCALE)
+    txt.volume = 1.1
+  } else if (ANHEDONIC) {
+    txt.pitch = 1
+  } else {
+    txt.pitch = 1
+  }
+
+  if (ANHEDONIC) {
+    txt.rate = 0.7
+  } else if (OVERDRIVE) {
+    txt.rate = 1.2
+  } else {
+    txt.rate = 1
+  }
 
   window.speechSynthesis.speak(txt)
 
@@ -1116,7 +1136,7 @@ const stopUtter = txt => {
 const utter = (txt, t=1, i=7) => {
   try {
     let a = new window.SpeechSynthesisUtterance(txt.toLowerCase())
-    a.voice = voices[0]
+    a.voice = selectedVoice
     const startingQueue = utteranceQueue.length
     times(t, () => {
       utteranceQueue.push(a)
@@ -1130,347 +1150,7 @@ const utter = (txt, t=1, i=7) => {
 
 
 
-css(`
-  .marquee {
-    display: inline-block;
-    width: 100%;
-    box-sizing: border-box;
-    line-height: 1;
-  }
-
-  .marqueeInner {
-    display: inline-flex;
-  }
-
-  .marqueeForward {
-    animation: Marquee 50s linear infinite;
-  }
-
-  .marqueeInner > * {
-    display: inline-block;
-    white-space: nowrap;
-  }
-
-  @keyframes Marquee {
-    0% {transform: translate3d(-50%, 0, 0)}
-    100% {transform: translate3d(0%, 0, 0)}
-  }
-
-
-  .updownChars {
-    animation: UpDownChars 2s ease-in-out infinite;
-    display: inline-block;
-  }
-
-  @keyframes UpDownChars {
-    0%, 100% {transform: translate3d(0%, 10%, 0)}
-    50% {transform: translate3d(0%, -10%, 0)}
-  }
-
-
-
-
-  .updownLong {
-    height: 100%;
-    animation: UpDownLong 1000ms ease-in-out infinite;
-
-  }
-
-  .updownLong > * {
-    animation: UpDownLongChild 2000ms ease-in-out infinite;
-  }
-
-
-  @keyframes UpDownLongChild {
-    0%, 100% {transform: translateY(0)}
-    50% {transform: translateY(-100%)}
-  }
-
-  @keyframes UpDownLong {
-    0%, 100% {transform: translateY(0)}
-    50% {transform: translateY(100%)}
-  }
-
-  .blink {
-    animation: Blink 1.5s steps(2, start) infinite;
-  }
-
-  @keyframes Blink {
-    to {
-      visibility: hidden;
-    }
-  }
-
-  .borderBlink {
-    border-width: 0.05em;
-    animation: BorderBlink 1.5s steps(2, start) infinite;
-    box-sizing: border-box;
-  }
-
-  @keyframes BorderBlink {
-    50% {
-      border-style: hidden;
-    }
-  }
-
-  .colorBlink {
-    animation: ColorBlink 4s steps(1, start) infinite;
-  }
-
-  @keyframes ColorBlink {
-    ${(() => {
-      const h = chooseHue()
-      const start = `
-        0%, 100% {
-          color: ${getColorFromHue(h)};
-          background-color: ${getColorFromHue(h + possibleHues[1])};
-        }
-      `
-      return start + possibleHues.length === 2
-        ? `
-          50% {
-            color: ${getColorFromHue(h + possibleHues[1])};
-            background-color: ${getColorFromHue(h)};
-          }
-        `
-        : `
-          33% {
-            color: ${getColorFromHue(h + possibleHues[1])};
-            background-color: ${getColorFromHue(h + possibleHues[2])};
-          }
-
-          66% {
-            color: ${getColorFromHue(h + possibleHues[2])};
-            background-color: ${getColorFromHue(h)};
-          }
-        `
-
-    })()}
-  }
-
-  .fullColorRotate {
-    animation: FullColorRotate 25s linear infinite;
-  }
-
-  @keyframes FullColorRotate {
-    0%, 100% {color: #ff0000}
-    17% {color: #ffff00}
-    33% {color: #00ff00}
-    50% {color: #00ffff}
-    66% {color: #0000ff}
-    83% {color: #ff00ff}
-  }
-
-
-
-  .colorShift {
-    animation: ColorRotate 25s linear infinite;
-  }
-
-  @keyframes ColorRotate {
-    0%, 100% {color: #ff0000}
-    17% {color: #ffff00}
-    33% {color: #00ff00}
-    50% {color: #00ffff}
-    66% {color: #0000ff}
-    83% {color: #ff00ff}
-  }
-
-  .dance {
-    animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-  }
-
-  @keyframes Dance {
-    0%, 100% {transform: rotate(20deg)}
-    50% {transform: rotate(-20deg)}
-  }
-
-  .growShrink {
-    animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-  }
-
-  @keyframes GrowShrink {
-    0%, 100% {transform: scale(1)}
-    50% {transform: scale(0.2)}
-  }
-
-  .growShrinkShort {
-    animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-    display: inline-block;
-  }
-
-  @keyframes GrowShrinkShort {
-    0%, 100% {transform: scale(1)}
-    50% {transform: scale(0.75)}
-  }
-
-
-  .spin {
-    animation: Spin 2000ms linear infinite;
-  }
-
-  @keyframes Spin {
-    0% {transform: rotate(0deg)}
-    100% {transform: rotate(360deg)}
-  }
-
-
-  .hSiren {
-    animation: HSiren 2000ms linear infinite;
-  }
-
-  @keyframes HSiren {
-    0% {transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)}
-    100% {transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)}
-  }
-
-  .vSiren {
-    animation: VSiren 2000ms linear infinite;
-  }
-
-  @keyframes VSiren {
-    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)}
-    100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)}
-  }
-
-  .vSirenShort {
-    animation: VSirenShort 2000ms linear infinite;
-  }
-
-  @keyframes VSirenShort {
-    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)}
-    100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)}
-  }
-
-
-
-  .hPivot {
-    animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-  }
-
-  @keyframes HPivot {
-    0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)}
-    50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)}
-  }
-
-  .vPivot {
-    animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-  }
-
-
-  @keyframes VPivot {
-    0%, 100% {transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)}
-    50% {transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)}
-  }
-
-
-
-  .vFlip {
-    animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
-  }
-
-  @keyframes VFlip {
-    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg)}
-    100% {transform: perspective(500px) rotate3d(2,0,0, 1800deg)}
-  }
-
-
-  .hFlip {
-    animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
-  }
-
-  @keyframes HFlip {
-    0% {transform: perspective(500px) rotate3d(0,2,0, 0deg)}
-    100% {transform: perspective(500px) rotate3d(0,2,0, 1800deg)}
-  }
-
-
-  .breathe {
-    animation: Breathe 2000ms ease-in-out infinite;
-  }
-
-  @keyframes Breathe {
-    0%, 100% {transform: scaleX(1) scaleY(1)}
-    50% {transform: scaleX(0.8) scaleY(0.9)}
-  }
-
-
-
-  .leftRight {
-    width: 100%;
-
-    animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-    font-size: 10vmin;
-  }
-
-  .leftRight > * {
-    animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-    display: inline-block;
-    white-space: nowrap;
-  }
-
-  @keyframes LeftRightChild {
-    0%, 100% {transform: translateX(0)}
-    50% {transform: translateX(-100%)}
-  }
-
-  @keyframes LeftRight {
-    0%, 100% {transform: translateX(0)}
-    50% {transform: translateX(100%)}
-  }
-
-
-  .shrinkingBorder {
-    animation: ShrinkingBorder 2000ms linear infinite;
-  }
-  .spinningBorder {
-    animation: Spin 2000ms linear infinite;
-  }
-
-  @keyframes ShrinkingBorder {
-    0% {transform: scale(105%)}
-    100% {transform: scale(0%)}
-  }
-
-  .shrinkingSpinningBorder {
-    animation: SpinningShrinkingBorder 2000ms linear infinite;
-  }
-
-  @keyframes SpinningShrinkingBorder {
-    0% {transform: scale(105%) rotate(0deg)}
-    100% {transform: scale(0%) rotate(70deg)}
-  }
-
-
-
-  .wave {
-    animation: Wave 4500ms linear infinite;
-  }
-  .climb {
-    animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
-  }
-
-  @keyframes Wave {
-    0%, 100% {transform: translate3d(0%, 30%, 0) rotate(0deg)}
-    25% {transform: translate3d(0%, 0%, 0) rotate(12deg)}
-    50% {transform: translate3d(0%, -30%, 0) rotate(0deg)}
-    75% {transform: translate3d(0%, 0%, 0) rotate(-12deg)}
-  }
-
-
-  .hexagon {
-    animation: Hexagon 2000ms linear infinite;
-  }
-
-  @keyframes Hexagon {
-    0%, 100% {transform: translate(0, 0.5em)}
-    17% {transform: translate(0.43em, 0.25em)}
-    33% {transform: translate(0.43em, -0.25em)}
-    50% {transform: translate(0, -0.5em)}
-    66% {transform: translate(-0.43em, -0.25em)}
-    83% {transform: translate(-0.43em, 0.25em)}
-  }
-`)
+css(` .marquee {display: inline-block; width: 100%; box-sizing: border-box; line-height: 1; } .marqueeInner {display: inline-flex; } .marqueeForward {animation: Marquee 50s linear infinite; } .marqueeInner > * {display: inline-block; white-space: nowrap; } @keyframes Marquee {0% {transform: translate3d(-50%, 0, 0)} 100% {transform: translate3d(0%, 0, 0)} } .updownChars {animation: UpDownChars 2s ease-in-out infinite; display: inline-block; } @keyframes UpDownChars {0%, 100% {transform: translate3d(0%, 10%, 0)} 50% {transform: translate3d(0%, -10%, 0)} } .updownLong {height: 100%; animation: UpDownLong 1000ms ease-in-out infinite; } .updownLong > * {animation: UpDownLongChild 2000ms ease-in-out infinite; } @keyframes UpDownLongChild {0%, 100% {transform: translateY(0)} 50% {transform: translateY(-100%)} } @keyframes UpDownLong {0%, 100% {transform: translateY(0)} 50% {transform: translateY(100%)} } .blink {animation: Blink 1.5s steps(2, start) infinite; } @keyframes Blink {to {visibility: hidden; } } .borderBlink {border-width: 0.05em; animation: BorderBlink 1.5s steps(2, start) infinite; box-sizing: border-box; } @keyframes BorderBlink {50% {border-style: hidden; } } .colorBlink {animation: ColorBlink 4s steps(1, start) infinite; } @keyframes ColorBlink {${(() => {const h = chooseHue(); const start = ` 0%, 100% {color: ${getColorFromHue(h)}; background-color: ${getColorFromHue(h + possibleHues[1])}; } `; return start + possibleHues.length === 2 ? ` 50% {color: ${getColorFromHue(h + possibleHues[1])}; background-color: ${getColorFromHue(h)}; } ` : ` 33% {color: ${getColorFromHue(h + possibleHues[1])}; background-color: ${getColorFromHue(h + possibleHues[2])}; } 66% {color: ${getColorFromHue(h + possibleHues[2])}; background-color: ${getColorFromHue(h)}; } ` })()} } .fullColorRotate {animation: FullColorRotate 25s linear infinite; } @keyframes FullColorRotate {0%, 100% {color: #ff0000} 17% {color: #ffff00} 33% {color: #00ff00} 50% {color: #00ffff} 66% {color: #0000ff} 83% {color: #ff00ff} } .colorShift {animation: ColorRotate 25s linear infinite; } @keyframes ColorRotate {0%, 100% {color: #ff0000} 17% {color: #ffff00} 33% {color: #00ff00} 50% {color: #00ffff} 66% {color: #0000ff} 83% {color: #ff00ff} } .dance {animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes Dance {0%, 100% {transform: rotate(20deg)} 50% {transform: rotate(-20deg)} } .growShrink {animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes GrowShrink {0%, 100% {transform: scale(1)} 50% {transform: scale(0.2)} } .growShrinkShort {animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; display: inline-block; } @keyframes GrowShrinkShort {0%, 100% {transform: scale(1)} 50% {transform: scale(0.75)} } .spin {animation: Spin 2000ms linear infinite; } @keyframes Spin {0% {transform: rotate(0deg)} 100% {transform: rotate(360deg)} } .hSiren {animation: HSiren 2000ms linear infinite; } @keyframes HSiren {0% {transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)} 100% {transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)} } .vSiren {animation: VSiren 2000ms linear infinite; } @keyframes VSiren {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)} 100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)} } .vSirenShort {animation: VSirenShort 2000ms linear infinite; } @keyframes VSirenShort {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)} 100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)} } .hPivot {animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes HPivot {0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)} 50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)} } .vPivot {animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes VPivot {0%, 100% {transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)} 50% {transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)} } .vFlip {animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes VFlip {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg)} 100% {transform: perspective(500px) rotate3d(2,0,0, 1800deg)} } .hFlip {animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes HFlip {0% {transform: perspective(500px) rotate3d(0,2,0, 0deg)} 100% {transform: perspective(500px) rotate3d(0,2,0, 1800deg)} } .breathe {animation: Breathe 2000ms ease-in-out infinite; } @keyframes Breathe {0%, 100% {transform: scaleX(1) scaleY(1)} 50% {transform: scaleX(0.8) scaleY(0.9)} } .flamingHot {animation: FlamingHot 2000ms ease-in-out infinite; } @keyframes FlamingHot {0% {transform: scale(1) translateY(0); opacity: 1; } 75% {opacity: 0; transform: scale(1.15) translateY(-0.2em); } 80% {opacity: 0; transform: scale(1) translateY(0); } 100% {opacity: 1; } } .leftRight {width: 100%; animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; font-size: 10vmin; } .leftRight > * {animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; display: inline-block; white-space: nowrap; } @keyframes LeftRightChild {0%, 100% {transform: translateX(0)} 50% {transform: translateX(-100%)} } @keyframes LeftRight {0%, 100% {transform: translateX(0)} 50% {transform: translateX(100%)} } .shrinkingBorder {animation: ShrinkingBorder 2000ms linear infinite; } .spinningBorder {animation: Spin 2000ms linear infinite; } @keyframes ShrinkingBorder {0% {transform: scale(105%)} 100% {transform: scale(0%)} } .shrinkingSpinningBorder {animation: SpinningShrinkingBorder 2000ms linear infinite; } @keyframes SpinningShrinkingBorder {0% {transform: scale(105%) rotate(0deg)} 100% {transform: scale(0%) rotate(45deg)} } .wave {animation: Wave 4500ms linear infinite; } .climb {animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes Wave {0%, 100% {transform: translate3d(0%, 30%, 0) rotate(0deg)} 25% {transform: translate3d(0%, 0%, 0) rotate(12deg)} 50% {transform: translate3d(0%, -30%, 0) rotate(0deg)} 75% {transform: translate3d(0%, 0%, 0) rotate(-12deg)} } .hexagon {animation: Hexagon 2000ms linear infinite; } @keyframes Hexagon {0%, 100% {transform: translate(0, 0.5em)} 17% {transform: translate(0.43em, 0.25em)} 33% {transform: translate(0.43em, -0.25em)} 50% {transform: translate(0, -0.5em)} 66% {transform: translate(-0.43em, -0.25em)} 83% {transform: translate(-0.43em, 0.25em)} } `)
 
 function marquee(children, args={}) {
   const className = args.className || ''
@@ -1487,11 +1167,11 @@ function marquee(children, args={}) {
 
   const handleAnimation = (child, i, j) => {
     const isEmoji = elementIsEmoji(child)
+    const spacing = ((isEmoji || j > 0) ? 0.1 : 0.5) + 'em'
     return msgAnimation(
       $.span(
         child,
-        { style: `margin-left: ${(isEmoji || j > 0) ? 0.2 : 1}em; font-size: ${isEmoji ? 0.9 : 1}em;` }
-      ).cloneNode(true),
+        { style: ` margin-left: ${spacing}; margin-right: ${spacing}; font-size: ${isEmoji ? 0.9 : 1}em; ` } ).cloneNode(true),
       { delay: i*100 + j/2}
     )
   }
@@ -1505,11 +1185,7 @@ function marquee(children, args={}) {
     ).flat(),
     {
       class: `marqueeInner marqueeForward`,
-      style: `
-        animation-delay: -${delay}s;
-        animation-duration: ${duration/(repeat/40)}s;
-        animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
-      `
+      style: ` animation-delay: -${delay}s; animation-duration: ${duration/(repeat/40)}s; animation-direction: ${direction === 1 ? 'normal' : 'reverse'}; `
     }
   )
 
@@ -1536,12 +1212,7 @@ function genericAnimatingComponent(name) {
     return trailFn(
       $.div(children, {
         class: `${name} ${className} animatingComponent`,
-        style: `
-          animation-duration: ${duration}ms;
-          animation-delay: -${delay}ms;
-          animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
-          ${style}
-        `
+        style: ` animation-duration: ${duration}ms; animation-delay: -${delay}ms; animation-direction: ${direction === 1 ? 'normal' : 'reverse'}; ${style} `
       }),
       args
     )
@@ -1606,15 +1277,32 @@ const doubleSpin = (grandChild, args={}) => {
   ]
 }
 
+const flamingHotParent = genericAnimatingComponent('flamingHot')
+const flamingHot = (grandChild, args={}) => {
+  return flamingHotParent(grandChild, {
+    ...args,
+    showTrails: true,
+    baseIsPaused: true,
+    delayM: -10
+  })
+}
+
 
 const withTrails = (grandChild, args={}) => {
   const shadows = 5
+  const delayM = args.delayM || 1
   return times(shadows, t => {
     const shadow = grandChild.cloneNode(true)
     if (t < shadows-1) $(shadow, 'position', 'absolute')
     $(shadow, 'opacity', 1/shadows + t/shadows )
-    $(shadow, 'animation-delay', `${-args.delay + args.duration * 0.025 * (shadows-t)}ms`)
     $(shadow, 'text-shadow', `0 0 0.${0.25/shadows * (shadows-t)}em`)
+    if (t === shadows - 1 && args.baseIsPaused) {
+      $(shadow, 'animation-play-state', 'paused')
+      $(shadow, 'animation-delay', `0ms`)
+      $(shadow, 'animation-direction', `normal`)
+    } else {
+      $(shadow, 'animation-delay', `${-args.delay + args.duration * 0.025 * (shadows-t) * delayM}ms`)
+    }
     return shadow
   })
 }
@@ -1622,17 +1310,8 @@ const withTrails = (grandChild, args={}) => {
 
 
 const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
-    class: className,
-    style: `
-      border: 1vmin ${borderStyle()};
-      position: absolute;
-      height: ${100*rSpan/rows}vh;
-      width: ${100*cSpan/cols}vw;
-      animation-delay: -${args.delay || 0}ms;
-      animation-duration: ${args.duration || 2000}ms;
-      animation-direction: ${args.direction === -1 ? 'reverse' : 'normal'};
-      ${args.style || ''}
-    `
+    class: className + ' bgAnimation',
+    style: ` border: 1vmin ${borderStyle}; position: absolute; height: ${100*rSpan/rows}vh; width: ${100*cSpan/cols}vw; animation-delay: -${args.delay || 0}ms; animation-duration: ${args.duration || 2000}ms; animation-direction: ${args.direction === -1 ? 'reverse' : 'normal'}; ${args.style || ''} `
   })
 
 function staticBgsMultiple(rSpan, cSpan) {
@@ -1657,21 +1336,12 @@ function shrinkingBgMultiple(rSpan, cSpan) {
   }))
 }
 
-function spinningBgMultiple(rSpan, cSpan) {
-  const direction = prb(0.5) ? 1 : -1
-  const duration = rnd(750, 3000)
-  return times(2, i => bgAnimation('spinningBorder',rSpan, cSpan, {
-    delay: i * 500,
-    duration,
-    direction
-  }))
-}
 
 function shrinkingSpinningBgMultiple(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
-  const duration = rnd(750, 3000)
+  const duration = rnd(3000, 10000)
   return times(4, i => bgAnimation('shrinkingSpinningBorder',rSpan, cSpan, {
-    delay: i * 500,
+    delay: i * (duration/4),
     duration,
     direction
   }))
@@ -1685,33 +1355,30 @@ function colorShiftingBgMultiple(rSpan, cSpan) {
     delay: i * 500,
     duration,
     direction,
-    style: `
-      transform: scale(${0.95 - i/squares});
-    `
+    style: ` transform: scale(${0.95 - i/squares}); `
   }))
 }
 
-const bgAnimationFn = sample([
-  colorShiftingBgMultiple,
-  staticBgsMultiple,
-  shrinkingBgSingle,
-  shrinkingBgMultiple,
-  // spinningBgMultiple,
-  shrinkingSpinningBgMultiple,
-])
+const bgAnimationFn =
+  bgAnimationType === 0 ? colorShiftingBgMultiple :
+  bgAnimationType === 1 ? staticBgsMultiple :
+  bgAnimationType === 2 ? shrinkingBgSingle :
+  bgAnimationType === 3 ? shrinkingBgMultiple :
+  shrinkingSpinningBgMultiple
 
+
+let hasBgAnimation
 function withBgAnimation(child, rSpan, cSpan) {
   const aspectRatio = cSpan / rSpan
   const invalidAspectRatio = aspectRatio > 3 || aspectRatio < 0.3333
 
   if (bgAnimationFn !== colorShiftingBgMultiple && invalidAspectRatio) return child
 
+  const hasAnimation = prb(bgAnimationPrb)
+  if (hasAnimation) hasBgAnimation = true
+
   return [
-    ...(
-      prb(bgAnimationPrb)
-        ? bgAnimationFn(rSpan, cSpan)
-        : []
-    ),
+    ...(hasAnimation ? bgAnimationFn(rSpan, cSpan) : []),
     child
   ]
 
@@ -1726,11 +1393,8 @@ function genericCharacterComponent(name, durMin, durMax) {
       const split = txt.split('')
 
       return split.map((c, i) => $.span(c, {
-        class: name,
-        style: `
-          animation-delay: -${i * duration}ms;
-          ${c === ' ' ? 'margin-right: 0.5em;' : ''}
-        `
+        class: name + ' charContent',
+        style: ` animation-delay: -${i * duration}ms; ${c === ' ' ? 'margin-right: 0.5em;' : ''} `
       }))
     }
 
@@ -1740,14 +1404,14 @@ function genericCharacterComponent(name, durMin, durMax) {
       c.map(txt => $.div(
         splitAnimation(txt),
         {
-          style: `
-            display: inline-block;
-            margin-left: 0.25em;
-            margin-right: 0.25em;
-          `
+          class: 'charContentWord',
+          style: ` display: inline-block; margin-left: 0.25em; margin-right: 0.25em; `
         }
       )
-    ), { style: `display: inline-block;` })
+    ), {
+      class: 'charContentGroup',
+      style: `display: inline-block;`
+    })
   }
 }
 
@@ -1756,32 +1420,22 @@ const updownChars = genericCharacterComponent('updownChars', 100, 500)
 const shrinkChars = genericCharacterComponent('growShrinkShort', 100, 300)
 const blinkChars = genericCharacterComponent('blink', 50, 200)
 
-
-
-
-css(`
-  .text {
-    font-size: 1em;
+function getContent(elem) {
+  const child = $.cls(elem, 'content')
+  if (child.length) {
+    if (child[0].childElementCount) return child[0].children[0].alt
+    return child[0].innerHTML
   }
-
-  .emoji {
-    margin-right: 0.3em;
-    font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em;
+  else {
+    return $.cls(elem, 'charContentWord').map(w =>
+      $.cls(w, 'charContent').map(c => c.innerHTML).join('')
+    ).join(' ')
   }
+}
 
-  .animationContainer .emoji,
-  .animationGridContainer .emoji
-  {
-    margin-right: 0;
-  }
 
-  .emojiPolyfill {
-    width: 1em;
-    height: 1em;
-    transform: translateY(7%);
-  }
 
-`)
+css(` .text {font-size: 1em; } .emoji {margin-right: 0.3em; font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em; } .animationContainer .emoji, .animationGridContainer .emoji {margin-right: 0; } .emojiPolyfill {width: 1em; height: 1em; transform: translateY(7%); } `)
 
 const wordExt = (txt, className) => $.span(txt, { class: className })
 
@@ -1790,6 +1444,12 @@ const word = txt => wordExt(txt, 'text content')
 const emoji = e => wordExt(e, 'emoji content')
 
 const emojis = es => es.split(' ').map(emoji)
+
+const link = txt => $.a(txt, {
+  target: '_blank',
+  href: './' + (projectId * 1000000 + rndint(EDITION_SIZE)),
+  class: 'text content'
+})
 
 const elementIsEmoji = elem => {
   if (Array.isArray(elem)) return false
@@ -1802,9 +1462,9 @@ const elementIsEmoji = elem => {
 let emojiOverride, textOverride
 
 try {
+  if (queryParams.emojis) emojiOverride = queryParams.emojis.split(',').map(decodeURI).map(emoji)
+  if (queryParams.text) textOverride = queryParams.text.split(',').map(decodeURI)
 
-  emojiOverride = (queryParams.emojis || []).split(',').map(decodeURI).map(emoji)
-  textOverride = (queryParams.text || []).split(',').map(decodeURI)
   if (textOverride || emojiOverride) console.log('OVERRIDES:', textOverride, emojiOverride)
 } catch (e) {}
 
@@ -1815,28 +1475,30 @@ const money2 = emojis(`🤑 💷 💴 💵 💶 💲 💸 💰`)
 const moneyFull = [...emojis(`💹 📈 💯`), ...money1, ...money2]
 const fruit1 = emojis(`🍒 🍉 🍇 🍋 🍯`)
 const fruit2 = emojis(`🍆 🍑 🌶`)
+const miscFood = emojis(`🥕 🍌 🥜 🧀 🍪`)
 const booze = emojis(`🍻 🍾 🥂`)
 const hot = emojis(`🌶 🔥 ❤️‍🔥 🌋`)
-const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓`), ...fruit1, ...money1]
+const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓ 🃏 🎲`), ...fruit1, ...money1]
 const drugs = [...emojis(`🎄 🍄 ❄️ 😵‍💫`), ...booze]
 const party = [...emojis(`🎉 🕺 💃 🎊 🥳 🎈`), ...booze]
 const energy = emojis(`💫 🔥 🚀 ⚡️ ✨`)
 const explosion1 = emojis(`💥 🤯 🧨 💣`)
 const explosionFull = [...explosion1, ...energy, ...emojis(`🌋 ☄️`)]
-const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️`), ...fruit2]
-const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2]
+const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹 🥵`), ...fruit2]
+const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2, ...miscFood]
 const usa = emojis(`🏎 🇺🇸 ★`)
-const relaxing = emojis(`🏖 🏄‍♂️`)
-const funny = emojis(`🐄 🤡 💩 😂`)
+const funny = emojis(`🐄 🤡 💩 😂 🤣`)
 const symbols = emojis(`★ → ←`)
+const justArrows = emojis(`→ ← → ← → ← 🔴`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const computer = [sample(emojis(`👨‍💻 🧑‍💻 👩‍💻`)), ...emojis(`🕸 👁 👁‍🗨 🌎`)]
-// const maybe = emojis(`🔟 📛`)
+const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
+const circusEmojis = emojis(`🎪 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
-const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐`)
+const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
+const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -1851,7 +1513,6 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   sexy,
   yummy,
   usa,
-  relaxing,
   funny,
   symbols,
   lunar,
@@ -1860,6 +1521,9 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   computer,
   excitingMisc,
   commonEmojis,
+  justArrows,
+  hedonicTreadmill,
+  circusEmojis
   // misc,
   // maybe,
 ]
@@ -1878,7 +1542,7 @@ const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possi
 
 
 /*
-  boost, frenzy, multiplier, infinite, joy, certified, passion
+  infinite, joy, certified, alert
 
    */
 
@@ -1894,6 +1558,9 @@ const luckyText = [
   `YOU CAN'T LOSE`,
   `EVERYONE'S A WINNER`,
   'DOUBLE DOWN',
+  'BINGO',
+  'MULTIPLIER',
+  'SURPRISE',
 ]
 
 const dealsText = [
@@ -1918,7 +1585,11 @@ const dealsText = [
   'EXTRA LARGE',
   'NEW AND IMPROVED',
   `RUN, DON'T WALK`,
-  'SENSATIONAL'
+  'SENSATIONAL',
+  'AMAZING SAVINGS',
+  'MORE',
+  'MORE IS MORE',
+  'I WANT MORE',
 ]
 
 const cashText = [
@@ -1937,7 +1608,8 @@ const cashText = [
   'CRYPTO FORTUNE',
   'GET RICH QUICK',
   `YIELD EXPLOSION`,
-  'TREASURE TROVE'
+  'TREASURE TROVE',
+  'PROFITS'
 ]
 
 const sexyText = [
@@ -1951,13 +1623,10 @@ const sexyText = [
   'DELICIOUS',
   'FORBIDDEN PLEASURES',
   'JUICY',
-  'PASSION'
-]
-
-const gains = [
-  'THROBBING GAINS',
-  'MASSIVE GAINS',
-  'WHOPPING GAINS',
+  'PASSION',
+  'ECSTASY',
+  'LUST',
+  'DESIRE',
 ]
 
 const fomo = [
@@ -1973,7 +1642,8 @@ const fomo = [
   `THIS WON'T LAST`,
   'TIME IS RUNNING OUT',
   'ACT NOW',
-  `DON'T WAIT`
+  `DON'T WAIT`,
+  `THIS IS WHAT YOU'VE BEEN WAITING FOR`
 ]
 const hotText = [
   'TOO HOT TO HANDLE',
@@ -1982,7 +1652,7 @@ const hotText = [
   'SIZZLING',
   'HOTTEST ART AROUND',
   'ELECTRIC',
-  'ECSTACY',
+  'WHITE HOT',
 ]
 
 const excitingText = [
@@ -1996,6 +1666,7 @@ const excitingText = [
   'INCREDIBLE',
   'EXCITING',
   'ECSTATIC',
+  'EUPHORIC',
   'THRILLING',
   'HOLY MOLY',
   'WHAT A THRILL',
@@ -2008,12 +1679,21 @@ const excitingText = [
   'PARTY TIME',
   'INSTANT GRATIFICATION',
   'MIND = BLOWN',
-  'DOPAMINE RUSH'
+  'DOPAMINE RUSH',
+  'DOPAMINE BOOST',
+  'STARSTRUCK',
+  'BLAST OFF',
+  'ALL OR NOTHING',
+  `LET'S GO`,
+  'FRENZY',
+  'WILD',
 ]
 
 const funText = [
   'FUN',
   'LOL',
+  'ROFL',
+  'LMAO',
   'WAGMI',
   'WTF',
   'SO COOL',
@@ -2037,7 +1717,10 @@ const crypto = [
   'BULL MARKET',
   'DIAMOND HANDS',
   'ALL TIME HIGH',
-  '100%'
+  '100%',
+  'THROBBING GAINS',
+  'MASSIVE GAINS',
+  'WHOPPING GAINS',
 ]
 
 const disclaimer = [
@@ -2048,7 +1731,6 @@ const disclaimer = [
   'DANGER ZONE',
   'DO YOUR OWN RESEARCH',
   'DYOR',
-  'ALL NATURAL',
   'SAFE + SECURE',
   `BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`,
   `PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`,
@@ -2071,7 +1753,23 @@ const affirmations = [
   'FUCK YES',
   'FINALLY',
   'CHAMPION',
-  'GREATEST OF ALL TIME'
+  'GREATEST OF ALL TIME',
+  'SPECIAL',
+  `YOU'RE #1`,
+  'THIS ROCKS',
+  'ALL NATURAL',
+  'EASY AS 1 2 3',
+  'HAPPY',
+  'REWARDS',
+]
+
+const wwwText = [
+  'WORLD WIDE WEB',
+  'ENGAGEMENT',
+  'CLICK HERE',
+  'VIRAL',
+  'LIKE',
+  'TRENDING',
 ]
 
 
@@ -2080,7 +1778,6 @@ const textLists = [
   dealsText,
   cashText,
   sexyText,
-  gains,
   fomo,
   hotText,
   excitingText,
@@ -2088,6 +1785,7 @@ const textLists = [
   crypto,
   disclaimer,
   affirmations,
+  wwwText,
 ]
 
 
@@ -2112,7 +1810,11 @@ const emojiTextRelationships = {
     [`RUN, DON'T WALK`]: emojis(`🏃`),
     'MIND = BLOWN': emojis(`🤯`),
     '100%': emojis(`💯`),
-    'GREATEST OF ALL TIME': emojis(`🐐`)
+    'GREATEST OF ALL TIME': emojis(`🐐`),
+    'STARSTRUCK': emojis(`🤩`),
+    'BLAST OFF': emojis(`🚀`),
+    'ROFL': emojis(`🤣`),
+    'THIS ROCKS': emojis(`🎸`),
   },
   group: [
     [luckyText, lucky],
@@ -2124,6 +1826,7 @@ const emojiTextRelationships = {
     [funText, funny],
     [crypto, [...moneyFull, ...energy]],
     [disclaimer, emojis(`⚠️ 🚨`)],
+    [wwwText, computer]
   ]
 }
 
@@ -2159,19 +1862,19 @@ function sampleContent() {
     replacementContent = mainContent
   }
 
-
   return [mainContent, replacementContent]
 }
 
+const contentSample = { text: [], emojis: [] }
+
 function chooseContent() {
-  const contentSample = { text: [], emojis: [] }
   const content = { text: [], emojis: [] }
 
   const sections = chance(
-    [35, 1],
+    [30, 1],
     [30, 2],
     [25, 3],
-    [10, 0] // everything
+    [15, 0] // everything
   )
 
 
@@ -2187,6 +1890,11 @@ function chooseContent() {
   } else {
     contentSample.text = textLists
     contentSample.emojis = emojiLists
+  }
+
+  if (is69) {
+    contentSample.text = sexyText
+    contentSample.emojis = sexy
   }
 
 
@@ -2212,7 +1920,13 @@ function chooseContent() {
     content.emojis = contentSample.emojis
   }
 
-  content.text = content.text.flat().map(c => word(c + (prb(0.25) ? '!' : '')))
+  const wordify = c => c === 'CLICK HERE'
+    ? link(c)
+    : word(c + (prb(0.25) ? '!' : ''))
+
+  content.text = content.text
+    .flat()
+    .map(wordify)
   content.emojis = showEmojis ? content.emojis.flat() : []
   return content
 }
@@ -2222,33 +1936,12 @@ const content = [..._content.text, ..._content.emojis]
 
 
 
-
 const adjustCharLength = (txt, pairedEmoji) => {
   let lenText = txt;
   emojiList.forEach(c => lenText = lenText.replace(c, '1'))
   return lenText.length + (!!pairedEmoji ? 3 : 0)
 }
-css(`
-  .sectionContainer {
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    cursor: pointer;
-    transition: 150ms;
-    filter: invert(${invertAll ? 1 : 0});
-    transition: 250ms;
-  }
-
-  .sectionContainer:hover {
-    filter: invert(${invertAll ? 0 : 1});
-  }
-
-  .animationGridContainer {
-    line-height: 1;
-  }
-`)
+css(` .sectionContainer {overflow: hidden; display: flex; align-items: center; justify-content: center; user-select: none; cursor: pointer; transition: 150ms; filter: invert(${invertAll ? 1 : 0}); transition: 250ms; } .sectionContainer:hover {filter: invert(${invertAll ? 0 : 1}); } .sectionContainer:active {opacity: 0.5; } .animationGridContainer {line-height: 1; } `)
 
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
@@ -2256,7 +1949,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   if (animation === spin) {
     fn = smoothSound
 
-  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe].includes(animation)) {
+  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe, growShrinkShort].includes(animation)) {
     fn = chance(
       [4, (p) => sirenSound({
         ...p,
@@ -2271,7 +1964,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
       [!isGrid && 1, (p) => ticktockSound(p)]
     )
 
-  } else if ([hSiren, vSiren, wave].includes(animation)) {
+  } else if ([hSiren, vSiren, wave, vSirenShort].includes(animation)) {
     fn = sirenSound
 
   } else if ([hFlip, vFlip].includes(animation)) {
@@ -2291,9 +1984,14 @@ function createSound(animation, params, isGrid, extraDelay=0) {
 
   } else if (animation === climb) {
     fn = climbSound
-  }
 
-  return fn({ ...params, delay: params.delay + extraDelay })
+  } else if ([iden, flamingHot].includes(animation)) {
+    fn = singleSound
+
+  } else return
+
+
+  return fn({ ...params, delay: params.delay + extraDelay || 0 })
 
 }
 
@@ -2318,44 +2016,55 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     'sectionContainer',
     starburstBg(h, rSpan, cSpan),
     rotateColor,
-    colorBlink
+    colorBlink,
+    sectionAnimation,
   ].filter(iden).join(' ')
 
   const container = $.div(
     withBgAnimation(child, rSpan, cSpan),
     {
       class: classes,
-      style: `
-        border-style: ${borderStyle()};
-        ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
-        grid-column: span ${cSpan};
-        grid-row: span ${rSpan};
-        background: ${(hideBg ? 'none' : bgColor)};
-        color: ${txtColor};
-        ${fontStyle};
-        transform: ${rotation};
-        animation-delay: -${rnd(5)}s;
-        animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()};
-        animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s;
-      `
-    }
+      style: ` border-style: ${borderStyle}; ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'} grid-column: span ${cSpan}; grid-row: span ${rSpan}; background: ${(hideBg ? 'none' : bgColor)}; color: ${txtColor}; ${fontStyle}; transform: ${rotation}; animation-delay: -${rnd(5)}s; animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()}; animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s; ` }
   )
+  const childContent = getContent(child)
 
-  let isFullScreen
+  let isFullScreen, notifyingTimeout
   const canFullScreen = prb(0.01)
+  const triggersPopup = prb(0.01)
+  const triggersNotifications = prb(0.01)
   container.onclick = () => {
     onclick()
 
     try {
+      if (window.navigator) window.navigator.vibrate(50)
+
       if (canFullScreen) {
         const method = isFullScreen ? 'remove' : 'add'
         container.classList[method]('fullScreen')
-        console.log(isFullScreen, container.classList)
         isFullScreen = !isFullScreen
       }
 
-      const childContent = child.getElementsByClassName('content')[0].innerHTML
-      if (childContent.includes('FAST CASH')) window.open('http://fastcashmoneyplus.biz', '_blank')
+      console.log('CLICK:',childContent)
+
+      if (triggersNotifications) {
+        const setNotification = () => {
+          notifyingTimeout = setTimeout(() => {
+            new Notification(childContent)
+            setNotification()
+          }, rndint(100, 10000))
+        }
+
+        Notification.requestPermission().then(p => {
+          setNotification()
+        })
+
+        if (notifyingTimeout) clearTimeout(notifyingTimeout)
+      }
+
+      if (navigator.clipboard) navigator.clipboard.writeText(childContent)
+
+      if (childContent.includes('FAST CASH')) setTimeout(() => window.open('http://fastcashmoneyplus.biz', '_blank'))
+      if (triggersPopup) setTimeout(() => window.alert(childContent))
     } catch (e) {}
   }
 
@@ -2372,8 +2081,9 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 
-
+let marqueeCount = 0
 function marqueeContainter(rSpan, cSpan) {
+  marqueeCount++
   let [child, replacementChild] = sampleContent()
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
 
@@ -2436,31 +2146,32 @@ function marqueeContainter(rSpan, cSpan) {
     ]
     : clonedNode
 
-  const childEl = showLeftRight
-    ? leftRight(childWithPairedEmoji, {
-        style: `font-size: ${height};`,
-        duration: r * slow * speed,
-        delay,
-        showTrails
-      })
-    : marquee(childWithPairedEmoji, {
-        style: `
-          font-size: ${sideways ? width : height};
-        `,
-        direction: posOrNeg(),
-        delay,
-        duration,
-        sideways,
-        msgAnimation
-      })
+  const zoomParams = { duration: r * slow * speed / 2, delay, showTrails }
 
-  const params = { duration: r * slow * speed / 2, delay, showTrails }
-  const playSound = zoomSound({ ...params, switchChannels: true })
+  let childEl, playSound
+  if (showLeftRight) {
+    childEl = leftRight(childWithPairedEmoji, {
+      style: `font-size: ${height};`,
+      duration: r * slow * speed,
+      delay,
+      showTrails
+    })
+    playSound = zoomSound({ ...zoomParams, switchChannels: true })
+  } else {
+    childEl = marquee(childWithPairedEmoji, {
+      style: `font-size: ${sideways ? width : height};`,
+      direction: posOrNeg(),
+      delay,
+      duration,
+      sideways,
+      msgAnimation
+    })
+    if (msgAnimation !== iden) playSound = createSound(msgAnimation, { duration: 2000 }, true)
+  }
 
   let stopSound = []
-  const ignoreStop = prb(0.1)
-
   let talkingActive = false
+  const ignoreStop = prb(0.1)
 
   return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
     if (showLeftRight) {
@@ -2475,7 +2186,7 @@ function marqueeContainter(rSpan, cSpan) {
 
       if (showTrails) {
         const sound2 = ignoreStop
-          ? zoomSound({ ...params, switchChannels: true })(20)
+          ? zoomSound({ ...zoomParams, switchChannels: true })(20)
           : playSound(20)
         if (!ignoreStop) stopSound.push(sound2)
       }
@@ -2488,6 +2199,15 @@ function marqueeContainter(rSpan, cSpan) {
         utter(child.innerHTML, 30, 7)
         talkingActive = true
       }
+
+      if (stopSound.length) {
+        stopSound.forEach(s => s())
+        stopSound = []
+      } else if (playSound) {
+        const sound = playSound()
+        if (!ignoreStop) stopSound.push(sound)
+      }
+
     }
   })
 }
@@ -2513,9 +2233,11 @@ function getFontSize(txt, rSpan, cSpan) {
 
 
 
+const allPlayingSounds = []
 
-
+let animationCount = 0
 function animationContainer(rSpan, cSpan) {
+  animationCount++
   let [child, replacementChild] = sampleContent()
   if (textOverride) child = replacementChild
 
@@ -2540,6 +2262,8 @@ function animationContainer(rSpan, cSpan) {
     climb,
     blink,
     hexagon,
+    flamingHot,
+    iden,
     prb(0.5) && breathe,
     !ignoreCharAnimation && updownChars,
     !ignoreCharAnimation && blinkChars,
@@ -2594,15 +2318,7 @@ function animationContainer(rSpan, cSpan) {
     {
       class: 'animationContainer' + (ignoreCharAnimation ? ' emojiShadow' : ''),
       'data-h': h,
-      style: `
-        height: ${100*rSpan/rows}vh;
-        font-size: ${fontSize};
-        ${getShadow(h, !ignoreCharAnimation)}
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `,
+      style: ` height: ${100*rSpan/rows}vh; font-size: ${fontSize}; ${getShadow(txtH, !ignoreCharAnimation)} text-align: center; display: flex; align-items: center; justify-content: center; `,
     }
   )
 
@@ -2620,7 +2336,7 @@ function animationContainer(rSpan, cSpan) {
       stopSound = []
       return
     }
-    // createSound(animation, primaryAnimationParams)
+
     const sound1 = playSound()
     if (!ignoreStop) stopSound.push(sound1)
 
@@ -2658,10 +2374,12 @@ function getEmojiGrid(rSpan, cSpan) {
   ]
 }
 
+let gridCount = 0
 function animationGridContainer(rSpan, cSpan) {
   const child = sample(_content.emojis)
 
   if (!child) return animationContainer(rSpan, cSpan)
+  gridCount++
 
   const height = `calc(${100*rSpan/rows}vh)`
   const width = `calc(${100*cSpan/cols}vw)`
@@ -2696,17 +2414,7 @@ function animationGridContainer(rSpan, cSpan) {
     {
       class: 'animationGridContainer emojiShadow',
       'data-h': h,
-      style: `
-        font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
-        height: ${100*rSpan/rows}vh;
-        width: ${100*cSpan/cols}vw;
-        display: grid;
-        align-items: center;
-        justify-items: center;
-        grid-template-rows: repeat(${r}, 1fr);
-        grid-template-columns: repeat(${c}, 1fr);
-        ${getShadow(h, false)}
-      `,
+      style: ` font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin; height: ${100*rSpan/rows}vh; width: ${100*cSpan/cols}vw; display: grid; align-items: center; justify-items: center; grid-template-rows: repeat(${r}, 1fr); grid-template-columns: repeat(${c}, 1fr); ${getShadow(txtH, false)} `,
     }
   )
 
@@ -2882,14 +2590,20 @@ function flexSection(rowCells, colCells) {
   const fillSection = (rCursor, cCursor) => {
     let adjRowMax = rowMax
     let adjColMax = colMax
-    if (
+    if (layoutStyle === 1 && !sectionCount) {
+      if (prb(0.5)) adjRowMax = rowCells/4
+      if (prb(0.5)) adjColMax = colCells/4
+
+    } else if (
       (layoutStyle === 2 && prb(0.9))
+
     ) {
       if (prb(0.2)) {
         adjColMax = sample([1, 2])
       } else {
         adjRowMax = sample([1, 2])
       }
+
     } else if (layoutStyle === 9) {
       if (prb(0.3)) {
         adjColMax = rndint(1, 7)
@@ -2907,13 +2621,16 @@ function flexSection(rowCells, colCells) {
 
 
     marquees.push(
-      aspectRatio < 1.25 && aspectRatio > 0.8 ?
-        prb(0.25) ? animationContainer(rSpan, cSpan) : animationGridContainer(rSpan, cSpan) :
+      aspectRatio < 1.25 && aspectRatio > 0.8
 
-      aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
-        animationContainer(rSpan, cSpan) :
+      ? prb(0.75) && _content.emojis.length
+        ? animationGridContainer(rSpan, cSpan)
+        : animationContainer(rSpan, cSpan)
 
-      marqueeContainter(rSpan, cSpan)
+      : aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
+        animationContainer(rSpan, cSpan)
+
+      : marqueeContainter(rSpan, cSpan)
     )
 
     times(rSpan, r =>
@@ -2941,16 +2658,7 @@ function flexSection(rowCells, colCells) {
   return $.section(
     marquees,
     {
-      style: `
-        width: ${100*colCells/cols}vw;
-        height: ${100*rowCells/rows}vh;
-        overflow: hidden;
-        grid-row: span ${rowCells};
-        grid-column: span ${colCells};
-        display: grid;
-        grid-template-rows: repeat(${rowCells}, 1fr);
-        grid-template-columns: repeat(${colCells}, 1fr);
-      `
+      style: ` width: ${100*colCells/cols}vw; height: ${100*rowCells/rows}vh; overflow: hidden; grid-row: span ${rowCells}; grid-column: span ${colCells}; display: grid; grid-template-rows: repeat(${rowCells}, 1fr); grid-template-columns: repeat(${colCells}, 1fr); `
     }
   )
 }
@@ -2962,29 +2670,19 @@ const main = $.main(
   flexSection(rows, cols),
   {
     id: 'main',
-    style: `
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: repeat(${rows}, 1fr);
-      grid-template-columns: repeat(${cols}, 1fr);
-    `
+    style: ` height: 100vh; width: 100vw; overflow: hidden; display: grid; grid-template-rows: repeat(${rows}, 1fr); grid-template-columns: repeat(${cols}, 1fr); `
   }
 )
 
 const usedContent = Array.from(
-  new Set(
-    Array.from(main.getElementsByClassName('content')).map(e => e.innerHTML)
-
-  )
+  new Set([
+    ...$.cls(main, 'content').map(e => e.innerHTML),
+    ...$.cls(main, 'charContentGroup').map(getContent)
+  ])
 )
 
-
-
-
 window.onload = () => {
-
+  document.body.innerHTML = ''
   setMetadata(usedContent.join(' '))
   $.render(document.body, main)
 
@@ -2999,9 +2697,94 @@ window.onload = () => {
 
 
   document.onkeydown = (event) => {
+    // DOWNLOAD HTML
+    if (event.key === 'd') {
+      const a = document.createElement('a')
+      a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
+      a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    }
+
+    // OVERDRIVE
+    else if (event.key === 'o') {
+      if (OVERDRIVE) {
+        document.body.classList.remove('overdrive')
+        allRunningIntervals.forEach(i => {
+          i.newInterval(i.originalMs)
+        })
+      } else {
+        document.body.classList.add('overdrive')
+        allRunningIntervals.forEach(i => {
+          i.newInterval(i.originalMs/6)
+        })
+      }
+      OVERDRIVE = !OVERDRIVE
+    }
+
+
+    // PAUSE
+    else if (event.key === 'p') {
+      if (PAUSED) {
+        START_TIME += Date.now() - LAST_PAUSED
+        document.body.classList.remove('pauseAll')
+      } else {
+        LAST_PAUSED = Date.now()
+        document.body.classList.add('pauseAll')
+      }
+      PAUSED = !PAUSED
+      try {
+        window.localStorage.setItem('__DOPAMINE_IS_PAUSED__', PAUSED)
+      } catch(e) {}
+    }
+
+    // ANHEDONIC MODE
+    else if (event.key === 'a') {
+      if (ANHEDONIC) {
+        document.body.classList.remove('anhedonic')
+        sourcesToNormalMode()
+      } else {
+        document.body.classList.add('anhedonic')
+        sourcesToAnhedonicMode()
+      }
+      ANHEDONIC = !ANHEDONIC
+    }
+
+    // MOUSE HIDE
+    else if (event.key === 'm') {
+      if (isHidingMouse) {
+        document.exitPointerLock()
+        document.body.classList.remove('viewerMode')
+      } else {
+        document.body.classList.add('viewerMode')
+        document.body.requestPointerLock()
+      }
+      isHidingMouse = !isHidingMouse
+    }
+
+    else if (event.key === 'i') {
+      if (INVERT_ALL) {
+        document.body.classList.remove('invertAll')
+      } else {
+        document.body.classList.add('invertAll')
+      }
+
+      INVERT_ALL = !INVERT_ALL
+    }
+
+    // NO DISTRACTION MODE
+    else if (event.key === 'n') {
+      if (isFullScreen) document.exitFullscreen()
+      else document.body.requestFullscreen({ navigationUI: 'hide' })
+
+      isFullScreen = !isFullScreen
+    }
+
+
     // TOGGLE EMOJIS
-    if (event.key === 'e') {
-      const emojiShadows = Array.from(document.getElementsByClassName('emojiShadow'))
+    else if (event.key === 'e') {
+      const emojiShadows = $.cls(document, 'emojiShadow')
 
       if (usingEmojiPolyfill) {
         Array.from(document.getElementsByTagName('img')).forEach(img => {
@@ -3011,7 +2794,7 @@ window.onload = () => {
           e.style.textShadow = getTextShadowValue(Number(e.dataset.h) || 0)
           e.style.filter = ''
         })
-      } else {
+      } else if (window.twemoji) {
         twemoji.parse(
           document.body, {
             folder: 'svg',
@@ -3032,50 +2815,12 @@ window.onload = () => {
       } catch(e) {}
     }
 
-    // FULLSCREEN
-    else if (event.key === 'f') {
-      if (isFullScreen) document.exitFullscreen()
-      else document.body.requestFullscreen({ navigationUI: 'hide' })
 
-      isFullScreen = !isFullScreen
-    }
 
-    // DOWNLOAD HTML
-    else if (event.key === 'h') {
-      const a = document.createElement('a')
-      a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
-      a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-    }
 
-    // HIDE MOUSE
-    else if (event.key === 'm') {
-      if (isHidingMouse) {
-        document.exitPointerLock()
-        document.body.classList.remove('viewerMode')
-      } else {
-        document.body.classList.add('viewerMode')
-        document.body.requestPointerLock()
-      }
-      isHidingMouse = !isHidingMouse
-    }
 
-    // PAUSE
-    else if (event.key === 'p') {
-      if (PAUSED) {
-        START_TIME += Date.now() - LAST_PAUSED
-        document.body.classList.remove('pauseAll')
-      } else {
-        LAST_PAUSED = Date.now()
-        document.body.classList.add('pauseAll')
-      }
-      PAUSED = !PAUSED
-      try {
-        window.localStorage.setItem('__DOPAMINE_IS_PAUSED__', PAUSED)
-      } catch(e) {}
-    }
+
+
   }
 
   if (USE_EMOJI_POLYFILL && window.twemoji) {
@@ -3086,3 +2831,17 @@ window.onload = () => {
     })
   }
 }
+
+/*
+D ownload HTML
+O verdrive
+P ause
+A nhedonic Mode
+M ouse Hide
+I
+N o distraction mode (live view only)
+E moji Toggle
+
+
+Fullscreen
+*/

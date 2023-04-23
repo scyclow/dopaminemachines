@@ -344,7 +344,9 @@ const affirmations = [
   `YOU'RE #1`,
   'THIS ROCKS',
   'ALL NATURAL',
-  'EASY AS 1 2 3'
+  'EASY AS 1 2 3',
+  'HAPPY',
+  'REWARDS',
 ]
 
 const wwwText = [

@@ -27,7 +27,7 @@ css(`
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
 
-  if (animation === spin) {
+  if ([spin, flamingHot].includes(animation)) {
     fn = smoothSound
 
   } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe, growShrinkShort].includes(animation)) {
@@ -66,7 +66,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   } else if (animation === climb) {
     fn = climbSound
 
-  } else if ([iden, flamingHot].includes(animation)) {
+  } else if (animation === iden) {
     fn = singleSound
 
   } else return
@@ -608,9 +608,11 @@ LAYOUTS
 */
 
 
+const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
+const colSize = sample([2, 3, 4, 6, 10, 15])
+const cellSize = sample([3, 4, 6, 12, 16])
 
 function flexSection(rowCells, colCells) {
-
   const cells = {}
   times(rowCells, r => cells[r] = [])
 
@@ -642,23 +644,20 @@ function flexSection(rowCells, colCells) {
     rowMax = rowCells
 
   } else if (layoutStyle === 5) {
-    const rSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
-    rowMin = rSize
-    rowMax = rSize
+    rowMin = rowSize
+    rowMax = rowSize
 
     colMin = 12
     colMax = colCells
 
   } else if (layoutStyle === 6) {
-    const cSize = sample([2, 3, 4, 6, 10, 15])
-    colMin = cSize
-    colMax = cSize
+    colMin = colSize
+    colMax = colSize
 
     rowMin = prb(0.5) ? 16 : rowCells
     rowMax = rowCells
 
   } else if (layoutStyle === 7) {
-    const cellSize = sample([3, 4, 6, 12, 16])
     colMin = cellSize
     colMax = cellSize
     rowMin = cellSize
