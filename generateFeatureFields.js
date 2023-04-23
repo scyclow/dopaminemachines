@@ -144,19 +144,47 @@ const contentSampleCategories = [
   'Lunar',
   'Positivity',
   'Hedonic Treadmill',
-  'Filler',
+  'Misc.',
+]
+
+const animationCategories = [
+  'Up-Down',
+  'Left-Right',
+  'Grow-Shrink',
+  'Blink',
+  'Dance',
+  'Spin',
+  'Wave',
+  'Climb',
+  'Hexagon',
+  'Breathe',
+  'Flaming Hot',
+  'Horizontal Siren',
+  'Vertical Siren',
+  'Horizontal Pivot',
+  'Vertical Pivot',
+  'Horizontal Flip',
+  'Vertical Flip',
 ]
 
 contentSampleCategories.forEach(category => {
   features.push({
-    name: 'Content Sample: ' + category,
+    name: '_Sample: ' + category,
     type: 'boolean'
   })
 })
 
+animationCategories.forEach(animation => {
+  features.push({
+    name: '_Animation: ' + animation,
+    type: 'boolean'
+  })
+})
+
+
 content.forEach(name => {
   features.push({
-    name,
+    ['_Content: ' + name]: name,
     type: 'boolean',
   })
 })

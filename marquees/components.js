@@ -482,18 +482,6 @@ const leftRight = (grandChild, args={}) => {
 }
 
 
-const doubleSpin = (grandChild, args={}) => {
-  const shadow = spin(grandChild.cloneNode(true), {
-    ...args,
-    style: `position: absolute; opacity: 0.5`,
-    delay: args.delay + args.duration*0.15,
-  })
-  return [
-    shadow,
-    spin(grandChild, args)
-  ]
-}
-
 const flamingHotParent = genericAnimatingComponent('flamingHot')
 const flamingHot = (grandChild, args={}) => {
   return flamingHotParent(grandChild, {

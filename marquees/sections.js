@@ -172,7 +172,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 
-
+const usedAnimations = []
 
 
 let marqueeCount = 0
@@ -213,6 +213,8 @@ function marqueeContainter(rSpan, cSpan) {
     )
     : iden
 
+  usedAnimations.push(msgAnimation)
+
   const r = rnd(750, 1500)
   const d = map(sideways ? cSpan/cols : rSpan/rows, 0, 1, 0.5, 20)
   const duration = rnd(d, 100) * slow * speed
@@ -244,6 +246,7 @@ function marqueeContainter(rSpan, cSpan) {
 
   let childEl, playSound
   if (showLeftRight) {
+    usedAnimations.push(leftRight)
     childEl = leftRight(childWithPairedEmoji, {
       style: `font-size: ${height};`,
       duration: r * slow * speed,
@@ -388,6 +391,9 @@ function animationContainer(rSpan, cSpan) {
       climb,
     ])
 
+  usedAnimations.push(animation)
+  usedAnimations.push(secondAnimation)
+
   const primaryAnimationParams = {
     delay: rnd(3500),
     duration: rnd(750, 5000),
@@ -500,6 +506,8 @@ function animationGridContainer(rSpan, cSpan) {
     [1, wave],
     [1, climb],
   )
+
+  usedAnimations.push(animation)
 
   const [r, c] = getEmojiGrid(rSpan, cSpan)
 

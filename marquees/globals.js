@@ -63,8 +63,12 @@ const marqueeAnimationRate = chance(
 
 const tokenId = Number(tokenData.tokenId) % 1000000
 const is69 = tokenId === 69
+const is420 = tokenId === 420
+const is100 = tokenId === 100
+const is666 = tokenId === 666
+const is7 = [7, 77].includes(tokenId)
 const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
-const showEmojis = is69 || prb(0.5)
+const showEmojis = is100 || is666 || is7 || is420 || is69 || prb(0.5)
 
 const pairedEmojiPrb = chance(
   [2, 0],

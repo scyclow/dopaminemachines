@@ -307,8 +307,12 @@ const marqueeAnimationRate = chance(
 
 const tokenId = Number(tokenData.tokenId) % 1000000
 const is69 = tokenId === 69
+const is420 = tokenId === 420
+const is100 = tokenId === 100
+const is666 = tokenId === 666
+const is7 = [7, 77].includes(tokenId)
 const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
-const showEmojis = is69 || prb(0.5)
+const showEmojis = is100 || is666 || is7 || is420 || is69 || prb(0.5)
 
 const pairedEmojiPrb = chance(
   [2, 0],
@@ -1813,18 +1817,6 @@ const leftRight = (grandChild, args={}) => {
 }
 
 
-const doubleSpin = (grandChild, args={}) => {
-  const shadow = spin(grandChild.cloneNode(true), {
-    ...args,
-    style: `position: absolute; opacity: 0.5`,
-    delay: args.delay + args.duration*0.15,
-  })
-  return [
-    shadow,
-    spin(grandChild, args)
-  ]
-}
-
 const flamingHotParent = genericAnimatingComponent('flamingHot')
 const flamingHot = (grandChild, args={}) => {
   return flamingHotParent(grandChild, {
@@ -2086,7 +2078,7 @@ const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const circusEmojis = emojis(`🎪 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
-const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸`)
+const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸 🚬`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -2423,8 +2415,8 @@ const emojiTextRelationships = {
 function chooseEmojiForText(txt, selectionPrb=0.1) {
   if (prb(selectionPrb) && emojiTextRelationships.single[txt]) {
     return sample(emojiOverride || emojiTextRelationships.single[txt])
-  } else {
-    sample([])
+  } else if (is420) {
+    return '🚬'
   }
 
   for (let [texts, emojis] of emojiTextRelationships.group) {
@@ -2481,8 +2473,20 @@ function chooseContent() {
   }
 
   if (is69) {
-    contentSample.text = sexyText
-    contentSample.emojis = sexy
+    contentSample.text = [sexyText]
+    contentSample.emojis = [sexy]
+  } else if (is420) {
+    contentSample.text = [funText]
+    contentSample.emojis = emojis('🚬 🎄 🍄 😵‍💫')
+  } else if (is100) {
+    contentSample.text = ['100%']
+    contentSample.emojis = emojis('💯')
+  } else if (is666) {
+    contentSample.text = [hotText]
+    contentSample.emojis = [hot]
+  } else if (is7) {
+    contentSample.text = [luckyText]
+    contentSample.emojis = [lucky]
   }
 
 
@@ -2558,7 +2562,7 @@ css(`
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
 
-  if (animation === spin) {
+  if ([spin, flamingHot].includes(animation)) {
     fn = smoothSound
 
   } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe, growShrinkShort].includes(animation)) {
@@ -2597,7 +2601,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   } else if (animation === climb) {
     fn = climbSound
 
-  } else if ([iden, flamingHot].includes(animation)) {
+  } else if (animation === iden) {
     fn = singleSound
 
   } else return
@@ -2703,7 +2707,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 
-
+const usedAnimations = []
 
 
 let marqueeCount = 0
@@ -2744,6 +2748,8 @@ function marqueeContainter(rSpan, cSpan) {
     )
     : iden
 
+  usedAnimations.push(msgAnimation)
+
   const r = rnd(750, 1500)
   const d = map(sideways ? cSpan/cols : rSpan/rows, 0, 1, 0.5, 20)
   const duration = rnd(d, 100) * slow * speed
@@ -2775,6 +2781,7 @@ function marqueeContainter(rSpan, cSpan) {
 
   let childEl, playSound
   if (showLeftRight) {
+    usedAnimations.push(leftRight)
     childEl = leftRight(childWithPairedEmoji, {
       style: `font-size: ${height};`,
       duration: r * slow * speed,
@@ -2919,6 +2926,9 @@ function animationContainer(rSpan, cSpan) {
       climb,
     ])
 
+  usedAnimations.push(animation)
+  usedAnimations.push(secondAnimation)
+
   const primaryAnimationParams = {
     delay: rnd(3500),
     duration: rnd(750, 5000),
@@ -3032,6 +3042,8 @@ function animationGridContainer(rSpan, cSpan) {
     [1, climb],
   )
 
+  usedAnimations.push(animation)
+
   const [r, c] = getEmojiGrid(rSpan, cSpan)
 
   const duration = rnd(750, 5000)
@@ -3139,9 +3151,11 @@ LAYOUTS
 */
 
 
+const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
+const colSize = sample([2, 3, 4, 6, 10, 15])
+const cellSize = sample([3, 4, 6, 12, 16])
 
 function flexSection(rowCells, colCells) {
-
   const cells = {}
   times(rowCells, r => cells[r] = [])
 
@@ -3173,23 +3187,20 @@ function flexSection(rowCells, colCells) {
     rowMax = rowCells
 
   } else if (layoutStyle === 5) {
-    const rSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
-    rowMin = rSize
-    rowMax = rSize
+    rowMin = rowSize
+    rowMax = rowSize
 
     colMin = 12
     colMax = colCells
 
   } else if (layoutStyle === 6) {
-    const cSize = sample([2, 3, 4, 6, 10, 15])
-    colMin = cSize
-    colMax = cSize
+    colMin = colSize
+    colMax = colSize
 
     rowMin = prb(0.5) ? 16 : rowCells
     rowMax = rowCells
 
   } else if (layoutStyle === 7) {
-    const cellSize = sample([3, 4, 6, 12, 16])
     colMin = cellSize
     colMax = cellSize
     rowMin = cellSize
@@ -3332,20 +3343,11 @@ function flexSection(rowCells, colCells) {
     }
   )
 
-  const usedContent = Array.from(
-    new Set([
-      ...$.cls(main, 'content').map(e => e.innerHTML),
-      ...$.cls(main, 'charContentGroup').map(getContent)
-    ])
-  )
 
   const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {
     f[t] = false
     return f
   }, {})
-
-  usedContent.forEach(c => features[c] = true)
-
 
 
   features['Layout Style'] =
@@ -3406,27 +3408,58 @@ function flexSection(rowCells, colCells) {
     if ([dealsText].includes(s)) return 'Deals'
     if ([fomo].includes(s)) return 'FOMO'
     if ([hedonicTreadmill, symbols, justArrows].includes(s)) return 'Hedonic Treadmill'
-    return 'Filler'
+    return 'Misc.'
   }
 
   const usedContentSamples = [...contentSample.text, ...(showEmojis ? contentSample.emojis : [])].map(classifySample)
 
-  features['Content Sample: Exciting'] = usedContentSamples.includes('Exciting')
-  features['Content Sample: Lucky'] = usedContentSamples.includes('Lucky')
-  features['Content Sample: Sexy'] = usedContentSamples.includes('Sexy')
-  features['Content Sample: Party Time'] = usedContentSamples.includes('Party Time')
-  features['Content Sample: Get Rich Quick'] = usedContentSamples.includes('Get Rich Quick')
-  features['Content Sample: Yummy'] = usedContentSamples.includes('Yummy')
-  features['Content Sample: Fun'] = usedContentSamples.includes('Fun')
-  features['Content Sample: Hot Stuff'] = usedContentSamples.includes('Hot Stuff')
-  features['Content Sample: Not Financial Advice'] = usedContentSamples.includes('Not Financial Advice')
-  features['Content Sample: World Wide Web'] = usedContentSamples.includes('World Wide Web')
-  features['Content Sample: Deals'] = usedContentSamples.includes('Deals')
-  features['Content Sample: FOMO'] = usedContentSamples.includes('FOMO')
-  features['Content Sample: Lunar'] = usedContentSamples.includes('Lunar')
-  features['Content Sample: Positivity'] = usedContentSamples.includes('Positivity')
-  features['Content Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
-  features['Content Sample: Filler'] = usedContentSamples.includes('Filler')
+  features['_Sample: Exciting'] = usedContentSamples.includes('Exciting')
+  features['_Sample: Lucky'] = usedContentSamples.includes('Lucky')
+  features['_Sample: Sexy'] = usedContentSamples.includes('Sexy')
+  features['_Sample: Party Time'] = usedContentSamples.includes('Party Time')
+  features['_Sample: Get Rich Quick'] = usedContentSamples.includes('Get Rich Quick')
+  features['_Sample: Yummy'] = usedContentSamples.includes('Yummy')
+  features['_Sample: Fun'] = usedContentSamples.includes('Fun')
+  features['_Sample: Hot Stuff'] = usedContentSamples.includes('Hot Stuff')
+  features['_Sample: Not Financial Advice'] = usedContentSamples.includes('Not Financial Advice')
+  features['_Sample: World Wide Web'] = usedContentSamples.includes('World Wide Web')
+  features['_Sample: Deals'] = usedContentSamples.includes('Deals')
+  features['_Sample: FOMO'] = usedContentSamples.includes('FOMO')
+  features['_Sample: Lunar'] = usedContentSamples.includes('Lunar')
+  features['_Sample: Positivity'] = usedContentSamples.includes('Positivity')
+  features['_Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
+  features['_Sample: Filler'] = usedContentSamples.includes('Filler')
+
+
+  const usedAnimationsUnique = Array.from(new Set(usedAnimations.filter(a => a !== iden)))
+
+
+  features['_Animation: Up-Down'] = usedContentSamples.includes(updownLong)
+  features['_Animation: Left-Right'] = usedContentSamples.includes(leftRight)
+  features['_Animation: Grow-Shrink'] = usedContentSamples.includes(growShrink) || usedContentSamples.includes(growShrinkShort)
+  features['_Animation: Blink'] = usedContentSamples.includes(blink)
+  features['_Animation: Dance'] = usedContentSamples.includes(dance)
+  features['_Animation: Spin'] = usedContentSamples.includes(spin)
+  features['_Animation: Wave'] = usedContentSamples.includes(wave)
+  features['_Animation: Climb'] = usedContentSamples.includes(climb)
+  features['_Animation: Hexagon'] = usedContentSamples.includes(hexagon)
+  features['_Animation: Breathe'] = usedContentSamples.includes(breathe)
+  features['_Animation: Flaming Hot'] = usedContentSamples.includes(flamingHot)
+  features['_Animation: Horizontal Siren'] = usedContentSamples.includes(hSiren)
+  features['_Animation: Vertical Siren'] = usedContentSamples.includes(vSiren) || usedContentSamples.includes(vSirenShort)
+  features['_Animation: Horizontal Pivot'] = usedContentSamples.includes(hPivot)
+  features['_Animation: Vertical Pivot'] = usedContentSamples.includes(vPivot)
+  features['_Animation: Horizontal Flip'] = usedContentSamples.includes(hFlip)
+  features['_Animation: Vertical Flip'] = usedContentSamples.includes(vFlip)
+
+  const usedContent = Array.from(
+    new Set([
+      ...$.cls(main, 'content').map(e => e.innerHTML),
+      ...$.cls(main, 'charContentGroup').map(getContent)
+    ])
+  )
+  usedContent.forEach(c => features['_Content: ' + c] = true)
+
 
   return features
 }

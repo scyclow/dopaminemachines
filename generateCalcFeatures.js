@@ -23,20 +23,11 @@ const calcFeatures = `
     }
   )
 
-  const usedContent = Array.from(
-    new Set([
-      ...$.cls(main, 'content').map(e => e.innerHTML),
-      ...$.cls(main, 'charContentGroup').map(getContent)
-    ])
-  )
 
   const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {
     f[t] = false
     return f
   }, {})
-
-  usedContent.forEach(c => features[c] = true)
-
 
 
   features['Layout Style'] =
@@ -97,27 +88,58 @@ const calcFeatures = `
     if ([dealsText].includes(s)) return 'Deals'
     if ([fomo].includes(s)) return 'FOMO'
     if ([hedonicTreadmill, symbols, justArrows].includes(s)) return 'Hedonic Treadmill'
-    return 'Filler'
+    return 'Misc.'
   }
 
   const usedContentSamples = [...contentSample.text, ...(showEmojis ? contentSample.emojis : [])].map(classifySample)
 
-  features['Content Sample: Exciting'] = usedContentSamples.includes('Exciting')
-  features['Content Sample: Lucky'] = usedContentSamples.includes('Lucky')
-  features['Content Sample: Sexy'] = usedContentSamples.includes('Sexy')
-  features['Content Sample: Party Time'] = usedContentSamples.includes('Party Time')
-  features['Content Sample: Get Rich Quick'] = usedContentSamples.includes('Get Rich Quick')
-  features['Content Sample: Yummy'] = usedContentSamples.includes('Yummy')
-  features['Content Sample: Fun'] = usedContentSamples.includes('Fun')
-  features['Content Sample: Hot Stuff'] = usedContentSamples.includes('Hot Stuff')
-  features['Content Sample: Not Financial Advice'] = usedContentSamples.includes('Not Financial Advice')
-  features['Content Sample: World Wide Web'] = usedContentSamples.includes('World Wide Web')
-  features['Content Sample: Deals'] = usedContentSamples.includes('Deals')
-  features['Content Sample: FOMO'] = usedContentSamples.includes('FOMO')
-  features['Content Sample: Lunar'] = usedContentSamples.includes('Lunar')
-  features['Content Sample: Positivity'] = usedContentSamples.includes('Positivity')
-  features['Content Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
-  features['Content Sample: Filler'] = usedContentSamples.includes('Filler')
+  features['_Sample: Exciting'] = usedContentSamples.includes('Exciting')
+  features['_Sample: Lucky'] = usedContentSamples.includes('Lucky')
+  features['_Sample: Sexy'] = usedContentSamples.includes('Sexy')
+  features['_Sample: Party Time'] = usedContentSamples.includes('Party Time')
+  features['_Sample: Get Rich Quick'] = usedContentSamples.includes('Get Rich Quick')
+  features['_Sample: Yummy'] = usedContentSamples.includes('Yummy')
+  features['_Sample: Fun'] = usedContentSamples.includes('Fun')
+  features['_Sample: Hot Stuff'] = usedContentSamples.includes('Hot Stuff')
+  features['_Sample: Not Financial Advice'] = usedContentSamples.includes('Not Financial Advice')
+  features['_Sample: World Wide Web'] = usedContentSamples.includes('World Wide Web')
+  features['_Sample: Deals'] = usedContentSamples.includes('Deals')
+  features['_Sample: FOMO'] = usedContentSamples.includes('FOMO')
+  features['_Sample: Lunar'] = usedContentSamples.includes('Lunar')
+  features['_Sample: Positivity'] = usedContentSamples.includes('Positivity')
+  features['_Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
+  features['_Sample: Filler'] = usedContentSamples.includes('Filler')
+
+
+  const usedAnimationsUnique = Array.from(new Set(usedAnimations.filter(a => a !== iden)))
+
+
+  features['_Animation: Up-Down'] = usedContentSamples.includes(updownLong)
+  features['_Animation: Left-Right'] = usedContentSamples.includes(leftRight)
+  features['_Animation: Grow-Shrink'] = usedContentSamples.includes(growShrink) || usedContentSamples.includes(growShrinkShort)
+  features['_Animation: Blink'] = usedContentSamples.includes(blink)
+  features['_Animation: Dance'] = usedContentSamples.includes(dance)
+  features['_Animation: Spin'] = usedContentSamples.includes(spin)
+  features['_Animation: Wave'] = usedContentSamples.includes(wave)
+  features['_Animation: Climb'] = usedContentSamples.includes(climb)
+  features['_Animation: Hexagon'] = usedContentSamples.includes(hexagon)
+  features['_Animation: Breathe'] = usedContentSamples.includes(breathe)
+  features['_Animation: Flaming Hot'] = usedContentSamples.includes(flamingHot)
+  features['_Animation: Horizontal Siren'] = usedContentSamples.includes(hSiren)
+  features['_Animation: Vertical Siren'] = usedContentSamples.includes(vSiren) || usedContentSamples.includes(vSirenShort)
+  features['_Animation: Horizontal Pivot'] = usedContentSamples.includes(hPivot)
+  features['_Animation: Vertical Pivot'] = usedContentSamples.includes(vPivot)
+  features['_Animation: Horizontal Flip'] = usedContentSamples.includes(hFlip)
+  features['_Animation: Vertical Flip'] = usedContentSamples.includes(vFlip)
+
+  const usedContent = Array.from(
+    new Set([
+      ...$.cls(main, 'content').map(e => e.innerHTML),
+      ...$.cls(main, 'charContentGroup').map(getContent)
+    ])
+  )
+  usedContent.forEach(c => features['_Content: ' + c] = true)
+
 `
 
 

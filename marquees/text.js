@@ -84,7 +84,7 @@ const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const circusEmojis = emojis(`🎪 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
-const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸`)
+const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸 🚬`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -421,8 +421,8 @@ const emojiTextRelationships = {
 function chooseEmojiForText(txt, selectionPrb=0.1) {
   if (prb(selectionPrb) && emojiTextRelationships.single[txt]) {
     return sample(emojiOverride || emojiTextRelationships.single[txt])
-  } else {
-    sample([])
+  } else if (is420) {
+    return '🚬'
   }
 
   for (let [texts, emojis] of emojiTextRelationships.group) {
@@ -479,8 +479,20 @@ function chooseContent() {
   }
 
   if (is69) {
-    contentSample.text = sexyText
-    contentSample.emojis = sexy
+    contentSample.text = [sexyText]
+    contentSample.emojis = [sexy]
+  } else if (is420) {
+    contentSample.text = [funText]
+    contentSample.emojis = emojis('🚬 🎄 🍄 😵‍💫')
+  } else if (is100) {
+    contentSample.text = ['100%']
+    contentSample.emojis = emojis('💯')
+  } else if (is666) {
+    contentSample.text = [hotText]
+    contentSample.emojis = [hot]
+  } else if (is7) {
+    contentSample.text = [luckyText]
+    contentSample.emojis = [lucky]
   }
 
 
