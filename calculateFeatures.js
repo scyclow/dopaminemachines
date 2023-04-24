@@ -247,6 +247,8 @@ const cols = 60
 const rows = 48
 const EDITION_SIZE = 777
 
+const projectionPages = {}
+
 
 let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
 let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
@@ -1298,7 +1300,7 @@ const triggerUtterance = () => {
   if (ANHEDONIC) {
     txt.rate = 0.7
   } else if (OVERDRIVE) {
-    txt.rate = 1.2
+    txt.rate = 1.4
   } else {
     txt.rate = 1
   }
@@ -2073,7 +2075,7 @@ const justArrows = emojis(`→ ← → ← → ← 🔴`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️`)
+const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️ ❤️`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const circusEmojis = emojis(`🎪 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
@@ -2430,16 +2432,27 @@ function chooseEmojiForText(txt, selectionPrb=0.1) {
 
 
 
+const sampledTextContent = []
+const sampledEmojiContent = []
 
-
-function sampleContent() {
-  const showEmojis = (prb(0.3) && _content.emojis.length) || !_content.text.length
+function sampleContent(contentOverride=false, onlyEmojis=false) {
+  if (contentOverride) {
+    const c = onlyEmojis ? sample(sampledEmojiContent) : sample([...sampledEmojiContent, ...sampledTextContent])
+    return [c, c]
+  }
+  const showEmojis = onlyEmojis || (prb(0.3) && _content.emojis.length) || !_content.text.length
   const e = sample(_content.emojis)
 
   const mainContent = showEmojis ? e : sample(_content.text)
   let replacementContent = showEmojis ? e : sample((textOverride||[]).map(c => word(c)))
   if (!textOverride) {
     replacementContent = mainContent
+  }
+
+  if (showEmojis) {
+    sampledEmojiContent.push(mainContent)
+  } else {
+    sampledTextContent.push(mainContent)
   }
 
   return [mainContent, replacementContent]
@@ -2711,9 +2724,9 @@ const usedAnimations = []
 
 
 let marqueeCount = 0
-function marqueeContainter(rSpan, cSpan) {
+function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   marqueeCount++
-  let [child, replacementChild] = sampleContent()
+  let [child, replacementChild] = sampleContent(contentOverride)
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
 
   if (textOverride) child = replacementChild
@@ -2868,9 +2881,9 @@ function getFontSize(txt, rSpan, cSpan) {
 const allPlayingSounds = []
 
 let animationCount = 0
-function animationContainer(rSpan, cSpan) {
+function animationContainer(rSpan, cSpan, contentOverride=false) {
   animationCount++
-  let [child, replacementChild] = sampleContent()
+  let [child, replacementChild] = sampleContent(contentOverride)
   if (textOverride) child = replacementChild
 
   const height = `calc(${100*rSpan/rows}vh)`
@@ -2878,7 +2891,7 @@ function animationContainer(rSpan, cSpan) {
   const h = chooseHue()
   const txtH = chooseAltHue(h)
 
-  const ignoreCharAnimation = [...emojiList, '<<<<', '>>>>'].includes(child.innerHTML.replace('!', ''))
+  const ignoreCharAnimation = emojiList.includes(child.innerHTML.replace('!', ''))
 
   const animation = sample([
     dance,
@@ -3018,8 +3031,8 @@ function getEmojiGrid(rSpan, cSpan) {
 }
 
 let gridCount = 0
-function animationGridContainer(rSpan, cSpan) {
-  const child = sample(_content.emojis)
+function animationGridContainer(rSpan, cSpan, contentOverride=false) {
+  const [child] = sampleContent(contentOverride, true)
 
   if (!child) return animationContainer(rSpan, cSpan)
   gridCount++
@@ -3155,7 +3168,7 @@ const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
 const colSize = sample([2, 3, 4, 6, 10, 15])
 const cellSize = sample([3, 4, 6, 12, 16])
 
-function flexSection(rowCells, colCells) {
+function flexSection(rowCells, colCells, contentOverride=false) {
   const cells = {}
   times(rowCells, r => cells[r] = [])
 
@@ -3278,13 +3291,13 @@ function flexSection(rowCells, colCells) {
       aspectRatio < 1.25 && aspectRatio > 0.8
 
       ? prb(0.75) && _content.emojis.length
-        ? animationGridContainer(rSpan, cSpan)
-        : animationContainer(rSpan, cSpan)
+        ? animationGridContainer(rSpan, cSpan, contentOverride)
+        : animationContainer(rSpan, cSpan, contentOverride)
 
       : aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
-        animationContainer(rSpan, cSpan)
+        animationContainer(rSpan, cSpan, contentOverride)
 
-      : marqueeContainter(rSpan, cSpan)
+      : marqueeContainter(rSpan, cSpan, contentOverride)
     )
 
     times(rSpan, r =>
@@ -3345,7 +3358,7 @@ function flexSection(rowCells, colCells) {
 
 
   const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {
-    f[t] = false
+    f['_Content: ' + t] = false
     return f
   }, {})
 
@@ -3434,23 +3447,23 @@ function flexSection(rowCells, colCells) {
   const usedAnimationsUnique = Array.from(new Set(usedAnimations.filter(a => a !== iden)))
 
 
-  features['_Animation: Up-Down'] = usedContentSamples.includes(updownLong)
-  features['_Animation: Left-Right'] = usedContentSamples.includes(leftRight)
-  features['_Animation: Grow-Shrink'] = usedContentSamples.includes(growShrink) || usedContentSamples.includes(growShrinkShort)
-  features['_Animation: Blink'] = usedContentSamples.includes(blink)
-  features['_Animation: Dance'] = usedContentSamples.includes(dance)
-  features['_Animation: Spin'] = usedContentSamples.includes(spin)
-  features['_Animation: Wave'] = usedContentSamples.includes(wave)
-  features['_Animation: Climb'] = usedContentSamples.includes(climb)
-  features['_Animation: Hexagon'] = usedContentSamples.includes(hexagon)
-  features['_Animation: Breathe'] = usedContentSamples.includes(breathe)
-  features['_Animation: Flaming Hot'] = usedContentSamples.includes(flamingHot)
-  features['_Animation: Horizontal Siren'] = usedContentSamples.includes(hSiren)
-  features['_Animation: Vertical Siren'] = usedContentSamples.includes(vSiren) || usedContentSamples.includes(vSirenShort)
-  features['_Animation: Horizontal Pivot'] = usedContentSamples.includes(hPivot)
-  features['_Animation: Vertical Pivot'] = usedContentSamples.includes(vPivot)
-  features['_Animation: Horizontal Flip'] = usedContentSamples.includes(hFlip)
-  features['_Animation: Vertical Flip'] = usedContentSamples.includes(vFlip)
+  features['_Animation: Up-Down'] = usedAnimationsUnique.includes(updownLong)
+  features['_Animation: Left-Right'] = usedAnimationsUnique.includes(leftRight)
+  features['_Animation: Grow-Shrink'] = usedAnimationsUnique.includes(growShrink) || usedAnimationsUnique.includes(growShrinkShort)
+  features['_Animation: Blink'] = usedAnimationsUnique.includes(blink)
+  features['_Animation: Dance'] = usedAnimationsUnique.includes(dance)
+  features['_Animation: Spin'] = usedAnimationsUnique.includes(spin)
+  features['_Animation: Wave'] = usedAnimationsUnique.includes(wave)
+  features['_Animation: Climb'] = usedAnimationsUnique.includes(climb)
+  features['_Animation: Hexagon'] = usedAnimationsUnique.includes(hexagon)
+  features['_Animation: Breathe'] = usedAnimationsUnique.includes(breathe)
+  features['_Animation: Flaming Hot'] = usedAnimationsUnique.includes(flamingHot)
+  features['_Animation: Horizontal Siren'] = usedAnimationsUnique.includes(hSiren)
+  features['_Animation: Vertical Siren'] = usedAnimationsUnique.includes(vSiren) || usedAnimationsUnique.includes(vSirenShort)
+  features['_Animation: Horizontal Pivot'] = usedAnimationsUnique.includes(hPivot)
+  features['_Animation: Vertical Pivot'] = usedAnimationsUnique.includes(vPivot)
+  features['_Animation: Horizontal Flip'] = usedAnimationsUnique.includes(hFlip)
+  features['_Animation: Vertical Flip'] = usedAnimationsUnique.includes(vFlip)
 
   const usedContent = Array.from(
     new Set([

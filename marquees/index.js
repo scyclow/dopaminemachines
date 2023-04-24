@@ -1,10 +1,10 @@
-const projectionPlanes = {}
 
-function generateMain(id) {
+function generateMain(id, contentOverride=false) {
   return $.main(
-    flexSection(rows, cols),
+    flexSection(rows, cols, contentOverride),
     {
-      id: `main projection-plane-${id}` ,
+      id: `main`,
+      class: `projection-plane-${id}`,
       style: `
         height: 100vh;
         width: 100vw;
@@ -24,8 +24,8 @@ function renderMain(main) {
 
 const main = generateMain(1)
 
-projectionPlanes['1'] = main
-projectionPlanes.projectionsRendered = false
+projectionPages['1'] = main
+projectionPages.pagesRendered = false
 
 const usedContent = Array.from(
   new Set([
@@ -167,24 +167,24 @@ window.onload = () => {
     }
 
     else if (['1', '2', '3', '4', '5', '6', '7'].includes(key)) {
-      if (!projectionPlanes.projectionsRendered) {
-        projectionPlanes['2'] = generateMain(2)
-        projectionPlanes['3'] = generateMain(3)
-        projectionPlanes['4'] = generateMain(4)
-        projectionPlanes['5'] = generateMain(5)
-        projectionPlanes['6'] = generateMain(6)
-        projectionPlanes.projectionsRendered = true
+      if (!projectionPages.pagesRendered) {
+        projectionPages['2'] = generateMain(2, true)
+        projectionPages['3'] = generateMain(3, true)
+        projectionPages['4'] = generateMain(4, true)
+        projectionPages['5'] = generateMain(5, true)
+        projectionPages['6'] = generateMain(6, true)
+        projectionPages.pagesRendered = true
       }
 
       if (key === '7') {
-        renderMain(projectionPlanes['1'])
-        $.render(document.body, projectionPlanes['2'])
-        $.render(document.body, projectionPlanes['3'])
-        $.render(document.body, projectionPlanes['4'])
-        $.render(document.body, projectionPlanes['5'])
-        $.render(document.body, projectionPlanes['6'])
+        renderMain(projectionPages['1'])
+        $.render(document.body, projectionPages['2'])
+        $.render(document.body, projectionPages['3'])
+        $.render(document.body, projectionPages['4'])
+        $.render(document.body, projectionPages['5'])
+        $.render(document.body, projectionPages['6'])
       } else {
-        renderMain(projectionPlanes[key])
+        renderMain(projectionPages[key])
       }
       START_TIME = Date.now()
     }

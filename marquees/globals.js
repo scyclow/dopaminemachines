@@ -3,6 +3,8 @@ const cols = 60
 const rows = 48
 const EDITION_SIZE = 777
 
+const projectionPages = {}
+
 
 let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
 let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false

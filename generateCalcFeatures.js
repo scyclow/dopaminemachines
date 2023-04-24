@@ -25,7 +25,7 @@ const calcFeatures = `
 
 
   const features = [...emojiList, ...textLists.flat()].reduce((f, t) => {
-    f[t] = false
+    f['_Content: ' + t] = false
     return f
   }, {})
 
@@ -114,23 +114,23 @@ const calcFeatures = `
   const usedAnimationsUnique = Array.from(new Set(usedAnimations.filter(a => a !== iden)))
 
 
-  features['_Animation: Up-Down'] = usedContentSamples.includes(updownLong)
-  features['_Animation: Left-Right'] = usedContentSamples.includes(leftRight)
-  features['_Animation: Grow-Shrink'] = usedContentSamples.includes(growShrink) || usedContentSamples.includes(growShrinkShort)
-  features['_Animation: Blink'] = usedContentSamples.includes(blink)
-  features['_Animation: Dance'] = usedContentSamples.includes(dance)
-  features['_Animation: Spin'] = usedContentSamples.includes(spin)
-  features['_Animation: Wave'] = usedContentSamples.includes(wave)
-  features['_Animation: Climb'] = usedContentSamples.includes(climb)
-  features['_Animation: Hexagon'] = usedContentSamples.includes(hexagon)
-  features['_Animation: Breathe'] = usedContentSamples.includes(breathe)
-  features['_Animation: Flaming Hot'] = usedContentSamples.includes(flamingHot)
-  features['_Animation: Horizontal Siren'] = usedContentSamples.includes(hSiren)
-  features['_Animation: Vertical Siren'] = usedContentSamples.includes(vSiren) || usedContentSamples.includes(vSirenShort)
-  features['_Animation: Horizontal Pivot'] = usedContentSamples.includes(hPivot)
-  features['_Animation: Vertical Pivot'] = usedContentSamples.includes(vPivot)
-  features['_Animation: Horizontal Flip'] = usedContentSamples.includes(hFlip)
-  features['_Animation: Vertical Flip'] = usedContentSamples.includes(vFlip)
+  features['_Animation: Up-Down'] = usedAnimationsUnique.includes(updownLong)
+  features['_Animation: Left-Right'] = usedAnimationsUnique.includes(leftRight)
+  features['_Animation: Grow-Shrink'] = usedAnimationsUnique.includes(growShrink) || usedAnimationsUnique.includes(growShrinkShort)
+  features['_Animation: Blink'] = usedAnimationsUnique.includes(blink)
+  features['_Animation: Dance'] = usedAnimationsUnique.includes(dance)
+  features['_Animation: Spin'] = usedAnimationsUnique.includes(spin)
+  features['_Animation: Wave'] = usedAnimationsUnique.includes(wave)
+  features['_Animation: Climb'] = usedAnimationsUnique.includes(climb)
+  features['_Animation: Hexagon'] = usedAnimationsUnique.includes(hexagon)
+  features['_Animation: Breathe'] = usedAnimationsUnique.includes(breathe)
+  features['_Animation: Flaming Hot'] = usedAnimationsUnique.includes(flamingHot)
+  features['_Animation: Horizontal Siren'] = usedAnimationsUnique.includes(hSiren)
+  features['_Animation: Vertical Siren'] = usedAnimationsUnique.includes(vSiren) || usedAnimationsUnique.includes(vSirenShort)
+  features['_Animation: Horizontal Pivot'] = usedAnimationsUnique.includes(hPivot)
+  features['_Animation: Vertical Pivot'] = usedAnimationsUnique.includes(vPivot)
+  features['_Animation: Horizontal Flip'] = usedAnimationsUnique.includes(hFlip)
+  features['_Animation: Vertical Flip'] = usedAnimationsUnique.includes(vFlip)
 
   const usedContent = Array.from(
     new Set([

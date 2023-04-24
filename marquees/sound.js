@@ -594,7 +594,7 @@ const triggerUtterance = () => {
   if (ANHEDONIC) {
     txt.rate = 0.7
   } else if (OVERDRIVE) {
-    txt.rate = 1.2
+    txt.rate = 1.4
   } else {
     txt.rate = 1
   }

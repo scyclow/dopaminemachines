@@ -79,7 +79,7 @@ const justArrows = emojis(`→ ← → ← → ← 🔴`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️`)
+const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️ ❤️`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const circusEmojis = emojis(`🎪 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
@@ -436,16 +436,27 @@ function chooseEmojiForText(txt, selectionPrb=0.1) {
 
 
 
+const sampledTextContent = []
+const sampledEmojiContent = []
 
-
-function sampleContent() {
-  const showEmojis = (prb(0.3) && _content.emojis.length) || !_content.text.length
+function sampleContent(contentOverride=false, onlyEmojis=false) {
+  if (contentOverride) {
+    const c = onlyEmojis ? sample(sampledEmojiContent) : sample([...sampledEmojiContent, ...sampledTextContent])
+    return [c, c]
+  }
+  const showEmojis = onlyEmojis || (prb(0.3) && _content.emojis.length) || !_content.text.length
   const e = sample(_content.emojis)
 
   const mainContent = showEmojis ? e : sample(_content.text)
   let replacementContent = showEmojis ? e : sample((textOverride||[]).map(c => word(c)))
   if (!textOverride) {
     replacementContent = mainContent
+  }
+
+  if (showEmojis) {
+    sampledEmojiContent.push(mainContent)
+  } else {
+    sampledTextContent.push(mainContent)
   }
 
   return [mainContent, replacementContent]

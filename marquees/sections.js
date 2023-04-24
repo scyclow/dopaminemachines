@@ -176,9 +176,9 @@ const usedAnimations = []
 
 
 let marqueeCount = 0
-function marqueeContainter(rSpan, cSpan) {
+function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   marqueeCount++
-  let [child, replacementChild] = sampleContent()
+  let [child, replacementChild] = sampleContent(contentOverride)
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
 
   if (textOverride) child = replacementChild
@@ -333,9 +333,9 @@ function getFontSize(txt, rSpan, cSpan) {
 const allPlayingSounds = []
 
 let animationCount = 0
-function animationContainer(rSpan, cSpan) {
+function animationContainer(rSpan, cSpan, contentOverride=false) {
   animationCount++
-  let [child, replacementChild] = sampleContent()
+  let [child, replacementChild] = sampleContent(contentOverride)
   if (textOverride) child = replacementChild
 
   const height = `calc(${100*rSpan/rows}vh)`
@@ -343,7 +343,7 @@ function animationContainer(rSpan, cSpan) {
   const h = chooseHue()
   const txtH = chooseAltHue(h)
 
-  const ignoreCharAnimation = [...emojiList, '<<<<', '>>>>'].includes(child.innerHTML.replace('!', ''))
+  const ignoreCharAnimation = emojiList.includes(child.innerHTML.replace('!', ''))
 
   const animation = sample([
     dance,
@@ -483,8 +483,8 @@ function getEmojiGrid(rSpan, cSpan) {
 }
 
 let gridCount = 0
-function animationGridContainer(rSpan, cSpan) {
-  const child = sample(_content.emojis)
+function animationGridContainer(rSpan, cSpan, contentOverride=false) {
+  const [child] = sampleContent(contentOverride, true)
 
   if (!child) return animationContainer(rSpan, cSpan)
   gridCount++
@@ -620,7 +620,7 @@ const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
 const colSize = sample([2, 3, 4, 6, 10, 15])
 const cellSize = sample([3, 4, 6, 12, 16])
 
-function flexSection(rowCells, colCells) {
+function flexSection(rowCells, colCells, contentOverride=false) {
   const cells = {}
   times(rowCells, r => cells[r] = [])
 
@@ -743,13 +743,13 @@ function flexSection(rowCells, colCells) {
       aspectRatio < 1.25 && aspectRatio > 0.8
 
       ? prb(0.75) && _content.emojis.length
-        ? animationGridContainer(rSpan, cSpan)
-        : animationContainer(rSpan, cSpan)
+        ? animationGridContainer(rSpan, cSpan, contentOverride)
+        : animationContainer(rSpan, cSpan, contentOverride)
 
       : aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
-        animationContainer(rSpan, cSpan)
+        animationContainer(rSpan, cSpan, contentOverride)
 
-      : marqueeContainter(rSpan, cSpan)
+      : marqueeContainter(rSpan, cSpan, contentOverride)
     )
 
     times(rSpan, r =>
