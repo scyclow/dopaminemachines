@@ -24,6 +24,9 @@ css(`
     100% {transform: translate3d(0%, 0, 0)}
   }
 
+  .bgAnimation {
+    z-index: -1;
+  }
 
   .updownChars {
     animation: UpDownChars 2s ease-in-out infinite;
@@ -64,6 +67,10 @@ css(`
     to {
       visibility: hidden;
     }
+  }
+
+  .colorChars {
+    animation: FullColorRotate 1.5s steps(6, start) infinite;
   }
 
   .borderBlink {
@@ -583,7 +590,7 @@ const bgAnimationFn =
   shrinkingSpinningBgMultiple
 
 
-let hasBgAnimation
+let bgAnimationCount = 0
 function withBgAnimation(child, rSpan, cSpan) {
   const aspectRatio = cSpan / rSpan
   const invalidAspectRatio = aspectRatio > 3 || aspectRatio < 0.3333
@@ -591,7 +598,7 @@ function withBgAnimation(child, rSpan, cSpan) {
   if (bgAnimationFn !== colorShiftingBgMultiple && invalidAspectRatio) return child
 
   const hasAnimation = prb(bgAnimationPrb)
-  if (hasAnimation) hasBgAnimation = true
+  if (hasAnimation) bgAnimationCount++
 
   return [
     ...(hasAnimation ? bgAnimationFn(rSpan, cSpan) : []),
@@ -642,6 +649,7 @@ function genericCharacterComponent(name, durMin, durMax) {
 const updownChars = genericCharacterComponent('updownChars', 100, 500)
 const shrinkChars = genericCharacterComponent('growShrinkShort', 100, 300)
 const blinkChars = genericCharacterComponent('blink', 50, 200)
+const colorChars = genericCharacterComponent('colorChars', 50, 200)
 
 function getContent(elem) {
   const child = $.cls(elem, 'content')

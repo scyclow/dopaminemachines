@@ -292,6 +292,9 @@ const layoutStyle = chance(
   [5, 9],  // anything goes micro, varying size
 )
 
+const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
+const colSize = sample([2, 3, 4, 6, 10, 15])
+const cellSize = sample([3, 4, 6, 12, 16])
 
 const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
@@ -531,11 +534,11 @@ const starburstBgPrb = chance(
   [0.5, 1],
 )
 
-let hasStarburst
+let starburstCount = 0
 function starburstBg(h, rSpan, cSpan) {
   if (!prb(starburstBgPrb) || rSpan < 4) return
 
-  hasStarburst = true
+  starburstCount++
 
   const aspectRatio = cSpan/rSpan
 
@@ -1361,6 +1364,9 @@ css(`
     100% {transform: translate3d(0%, 0, 0)}
   }
 
+  .bgAnimation {
+    z-index: -1;
+  }
 
   .updownChars {
     animation: UpDownChars 2s ease-in-out infinite;
@@ -1401,6 +1407,10 @@ css(`
     to {
       visibility: hidden;
     }
+  }
+
+  .colorChars {
+    animation: FullColorRotate 1.5s steps(6, start) infinite;
   }
 
   .borderBlink {
@@ -1920,7 +1930,7 @@ const bgAnimationFn =
   shrinkingSpinningBgMultiple
 
 
-let hasBgAnimation
+let bgAnimationCount = 0
 function withBgAnimation(child, rSpan, cSpan) {
   const aspectRatio = cSpan / rSpan
   const invalidAspectRatio = aspectRatio > 3 || aspectRatio < 0.3333
@@ -1928,7 +1938,7 @@ function withBgAnimation(child, rSpan, cSpan) {
   if (bgAnimationFn !== colorShiftingBgMultiple && invalidAspectRatio) return child
 
   const hasAnimation = prb(bgAnimationPrb)
-  if (hasAnimation) hasBgAnimation = true
+  if (hasAnimation) bgAnimationCount++
 
   return [
     ...(hasAnimation ? bgAnimationFn(rSpan, cSpan) : []),
@@ -1979,6 +1989,7 @@ function genericCharacterComponent(name, durMin, durMax) {
 const updownChars = genericCharacterComponent('updownChars', 100, 500)
 const shrinkChars = genericCharacterComponent('growShrinkShort', 100, 300)
 const blinkChars = genericCharacterComponent('blink', 50, 200)
+const colorChars = genericCharacterComponent('colorChars', 50, 200)
 
 function getContent(elem) {
   const child = $.cls(elem, 'content')
@@ -2490,7 +2501,7 @@ function chooseContent() {
     contentSample.emojis = [sexy]
   } else if (is420) {
     contentSample.text = [funText]
-    contentSample.emojis = emojis('🚬 🎄 🍄 😵‍💫')
+    contentSample.emojis = emojis('🚬 🌳 🍄 😵‍💫')
   } else if (is100) {
     contentSample.text = ['100%']
     contentSample.emojis = emojis('💯')
@@ -2599,7 +2610,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   } else if ([hFlip, vFlip].includes(animation)) {
     fn = flipSound
 
-  } else if (blinkChars === animation) {
+  } else if ([blinkChars, colorChars].includes(animation)) {
     fn = blinkCharSound
 
   } else if (blink === animation) {
@@ -2893,6 +2904,8 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
 
   const ignoreCharAnimation = emojiList.includes(child.innerHTML.replace('!', ''))
 
+  const disallowColorChars = layoutStyle === 7 && cellSize < 12 && prb(0.8)
+
   const animation = sample([
     dance,
     growShrink,
@@ -2910,6 +2923,7 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     flamingHot,
     iden,
     prb(0.5) && breathe,
+    !ignoreCharAnimation && !disallowColorChars && colorChars,
     !ignoreCharAnimation && updownChars,
     !ignoreCharAnimation && blinkChars,
     !ignoreCharAnimation && shrinkChars,
@@ -3121,52 +3135,6 @@ function animationGridContainer(rSpan, cSpan, contentOverride=false) {
 
 
 
-/*
-
-LAYOUTS
-  - anything goes
-      const colMin = 1
-      const rowMin = 1
-      const colMax = colCells
-      const rowMax = rowCells
-
-  - anything goes (lean big)
-      const colMin = 12
-
-      const rowMin = chance(
-        [1, sample([24, 48])],
-        [3, sample([6, 8, 12, 16])],
-        [5, sample([2, 3, 4])],
-        [1, 1],
-      )
-
-  - scrunched up
-      const getSpan = (minCells, cellsLeft, maxCells) => {
-        const span = rndint(min(minCells, cellsLeft), cellsLeft)
-        return (cellsLeft - span < minCells) ? cellsLeft : span
-      }
-
-  - even rows
-
-  - even cols
-    (still have some non-sideways marquees)
-
-  - perfect grid
-
-  - imperfect grid
-      const colMin = 1
-      const rowMin = 1
-      const colMax = int(colCells/6)
-      const rowMax = int(rowCells/6)
-
-
-
-*/
-
-
-const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
-const colSize = sample([2, 3, 4, 6, 10, 15])
-const cellSize = sample([3, 4, 6, 12, 16])
 
 function flexSection(rowCells, colCells, contentOverride=false) {
   const cells = {}
@@ -3400,9 +3368,9 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   features['Grids'] = gridCount
   features['Font Weight'] = fontWeight
   features['Full Hue Rotation'] = fullHueRotation
-  features['Has BG Animation'] = !!hasBgAnimation
-  features['Has Starburst'] = !!hasStarburst
-  features['Has Section Animation'] = !!sectionAnimation
+  features['BG Boxes'] = bgAnimationCount
+  features['Starbursts'] = starburstCount
+  features['Section Animation'] = !!sectionAnimation
 
 
   function classifySample(s) {
@@ -3464,6 +3432,10 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   features['_Animation: Vertical Pivot'] = usedAnimationsUnique.includes(vPivot)
   features['_Animation: Horizontal Flip'] = usedAnimationsUnique.includes(hFlip)
   features['_Animation: Vertical Flip'] = usedAnimationsUnique.includes(vFlip)
+  features['_Animation: Color Characters'] = usedAnimationsUnique.includes(colorChars)
+  features['_Animation: Up-Down Characters'] = usedAnimationsUnique.includes(updownChars)
+  features['_Animation: Blinking Characters'] = usedAnimationsUnique.includes(blinkChars)
+  features['_Animation: Shrinking Characters'] = usedAnimationsUnique.includes(shrinkChars)
 
   const usedContent = Array.from(
     new Set([

@@ -78,15 +78,15 @@
         ]
     },
     {
-        "name": "Has BG Animation",
+        "name": "BG Boxes",
         "type": "boolean"
     },
     {
-        "name": "Has Starburst",
+        "name": "Starbursts",
         "type": "boolean"
     },
     {
-        "name": "Has Section Animation",
+        "name": "Section Animation",
         "type": "boolean"
     },
     {
@@ -266,6 +266,22 @@
     },
     {
         "name": "_Animation: Vertical Flip",
+        "type": "boolean"
+    },
+    {
+        "name": "_Animation: Color Characters",
+        "type": "boolean"
+    },
+    {
+        "name": "_Animation: Up-Down Characters",
+        "type": "boolean"
+    },
+    {
+        "name": "_Animation: Blinking Characters",
+        "type": "boolean"
+    },
+    {
+        "name": "_Animation: Shrinking Characters",
         "type": "boolean"
     },
     {

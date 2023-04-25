@@ -48,6 +48,9 @@ const layoutStyle = chance(
   [5, 9],  // anything goes micro, varying size
 )
 
+const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
+const colSize = sample([2, 3, 4, 6, 10, 15])
+const cellSize = sample([3, 4, 6, 12, 16])
 
 const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
@@ -287,11 +290,11 @@ const starburstBgPrb = chance(
   [0.5, 1],
 )
 
-let hasStarburst
+let starburstCount = 0
 function starburstBg(h, rSpan, cSpan) {
   if (!prb(starburstBgPrb) || rSpan < 4) return
 
-  hasStarburst = true
+  starburstCount++
 
   const aspectRatio = cSpan/rSpan
 

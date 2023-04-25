@@ -51,7 +51,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   } else if ([hFlip, vFlip].includes(animation)) {
     fn = flipSound
 
-  } else if (blinkChars === animation) {
+  } else if ([blinkChars, colorChars].includes(animation)) {
     fn = blinkCharSound
 
   } else if (blink === animation) {
@@ -345,6 +345,8 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
 
   const ignoreCharAnimation = emojiList.includes(child.innerHTML.replace('!', ''))
 
+  const disallowColorChars = layoutStyle === 7 && cellSize < 12 && prb(0.8)
+
   const animation = sample([
     dance,
     growShrink,
@@ -362,6 +364,7 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     flamingHot,
     iden,
     prb(0.5) && breathe,
+    !ignoreCharAnimation && !disallowColorChars && colorChars,
     !ignoreCharAnimation && updownChars,
     !ignoreCharAnimation && blinkChars,
     !ignoreCharAnimation && shrinkChars,
@@ -573,52 +576,6 @@ function animationGridContainer(rSpan, cSpan, contentOverride=false) {
 
 
 
-/*
-
-LAYOUTS
-  - anything goes
-      const colMin = 1
-      const rowMin = 1
-      const colMax = colCells
-      const rowMax = rowCells
-
-  - anything goes (lean big)
-      const colMin = 12
-
-      const rowMin = chance(
-        [1, sample([24, 48])],
-        [3, sample([6, 8, 12, 16])],
-        [5, sample([2, 3, 4])],
-        [1, 1],
-      )
-
-  - scrunched up
-      const getSpan = (minCells, cellsLeft, maxCells) => {
-        const span = rndint(min(minCells, cellsLeft), cellsLeft)
-        return (cellsLeft - span < minCells) ? cellsLeft : span
-      }
-
-  - even rows
-
-  - even cols
-    (still have some non-sideways marquees)
-
-  - perfect grid
-
-  - imperfect grid
-      const colMin = 1
-      const rowMin = 1
-      const colMax = int(colCells/6)
-      const rowMax = int(rowCells/6)
-
-
-
-*/
-
-
-const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
-const colSize = sample([2, 3, 4, 6, 10, 15])
-const cellSize = sample([3, 4, 6, 12, 16])
 
 function flexSection(rowCells, colCells, contentOverride=false) {
   const cells = {}

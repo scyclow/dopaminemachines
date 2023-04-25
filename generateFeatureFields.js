@@ -68,15 +68,15 @@ const features = [
     options: [100, 500, 900],
   },
   {
-    name: 'Has BG Animation',
+    name: 'BG Boxes',
     type: 'boolean',
   },
   {
-    name: 'Has Starburst',
+    name: 'Starbursts',
     type: 'boolean',
   },
   {
-    name: 'Has Section Animation',
+    name: 'Section Animation',
     type: 'boolean',
   },
   {
@@ -165,6 +165,10 @@ const animationCategories = [
   'Vertical Pivot',
   'Horizontal Flip',
   'Vertical Flip',
+  'Color Characters',
+  'Up-Down Characters',
+  'Blinking Characters',
+  'Shrinking Characters',
 ]
 
 contentSampleCategories.forEach(category => {

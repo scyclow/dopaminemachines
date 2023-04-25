@@ -494,7 +494,7 @@ function chooseContent() {
     contentSample.emojis = [sexy]
   } else if (is420) {
     contentSample.text = [funText]
-    contentSample.emojis = emojis('🚬 🎄 🍄 😵‍💫')
+    contentSample.emojis = emojis('🚬 🌳 🍄 😵‍💫')
   } else if (is100) {
     contentSample.text = ['100%']
     contentSample.emojis = emojis('💯')

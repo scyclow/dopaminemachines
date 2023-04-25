@@ -67,9 +67,9 @@ const calcFeatures = `
   features['Grids'] = gridCount
   features['Font Weight'] = fontWeight
   features['Full Hue Rotation'] = fullHueRotation
-  features['Has BG Animation'] = !!hasBgAnimation
-  features['Has Starburst'] = !!hasStarburst
-  features['Has Section Animation'] = !!sectionAnimation
+  features['BG Boxes'] = bgAnimationCount
+  features['Starbursts'] = starburstCount
+  features['Section Animation'] = !!sectionAnimation
 
 
   function classifySample(s) {
@@ -131,6 +131,10 @@ const calcFeatures = `
   features['_Animation: Vertical Pivot'] = usedAnimationsUnique.includes(vPivot)
   features['_Animation: Horizontal Flip'] = usedAnimationsUnique.includes(hFlip)
   features['_Animation: Vertical Flip'] = usedAnimationsUnique.includes(vFlip)
+  features['_Animation: Color Characters'] = usedAnimationsUnique.includes(colorChars)
+  features['_Animation: Up-Down Characters'] = usedAnimationsUnique.includes(updownChars)
+  features['_Animation: Blinking Characters'] = usedAnimationsUnique.includes(blinkChars)
+  features['_Animation: Shrinking Characters'] = usedAnimationsUnique.includes(shrinkChars)
 
   const usedContent = Array.from(
     new Set([
