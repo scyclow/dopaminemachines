@@ -62,14 +62,11 @@ window.onload = () => {
     else if (key === 'o') {
       if (OVERDRIVE) {
         document.body.classList.remove('overdrive')
-        allRunningIntervals.forEach(i => {
-          i.newInterval(i.originalMs)
-        })
+        soundOverdrive()
+
       } else {
         document.body.classList.add('overdrive')
-        allRunningIntervals.forEach(i => {
-          i.newInterval(i.originalMs/6)
-        })
+        soundOverdrive(6)
       }
       OVERDRIVE = !OVERDRIVE
     }

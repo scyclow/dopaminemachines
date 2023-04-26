@@ -109,6 +109,7 @@ const calcFeatures = `
   features['_Sample: Positivity'] = usedContentSamples.includes('Positivity')
   features['_Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
   features['_Sample: Filler'] = usedContentSamples.includes('Filler')
+  features['_Sample: Misc.'] = usedContentSamples.includes('Misc.')
 
 
   const usedAnimationsUnique = Array.from(new Set(usedAnimations.filter(a => a !== iden)))
@@ -143,6 +144,8 @@ const calcFeatures = `
     ])
   )
   usedContent.forEach(c => features['_Content: ' + c] = true)
+
+  if (usedContent.includes('PARTY TIME')) features['_Sample: PARTY TIME'] = true
 
 `
 

@@ -284,8 +284,8 @@ const layoutStyle = chance(
   [57, 1], // anything goes
   [6, 2],  // anything goes (micro/large)
   [7, 3],  // anything goes (lean rows)
-  [5, 4],  // macro
-  [8, 5],  // even rows
+  [6, 4],  // macro
+  [7, 5],  // even rows
   [5, 6],  // even cols
   [5, 7],  // perfect grid
   [2, 8],  // imperfect grid
@@ -392,7 +392,7 @@ const shadowType = chance(
 )
 
 
-const defaultShadowLightness = prb(0.75) || possibleHues[1] === 75 ? 20 : 50
+const defaultShadowLightness = !bw && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
@@ -780,6 +780,12 @@ function sourcesToNormalMode() {
   })
 }
 
+function soundOverdrive(factor=1) {
+  allRunningIntervals.forEach(i => {
+    i.newInterval(i.originalMs/factor)
+  })
+}
+
 const BASE_FREQ = rnd(250, 500)
 const MAJOR_SCALE = [1, 1.125, 1.25, 1.3333, 1.5, 1.6666, 1.875, 2]
 const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
@@ -992,6 +998,7 @@ function ticktockSound({duration, delay}) {
         setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
 
       }, interval)
+      if (OVERDRIVE) soundOverdrive(6)
 
     }, timeUntilNextNote)
 
@@ -1055,6 +1062,8 @@ function blinkCharSound({duration, delay}, seq=null) {
          if (twoTone)  src2.smoothGain(0, 0.04)
       }, interval*0.75)
     }, interval)
+
+    if (OVERDRIVE) soundOverdrive(6)
 
     return () => {
       smoothGain(0, 0.04)
@@ -1430,33 +1439,7 @@ css(`
   }
 
   @keyframes ColorBlink {
-    ${(() => {
-      const h = chooseHue()
-      const start = `
-        0%, 100% {
-          color: ${getColorFromHue(h)};
-          background-color: ${getColorFromHue(h + possibleHues[1])};
-        }
-      `
-      return start + possibleHues.length === 2
-        ? `
-          50% {
-            color: ${getColorFromHue(h + possibleHues[1])};
-            background-color: ${getColorFromHue(h)};
-          }
-        `
-        : `
-          33% {
-            color: ${getColorFromHue(h + possibleHues[1])};
-            background-color: ${getColorFromHue(h + possibleHues[2])};
-          }
-
-          66% {
-            color: ${getColorFromHue(h + possibleHues[2])};
-            background-color: ${getColorFromHue(h)};
-          }
-        `
-    })()}
+    ${colorBlinkAnim()}
   }
 
   .fullColorRotate {
@@ -1701,6 +1684,34 @@ css(`
     83% {transform: translate(-0.43em, 0.25em)}
   }
 `)
+
+function colorBlinkAnim() {
+  const h = chooseHue()
+  const start = `
+    0%, 100% {
+      color: ${getColorFromHue(h)};
+      background-color: ${getColorFromHue(h + possibleHues[1])};
+    }
+  `
+  return start + possibleHues.length === 2
+    ? `
+      50% {
+        color: ${getColorFromHue(h + possibleHues[1])};
+        background-color: ${getColorFromHue(h)};
+      }
+    `
+    : `
+      33% {
+        color: ${getColorFromHue(h + possibleHues[1])};
+        background-color: ${getColorFromHue(h + possibleHues[2])};
+      }
+
+      66% {
+        color: ${getColorFromHue(h + possibleHues[2])};
+        background-color: ${getColorFromHue(h)};
+      }
+    `
+}
 
 function marquee(children, args={}) {
   const className = args.className || ''
@@ -3410,6 +3421,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   features['_Sample: Positivity'] = usedContentSamples.includes('Positivity')
   features['_Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
   features['_Sample: Filler'] = usedContentSamples.includes('Filler')
+  features['_Sample: Misc.'] = usedContentSamples.includes('Misc.')
 
 
   const usedAnimationsUnique = Array.from(new Set(usedAnimations.filter(a => a !== iden)))
@@ -3444,6 +3456,8 @@ function flexSection(rowCells, colCells, contentOverride=false) {
     ])
   )
   usedContent.forEach(c => features['_Content: ' + c] = true)
+
+  if (usedContent.includes('PARTY TIME')) features['_Sample: PARTY TIME'] = true
 
 
   return features

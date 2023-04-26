@@ -71,6 +71,12 @@ function sourcesToNormalMode() {
   })
 }
 
+function soundOverdrive(factor=1) {
+  allRunningIntervals.forEach(i => {
+    i.newInterval(i.originalMs/factor)
+  })
+}
+
 const BASE_FREQ = rnd(250, 500)
 const MAJOR_SCALE = [1, 1.125, 1.25, 1.3333, 1.5, 1.6666, 1.875, 2]
 const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
@@ -283,6 +289,7 @@ function ticktockSound({duration, delay}) {
         setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
 
       }, interval)
+      if (OVERDRIVE) soundOverdrive(6)
 
     }, timeUntilNextNote)
 
@@ -346,6 +353,8 @@ function blinkCharSound({duration, delay}, seq=null) {
          if (twoTone)  src2.smoothGain(0, 0.04)
       }, interval*0.75)
     }, interval)
+
+    if (OVERDRIVE) soundOverdrive(6)
 
     return () => {
       smoothGain(0, 0.04)

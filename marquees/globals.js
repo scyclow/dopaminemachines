@@ -40,8 +40,8 @@ const layoutStyle = chance(
   [57, 1], // anything goes
   [6, 2],  // anything goes (micro/large)
   [7, 3],  // anything goes (lean rows)
-  [5, 4],  // macro
-  [8, 5],  // even rows
+  [6, 4],  // macro
+  [7, 5],  // even rows
   [5, 6],  // even cols
   [5, 7],  // perfect grid
   [2, 8],  // imperfect grid
@@ -148,7 +148,7 @@ const shadowType = chance(
 )
 
 
-const defaultShadowLightness = prb(0.75) || possibleHues[1] === 75 ? 20 : 50
+const defaultShadowLightness = !bw && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
