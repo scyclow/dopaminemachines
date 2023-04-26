@@ -90,33 +90,7 @@ css(`
   }
 
   @keyframes ColorBlink {
-    ${(() => {
-      const h = chooseHue()
-      const start = `
-        0%, 100% {
-          color: ${getColorFromHue(h)};
-          background-color: ${getColorFromHue(h + possibleHues[1])};
-        }
-      `
-      return start + possibleHues.length === 2
-        ? `
-          50% {
-            color: ${getColorFromHue(h + possibleHues[1])};
-            background-color: ${getColorFromHue(h)};
-          }
-        `
-        : `
-          33% {
-            color: ${getColorFromHue(h + possibleHues[1])};
-            background-color: ${getColorFromHue(h + possibleHues[2])};
-          }
-
-          66% {
-            color: ${getColorFromHue(h + possibleHues[2])};
-            background-color: ${getColorFromHue(h)};
-          }
-        `
-    })()}
+    ${colorBlinkAnim()}
   }
 
   .fullColorRotate {
@@ -361,6 +335,34 @@ css(`
     83% {transform: translate(-0.43em, 0.25em)}
   }
 `)
+
+function colorBlinkAnim() {
+  const h = chooseHue()
+  const start = `
+    0%, 100% {
+      color: ${getColorFromHue(h)};
+      background-color: ${getColorFromHue(h + possibleHues[1])};
+    }
+  `
+  return start + possibleHues.length === 2
+    ? `
+      50% {
+        color: ${getColorFromHue(h + possibleHues[1])};
+        background-color: ${getColorFromHue(h)};
+      }
+    `
+    : `
+      33% {
+        color: ${getColorFromHue(h + possibleHues[1])};
+        background-color: ${getColorFromHue(h + possibleHues[2])};
+      }
+
+      66% {
+        color: ${getColorFromHue(h + possibleHues[2])};
+        background-color: ${getColorFromHue(h)};
+      }
+    `
+}
 
 function marquee(children, args={}) {
   const className = args.className || ''

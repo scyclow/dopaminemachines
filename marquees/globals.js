@@ -37,10 +37,10 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [60, 1], // anything goes
+  [57, 1], // anything goes
   [6, 2],  // anything goes (micro/large)
   [7, 3],  // anything goes (lean rows)
-  [2, 4],  // macro
+  [5, 4],  // macro
   [8, 5],  // even rows
   [5, 6],  // even cols
   [5, 7],  // perfect grid

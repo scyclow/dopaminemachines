@@ -581,7 +581,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   const cells = {}
   times(rowCells, r => cells[r] = [])
 
-  const marquees = []
+  const sections = []
 
   let colMin, colMax, rowMin, rowMax
 
@@ -694,16 +694,16 @@ function flexSection(rowCells, colCells, contentOverride=false) {
     const rSpan = getSpan(rowMin, rowsLeft, rowCells)
 
     const aspectRatio = cSpan / rSpan
+    const animationPrb = layoutStyle === 4 ? 0.75 : 0.5
 
-
-    marquees.push(
+    sections.push(
       aspectRatio < 1.25 && aspectRatio > 0.8
 
       ? prb(0.75) && _content.emojis.length
         ? animationGridContainer(rSpan, cSpan, contentOverride)
         : animationContainer(rSpan, cSpan, contentOverride)
 
-      : aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
+      : aspectRatio < 2 && aspectRatio > 0.5 && prb(animationPrb) ?
         animationContainer(rSpan, cSpan, contentOverride)
 
       : marqueeContainter(rSpan, cSpan, contentOverride)
@@ -732,7 +732,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   }
 
   return $.section(
-    marquees,
+    sections,
     {
       style: `
         width: ${100*colCells/cols}vw;

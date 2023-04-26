@@ -281,10 +281,10 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [60, 1], // anything goes
+  [57, 1], // anything goes
   [6, 2],  // anything goes (micro/large)
   [7, 3],  // anything goes (lean rows)
-  [2, 4],  // macro
+  [5, 4],  // macro
   [8, 5],  // even rows
   [5, 6],  // even cols
   [5, 7],  // perfect grid
@@ -3140,7 +3140,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   const cells = {}
   times(rowCells, r => cells[r] = [])
 
-  const marquees = []
+  const sections = []
 
   let colMin, colMax, rowMin, rowMax
 
@@ -3253,16 +3253,16 @@ function flexSection(rowCells, colCells, contentOverride=false) {
     const rSpan = getSpan(rowMin, rowsLeft, rowCells)
 
     const aspectRatio = cSpan / rSpan
+    const animationPrb = layoutStyle === 4 ? 0.75 : 0.5
 
-
-    marquees.push(
+    sections.push(
       aspectRatio < 1.25 && aspectRatio > 0.8
 
       ? prb(0.75) && _content.emojis.length
         ? animationGridContainer(rSpan, cSpan, contentOverride)
         : animationContainer(rSpan, cSpan, contentOverride)
 
-      : aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
+      : aspectRatio < 2 && aspectRatio > 0.5 && prb(animationPrb) ?
         animationContainer(rSpan, cSpan, contentOverride)
 
       : marqueeContainter(rSpan, cSpan, contentOverride)
@@ -3291,7 +3291,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   }
 
   return $.section(
-    marquees,
+    sections,
     {
       style: `
         width: ${100*colCells/cols}vw;
