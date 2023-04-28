@@ -177,14 +177,15 @@ function css(style) {
 }
 
 
-function setMetadata(title) {
+function setMetadata(title, color='') {
   $html.translate = false
   $html.lang = 'en'
   $html.className = 'notranslate'
 
   document.title = title
 
-  addMetaTag({ name: 'google', content: 'notranslate'})
+  addMetaTag({ name: 'google', content: 'notranslate' })
+  addMetaTag({ name: 'theme-color', content: color })
 
   console.log(title)
 }
@@ -192,6 +193,8 @@ function setMetadata(title) {
 const cols = 60
 const rows = 48
 const EDITION_SIZE = 777
+
+const projectionPages = {}
 
 
 let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
@@ -225,17 +228,20 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [60, 1], // anything goes
+  [57, 1], // anything goes
   [6, 2],  // anything goes (micro/large)
   [7, 3],  // anything goes (lean rows)
-  [2, 4],  // macro
-  [8, 5],  // even rows
+  [6, 4],  // macro
+  [7, 5],  // even rows
   [5, 6],  // even cols
   [5, 7],  // perfect grid
   [2, 8],  // imperfect grid
   [5, 9],  // anything goes micro, varying size
 )
 
+const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
+const colSize = sample([2, 3, 4, 6, 10, 15])
+const cellSize = sample([3, 4, 6, 12, 16])
 
 const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
 const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
@@ -253,8 +259,12 @@ const marqueeAnimationRate = chance(
 
 const tokenId = Number(tokenData.tokenId) % 1000000
 const is69 = tokenId === 69
+const is420 = tokenId === 420
+const is100 = tokenId === 100
+const is666 = tokenId === 666
+const is7 = [7, 77].includes(tokenId)
 const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
-const showEmojis = is69 || prb(0.5)
+const showEmojis = is100 || is666 || is7 || is420 || is69 || prb(0.5)
 
 const pairedEmojiPrb = chance(
   [2, 0],
@@ -329,7 +339,7 @@ const shadowType = chance(
 )
 
 
-const defaultShadowLightness = prb(0.75) || possibleHues[1] === 75 ? 20 : 50
+const defaultShadowLightness = !bw && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
@@ -461,11 +471,11 @@ const starburstBgPrb = chance(
   [0.5, 1],
 )
 
-let hasStarburst
+let starburstCount = 0
 function starburstBg(h, rSpan, cSpan) {
   if (!prb(starburstBgPrb) || rSpan < 4) return
 
-  hasStarburst = true
+  starburstCount++
 
   const aspectRatio = cSpan/rSpan
 
@@ -589,6 +599,12 @@ function sourcesToNormalMode() {
     if (src.gain.gain.value > 0) {
       src.source.type = src.originalSrcType
     }
+  })
+}
+
+function soundOverdrive(factor=1) {
+  allRunningIntervals.forEach(i => {
+    i.newInterval(i.originalMs/factor)
   })
 }
 
@@ -804,6 +820,7 @@ function ticktockSound({duration, delay}) {
         setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
 
       }, interval)
+      if (OVERDRIVE) soundOverdrive(6)
 
     }, timeUntilNextNote)
 
@@ -867,6 +884,8 @@ function blinkCharSound({duration, delay}, seq=null) {
          if (twoTone)  src2.smoothGain(0, 0.04)
       }, interval*0.75)
     }, interval)
+
+    if (OVERDRIVE) soundOverdrive(6)
 
     return () => {
       smoothGain(0, 0.04)
@@ -1115,7 +1134,7 @@ const triggerUtterance = () => {
   if (ANHEDONIC) {
     txt.rate = 0.7
   } else if (OVERDRIVE) {
-    txt.rate = 1.2
+    txt.rate = 1.4
   } else {
     txt.rate = 1
   }
@@ -1150,7 +1169,15 @@ const utter = (txt, t=1, i=7) => {
 
 
 
-css(` .marquee {display: inline-block; width: 100%; box-sizing: border-box; line-height: 1; } .marqueeInner {display: inline-flex; } .marqueeForward {animation: Marquee 50s linear infinite; } .marqueeInner > * {display: inline-block; white-space: nowrap; } @keyframes Marquee {0% {transform: translate3d(-50%, 0, 0)} 100% {transform: translate3d(0%, 0, 0)} } .updownChars {animation: UpDownChars 2s ease-in-out infinite; display: inline-block; } @keyframes UpDownChars {0%, 100% {transform: translate3d(0%, 10%, 0)} 50% {transform: translate3d(0%, -10%, 0)} } .updownLong {height: 100%; animation: UpDownLong 1000ms ease-in-out infinite; } .updownLong > * {animation: UpDownLongChild 2000ms ease-in-out infinite; } @keyframes UpDownLongChild {0%, 100% {transform: translateY(0)} 50% {transform: translateY(-100%)} } @keyframes UpDownLong {0%, 100% {transform: translateY(0)} 50% {transform: translateY(100%)} } .blink {animation: Blink 1.5s steps(2, start) infinite; } @keyframes Blink {to {visibility: hidden; } } .borderBlink {border-width: 0.05em; animation: BorderBlink 1.5s steps(2, start) infinite; box-sizing: border-box; } @keyframes BorderBlink {50% {border-style: hidden; } } .colorBlink {animation: ColorBlink 4s steps(1, start) infinite; } @keyframes ColorBlink {${(() => {const h = chooseHue(); const start = ` 0%, 100% {color: ${getColorFromHue(h)}; background-color: ${getColorFromHue(h + possibleHues[1])}; } `; return start + possibleHues.length === 2 ? ` 50% {color: ${getColorFromHue(h + possibleHues[1])}; background-color: ${getColorFromHue(h)}; } ` : ` 33% {color: ${getColorFromHue(h + possibleHues[1])}; background-color: ${getColorFromHue(h + possibleHues[2])}; } 66% {color: ${getColorFromHue(h + possibleHues[2])}; background-color: ${getColorFromHue(h)}; } ` })()} } .fullColorRotate {animation: FullColorRotate 25s linear infinite; } @keyframes FullColorRotate {0%, 100% {color: #ff0000} 17% {color: #ffff00} 33% {color: #00ff00} 50% {color: #00ffff} 66% {color: #0000ff} 83% {color: #ff00ff} } .colorShift {animation: ColorRotate 25s linear infinite; } @keyframes ColorRotate {0%, 100% {color: #ff0000} 17% {color: #ffff00} 33% {color: #00ff00} 50% {color: #00ffff} 66% {color: #0000ff} 83% {color: #ff00ff} } .dance {animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes Dance {0%, 100% {transform: rotate(20deg)} 50% {transform: rotate(-20deg)} } .growShrink {animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes GrowShrink {0%, 100% {transform: scale(1)} 50% {transform: scale(0.2)} } .growShrinkShort {animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; display: inline-block; } @keyframes GrowShrinkShort {0%, 100% {transform: scale(1)} 50% {transform: scale(0.75)} } .spin {animation: Spin 2000ms linear infinite; } @keyframes Spin {0% {transform: rotate(0deg)} 100% {transform: rotate(360deg)} } .hSiren {animation: HSiren 2000ms linear infinite; } @keyframes HSiren {0% {transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)} 100% {transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)} } .vSiren {animation: VSiren 2000ms linear infinite; } @keyframes VSiren {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)} 100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)} } .vSirenShort {animation: VSirenShort 2000ms linear infinite; } @keyframes VSirenShort {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)} 100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)} } .hPivot {animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes HPivot {0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)} 50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)} } .vPivot {animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes VPivot {0%, 100% {transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)} 50% {transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)} } .vFlip {animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes VFlip {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg)} 100% {transform: perspective(500px) rotate3d(2,0,0, 1800deg)} } .hFlip {animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes HFlip {0% {transform: perspective(500px) rotate3d(0,2,0, 0deg)} 100% {transform: perspective(500px) rotate3d(0,2,0, 1800deg)} } .breathe {animation: Breathe 2000ms ease-in-out infinite; } @keyframes Breathe {0%, 100% {transform: scaleX(1) scaleY(1)} 50% {transform: scaleX(0.8) scaleY(0.9)} } .flamingHot {animation: FlamingHot 2000ms ease-in-out infinite; } @keyframes FlamingHot {0% {transform: scale(1) translateY(0); opacity: 1; } 75% {opacity: 0; transform: scale(1.15) translateY(-0.2em); } 80% {opacity: 0; transform: scale(1) translateY(0); } 100% {opacity: 1; } } .leftRight {width: 100%; animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; font-size: 10vmin; } .leftRight > * {animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; display: inline-block; white-space: nowrap; } @keyframes LeftRightChild {0%, 100% {transform: translateX(0)} 50% {transform: translateX(-100%)} } @keyframes LeftRight {0%, 100% {transform: translateX(0)} 50% {transform: translateX(100%)} } .shrinkingBorder {animation: ShrinkingBorder 2000ms linear infinite; } .spinningBorder {animation: Spin 2000ms linear infinite; } @keyframes ShrinkingBorder {0% {transform: scale(105%)} 100% {transform: scale(0%)} } .shrinkingSpinningBorder {animation: SpinningShrinkingBorder 2000ms linear infinite; } @keyframes SpinningShrinkingBorder {0% {transform: scale(105%) rotate(0deg)} 100% {transform: scale(0%) rotate(45deg)} } .wave {animation: Wave 4500ms linear infinite; } .climb {animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes Wave {0%, 100% {transform: translate3d(0%, 30%, 0) rotate(0deg)} 25% {transform: translate3d(0%, 0%, 0) rotate(12deg)} 50% {transform: translate3d(0%, -30%, 0) rotate(0deg)} 75% {transform: translate3d(0%, 0%, 0) rotate(-12deg)} } .hexagon {animation: Hexagon 2000ms linear infinite; } @keyframes Hexagon {0%, 100% {transform: translate(0, 0.5em)} 17% {transform: translate(0.43em, 0.25em)} 33% {transform: translate(0.43em, -0.25em)} 50% {transform: translate(0, -0.5em)} 66% {transform: translate(-0.43em, -0.25em)} 83% {transform: translate(-0.43em, 0.25em)} } `)
+css(` .marquee {display: inline-block; width: 100%; box-sizing: border-box; line-height: 1; } .marqueeInner {display: inline-flex; } .marqueeForward {animation: Marquee 50s linear infinite; } .marqueeInner > * {display: inline-block; white-space: nowrap; } @keyframes Marquee {0% {transform: translate3d(-50%, 0, 0)} 100% {transform: translate3d(0%, 0, 0)} } .bgAnimation {z-index: -1; } .updownChars {animation: UpDownChars 2s ease-in-out infinite; display: inline-block; } @keyframes UpDownChars {0%, 100% {transform: translate3d(0%, 10%, 0)} 50% {transform: translate3d(0%, -10%, 0)} } .updownLong {height: 100%; animation: UpDownLong 1000ms ease-in-out infinite; } .updownLong > * {animation: UpDownLongChild 2000ms ease-in-out infinite; } @keyframes UpDownLongChild {0%, 100% {transform: translateY(0)} 50% {transform: translateY(-100%)} } @keyframes UpDownLong {0%, 100% {transform: translateY(0)} 50% {transform: translateY(100%)} } .blink {animation: Blink 1.5s steps(2, start) infinite; } @keyframes Blink {to {visibility: hidden; } } .colorChars {animation: FullColorRotate 1.5s steps(6, start) infinite; } .borderBlink {border-width: 0.05em; animation: BorderBlink 1.5s steps(2, start) infinite; box-sizing: border-box; } @keyframes BorderBlink {50% {border-style: hidden; } } .colorBlink {animation: ColorBlink 4s steps(1, start) infinite; } @keyframes ColorBlink {${colorBlinkAnim()} } .fullColorRotate {animation: FullColorRotate 25s linear infinite; } @keyframes FullColorRotate {0%, 100% {color: #ff0000} 17% {color: #ffff00} 33% {color: #00ff00} 50% {color: #00ffff} 66% {color: #0000ff} 83% {color: #ff00ff} } .colorShift {animation: ColorRotate 25s linear infinite; } @keyframes ColorRotate {0%, 100% {color: #ff0000} 17% {color: #ffff00} 33% {color: #00ff00} 50% {color: #00ffff} 66% {color: #0000ff} 83% {color: #ff00ff} } .dance {animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes Dance {0%, 100% {transform: rotate(20deg)} 50% {transform: rotate(-20deg)} } .growShrink {animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes GrowShrink {0%, 100% {transform: scale(1)} 50% {transform: scale(0.2)} } .growShrinkShort {animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; display: inline-block; } @keyframes GrowShrinkShort {0%, 100% {transform: scale(1)} 50% {transform: scale(0.75)} } .spin {animation: Spin 2000ms linear infinite; } @keyframes Spin {0% {transform: rotate(0deg)} 100% {transform: rotate(360deg)} } .hSiren {animation: HSiren 2000ms linear infinite; } @keyframes HSiren {0% {transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)} 100% {transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)} } .vSiren {animation: VSiren 2000ms linear infinite; } @keyframes VSiren {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)} 100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)} } .vSirenShort {animation: VSirenShort 2000ms linear infinite; } @keyframes VSirenShort {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)} 100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)} } .hPivot {animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes HPivot {0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)} 50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)} } .vPivot {animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes VPivot {0%, 100% {transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)} 50% {transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)} } .vFlip {animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes VFlip {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg)} 100% {transform: perspective(500px) rotate3d(2,0,0, 1800deg)} } .hFlip {animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes HFlip {0% {transform: perspective(500px) rotate3d(0,2,0, 0deg)} 100% {transform: perspective(500px) rotate3d(0,2,0, 1800deg)} } .breathe {animation: Breathe 2000ms ease-in-out infinite; } @keyframes Breathe {0%, 100% {transform: scaleX(1) scaleY(1)} 50% {transform: scaleX(0.8) scaleY(0.9)} } .flamingHot {animation: FlamingHot 2000ms ease-in-out infinite; } @keyframes FlamingHot {0% {transform: scale(1) translateY(0); opacity: 1; } 75% {opacity: 0; transform: scale(1.15) translateY(-0.2em); } 80% {opacity: 0; transform: scale(1) translateY(0); } 100% {opacity: 1; } } .leftRight {width: 100%; animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; font-size: 10vmin; } .leftRight > * {animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; display: inline-block; white-space: nowrap; } @keyframes LeftRightChild {0%, 100% {transform: translateX(0)} 50% {transform: translateX(-100%)} } @keyframes LeftRight {0%, 100% {transform: translateX(0)} 50% {transform: translateX(100%)} } .shrinkingBorder {animation: ShrinkingBorder 2000ms linear infinite; } .spinningBorder {animation: Spin 2000ms linear infinite; } @keyframes ShrinkingBorder {0% {transform: scale(105%)} 100% {transform: scale(0%)} } .shrinkingSpinningBorder {animation: SpinningShrinkingBorder 2000ms linear infinite; } @keyframes SpinningShrinkingBorder {0% {transform: scale(105%) rotate(0deg)} 100% {transform: scale(0%) rotate(45deg)} } .wave {animation: Wave 4500ms linear infinite; } .climb {animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes Wave {0%, 100% {transform: translate3d(0%, 30%, 0) rotate(0deg)} 25% {transform: translate3d(0%, 0%, 0) rotate(12deg)} 50% {transform: translate3d(0%, -30%, 0) rotate(0deg)} 75% {transform: translate3d(0%, 0%, 0) rotate(-12deg)} } .hexagon {animation: Hexagon 2000ms linear infinite; } @keyframes Hexagon {0%, 100% {transform: translate(0, 0.5em)} 17% {transform: translate(0.43em, 0.25em)} 33% {transform: translate(0.43em, -0.25em)} 50% {transform: translate(0, -0.5em)} 66% {transform: translate(-0.43em, -0.25em)} 83% {transform: translate(-0.43em, 0.25em)} } `)
+
+function colorBlinkAnim() {
+  const h = chooseHue()
+  const start = ` 0%, 100% {color: ${getColorFromHue(h)}; background-color: ${getColorFromHue(h + possibleHues[1])}; } `
+  return start + possibleHues.length === 2
+    ? ` 50% {color: ${getColorFromHue(h + possibleHues[1])}; background-color: ${getColorFromHue(h)}; } `
+    : ` 33% {color: ${getColorFromHue(h + possibleHues[1])}; background-color: ${getColorFromHue(h + possibleHues[2])}; } 66% {color: ${getColorFromHue(h + possibleHues[2])}; background-color: ${getColorFromHue(h)}; } `
+}
 
 function marquee(children, args={}) {
   const className = args.className || ''
@@ -1265,18 +1292,6 @@ const leftRight = (grandChild, args={}) => {
 }
 
 
-const doubleSpin = (grandChild, args={}) => {
-  const shadow = spin(grandChild.cloneNode(true), {
-    ...args,
-    style: `position: absolute; opacity: 0.5`,
-    delay: args.delay + args.duration*0.15,
-  })
-  return [
-    shadow,
-    spin(grandChild, args)
-  ]
-}
-
 const flamingHotParent = genericAnimatingComponent('flamingHot')
 const flamingHot = (grandChild, args={}) => {
   return flamingHotParent(grandChild, {
@@ -1355,7 +1370,7 @@ function colorShiftingBgMultiple(rSpan, cSpan) {
     delay: i * 500,
     duration,
     direction,
-    style: ` transform: scale(${0.95 - i/squares}); `
+    style: `transform: scale(${0.95 - i/squares});`
   }))
 }
 
@@ -1367,7 +1382,7 @@ const bgAnimationFn =
   shrinkingSpinningBgMultiple
 
 
-let hasBgAnimation
+let bgAnimationCount = 0
 function withBgAnimation(child, rSpan, cSpan) {
   const aspectRatio = cSpan / rSpan
   const invalidAspectRatio = aspectRatio > 3 || aspectRatio < 0.3333
@@ -1375,7 +1390,7 @@ function withBgAnimation(child, rSpan, cSpan) {
   if (bgAnimationFn !== colorShiftingBgMultiple && invalidAspectRatio) return child
 
   const hasAnimation = prb(bgAnimationPrb)
-  if (hasAnimation) hasBgAnimation = true
+  if (hasAnimation) bgAnimationCount++
 
   return [
     ...(hasAnimation ? bgAnimationFn(rSpan, cSpan) : []),
@@ -1394,7 +1409,10 @@ function genericCharacterComponent(name, durMin, durMax) {
 
       return split.map((c, i) => $.span(c, {
         class: name + ' charContent',
-        style: ` animation-delay: -${i * duration}ms; ${c === ' ' ? 'margin-right: 0.5em;' : ''} `
+        style: `
+          animation-delay: -${i * duration}ms;
+          ${c === ' ' ? 'margin-right: 0.5em;' : ''}
+        `
       }))
     }
 
@@ -1419,6 +1437,7 @@ function genericCharacterComponent(name, durMin, durMax) {
 const updownChars = genericCharacterComponent('updownChars', 100, 500)
 const shrinkChars = genericCharacterComponent('growShrinkShort', 100, 300)
 const blinkChars = genericCharacterComponent('blink', 50, 200)
+const colorChars = genericCharacterComponent('colorChars', 50, 200)
 
 function getContent(elem) {
   const child = $.cls(elem, 'content')
@@ -1435,7 +1454,7 @@ function getContent(elem) {
 
 
 
-css(` .text {font-size: 1em; } .emoji {margin-right: 0.3em; font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em; } .animationContainer .emoji, .animationGridContainer .emoji {margin-right: 0; } .emojiPolyfill {width: 1em; height: 1em; transform: translateY(7%); } `)
+css(`.text {font-size: 1em; } .emoji {margin-right: 0.3em; font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em; } .animationContainer .emoji, .animationGridContainer .emoji {margin-right: 0; } .emojiPolyfill {width: 1em; height: 1em; transform: translateY(7%); } `)
 
 const wordExt = (txt, className) => $.span(txt, { class: className })
 
@@ -1493,12 +1512,12 @@ const justArrows = emojis(`→ ← → ← → ← 🔴`)
 const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
 const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
-const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️`)
+const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️ ❤️`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const circusEmojis = emojis(`🎪 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
-const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸`)
+const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸 🚬`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -1835,8 +1854,8 @@ const emojiTextRelationships = {
 function chooseEmojiForText(txt, selectionPrb=0.1) {
   if (prb(selectionPrb) && emojiTextRelationships.single[txt]) {
     return sample(emojiOverride || emojiTextRelationships.single[txt])
-  } else {
-    sample([])
+  } else if (is420) {
+    return '🚬'
   }
 
   for (let [texts, emojis] of emojiTextRelationships.group) {
@@ -1850,16 +1869,27 @@ function chooseEmojiForText(txt, selectionPrb=0.1) {
 
 
 
+const sampledTextContent = []
+const sampledEmojiContent = []
 
-
-function sampleContent() {
-  const showEmojis = (prb(0.3) && _content.emojis.length) || !_content.text.length
+function sampleContent(contentOverride=false, onlyEmojis=false) {
+  if (contentOverride) {
+    const c = onlyEmojis ? sample(sampledEmojiContent) : sample([...sampledEmojiContent, ...sampledTextContent])
+    return [c, c]
+  }
+  const showEmojis = onlyEmojis || (prb(0.3) && _content.emojis.length) || !_content.text.length
   const e = sample(_content.emojis)
 
   const mainContent = showEmojis ? e : sample(_content.text)
   let replacementContent = showEmojis ? e : sample((textOverride||[]).map(c => word(c)))
   if (!textOverride) {
     replacementContent = mainContent
+  }
+
+  if (showEmojis) {
+    sampledEmojiContent.push(mainContent)
+  } else {
+    sampledTextContent.push(mainContent)
   }
 
   return [mainContent, replacementContent]
@@ -1893,8 +1923,20 @@ function chooseContent() {
   }
 
   if (is69) {
-    contentSample.text = sexyText
-    contentSample.emojis = sexy
+    contentSample.text = [sexyText]
+    contentSample.emojis = [sexy]
+  } else if (is420) {
+    contentSample.text = [funText]
+    contentSample.emojis = emojis('🚬 🌳 🍄 😵‍💫')
+  } else if (is100) {
+    contentSample.text = ['100%']
+    contentSample.emojis = emojis('💯')
+  } else if (is666) {
+    contentSample.text = [hotText]
+    contentSample.emojis = [hot]
+  } else if (is7) {
+    contentSample.text = [luckyText]
+    contentSample.emojis = [lucky]
   }
 
 
@@ -1946,7 +1988,7 @@ css(` .sectionContainer {overflow: hidden; display: flex; align-items: center; j
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
 
-  if (animation === spin) {
+  if ([spin, flamingHot].includes(animation)) {
     fn = smoothSound
 
   } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe, growShrinkShort].includes(animation)) {
@@ -1970,7 +2012,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   } else if ([hFlip, vFlip].includes(animation)) {
     fn = flipSound
 
-  } else if (blinkChars === animation) {
+  } else if ([blinkChars, colorChars].includes(animation)) {
     fn = blinkCharSound
 
   } else if (blink === animation) {
@@ -1985,7 +2027,7 @@ function createSound(animation, params, isGrid, extraDelay=0) {
   } else if (animation === climb) {
     fn = climbSound
 
-  } else if ([iden, flamingHot].includes(animation)) {
+  } else if (animation === iden) {
     fn = singleSound
 
   } else return
@@ -2024,7 +2066,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     withBgAnimation(child, rSpan, cSpan),
     {
       class: classes,
-      style: ` border-style: ${borderStyle}; ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'} grid-column: span ${cSpan}; grid-row: span ${rSpan}; background: ${(hideBg ? 'none' : bgColor)}; color: ${txtColor}; ${fontStyle}; transform: ${rotation}; animation-delay: -${rnd(5)}s; animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()}; animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s; ` }
+      style: ` border-style: ${borderStyle}; ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'} grid-column: span ${cSpan}; grid-row: span ${rSpan}; background: ${(hideBg ? 'none' : bgColor)}; color: ${txtColor}; ${fontStyle}; transform: ${rotation}; animation-delay: -${rnd(5)}s; animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()}; animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s; `
+    }
   )
   const childContent = getContent(child)
 
@@ -2078,13 +2121,13 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 
-
+const usedAnimations = []
 
 
 let marqueeCount = 0
-function marqueeContainter(rSpan, cSpan) {
+function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   marqueeCount++
-  let [child, replacementChild] = sampleContent()
+  let [child, replacementChild] = sampleContent(contentOverride)
   const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
 
   if (textOverride) child = replacementChild
@@ -2119,6 +2162,8 @@ function marqueeContainter(rSpan, cSpan) {
     )
     : iden
 
+  usedAnimations.push(msgAnimation)
+
   const r = rnd(750, 1500)
   const d = map(sideways ? cSpan/cols : rSpan/rows, 0, 1, 0.5, 20)
   const duration = rnd(d, 100) * slow * speed
@@ -2150,6 +2195,7 @@ function marqueeContainter(rSpan, cSpan) {
 
   let childEl, playSound
   if (showLeftRight) {
+    usedAnimations.push(leftRight)
     childEl = leftRight(childWithPairedEmoji, {
       style: `font-size: ${height};`,
       duration: r * slow * speed,
@@ -2236,9 +2282,9 @@ function getFontSize(txt, rSpan, cSpan) {
 const allPlayingSounds = []
 
 let animationCount = 0
-function animationContainer(rSpan, cSpan) {
+function animationContainer(rSpan, cSpan, contentOverride=false) {
   animationCount++
-  let [child, replacementChild] = sampleContent()
+  let [child, replacementChild] = sampleContent(contentOverride)
   if (textOverride) child = replacementChild
 
   const height = `calc(${100*rSpan/rows}vh)`
@@ -2246,7 +2292,9 @@ function animationContainer(rSpan, cSpan) {
   const h = chooseHue()
   const txtH = chooseAltHue(h)
 
-  const ignoreCharAnimation = [...emojiList, '<<<<', '>>>>'].includes(child.innerHTML.replace('!', ''))
+  const ignoreCharAnimation = emojiList.includes(child.innerHTML.replace('!', ''))
+
+  const disallowColorChars = layoutStyle === 7 && cellSize < 12 && prb(0.8)
 
   const animation = sample([
     dance,
@@ -2265,6 +2313,7 @@ function animationContainer(rSpan, cSpan) {
     flamingHot,
     iden,
     prb(0.5) && breathe,
+    !ignoreCharAnimation && !disallowColorChars && colorChars,
     !ignoreCharAnimation && updownChars,
     !ignoreCharAnimation && blinkChars,
     !ignoreCharAnimation && shrinkChars,
@@ -2293,6 +2342,9 @@ function animationContainer(rSpan, cSpan) {
       hFlip,
       climb,
     ])
+
+  usedAnimations.push(animation)
+  usedAnimations.push(secondAnimation)
 
   const primaryAnimationParams = {
     delay: rnd(3500),
@@ -2375,8 +2427,8 @@ function getEmojiGrid(rSpan, cSpan) {
 }
 
 let gridCount = 0
-function animationGridContainer(rSpan, cSpan) {
-  const child = sample(_content.emojis)
+function animationGridContainer(rSpan, cSpan, contentOverride=false) {
+  const [child] = sampleContent(contentOverride, true)
 
   if (!child) return animationContainer(rSpan, cSpan)
   gridCount++
@@ -2398,6 +2450,8 @@ function animationGridContainer(rSpan, cSpan) {
     [1, wave],
     [1, climb],
   )
+
+  usedAnimations.push(animation)
 
   const [r, c] = getEmojiGrid(rSpan, cSpan)
 
@@ -2453,56 +2507,12 @@ function animationGridContainer(rSpan, cSpan) {
 
 
 
-/*
 
-LAYOUTS
-  - anything goes
-      const colMin = 1
-      const rowMin = 1
-      const colMax = colCells
-      const rowMax = rowCells
-
-  - anything goes (lean big)
-      const colMin = 12
-
-      const rowMin = chance(
-        [1, sample([24, 48])],
-        [3, sample([6, 8, 12, 16])],
-        [5, sample([2, 3, 4])],
-        [1, 1],
-      )
-
-  - scrunched up
-      const getSpan = (minCells, cellsLeft, maxCells) => {
-        const span = rndint(min(minCells, cellsLeft), cellsLeft)
-        return (cellsLeft - span < minCells) ? cellsLeft : span
-      }
-
-  - even rows
-
-  - even cols
-    (still have some non-sideways marquees)
-
-  - perfect grid
-
-  - imperfect grid
-      const colMin = 1
-      const rowMin = 1
-      const colMax = int(colCells/6)
-      const rowMax = int(rowCells/6)
-
-
-
-*/
-
-
-
-function flexSection(rowCells, colCells) {
-
+function flexSection(rowCells, colCells, contentOverride=false) {
   const cells = {}
   times(rowCells, r => cells[r] = [])
 
-  const marquees = []
+  const sections = []
 
   let colMin, colMax, rowMin, rowMax
 
@@ -2530,23 +2540,20 @@ function flexSection(rowCells, colCells) {
     rowMax = rowCells
 
   } else if (layoutStyle === 5) {
-    const rSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
-    rowMin = rSize
-    rowMax = rSize
+    rowMin = rowSize
+    rowMax = rowSize
 
     colMin = 12
     colMax = colCells
 
   } else if (layoutStyle === 6) {
-    const cSize = sample([2, 3, 4, 6, 10, 15])
-    colMin = cSize
-    colMax = cSize
+    colMin = colSize
+    colMax = colSize
 
     rowMin = prb(0.5) ? 16 : rowCells
     rowMax = rowCells
 
   } else if (layoutStyle === 7) {
-    const cellSize = sample([3, 4, 6, 12, 16])
     colMin = cellSize
     colMax = cellSize
     rowMin = cellSize
@@ -2618,19 +2625,19 @@ function flexSection(rowCells, colCells) {
     const rSpan = getSpan(rowMin, rowsLeft, rowCells)
 
     const aspectRatio = cSpan / rSpan
+    const animationPrb = layoutStyle === 4 ? 0.75 : 0.5
 
-
-    marquees.push(
+    sections.push(
       aspectRatio < 1.25 && aspectRatio > 0.8
 
       ? prb(0.75) && _content.emojis.length
-        ? animationGridContainer(rSpan, cSpan)
-        : animationContainer(rSpan, cSpan)
+        ? animationGridContainer(rSpan, cSpan, contentOverride)
+        : animationContainer(rSpan, cSpan, contentOverride)
 
-      : aspectRatio < 2 && aspectRatio > 0.5 && prb(0.5) ?
-        animationContainer(rSpan, cSpan)
+      : aspectRatio < 2 && aspectRatio > 0.5 && prb(animationPrb) ?
+        animationContainer(rSpan, cSpan, contentOverride)
 
-      : marqueeContainter(rSpan, cSpan)
+      : marqueeContainter(rSpan, cSpan, contentOverride)
     )
 
     times(rSpan, r =>
@@ -2656,7 +2663,7 @@ function flexSection(rowCells, colCells) {
   }
 
   return $.section(
-    marquees,
+    sections,
     {
       style: ` width: ${100*colCells/cols}vw; height: ${100*rowCells/rows}vh; overflow: hidden; grid-row: span ${rowCells}; grid-column: span ${colCells}; display: grid; grid-template-rows: repeat(${rowCells}, 1fr); grid-template-columns: repeat(${colCells}, 1fr); `
     }
@@ -2665,14 +2672,26 @@ function flexSection(rowCells, colCells) {
 
 
 
+function generateMain(id, contentOverride=false) {
+  return $.main(
+    flexSection(rows, cols, contentOverride),
+    {
+      id: `main`,
+      class: `projection-plane-${id}`,
+      style: ` height: 100vh; width: 100vw; overflow: hidden; display: grid; grid-template-rows: repeat(${rows}, 1fr); grid-template-columns: repeat(${cols}, 1fr); `
+    }
+  )
+}
 
-const main = $.main(
-  flexSection(rows, cols),
-  {
-    id: 'main',
-    style: ` height: 100vh; width: 100vw; overflow: hidden; display: grid; grid-template-rows: repeat(${rows}, 1fr); grid-template-columns: repeat(${cols}, 1fr); `
-  }
-)
+function renderMain(main) {
+  document.body.innerHTML = ''
+  $.render(document.body, main)
+}
+
+const main = generateMain(1)
+
+projectionPages['1'] = main
+projectionPages.pagesRendered = false
 
 const usedContent = Array.from(
   new Set([
@@ -2682,9 +2701,8 @@ const usedContent = Array.from(
 )
 
 window.onload = () => {
-  document.body.innerHTML = ''
-  setMetadata(usedContent.join(' '))
-  $.render(document.body, main)
+  setMetadata(usedContent.join(' '), bgColor)
+  renderMain(main)
 
   if (PAUSED) {
     LAST_PAUSED = Date.now()
@@ -2695,10 +2713,9 @@ window.onload = () => {
   let isFullScreen = false
   let isHidingMouse = false
 
-
-  document.onkeydown = (event) => {
+  const keyevent = (key) => {
     // DOWNLOAD HTML
-    if (event.key === 'd') {
+    if (key === 'd') {
       const a = document.createElement('a')
       a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
       a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
@@ -2708,24 +2725,21 @@ window.onload = () => {
     }
 
     // OVERDRIVE
-    else if (event.key === 'o') {
+    else if (key === 'o') {
       if (OVERDRIVE) {
         document.body.classList.remove('overdrive')
-        allRunningIntervals.forEach(i => {
-          i.newInterval(i.originalMs)
-        })
+        soundOverdrive()
+
       } else {
         document.body.classList.add('overdrive')
-        allRunningIntervals.forEach(i => {
-          i.newInterval(i.originalMs/6)
-        })
+        soundOverdrive(6)
       }
       OVERDRIVE = !OVERDRIVE
     }
 
 
     // PAUSE
-    else if (event.key === 'p') {
+    else if (key === 'p') {
       if (PAUSED) {
         START_TIME += Date.now() - LAST_PAUSED
         document.body.classList.remove('pauseAll')
@@ -2740,7 +2754,7 @@ window.onload = () => {
     }
 
     // ANHEDONIC MODE
-    else if (event.key === 'a') {
+    else if (key === 'a') {
       if (ANHEDONIC) {
         document.body.classList.remove('anhedonic')
         sourcesToNormalMode()
@@ -2752,7 +2766,7 @@ window.onload = () => {
     }
 
     // MOUSE HIDE
-    else if (event.key === 'm') {
+    else if (key === 'm') {
       if (isHidingMouse) {
         document.exitPointerLock()
         document.body.classList.remove('viewerMode')
@@ -2763,7 +2777,7 @@ window.onload = () => {
       isHidingMouse = !isHidingMouse
     }
 
-    else if (event.key === 'i') {
+    else if (key === 'i') {
       if (INVERT_ALL) {
         document.body.classList.remove('invertAll')
       } else {
@@ -2774,7 +2788,7 @@ window.onload = () => {
     }
 
     // NO DISTRACTION MODE
-    else if (event.key === 'n') {
+    else if (key === 'n') {
       if (isFullScreen) document.exitFullscreen()
       else document.body.requestFullscreen({ navigationUI: 'hide' })
 
@@ -2783,7 +2797,7 @@ window.onload = () => {
 
 
     // TOGGLE EMOJIS
-    else if (event.key === 'e') {
+    else if (key === 'e') {
       const emojiShadows = $.cls(document, 'emojiShadow')
 
       if (usingEmojiPolyfill) {
@@ -2815,13 +2829,36 @@ window.onload = () => {
       } catch(e) {}
     }
 
+    else if (['1', '2', '3', '4', '5', '6', '7'].includes(key)) {
+      if (!projectionPages.pagesRendered) {
+        projectionPages['2'] = generateMain(2, true)
+        projectionPages['3'] = generateMain(3, true)
+        projectionPages['4'] = generateMain(4, true)
+        projectionPages['5'] = generateMain(5, true)
+        projectionPages['6'] = generateMain(6, true)
+        projectionPages.pagesRendered = true
+      }
 
+      if (key === '7') {
+        renderMain(projectionPages['1'])
+        $.render(document.body, projectionPages['2'])
+        $.render(document.body, projectionPages['3'])
+        $.render(document.body, projectionPages['4'])
+        $.render(document.body, projectionPages['5'])
+        $.render(document.body, projectionPages['6'])
+      } else {
+        renderMain(projectionPages[key])
+      }
+      START_TIME = Date.now()
+    }
 
-
-
-
-
+    else if (key === '0') {
+      renderMain('')
+    }
   }
+  document.onkeydown = e => keyevent(e.key)
+
+  if (queryParams.keys) queryParams.keys.split(',').filter(k => !['d', 'o'].includes(k)).forEach(keyevent)
 
   if (USE_EMOJI_POLYFILL && window.twemoji) {
     twemoji.parse(document.body, {

@@ -578,9 +578,7 @@ function colorShiftingBgMultiple(rSpan, cSpan) {
     delay: i * 500,
     duration,
     direction,
-    style: `
-      transform: scale(${0.95 - i/squares});
-    `
+    style: `transform: scale(${0.95 - i/squares});`
   }))
 }
 
