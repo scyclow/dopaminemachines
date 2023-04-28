@@ -313,6 +313,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: ALL STAR",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: ALL TIME HIGH",
         "type": "boolean"
     },
@@ -557,6 +561,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: GOAL",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: GOLD MINE",
         "type": "boolean"
     },
@@ -566,6 +574,10 @@
     },
     {
         "name": "_Content: GRAIL",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: GRAND SLAM",
         "type": "boolean"
     },
     {
@@ -598,6 +610,10 @@
     },
     {
         "name": "_Content: HOLY MOLY",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: HOME RUN",
         "type": "boolean"
     },
     {
@@ -689,6 +705,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: MAKE SOME NOISE",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: MASSIVE GAINS",
         "type": "boolean"
     },
@@ -769,6 +789,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: POWER PLAY",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: PROFITS",
         "type": "boolean"
     },
@@ -814,6 +838,10 @@
     },
     {
         "name": "_Content: SIZZLING",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: SLAM DUNK",
         "type": "boolean"
     },
     {
@@ -930,6 +958,10 @@
     },
     {
         "name": "_Content: UNLIMITED",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: VICTORY LAP",
         "type": "boolean"
     },
     {
@@ -1058,6 +1090,10 @@
     },
     {
         "name": "_Content: ⚡️",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: ⛹️‍♂️",
         "type": "boolean"
     },
     {
@@ -1245,11 +1281,31 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: 🏂",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: 🏃",
         "type": "boolean"
     },
     {
+        "name": "_Content: 🏄‍♀️",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: 🏄‍♂️",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: 🏅",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: 🏆",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: 🏋🏽",
         "type": "boolean"
     },
     {
@@ -1258,6 +1314,14 @@
     },
     {
         "name": "_Content: 🏎",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: 🏎️",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: 🏟",
         "type": "boolean"
     },
     {
@@ -1466,6 +1530,10 @@
     },
     {
         "name": "_Content: 🤹",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: 🤾",
         "type": "boolean"
     },
     {

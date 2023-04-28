@@ -81,10 +81,11 @@ const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
 const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
 const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️ ❤️`)
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
-const circusEmojis = emojis(`🎪 🦁 🤡 🏎️ 🏋️ 👯‍♀️ 🤹`)
+const circusEmojis = emojis(`🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
-const misc = emojis(`💪 ⚠️ 🐂 🤲 🐐 🎸 🚬`)
+const sportsEmojis = emojis(`🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪`)
+const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -109,9 +110,8 @@ const emojiLists = emojiOverride ? [emojiOverride] : [
   commonEmojis,
   justArrows,
   hedonicTreadmill,
-  circusEmojis
-  // misc,
-  // maybe,
+  circusEmojis,
+  sportsEmojis
 ]
 
 const emojiList = [...emojiLists, misc].flat().map(e => e.innerHTML)
@@ -318,7 +318,6 @@ const disclaimer = [
   'DO YOUR OWN RESEARCH',
   'DYOR',
   'SAFE + SECURE',
-  `BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`,
   `PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`,
 ]
 
@@ -338,8 +337,6 @@ const affirmations = [
   'AS GOOD AS IT GETS',
   'FUCK YES',
   'FINALLY',
-  'CHAMPION',
-  'GREATEST OF ALL TIME',
   'SPECIAL',
   `YOU'RE #1`,
   'THIS ROCKS',
@@ -356,6 +353,24 @@ const wwwText = [
   'VIRAL',
   'LIKE',
   'TRENDING',
+  `BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`,
+]
+
+const sportsText = [
+  'SLAM DUNK',
+  'GOAL',
+  'HOME RUN',
+  'GRAND SLAM',
+  'MAKE SOME NOISE',
+  `LET'S GO`,
+  'POWER PLAY',
+  'GREATEST OF ALL TIME',
+  'CHAMPION',
+  'WINNER',
+  'VICTORY LAP',
+  'ACTION PACKED',
+  'TRIPLE CROWN',
+  'ALL STAR'
 ]
 
 
@@ -372,6 +387,7 @@ const textLists = [
   disclaimer,
   affirmations,
   wwwText,
+  sportsText
 ]
 
 
@@ -393,7 +409,7 @@ const emojiTextRelationships = {
     'JUICY': fruit1,
     'ALL NATURAL': fruit1,
     'PURE ENERGY': energy,
-    [`RUN, DON'T WALK`]: emojis(`🏃`),
+    "`RUN, DON'T WALK`": emojis(`🏃`),
     'MIND = BLOWN': emojis(`🤯`),
     '100%': emojis(`💯`),
     'GREATEST OF ALL TIME': emojis(`🐐`),
@@ -412,7 +428,8 @@ const emojiTextRelationships = {
     [funText, funny],
     [crypto, [...moneyFull, ...energy]],
     [disclaimer, emojis(`⚠️ 🚨`)],
-    [wwwText, computer]
+    [wwwText, computer],
+    [sportsText, sportsEmojis]
   ]
 }
 

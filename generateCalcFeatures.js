@@ -52,8 +52,11 @@ const calcFeatures = `
   features['Borders'] = showBorder ? borderStyle : 'none'
   features['Askew'] = freeFloating
 
+  const canSeeBodyBg = freeFloating || bgType === 1
+  const bodyBgHasColor = !['#000', '#fff'].includes(bgColor)
   features['Base Hues'] =
     bw ? 0 :
+    canSeeBodyBg && bodyBgHasColor && bw ? 1 :
     possibleHues[1] < 1 ? 1 :
     randomHue ? '???' :
     possibleHues.length
@@ -88,6 +91,7 @@ const calcFeatures = `
     if ([dealsText].includes(s)) return 'Deals'
     if ([fomo].includes(s)) return 'FOMO'
     if ([hedonicTreadmill, symbols, justArrows].includes(s)) return 'Hedonic Treadmill'
+    if ([sportsText, sportsEmojis].includes(s)) return 'Sports'
     return 'Misc.'
   }
 
@@ -100,6 +104,7 @@ const calcFeatures = `
   features['_Sample: Get Rich Quick'] = usedContentSamples.includes('Get Rich Quick')
   features['_Sample: Yummy'] = usedContentSamples.includes('Yummy')
   features['_Sample: Fun'] = usedContentSamples.includes('Fun')
+  features['_Sample: Sports'] = usedContentSamples.includes('Sports')
   features['_Sample: Hot Stuff'] = usedContentSamples.includes('Hot Stuff')
   features['_Sample: Not Financial Advice'] = usedContentSamples.includes('Not Financial Advice')
   features['_Sample: World Wide Web'] = usedContentSamples.includes('World Wide Web')
