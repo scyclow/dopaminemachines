@@ -429,6 +429,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: DELIGHTFUL",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: DESIRE",
         "type": "boolean"
     },
@@ -809,6 +813,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: RARE",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: REWARDS",
         "type": "boolean"
     },
@@ -822,6 +830,10 @@
     },
     {
         "name": "_Content: SAFE + SECURE",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: SATISFACTION GUARANTEED",
         "type": "boolean"
     },
     {

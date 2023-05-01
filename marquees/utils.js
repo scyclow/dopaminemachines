@@ -83,11 +83,3 @@ function setRunInterval(fn, ms, i=0) {
 
   return stopInterval
 }
-
-function getLocalStorage(key) {
-  try {
-    return window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem(key))
-  } catch (e) {
-    console.log(e)
-  }
-}

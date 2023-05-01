@@ -7,12 +7,18 @@ const projectionPages = {}
 
 
 let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
-let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
+let PAUSED = ls.get('__DOPAMINE_IS_PAUSED__') || false
 let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   IS_HEADLESS
-  || getLocalStorage('__DOPAMINE_EMOJI_TOGGLE__')
+  || ls.get('__DOPAMINE_EMOJI_TOGGLE__')
   || false
 )
+
+let ACTIVE_VOICE_IX = ls.get('__DOPAMINE_VOICE__') || null
+if (queryParams.voice) {
+  ACTIVE_VOICE_IX = Number(queryParams.voice)
+  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
+}
 
 
 const speed = prb(0.05) ? 100 : 3
@@ -37,14 +43,14 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [57, 1], // anything goes
+  [55, 1], // anything goes
   [6, 2],  // anything goes (micro/large)
   [7, 3],  // anything goes (lean rows)
   [6, 4],  // macro
   [7, 5],  // even rows
   [5, 6],  // even cols
-  [5, 7],  // perfect grid
-  [2, 8],  // imperfect grid
+  [6, 7],  // perfect grid
+  [3, 8],  // imperfect grid
   [5, 9],  // anything goes micro, varying size
 )
 
@@ -395,7 +401,7 @@ css(`
     filter: invert(${invertAll ? 1 : 0});
   }
 
-  .pauseAll *, .pauseAll *::before {
+  .pauseAll, .pauseAll *, .pauseAll *::before {
     animation-play-state: paused !important;
   }
 

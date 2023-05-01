@@ -147,3 +147,8 @@ function setMetadata(title) {
 
   console.log(title)
 }
+
+const ls = {
+  get(key) {},
+  set(key, value) {}
+}

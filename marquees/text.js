@@ -1,3 +1,4 @@
+const LR_PADDING = 'margin-left: 0.2em; margin-right: 0.2em;'
 
 css(`
   .text {
@@ -5,14 +6,8 @@ css(`
   }
 
   .emoji {
-    margin-right: 0.3em;
+    ${LR_PADDING}
     font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em;
-  }
-
-  .animationContainer .emoji,
-  .animationGridContainer .emoji
-  {
-    margin-right: 0;
   }
 
   .emojiPolyfill {
@@ -20,7 +15,6 @@ css(`
     height: 1em;
     transform: translateY(7%);
   }
-
 `)
 
 const wordExt = (txt, className) => $.span(txt, { class: className })
@@ -176,6 +170,7 @@ const dealsText = [
   'MORE',
   'MORE IS MORE',
   'I WANT MORE',
+  'SATISFACTION GUARANTEED'
 ]
 
 const cashText = [
@@ -229,7 +224,8 @@ const fomo = [
   'TIME IS RUNNING OUT',
   'ACT NOW',
   `DON'T WAIT`,
-  `THIS IS WHAT YOU'VE BEEN WAITING FOR`
+  `THIS IS WHAT YOU'VE BEEN WAITING FOR`,
+  `THIS IS GOING TO BE HUGE`,
 ]
 const hotText = [
   'TOO HOT TO HANDLE',
@@ -273,6 +269,7 @@ const excitingText = [
   `LET'S GO`,
   'FRENZY',
   'WILD',
+  'DELIGHTFUL'
 ]
 
 const funText = [
@@ -307,6 +304,7 @@ const crypto = [
   'THROBBING GAINS',
   'MASSIVE GAINS',
   'WHOPPING GAINS',
+  'RARE'
 ]
 
 const disclaimer = [
@@ -322,7 +320,6 @@ const disclaimer = [
 ]
 
 const affirmations = [
-  `THIS IS GOING TO BE HUGE`,
   `OPPORTUNITY OF A LIFETIME`,
   `YOU WON'T BELIEVE THIS!`,
   `THIS IS THE REAL DEAL`,

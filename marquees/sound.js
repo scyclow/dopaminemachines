@@ -423,6 +423,8 @@ function climbSound({ duration, delay }) {
         setTimeout(() => smoothGain(0, 0.05), interval*0.75 + extraDelay)
       }, duration/4)
 
+      if (OVERDRIVE) soundOverdrive(6)
+
     }, timeUntilNextNote + extraDelay*4)
 
     return () => {
@@ -553,14 +555,17 @@ function singleSound() {
 
 
 
-let voices, selectedVoice
+let voices
+
+const getDefaultVoiceIx = () => voices.filter(v => v.lang && v.lang.includes('en')[0] || 0)
 const getVoices = () => {
   try {
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
       else {
-        selectedVoice = voices.find(v => v.lang ? v.lang.includes('en') : false) || voices[0]
+        ACTIVE_VOICE_IX = ACTIVE_VOICE_IX || getDefaultVoiceIx()
+        if (ACTIVE_VOICE_IX === -1) ACTIVE_VOICE_IX = 0
       }
     }, 200)
   } catch(e) {
@@ -568,6 +573,12 @@ const getVoices = () => {
   }
 }
 getVoices()
+
+function selectVoice(v) {
+  ACTIVE_VOICE_IX = v % voices.length
+  console.log('VOICE SELECTED:', ACTIVE_VOICE_IX)
+  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
+}
 
 let utteranceQueue = []
 let utterancePriority = null
@@ -587,9 +598,14 @@ const triggerUtterance = () => {
     txt = utterancePriority
     utterancePriority = null
   } else {
-    txt = utteranceQueue.splice(ix, 1)[0] || ''
+    txt = utteranceQueue.splice(ix, 1)[0]
   }
+
+  if (!txt) return
+
   txt.volume = 0.88
+  txt.voice = voices[ACTIVE_VOICE_IX||0]
+
 
   if (OVERDRIVE) {
     txt.pitch = sample(MAJOR_SCALE)
@@ -624,7 +640,6 @@ const stopUtter = txt => {
 const utter = (txt, t=1, i=7) => {
   try {
     let a = new window.SpeechSynthesisUtterance(txt.toLowerCase())
-    a.voice = selectedVoice
     const startingQueue = utteranceQueue.length
     times(t, () => {
       utteranceQueue.push(a)

@@ -86,13 +86,6 @@ function setRunInterval(fn, ms, i=0) {
   return stopInterval
 }
 
-function getLocalStorage(key) {
-  try {
-    return window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem(key))
-  } catch (e) {
-    console.log(e)
-  }
-}
 
 let IS_HEADLESS = false
 let TWEMOJI_PRESENT = false
@@ -243,6 +236,11 @@ function setMetadata(title) {
   console.log(title)
 }
 
+const ls = {
+  get(key) {},
+  set(key, value) {}
+}
+
 const cols = 60
 const rows = 48
 const EDITION_SIZE = 777
@@ -251,12 +249,18 @@ const projectionPages = {}
 
 
 let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
-let PAUSED = getLocalStorage('__DOPAMINE_IS_PAUSED__') || false
+let PAUSED = ls.get('__DOPAMINE_IS_PAUSED__') || false
 let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   IS_HEADLESS
-  || getLocalStorage('__DOPAMINE_EMOJI_TOGGLE__')
+  || ls.get('__DOPAMINE_EMOJI_TOGGLE__')
   || false
 )
+
+let ACTIVE_VOICE_IX = ls.get('__DOPAMINE_VOICE__') || null
+if (queryParams.voice) {
+  ACTIVE_VOICE_IX = Number(queryParams.voice)
+  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
+}
 
 
 const speed = prb(0.05) ? 100 : 3
@@ -281,14 +285,14 @@ const fontFamily = chance(
 )
 
 const layoutStyle = chance(
-  [57, 1], // anything goes
+  [55, 1], // anything goes
   [6, 2],  // anything goes (micro/large)
   [7, 3],  // anything goes (lean rows)
   [6, 4],  // macro
   [7, 5],  // even rows
   [5, 6],  // even cols
-  [5, 7],  // perfect grid
-  [2, 8],  // imperfect grid
+  [6, 7],  // perfect grid
+  [3, 8],  // imperfect grid
   [5, 9],  // anything goes micro, varying size
 )
 
@@ -639,7 +643,7 @@ css(`
     filter: invert(${invertAll ? 1 : 0});
   }
 
-  .pauseAll *, .pauseAll *::before {
+  .pauseAll, .pauseAll *, .pauseAll *::before {
     animation-play-state: paused !important;
   }
 
@@ -1132,6 +1136,8 @@ function climbSound({ duration, delay }) {
         setTimeout(() => smoothGain(0, 0.05), interval*0.75 + extraDelay)
       }, duration/4)
 
+      if (OVERDRIVE) soundOverdrive(6)
+
     }, timeUntilNextNote + extraDelay*4)
 
     return () => {
@@ -1262,14 +1268,17 @@ function singleSound() {
 
 
 
-let voices, selectedVoice
+let voices
+
+const getDefaultVoiceIx = () => voices.filter(v => v.lang && v.lang.includes('en')[0] || 0)
 const getVoices = () => {
   try {
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
       else {
-        selectedVoice = voices.find(v => v.lang ? v.lang.includes('en') : false) || voices[0]
+        ACTIVE_VOICE_IX = ACTIVE_VOICE_IX || getDefaultVoiceIx()
+        if (ACTIVE_VOICE_IX === -1) ACTIVE_VOICE_IX = 0
       }
     }, 200)
   } catch(e) {
@@ -1277,6 +1286,12 @@ const getVoices = () => {
   }
 }
 getVoices()
+
+function selectVoice(v) {
+  ACTIVE_VOICE_IX = v % voices.length
+  console.log('VOICE SELECTED:', ACTIVE_VOICE_IX)
+  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
+}
 
 let utteranceQueue = []
 let utterancePriority = null
@@ -1296,9 +1311,14 @@ const triggerUtterance = () => {
     txt = utterancePriority
     utterancePriority = null
   } else {
-    txt = utteranceQueue.splice(ix, 1)[0] || ''
+    txt = utteranceQueue.splice(ix, 1)[0]
   }
+
+  if (!txt) return
+
   txt.volume = 0.88
+  txt.voice = voices[ACTIVE_VOICE_IX||0]
+
 
   if (OVERDRIVE) {
     txt.pitch = sample(MAJOR_SCALE)
@@ -1333,7 +1353,6 @@ const stopUtter = txt => {
 const utter = (txt, t=1, i=7) => {
   try {
     let a = new window.SpeechSynthesisUtterance(txt.toLowerCase())
-    a.voice = selectedVoice
     const startingQueue = utteranceQueue.length
     times(t, () => {
       utteranceQueue.push(a)
@@ -2014,6 +2033,7 @@ function getContent(elem) {
 }
 
 
+const LR_PADDING = 'margin-left: 0.2em; margin-right: 0.2em;'
 
 css(`
   .text {
@@ -2021,14 +2041,8 @@ css(`
   }
 
   .emoji {
-    margin-right: 0.3em;
+    ${LR_PADDING}
     font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em;
-  }
-
-  .animationContainer .emoji,
-  .animationGridContainer .emoji
-  {
-    margin-right: 0;
   }
 
   .emojiPolyfill {
@@ -2036,7 +2050,6 @@ css(`
     height: 1em;
     transform: translateY(7%);
   }
-
 `)
 
 const wordExt = (txt, className) => $.span(txt, { class: className })
@@ -2192,6 +2205,7 @@ const dealsText = [
   'MORE',
   'MORE IS MORE',
   'I WANT MORE',
+  'SATISFACTION GUARANTEED'
 ]
 
 const cashText = [
@@ -2245,7 +2259,8 @@ const fomo = [
   'TIME IS RUNNING OUT',
   'ACT NOW',
   `DON'T WAIT`,
-  `THIS IS WHAT YOU'VE BEEN WAITING FOR`
+  `THIS IS WHAT YOU'VE BEEN WAITING FOR`,
+  `THIS IS GOING TO BE HUGE`,
 ]
 const hotText = [
   'TOO HOT TO HANDLE',
@@ -2289,6 +2304,7 @@ const excitingText = [
   `LET'S GO`,
   'FRENZY',
   'WILD',
+  'DELIGHTFUL'
 ]
 
 const funText = [
@@ -2323,6 +2339,7 @@ const crypto = [
   'THROBBING GAINS',
   'MASSIVE GAINS',
   'WHOPPING GAINS',
+  'RARE'
 ]
 
 const disclaimer = [
@@ -2338,7 +2355,6 @@ const disclaimer = [
 ]
 
 const affirmations = [
-  `THIS IS GOING TO BE HUGE`,
   `OPPORTUNITY OF A LIFETIME`,
   `YOU WON'T BELIEVE THIS!`,
   `THIS IS THE REAL DEAL`,
@@ -2666,6 +2682,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
   const txtColor = bw ? bwc.text : getColorFromHue(txtH)
   const bgColor = bw ? bwc.bg : getBgColor(h)
+  const bgProp = bgColor.length > 200 ? '' : 'background: '
 
 
   const rotation = threeDRotations
@@ -2695,9 +2712,9 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
         ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
         grid-column: span ${cSpan};
         grid-row: span ${rSpan};
-        background: ${(hideBg ? 'none' : bgColor)};
+        ${bgProp}${(hideBg ? 'none;' : bgColor)};
         color: ${txtColor};
-        ${fontStyle};
+        ${fontStyle}
         transform: ${rotation};
         animation-delay: -${rnd(5)}s;
         animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()};
@@ -2712,9 +2729,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const triggersPopup = prb(0.01)
   const triggersNotifications = prb(0.01)
   container.onclick = () => {
-    onclick()
-
     try {
+      onclick()
       if (window.navigator) window.navigator.vibrate(50)
 
       if (canFullScreen) {
@@ -2810,9 +2826,26 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
 
 
   const isEmoji = elementIsEmoji(child)
+  const rotateEmoji = isEmoji && sideways && prb(0.5)
+
+  let emojiStyle = ''
+
+  if (rotateEmoji) {
+    emojiStyle = 'transform: rotate(90deg); display: inline-block;'
+  }
+
+  if (
+    isEmoji && rSpan <= 3
+    || rotateEmoji && cSpan <= 3
+  ) {
+    emojiStyle += LR_PADDING
+  }
+
+
+
   const clonedNode = $.span(child.cloneNode(true), {
     class: isEmoji ? 'emojiShadow' : '',
-    style: getShadow(txtH, !isEmoji),
+    style: getShadow(txtH, !isEmoji) + emojiStyle,
     'data-h': txtH,
   })
 
@@ -2821,7 +2854,7 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
       clonedNode,
       $.span(pairedEmoji, {
         class: 'emojiShadow',
-        style: `margin-left: 1em; ${getShadow(txtH, false)}`,
+        style: `${LR_PADDING} ${getShadow(txtH, false)}`,
         'data-h': txtH,
       })
     ]
@@ -2874,7 +2907,11 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
       }
 
     } else {
-      if (talkingActive) {
+
+      if (
+        talkingActive
+        && utteranceQueue.some(u => u.text === child.innerHTML.toLowerCase())
+      ) {
         stopUtter(child.innerHTML)
         talkingActive = false
       } else {
@@ -3005,7 +3042,7 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     ),
     {
       class: 'animationContainer' + (ignoreCharAnimation ? ' emojiShadow' : ''),
-      'data-h': h,
+      'data-h': txtH,
       style: `
         height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
@@ -3111,7 +3148,7 @@ function animationGridContainer(rSpan, cSpan, contentOverride=false) {
     )),
     {
       class: 'animationGridContainer emojiShadow',
-      'data-h': h,
+      'data-h': txtH,
       style: `
         font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
         height: ${100*rSpan/rows}vh;

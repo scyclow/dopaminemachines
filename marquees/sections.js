@@ -81,6 +81,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
   const txtColor = bw ? bwc.text : getColorFromHue(txtH)
   const bgColor = bw ? bwc.bg : getBgColor(h)
+  const bgProp = bgColor.length > 200 ? '' : 'background: '
 
 
   const rotation = threeDRotations
@@ -110,9 +111,9 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
         ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
         grid-column: span ${cSpan};
         grid-row: span ${rSpan};
-        background: ${(hideBg ? 'none' : bgColor)};
+        ${bgProp}${(hideBg ? 'none;' : bgColor)};
         color: ${txtColor};
-        ${fontStyle};
+        ${fontStyle}
         transform: ${rotation};
         animation-delay: -${rnd(5)}s;
         animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()};
@@ -127,9 +128,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const triggersPopup = prb(0.01)
   const triggersNotifications = prb(0.01)
   container.onclick = () => {
-    onclick()
-
     try {
+      onclick()
       if (window.navigator) window.navigator.vibrate(50)
 
       if (canFullScreen) {
@@ -225,9 +225,26 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
 
 
   const isEmoji = elementIsEmoji(child)
+  const rotateEmoji = isEmoji && sideways && prb(0.5)
+
+  let emojiStyle = ''
+
+  if (rotateEmoji) {
+    emojiStyle = 'transform: rotate(90deg); display: inline-block;'
+  }
+
+  if (
+    isEmoji && rSpan <= 3
+    || rotateEmoji && cSpan <= 3
+  ) {
+    emojiStyle += LR_PADDING
+  }
+
+
+
   const clonedNode = $.span(child.cloneNode(true), {
     class: isEmoji ? 'emojiShadow' : '',
-    style: getShadow(txtH, !isEmoji),
+    style: getShadow(txtH, !isEmoji) + emojiStyle,
     'data-h': txtH,
   })
 
@@ -236,7 +253,7 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
       clonedNode,
       $.span(pairedEmoji, {
         class: 'emojiShadow',
-        style: `margin-left: 1em; ${getShadow(txtH, false)}`,
+        style: `${LR_PADDING} ${getShadow(txtH, false)}`,
         'data-h': txtH,
       })
     ]
@@ -289,7 +306,11 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
       }
 
     } else {
-      if (talkingActive) {
+
+      if (
+        talkingActive
+        && utteranceQueue.some(u => u.text === child.innerHTML.toLowerCase())
+      ) {
         stopUtter(child.innerHTML)
         talkingActive = false
       } else {
@@ -420,7 +441,7 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     ),
     {
       class: 'animationContainer' + (ignoreCharAnimation ? ' emojiShadow' : ''),
-      'data-h': h,
+      'data-h': txtH,
       style: `
         height: ${100*rSpan/rows}vh;
         font-size: ${fontSize};
@@ -526,7 +547,7 @@ function animationGridContainer(rSpan, cSpan, contentOverride=false) {
     )),
     {
       class: 'animationGridContainer emojiShadow',
-      'data-h': h,
+      'data-h': txtH,
       style: `
         font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
         height: ${100*rSpan/rows}vh;

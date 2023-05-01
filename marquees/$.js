@@ -84,15 +84,35 @@ function css(style) {
 }
 
 
-function setMetadata(title, color='') {
+function setMetadata(usedContent) {
   $html.translate = false
   $html.lang = 'en'
   $html.className = 'notranslate'
 
+  const title = usedContent.join(' ')
+
   document.title = title
 
   addMetaTag({ name: 'google', content: 'notranslate' })
-  addMetaTag({ name: 'theme-color', content: color })
+  addMetaTag({ name: 'description', content: title })
+  addMetaTag({ name: 'keywords', content: usedContent.join(', ') })
 
   console.log(title)
+}
+
+const ls = {
+  get(key) {
+    try {
+      return window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem(key))
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  set(key, value) {
+    try {
+      return window.localStorage.setItem(key, value)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 }

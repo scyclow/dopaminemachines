@@ -35,7 +35,7 @@ const usedContent = Array.from(
 )
 
 window.onload = () => {
-  setMetadata(usedContent.join(' '), bgColor)
+  setMetadata(usedContent)
   renderMain(main)
 
   if (PAUSED) {
@@ -83,7 +83,7 @@ window.onload = () => {
       }
       PAUSED = !PAUSED
       try {
-        window.localStorage.setItem('__DOPAMINE_IS_PAUSED__', PAUSED)
+        ls.set('__DOPAMINE_IS_PAUSED__', PAUSED)
       } catch(e) {}
     }
 
@@ -159,7 +159,7 @@ window.onload = () => {
       usingEmojiPolyfill = !usingEmojiPolyfill
 
       try {
-        window.localStorage.setItem('__DOPAMINE_EMOJI_TOGGLE__', usingEmojiPolyfill)
+        ls.set('__DOPAMINE_EMOJI_TOGGLE__', usingEmojiPolyfill)
       } catch(e) {}
     }
 
@@ -188,6 +188,18 @@ window.onload = () => {
 
     else if (key === '0') {
       renderMain('')
+    }
+
+    else if (key === 'ArrowRight') {
+     selectVoice(ACTIVE_VOICE_IX + 1)
+    }
+
+    else if (key === 'ArrowLeft') {
+      selectVoice(voices.length + ACTIVE_VOICE_IX - 1)
+    }
+
+    else if (key === 'ArrowDown') {
+      selectVoice(getDefaultVoiceIx())
     }
   }
   document.onkeydown = e => keyevent(e.key)
