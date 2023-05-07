@@ -312,7 +312,7 @@ const disclaimer = [
 
 const affirmations = [
   `OPPORTUNITY OF A LIFETIME`,
-  `YOU WON'T BELIEVE THIS!`,
+  `YOU WON'T BELIEVE THIS`,
   `THIS IS THE REAL DEAL`,
   `PAY ATTENTION`,
   `I COULDN'T BELIEVE IT EITHER`,

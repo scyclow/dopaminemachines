@@ -113,7 +113,6 @@ const calcFeatures = `
   features['_Sample: Lunar'] = usedContentSamples.includes('Lunar')
   features['_Sample: Positivity'] = usedContentSamples.includes('Positivity')
   features['_Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
-  features['_Sample: Filler'] = usedContentSamples.includes('Filler')
   features['_Sample: Misc.'] = usedContentSamples.includes('Misc.')
 
 
@@ -146,7 +145,7 @@ const calcFeatures = `
     new Set([
       ...$.cls(main, 'content').map(e => e.innerHTML),
       ...$.cls(main, 'charContentGroup').map(getContent)
-    ])
+    ].map(t => t.replace('!', '')))
   )
   usedContent.forEach(c => features['_Content: ' + c] = true)
 

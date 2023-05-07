@@ -344,7 +344,7 @@ const lineRotation = chance(
 const freeFloating = ![0, 180].includes(lineRotation())
 const threeDRotations = lineRotation.isMild && prb(0.3333)
 
-const gradientBg = prb(0.2)
+const gradientBg = prb(0.25)
 const bgType = chance(
   [55, 0],
   [12, 1], // empty
@@ -2311,7 +2311,7 @@ const disclaimer = [
 
 const affirmations = [
   `OPPORTUNITY OF A LIFETIME`,
-  `YOU WON'T BELIEVE THIS!`,
+  `YOU WON'T BELIEVE THIS`,
   `THIS IS THE REAL DEAL`,
   `PAY ATTENTION`,
   `I COULDN'T BELIEVE IT EITHER`,
@@ -3425,7 +3425,6 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   features['_Sample: Lunar'] = usedContentSamples.includes('Lunar')
   features['_Sample: Positivity'] = usedContentSamples.includes('Positivity')
   features['_Sample: Hedonic Treadmill'] = usedContentSamples.includes('Hedonic Treadmill')
-  features['_Sample: Filler'] = usedContentSamples.includes('Filler')
   features['_Sample: Misc.'] = usedContentSamples.includes('Misc.')
 
 
@@ -3458,7 +3457,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
     new Set([
       ...$.cls(main, 'content').map(e => e.innerHTML),
       ...$.cls(main, 'charContentGroup').map(getContent)
-    ])
+    ].map(t => t.replace('!', '')))
   )
   usedContent.forEach(c => features['_Content: ' + c] = true)
 

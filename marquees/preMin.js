@@ -305,7 +305,7 @@ const lineRotation = chance(
 const freeFloating = ![0, 180].includes(lineRotation())
 const threeDRotations = lineRotation.isMild && prb(0.3333)
 
-const gradientBg = prb(0.2)
+const gradientBg = prb(0.25)
 const bgType = chance(
   [55, 0],
   [12, 1], // empty
@@ -1751,7 +1751,7 @@ const disclaimer = [
 
 const affirmations = [
   `OPPORTUNITY OF A LIFETIME`,
-  `YOU WON'T BELIEVE THIS!`,
+  `YOU WON'T BELIEVE THIS`,
   `THIS IS THE REAL DEAL`,
   `PAY ATTENTION`,
   `I COULDN'T BELIEVE IT EITHER`,
