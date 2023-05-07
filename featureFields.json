@@ -305,6 +305,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: ACTION PACKED",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: ALL NATURAL",
         "type": "boolean"
     },
@@ -965,6 +969,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: TRIPLE CROWN",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: UNBELIEVABLE",
         "type": "boolean"
     },
@@ -1170,6 +1178,10 @@
     },
     {
         "name": "_Content: 🌟",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: 🌳",
         "type": "boolean"
     },
     {
@@ -1510,6 +1522,10 @@
     },
     {
         "name": "_Content: 🚨",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: 🚬",
         "type": "boolean"
     },
     {

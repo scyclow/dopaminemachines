@@ -5,7 +5,6 @@ const max = Math.max
 const abs = Math.abs
 const round = Math.round
 const int = parseInt
-const btwn = (mn, mx, val) => max(mn, min(mx, val))
 const map = (val, low, high, mn, mx) => mn < mx
   ? mn + ((val - low)/(high-low)) * (mx - mn)
   : mn - ((val - low)/(high-low)) * (mn - mx)
@@ -316,10 +315,10 @@ const marqueeAnimationRate = chance(
 
 const tokenId = Number(tokenData.tokenId) % 1000000
 const is69 = tokenId === 69
-const is420 = tokenId === 420
-const is100 = tokenId === 100
-const is666 = tokenId === 666
 const is7 = [7, 77].includes(tokenId)
+const is100 = tokenId === 100
+const is420 = tokenId === 420
+const is666 = tokenId === 666
 const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
 const showEmojis = is100 || is666 || is7 || is420 || is69 || prb(0.5)
 
@@ -361,11 +360,11 @@ const bgAnimationPrb = chance(
   [bgType < 3 && 2, 1],
 )
 
-const bw = prb(0.15)
-const sH = rnd(360)
+const BW = prb(0.15)
+const STARTING_HUE = rnd(360)
 
 const randomHue = prb(0.02)
-const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
+const chooseHue = () => randomHue ? rnd(360) : STARTING_HUE + sample(possibleHues) % 360
 
 const chooseAltHue = (h) => {
   const alt = chooseHue()
@@ -386,7 +385,7 @@ const possibleHues = chance(
 const shadowType = chance(
   [4, 1],
   [4, 2],
-  [bw ? 1 : 4, 3],
+  [BW ? 1 : 4, 3],
   [4, 4],
   [4, 5],
   [2, 6],
@@ -396,7 +395,7 @@ const shadowType = chance(
 )
 
 
-const defaultShadowLightness = !bw && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
+const defaultShadowLightness = !BW && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
@@ -431,7 +430,9 @@ const getShadowText = (h, polyfillShadow) => {
       [`0 0 0.05em ${shadowColor}`] :
 
     shadowType === 6 ?
-      times(4, s => `${(s+1)/20 - 0.1}em ${(s+1)/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
+      times(4, s =>
+        `${s < 2 ? -0.04 : 0.04}em ${s%2 ? 0.04 : -0.04}em 0 ${getShadowColor(h + 180 + s*30)}`
+      ) :
 
     shadowType === 7 ?
       [
@@ -549,8 +550,8 @@ function starburstBg(h, rSpan, cSpan) {
   const h2 = chooseHue()
 
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-  const c1 = bw ? bwc.text : `hsl(${h}deg, 100%, 50%)`
-  let c2 = bw ? bwc.bg : `hsl(${h2}deg, 100%, 50%)`
+  const c1 = BW ? bwc.text : `hsl(${h}deg, 100%, 50%)`
+  let c2 = BW ? bwc.bg : `hsl(${h2}deg, 100%, 50%)`
   c2 =
     bgType === 1 ? '#000' :
     c1 === c2 ? '#fff' :
@@ -561,7 +562,6 @@ function starburstBg(h, rSpan, cSpan) {
     [10, 5],
     [8, 10],
   )
-
 
   const cssClass = `cgBg-${int(h)}-${int(h2)}`
 
@@ -581,7 +581,6 @@ function starburstBg(h, rSpan, cSpan) {
       animation-direction: ${prb(0.5) ? 'normal' : 'reverse'}
     }
 
-
     @keyframes BgRotate${deg} {
       0% {
         transform: rotate(0deg);
@@ -592,9 +591,7 @@ function starburstBg(h, rSpan, cSpan) {
     }
   `)
 
-
   return cssClass
-
 }
 
 const bgColor = chance(
@@ -711,10 +708,6 @@ css(`
   }
 `)
 
-const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
-  obj.exponentialRampToValueAtTime(value, ctx.currentTime + timeInSeconds)
-}
-
 let START_TIME = Date.now()
 const MAX_VOLUME = 0.04
 
@@ -761,7 +754,7 @@ function createSource(waveType = 'square') {
     )
   }
 
-  const src = { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
+  const src = { source, gain, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
 
   allSources.push(src)
 
@@ -800,7 +793,7 @@ const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START
 
 
 function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
-  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
+  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ
   let freqMin = freqAdj * freqMax / 5
   if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
 
@@ -849,7 +842,6 @@ function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
       if (stopInterval) stopInterval()
     }
   }
-
 }
 
 
@@ -867,7 +859,6 @@ function shrinkCharSound({delay, duration}) {
     src2.smoothFreq(BASE_FREQ/1.98)
     src1.smoothGain(MAX_VOLUME, 0.1)
     src2.smoothGain(MAX_VOLUME, 0.1)
-
 
     const stop1 = start1()
     const stop2 = start2()
@@ -927,7 +918,6 @@ function flipSound({ delay, duration }) {
       if (stopInterval) stopInterval()
     }
   }
-
 }
 
 function smoothSound({delay, duration}) {
@@ -954,15 +944,13 @@ function smoothSound({delay, duration}) {
     const stopInterval = setRunInterval(() => {
       if (PAUSED || OVERDRIVE) {
         src2.smoothFreq(f1, 0.00001, true)
-      }
-      else {
+      } else {
         src2.smoothFreq(f2)
       }
     }, 500)
 
     src1.smoothGain(MAX_VOLUME * volAdj, 0.25)
     src2.smoothGain(MAX_VOLUME * volAdj, 0.25)
-
 
     return () => {
       if (stopInterval) stopInterval()
@@ -1090,7 +1078,6 @@ function hexSound({duration, delay}) {
     let stopInterval
     setTimeout(() => {
       stopInterval = setRunInterval((i) => {
-
         smoothFreq(baseFreq * 8)
         smoothFreq2(baseFreq * 8)
         smoothGain(MAX_VOLUME, 0.03)
@@ -1101,7 +1088,6 @@ function hexSound({duration, delay}) {
 
         setTimeout(() => smoothGain(0, 0.05), interval*0.25 + extraDelay)
         setTimeout(() => smoothGain2(0, 0.05), interval*0.25 + extraDelay)
-
       }, interval)
 
     }, timeUntilNextNote)
@@ -1113,8 +1099,6 @@ function hexSound({duration, delay}) {
     }
   }
 }
-
-
 
 
 function climbSound({ duration, delay }) {
@@ -1168,7 +1152,7 @@ function zoomSound({duration, delay, switchChannels}) {
 
 
   return (extraDelay=0) => {
-    const { smoothFreq, smoothGain, smoothPanner, panner } = createSource()
+    const { smoothFreq, smoothGain, smoothPanner } = createSource()
     const timeUntilNextQuarter = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % 0.25) * duration
 
     smoothGain(MAX_VOLUME)
@@ -1246,7 +1230,6 @@ function carSirenSound({duration, delay}) {
   }
 }
 
-
 function singleSound() {
   const startFreq = rndint(1000, 4000)
   const playSound = () => {
@@ -1263,8 +1246,6 @@ function singleSound() {
   }
   return playSound
 }
-
-
 
 
 
@@ -1295,8 +1276,6 @@ function selectVoice(v) {
 
 let utteranceQueue = []
 let utterancePriority = null
-
-
 
 const triggerUtterance = () => {
   if (PAUSED) {
@@ -1344,7 +1323,6 @@ const triggerUtterance = () => {
   }
 }
 
-
 const stopUtter = txt => {
   utteranceQueue = utteranceQueue.filter(u => u.text !== txt.toLowerCase())
   utterancePriority = null
@@ -1363,8 +1341,6 @@ const utter = (txt, t=1, i=7) => {
 
   }
 }
-
-
 
 css(`
   .marquee {
@@ -1409,7 +1385,6 @@ css(`
   .updownLong {
     height: 100%;
     animation: UpDownLong 1000ms ease-in-out infinite;
-
   }
 
   .updownLong > * {
@@ -1473,8 +1448,6 @@ css(`
     66% {color: #0000ff}
     83% {color: #ff00ff}
   }
-
-
 
   .colorShift {
     animation: ColorRotate 25s linear infinite;
@@ -1742,7 +1715,6 @@ function marquee(children, args={}) {
   const msgAnimation = args.msgAnimation || iden
   const isEmoji = elementIsEmoji(children)
 
-
   const repeat = isEmoji ? 60 : 40
 
   const handleAnimation = (child, i, j) => {
@@ -1832,13 +1804,6 @@ const wave = genericAnimatingComponent('wave')
 const climb = genericAnimatingComponent('climb')
 const hexagon = genericAnimatingComponent('hexagon')
 const breathe = genericAnimatingComponent('breathe')
-
-// const wave = (grandChild, args={}) => {
-//   const delay = args.delay || 0
-
-//   return dance(updown(grandChild, { style: `font-size: 10vmin`, delay: 200 + delay }), args)
-// }
-
 
 const updownLongParent = genericAnimatingComponent('updownLong')
 const updownLong = (grandChild, args={}) => {
@@ -1976,7 +1941,6 @@ function withBgAnimation(child, rSpan, cSpan) {
 }
 
 
-
 function genericCharacterComponent(name, durMin, durMax) {
   return (children, args={}) => {
     const splitAnimation = txt => {
@@ -2052,12 +2016,8 @@ css(`
   }
 `)
 
-const wordExt = (txt, className) => $.span(txt, { class: className })
-
-const word = txt => wordExt(txt, 'text content')
-
-const emoji = e => wordExt(e, 'emoji content')
-
+const word = txt => $.span(txt, { class: 'text content' })
+const emoji = e => $.span(e, { class: 'emoji content' })
 const emojis = es => es.split(' ').map(emoji)
 
 const link = txt => $.a(txt, {
@@ -2114,7 +2074,7 @@ const circusEmojis = emojis(`🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
 const sportsEmojis = emojis(`🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪`)
-const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬`)
+const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬 🌳`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -2155,11 +2115,6 @@ const withEmoji = (txt, possibleEmojis, emojiProb=1) => !hasEmoji(txt) && prb(em
 
 const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possibleEmojis, emojiProb)
 
-
-/*
-  infinite, joy, certified, alert
-
-   */
 
 const luckyText = [
   'WINNER',
@@ -2674,16 +2629,14 @@ function createSound(animation, params, isGrid, extraDelay=0) {
 
 
   return fn({ ...params, delay: params.delay + extraDelay || 0 })
-
 }
 
 let sectionCount = 0
 function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-  const txtColor = bw ? bwc.text : getColorFromHue(txtH)
-  const bgColor = bw ? bwc.bg : getBgColor(h)
+  const txtColor = BW ? bwc.text : getColorFromHue(txtH)
+  const bgColor = BW ? bwc.bg : getBgColor(h)
   const bgProp = bgColor.length > 200 ? '' : 'background: '
-
 
   const rotation = threeDRotations
     ? `perspective(500px) rotate3d(1,1,0.5,${lineRotation()}deg)`
@@ -2775,7 +2728,6 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 const usedAnimations = []
 
-
 let marqueeCount = 0
 function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   marqueeCount++
@@ -2840,7 +2792,6 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   ) {
     emojiStyle += LR_PADDING
   }
-
 
 
   const clonedNode = $.span(child.cloneNode(true), {
@@ -3087,9 +3038,6 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     }
   })
 }
-
-
-
 
 
 
@@ -3404,7 +3352,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
 
   features['Background Style'] =
     hideBg ? 'Empty' :
-    bgType === 0 || bw ? 'Solid' :
+    bgType === 0 || BW ? 'Solid' :
     bgType === 1 ? 'Empty' :
     bgType === 2 ? 'Gradient' :
     'ZigZag'
@@ -3419,8 +3367,8 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   const canSeeBodyBg = freeFloating || bgType === 1
   const bodyBgHasColor = !['#000', '#fff'].includes(bgColor)
   features['Base Hues'] =
-    bw ? 0 :
-    canSeeBodyBg && bodyBgHasColor && bw ? 1 :
+    BW ? 0 :
+    canSeeBodyBg && bodyBgHasColor && BW ? 1 :
     possibleHues[1] < 1 ? 1 :
     randomHue ? '???' :
     possibleHues.length

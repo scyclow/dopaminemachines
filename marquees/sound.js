@@ -1,7 +1,3 @@
-const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
-  obj.exponentialRampToValueAtTime(value, ctx.currentTime + timeInSeconds)
-}
-
 let START_TIME = Date.now()
 const MAX_VOLUME = 0.04
 
@@ -48,7 +44,7 @@ function createSource(waveType = 'square') {
     )
   }
 
-  const src = { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
+  const src = { source, gain, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
 
   allSources.push(src)
 
@@ -87,7 +83,7 @@ const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START
 
 
 function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
-  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
+  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ
   let freqMin = freqAdj * freqMax / 5
   if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
 
@@ -136,7 +132,6 @@ function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
       if (stopInterval) stopInterval()
     }
   }
-
 }
 
 
@@ -154,7 +149,6 @@ function shrinkCharSound({delay, duration}) {
     src2.smoothFreq(BASE_FREQ/1.98)
     src1.smoothGain(MAX_VOLUME, 0.1)
     src2.smoothGain(MAX_VOLUME, 0.1)
-
 
     const stop1 = start1()
     const stop2 = start2()
@@ -214,7 +208,6 @@ function flipSound({ delay, duration }) {
       if (stopInterval) stopInterval()
     }
   }
-
 }
 
 function smoothSound({delay, duration}) {
@@ -241,15 +234,13 @@ function smoothSound({delay, duration}) {
     const stopInterval = setRunInterval(() => {
       if (PAUSED || OVERDRIVE) {
         src2.smoothFreq(f1, 0.00001, true)
-      }
-      else {
+      } else {
         src2.smoothFreq(f2)
       }
     }, 500)
 
     src1.smoothGain(MAX_VOLUME * volAdj, 0.25)
     src2.smoothGain(MAX_VOLUME * volAdj, 0.25)
-
 
     return () => {
       if (stopInterval) stopInterval()
@@ -377,7 +368,6 @@ function hexSound({duration, delay}) {
     let stopInterval
     setTimeout(() => {
       stopInterval = setRunInterval((i) => {
-
         smoothFreq(baseFreq * 8)
         smoothFreq2(baseFreq * 8)
         smoothGain(MAX_VOLUME, 0.03)
@@ -388,7 +378,6 @@ function hexSound({duration, delay}) {
 
         setTimeout(() => smoothGain(0, 0.05), interval*0.25 + extraDelay)
         setTimeout(() => smoothGain2(0, 0.05), interval*0.25 + extraDelay)
-
       }, interval)
 
     }, timeUntilNextNote)
@@ -400,8 +389,6 @@ function hexSound({duration, delay}) {
     }
   }
 }
-
-
 
 
 function climbSound({ duration, delay }) {
@@ -455,7 +442,7 @@ function zoomSound({duration, delay, switchChannels}) {
 
 
   return (extraDelay=0) => {
-    const { smoothFreq, smoothGain, smoothPanner, panner } = createSource()
+    const { smoothFreq, smoothGain, smoothPanner } = createSource()
     const timeUntilNextQuarter = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % 0.25) * duration
 
     smoothGain(MAX_VOLUME)
@@ -533,7 +520,6 @@ function carSirenSound({duration, delay}) {
   }
 }
 
-
 function singleSound() {
   const startFreq = rndint(1000, 4000)
   const playSound = () => {
@@ -550,8 +536,6 @@ function singleSound() {
   }
   return playSound
 }
-
-
 
 
 
@@ -582,8 +566,6 @@ function selectVoice(v) {
 
 let utteranceQueue = []
 let utterancePriority = null
-
-
 
 const triggerUtterance = () => {
   if (PAUSED) {
@@ -631,7 +613,6 @@ const triggerUtterance = () => {
   }
 }
 
-
 const stopUtter = txt => {
   utteranceQueue = utteranceQueue.filter(u => u.text !== txt.toLowerCase())
   utterancePriority = null
@@ -650,5 +631,3 @@ const utter = (txt, t=1, i=7) => {
 
   }
 }
-
-

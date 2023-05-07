@@ -41,7 +41,6 @@ css(`
   .updownLong {
     height: 100%;
     animation: UpDownLong 1000ms ease-in-out infinite;
-
   }
 
   .updownLong > * {
@@ -105,8 +104,6 @@ css(`
     66% {color: #0000ff}
     83% {color: #ff00ff}
   }
-
-
 
   .colorShift {
     animation: ColorRotate 25s linear infinite;
@@ -374,7 +371,6 @@ function marquee(children, args={}) {
   const msgAnimation = args.msgAnimation || iden
   const isEmoji = elementIsEmoji(children)
 
-
   const repeat = isEmoji ? 60 : 40
 
   const handleAnimation = (child, i, j) => {
@@ -464,13 +460,6 @@ const wave = genericAnimatingComponent('wave')
 const climb = genericAnimatingComponent('climb')
 const hexagon = genericAnimatingComponent('hexagon')
 const breathe = genericAnimatingComponent('breathe')
-
-// const wave = (grandChild, args={}) => {
-//   const delay = args.delay || 0
-
-//   return dance(updown(grandChild, { style: `font-size: 10vmin`, delay: 200 + delay }), args)
-// }
-
 
 const updownLongParent = genericAnimatingComponent('updownLong')
 const updownLong = (grandChild, args={}) => {
@@ -606,7 +595,6 @@ function withBgAnimation(child, rSpan, cSpan) {
   ]
 
 }
-
 
 
 function genericCharacterComponent(name, durMin, durMax) {

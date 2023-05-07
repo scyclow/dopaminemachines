@@ -74,10 +74,10 @@ const marqueeAnimationRate = chance(
 
 const tokenId = Number(tokenData.tokenId) % 1000000
 const is69 = tokenId === 69
-const is420 = tokenId === 420
-const is100 = tokenId === 100
-const is666 = tokenId === 666
 const is7 = [7, 77].includes(tokenId)
+const is100 = tokenId === 100
+const is420 = tokenId === 420
+const is666 = tokenId === 666
 const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
 const showEmojis = is100 || is666 || is7 || is420 || is69 || prb(0.5)
 
@@ -119,11 +119,11 @@ const bgAnimationPrb = chance(
   [bgType < 3 && 2, 1],
 )
 
-const bw = prb(0.15)
-const sH = rnd(360)
+const BW = prb(0.15)
+const STARTING_HUE = rnd(360)
 
 const randomHue = prb(0.02)
-const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
+const chooseHue = () => randomHue ? rnd(360) : STARTING_HUE + sample(possibleHues) % 360
 
 const chooseAltHue = (h) => {
   const alt = chooseHue()
@@ -144,7 +144,7 @@ const possibleHues = chance(
 const shadowType = chance(
   [4, 1],
   [4, 2],
-  [bw ? 1 : 4, 3],
+  [BW ? 1 : 4, 3],
   [4, 4],
   [4, 5],
   [2, 6],
@@ -154,7 +154,7 @@ const shadowType = chance(
 )
 
 
-const defaultShadowLightness = !bw && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
+const defaultShadowLightness = !BW && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
@@ -189,7 +189,9 @@ const getShadowText = (h, polyfillShadow) => {
       [`0 0 0.05em ${shadowColor}`] :
 
     shadowType === 6 ?
-      times(4, s => `${(s+1)/20 - 0.1}em ${(s+1)/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
+      times(4, s =>
+        `${s < 2 ? -0.04 : 0.04}em ${s%2 ? 0.04 : -0.04}em 0 ${getShadowColor(h + 180 + s*30)}`
+      ) :
 
     shadowType === 7 ?
       [
@@ -307,8 +309,8 @@ function starburstBg(h, rSpan, cSpan) {
   const h2 = chooseHue()
 
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-  const c1 = bw ? bwc.text : `hsl(${h}deg, 100%, 50%)`
-  let c2 = bw ? bwc.bg : `hsl(${h2}deg, 100%, 50%)`
+  const c1 = BW ? bwc.text : `hsl(${h}deg, 100%, 50%)`
+  let c2 = BW ? bwc.bg : `hsl(${h2}deg, 100%, 50%)`
   c2 =
     bgType === 1 ? '#000' :
     c1 === c2 ? '#fff' :
@@ -319,7 +321,6 @@ function starburstBg(h, rSpan, cSpan) {
     [10, 5],
     [8, 10],
   )
-
 
   const cssClass = `cgBg-${int(h)}-${int(h2)}`
 
@@ -339,7 +340,6 @@ function starburstBg(h, rSpan, cSpan) {
       animation-direction: ${prb(0.5) ? 'normal' : 'reverse'}
     }
 
-
     @keyframes BgRotate${deg} {
       0% {
         transform: rotate(0deg);
@@ -350,9 +350,7 @@ function starburstBg(h, rSpan, cSpan) {
     }
   `)
 
-
   return cssClass
-
 }
 
 const bgColor = chance(

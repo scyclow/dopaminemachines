@@ -73,16 +73,14 @@ function createSound(animation, params, isGrid, extraDelay=0) {
 
 
   return fn({ ...params, delay: params.delay + extraDelay || 0 })
-
 }
 
 let sectionCount = 0
 function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-  const txtColor = bw ? bwc.text : getColorFromHue(txtH)
-  const bgColor = bw ? bwc.bg : getBgColor(h)
+  const txtColor = BW ? bwc.text : getColorFromHue(txtH)
+  const bgColor = BW ? bwc.bg : getBgColor(h)
   const bgProp = bgColor.length > 200 ? '' : 'background: '
-
 
   const rotation = threeDRotations
     ? `perspective(500px) rotate3d(1,1,0.5,${lineRotation()}deg)`
@@ -174,7 +172,6 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 const usedAnimations = []
 
-
 let marqueeCount = 0
 function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   marqueeCount++
@@ -239,7 +236,6 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   ) {
     emojiStyle += LR_PADDING
   }
-
 
 
   const clonedNode = $.span(child.cloneNode(true), {
@@ -486,9 +482,6 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     }
   })
 }
-
-
-
 
 
 

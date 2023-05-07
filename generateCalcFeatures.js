@@ -40,7 +40,7 @@ const calcFeatures = `
 
   features['Background Style'] =
     hideBg ? 'Empty' :
-    bgType === 0 || bw ? 'Solid' :
+    bgType === 0 || BW ? 'Solid' :
     bgType === 1 ? 'Empty' :
     bgType === 2 ? 'Gradient' :
     'ZigZag'
@@ -55,8 +55,8 @@ const calcFeatures = `
   const canSeeBodyBg = freeFloating || bgType === 1
   const bodyBgHasColor = !['#000', '#fff'].includes(bgColor)
   features['Base Hues'] =
-    bw ? 0 :
-    canSeeBodyBg && bodyBgHasColor && bw ? 1 :
+    BW ? 0 :
+    canSeeBodyBg && bodyBgHasColor && BW ? 1 :
     possibleHues[1] < 1 ? 1 :
     randomHue ? '???' :
     possibleHues.length

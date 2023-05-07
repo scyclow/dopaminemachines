@@ -17,12 +17,8 @@ css(`
   }
 `)
 
-const wordExt = (txt, className) => $.span(txt, { class: className })
-
-const word = txt => wordExt(txt, 'text content')
-
-const emoji = e => wordExt(e, 'emoji content')
-
+const word = txt => $.span(txt, { class: 'text content' })
+const emoji = e => $.span(e, { class: 'emoji content' })
 const emojis = es => es.split(' ').map(emoji)
 
 const link = txt => $.a(txt, {
@@ -79,7 +75,7 @@ const circusEmojis = emojis(`🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
 const sportsEmojis = emojis(`🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪`)
-const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬`)
+const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬 🌳`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -120,11 +116,6 @@ const withEmoji = (txt, possibleEmojis, emojiProb=1) => !hasEmoji(txt) && prb(em
 
 const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possibleEmojis, emojiProb)
 
-
-/*
-  infinite, joy, certified, alert
-
-   */
 
 const luckyText = [
   'WINNER',

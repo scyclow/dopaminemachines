@@ -49,7 +49,6 @@ $.section = $.create('section')
 
 
 const $html = document.getElementsByTagName('html')[0]
-const $head = document.head
 
 let queryParams
 

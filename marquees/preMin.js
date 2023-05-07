@@ -3,7 +3,6 @@ const max = Math.max
 const abs = Math.abs
 const round = Math.round
 const int = parseInt
-const btwn = (mn, mx, val) => max(mn, min(mx, val))
 const map = (val, low, high, mn, mx) => mn < mx
   ? mn + ((val - low)/(high-low)) * (mx - mn)
   : mn - ((val - low)/(high-low)) * (mn - mx)
@@ -135,7 +134,6 @@ $.section = $.create('section')
 
 
 const $html = document.getElementsByTagName('html')[0]
-const $head = document.head
 
 let queryParams
 
@@ -278,10 +276,10 @@ const marqueeAnimationRate = chance(
 
 const tokenId = Number(tokenData.tokenId) % 1000000
 const is69 = tokenId === 69
-const is420 = tokenId === 420
-const is100 = tokenId === 100
-const is666 = tokenId === 666
 const is7 = [7, 77].includes(tokenId)
+const is100 = tokenId === 100
+const is420 = tokenId === 420
+const is666 = tokenId === 666
 const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
 const showEmojis = is100 || is666 || is7 || is420 || is69 || prb(0.5)
 
@@ -323,11 +321,11 @@ const bgAnimationPrb = chance(
   [bgType < 3 && 2, 1],
 )
 
-const bw = prb(0.15)
-const sH = rnd(360)
+const BW = prb(0.15)
+const STARTING_HUE = rnd(360)
 
 const randomHue = prb(0.02)
-const chooseHue = () => randomHue ? rnd(360) : sH + sample(possibleHues) % 360
+const chooseHue = () => randomHue ? rnd(360) : STARTING_HUE + sample(possibleHues) % 360
 
 const chooseAltHue = (h) => {
   const alt = chooseHue()
@@ -348,7 +346,7 @@ const possibleHues = chance(
 const shadowType = chance(
   [4, 1],
   [4, 2],
-  [bw ? 1 : 4, 3],
+  [BW ? 1 : 4, 3],
   [4, 4],
   [4, 5],
   [2, 6],
@@ -358,7 +356,7 @@ const shadowType = chance(
 )
 
 
-const defaultShadowLightness = !bw && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
+const defaultShadowLightness = !BW && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
 const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
 const getShadowText = (h, polyfillShadow) => {
   const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
@@ -393,7 +391,9 @@ const getShadowText = (h, polyfillShadow) => {
       [`0 0 0.05em ${shadowColor}`] :
 
     shadowType === 6 ?
-      times(4, s => `${(s+1)/20 - 0.1}em ${(s+1)/20 - 0.1}em 0 ${getShadowColor(h + 180 + s*30)}`) :
+      times(4, s =>
+        `${s < 2 ? -0.04 : 0.04}em ${s%2 ? 0.04 : -0.04}em 0 ${getShadowColor(h + 180 + s*30)}`
+      ) :
 
     shadowType === 7 ?
       [
@@ -458,17 +458,7 @@ const gradientHues = chance(
   [1, [60, 300]]
 )
 
-const zigzagBg = (bg1, bg2, size) => `
-    background-color: ${bg1};
-    background-image:
-      linear-gradient(135deg, ${bg2} 25%, transparent 25%),
-      linear-gradient(225deg, ${bg2} 25%, transparent 25%),
-      linear-gradient(45deg, ${bg2} 25%, transparent 25%),
-      linear-gradient(315deg, ${bg2} 25%, ${bg1} 25%);
-    background-position:  ${size/2}em 0, ${size/2}em 0, 0 0, 0 0;
-    background-size: ${size}em ${size}em;
-    background-repeat: repeat;
-  `
+const zigzagBg = (bg1, bg2, size) => `background-color:${bg1};background-image:linear-gradient(135deg, ${bg2} 25%, transparent 25%), linear-gradient(225deg, ${bg2} 25%, transparent 25%), linear-gradient(45deg, ${bg2} 25%, transparent 25%), linear-gradient(315deg, ${bg2} 25%, ${bg1} 25%);background-position: ${size/2}em 0, ${size/2}em 0, 0 0, 0 0;background-size:${size}em ${size}em;background-repeat:repeat; `
 
 const gradientMix = sample([
   0,  // linear
@@ -511,8 +501,8 @@ function starburstBg(h, rSpan, cSpan) {
   const h2 = chooseHue()
 
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-  const c1 = bw ? bwc.text : `hsl(${h}deg, 100%, 50%)`
-  let c2 = bw ? bwc.bg : `hsl(${h2}deg, 100%, 50%)`
+  const c1 = BW ? bwc.text : `hsl(${h}deg, 100%, 50%)`
+  let c2 = BW ? bwc.bg : `hsl(${h2}deg, 100%, 50%)`
   c2 =
     bgType === 1 ? '#000' :
     c1 === c2 ? '#fff' :
@@ -524,39 +514,13 @@ function starburstBg(h, rSpan, cSpan) {
     [8, 10],
   )
 
-
   const cssClass = `cgBg-${int(h)}-${int(h2)}`
 
   const size = 128
 
-  css(`
-    .${cssClass}::before {
-      content: "";
-      background: repeating-conic-gradient(${c1} 0deg ${deg}deg,  ${c2} ${deg}deg ${deg*2}deg);
-      position: absolute;
-      width: ${size}00%;
-      height: ${size}00%;
-      top: -${size/2 * 100 - 50}%;
-      left: -${size/2 * 100 - 50}%;
-      z-index: -1;
-      animation: BgRotate${deg} ${rnd(1000, 5000)}ms linear infinite;
-      animation-direction: ${prb(0.5) ? 'normal' : 'reverse'}
-    }
-
-
-    @keyframes BgRotate${deg} {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(${deg*2}deg);
-      }
-    }
-  `)
-
+  css(` .${cssClass}::before {content:"";background:repeating-conic-gradient(${c1} 0deg ${deg}deg,  ${c2} ${deg}deg ${deg*2}deg);position:absolute;width:${size}00%;height:${size}00%;top:-${size/2 * 100 - 50}%;left:-${size/2 * 100 - 50}%;z-index:-1;animation:BgRotate${deg} ${rnd(1000, 5000)}ms linear infinite;animation-direction:${prb(0.5) ? 'normal' :'reverse'} } @keyframes BgRotate${deg} {0% {transform:rotate(0deg);} 100% {transform:rotate(${deg*2}deg);}}`)
 
   return cssClass
-
 }
 
 const bgColor = chance(
@@ -579,103 +543,7 @@ const colorBlinkPrb = chance(
 
 const fullHueRotation = prb(0.02)
 const invertAll = prb(0.02)
-css(`
-  * {
-    margin: 0;
-    padding: 0;
-    font-family: ${fontFamily};
-    font-weight: ${fontWeight};
-  }
-  body, body::backdrop {
-    background: ${bgColor};
-    margin: 0;
-    ${fullHueRotation ? 'animation: HueRotation 10s linear infinite;' : ''}
-  }
-  @keyframes HueRotation {
-    0% { filter: hue-rotate(0deg) }
-    0% { filter: hue-rotate(360deg) }
-  }
-
-  .viewerMode {
-    cursor: none;
-    pointer-events: none;
-  }
-
-  .viewerMode .sectionContainer:hover {
-    filter: invert(${invertAll ? 1 : 0});
-  }
-
-  .pauseAll, .pauseAll *, .pauseAll *::before {
-    animation-play-state: paused !important;
-  }
-
-  .fullScreen {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    width: 100vw;
-    z-index: 100;
-  }
-
-  .overdrive .marquee * {
-    animation-duration: 10s !important;
-  }
-
-  .overdrive *::before {
-    animation-duration: 100ms !important;
-  }
-
-  .overdrive .bgAnimation {
-    animation-duration: 300ms !important;
-  }
-
-  .overdrive .animatingComponent {
-    animation-duration: 250ms !important;
-  }
-  .overdrive .sectionContainer {
-    animation-duration: 750ms !important;
-  }
-  .overdrive .charContent {
-    animation-duration: 205ms !important;
-  }
-
-  .overdrive {
-    filter: contrast(300%) saturate(300%);
-  }
-
-  .anhedonic {
-    background: #555;
-    filter: blur(0.08vw) saturate(0.15);
-  }
-  .anhedonic .marquee * {
-    animation-duration: 800s !important;
-  }
-  .anhedonic *::before {
-    animation-duration: 3s !important;
-  }
-  .anhedonic .bgAnimation {
-    animation-duration: 12s !important;
-  }
-  .anhedonic .animatingComponent {
-    animation-duration: 16s !important;
-  }
-  .anhedonic .sectionContainer {
-    animation-duration: 32s !important;
-  }
-  .anhedonic .charContent {
-    animation-duration: 2505ms !important;
-  }
-  .invertAll {
-    filter: invert(1);
-  }
-`)
-
-const smoothTo = (obj, ctx) => (value, timeInSeconds=0.00001) => {
-  obj.exponentialRampToValueAtTime(value, ctx.currentTime + timeInSeconds)
-}
+css(`* {margin:0;padding:0;font-family:${fontFamily};font-weight:${fontWeight};} body, body::backdrop {background:${bgColor};margin:0;${fullHueRotation ? 'animation:HueRotation 10s linear infinite;' :''} } @keyframes HueRotation {0% { filter:hue-rotate(0deg) } 0% { filter:hue-rotate(360deg) } } .viewerMode {cursor:none;pointer-events:none;} .viewerMode .sectionContainer:hover {filter:invert(${invertAll ? 1 :0});} .pauseAll, .pauseAll *, .pauseAll *::before {animation-play-state:paused !important;} .fullScreen {position:absolute;top:0;bottom:0;left:0;right:0;height:100vh;width:100vw;z-index:100;} .overdrive .marquee * {animation-duration:10s !important;} .overdrive *::before {animation-duration:100ms !important;} .overdrive .bgAnimation {animation-duration:300ms !important;} .overdrive .animatingComponent {animation-duration:250ms !important;} .overdrive .sectionContainer {animation-duration:750ms !important;} .overdrive .charContent {animation-duration:205ms !important;} .overdrive {filter:contrast(300%) saturate(300%);} .anhedonic {background:#555;filter:blur(0.08vw) saturate(0.15);} .anhedonic .marquee * {animation-duration:800s !important;} .anhedonic *::before {animation-duration:3s !important;} .anhedonic .bgAnimation {animation-duration:12s !important;} .anhedonic .animatingComponent {animation-duration:16s !important;} .anhedonic .sectionContainer {animation-duration:32s !important;} .anhedonic .charContent {animation-duration:2505ms !important;} .invertAll {filter:invert(1);}`)
 
 let START_TIME = Date.now()
 const MAX_VOLUME = 0.04
@@ -723,7 +591,7 @@ function createSource(waveType = 'square') {
     )
   }
 
-  const src = { source, gain, panner, ctx, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
+  const src = { source, gain, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
 
   allSources.push(src)
 
@@ -762,7 +630,7 @@ const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START
 
 
 function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
-  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ // 500
+  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ
   let freqMin = freqAdj * freqMax / 5
   if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
 
@@ -811,7 +679,6 @@ function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
       if (stopInterval) stopInterval()
     }
   }
-
 }
 
 
@@ -829,7 +696,6 @@ function shrinkCharSound({delay, duration}) {
     src2.smoothFreq(BASE_FREQ/1.98)
     src1.smoothGain(MAX_VOLUME, 0.1)
     src2.smoothGain(MAX_VOLUME, 0.1)
-
 
     const stop1 = start1()
     const stop2 = start2()
@@ -889,7 +755,6 @@ function flipSound({ delay, duration }) {
       if (stopInterval) stopInterval()
     }
   }
-
 }
 
 function smoothSound({delay, duration}) {
@@ -916,15 +781,13 @@ function smoothSound({delay, duration}) {
     const stopInterval = setRunInterval(() => {
       if (PAUSED || OVERDRIVE) {
         src2.smoothFreq(f1, 0.00001, true)
-      }
-      else {
+      } else {
         src2.smoothFreq(f2)
       }
     }, 500)
 
     src1.smoothGain(MAX_VOLUME * volAdj, 0.25)
     src2.smoothGain(MAX_VOLUME * volAdj, 0.25)
-
 
     return () => {
       if (stopInterval) stopInterval()
@@ -1052,7 +915,6 @@ function hexSound({duration, delay}) {
     let stopInterval
     setTimeout(() => {
       stopInterval = setRunInterval((i) => {
-
         smoothFreq(baseFreq * 8)
         smoothFreq2(baseFreq * 8)
         smoothGain(MAX_VOLUME, 0.03)
@@ -1063,7 +925,6 @@ function hexSound({duration, delay}) {
 
         setTimeout(() => smoothGain(0, 0.05), interval*0.25 + extraDelay)
         setTimeout(() => smoothGain2(0, 0.05), interval*0.25 + extraDelay)
-
       }, interval)
 
     }, timeUntilNextNote)
@@ -1075,8 +936,6 @@ function hexSound({duration, delay}) {
     }
   }
 }
-
-
 
 
 function climbSound({ duration, delay }) {
@@ -1130,7 +989,7 @@ function zoomSound({duration, delay, switchChannels}) {
 
 
   return (extraDelay=0) => {
-    const { smoothFreq, smoothGain, smoothPanner, panner } = createSource()
+    const { smoothFreq, smoothGain, smoothPanner } = createSource()
     const timeUntilNextQuarter = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % 0.25) * duration
 
     smoothGain(MAX_VOLUME)
@@ -1208,7 +1067,6 @@ function carSirenSound({duration, delay}) {
   }
 }
 
-
 function singleSound() {
   const startFreq = rndint(1000, 4000)
   const playSound = () => {
@@ -1225,8 +1083,6 @@ function singleSound() {
   }
   return playSound
 }
-
-
 
 
 
@@ -1257,8 +1113,6 @@ function selectVoice(v) {
 
 let utteranceQueue = []
 let utterancePriority = null
-
-
 
 const triggerUtterance = () => {
   if (PAUSED) {
@@ -1306,7 +1160,6 @@ const triggerUtterance = () => {
   }
 }
 
-
 const stopUtter = txt => {
   utteranceQueue = utteranceQueue.filter(u => u.text !== txt.toLowerCase())
   utterancePriority = null
@@ -1326,372 +1179,14 @@ const utter = (txt, t=1, i=7) => {
   }
 }
 
-
-
-css(`
-  .marquee {
-    display: inline-block;
-    width: 100%;
-    box-sizing: border-box;
-    line-height: 1;
-  }
-
-  .marqueeInner {
-    display: inline-flex;
-  }
-
-  .marqueeForward {
-    animation: Marquee 50s linear infinite;
-  }
-
-  .marqueeInner > * {
-    display: inline-block;
-    white-space: nowrap;
-  }
-
-  @keyframes Marquee {
-    0% {transform: translate3d(-50%, 0, 0)}
-    100% {transform: translate3d(0%, 0, 0)}
-  }
-
-  .bgAnimation {
-    z-index: -1;
-  }
-
-  .updownChars {
-    animation: UpDownChars 2s ease-in-out infinite;
-    display: inline-block;
-  }
-
-  @keyframes UpDownChars {
-    0%, 100% {transform: translate3d(0%, 10%, 0)}
-    50% {transform: translate3d(0%, -10%, 0)}
-  }
-
-  .updownLong {
-    height: 100%;
-    animation: UpDownLong 1000ms ease-in-out infinite;
-
-  }
-
-  .updownLong > * {
-    animation: UpDownLongChild 2000ms ease-in-out infinite;
-  }
-
-
-  @keyframes UpDownLongChild {
-    0%, 100% {transform: translateY(0)}
-    50% {transform: translateY(-100%)}
-  }
-
-  @keyframes UpDownLong {
-    0%, 100% {transform: translateY(0)}
-    50% {transform: translateY(100%)}
-  }
-
-  .blink {
-    animation: Blink 1.5s steps(2, start) infinite;
-  }
-
-  @keyframes Blink {
-    to {
-      visibility: hidden;
-    }
-  }
-
-  .colorChars {
-    animation: FullColorRotate 1.5s steps(6, start) infinite;
-  }
-
-  .borderBlink {
-    border-width: 0.05em;
-    animation: BorderBlink 1.5s steps(2, start) infinite;
-    box-sizing: border-box;
-  }
-
-  @keyframes BorderBlink {
-    50% {
-      border-style: hidden;
-    }
-  }
-
-  .colorBlink {
-    animation: ColorBlink 4s steps(1, start) infinite;
-  }
-
-  @keyframes ColorBlink {
-    ${colorBlinkAnim()}
-  }
-
-  .fullColorRotate {
-    animation: FullColorRotate 25s linear infinite;
-  }
-
-  @keyframes FullColorRotate {
-    0%, 100% {color: #ff0000}
-    17% {color: #ffff00}
-    33% {color: #00ff00}
-    50% {color: #00ffff}
-    66% {color: #0000ff}
-    83% {color: #ff00ff}
-  }
-
-
-
-  .colorShift {
-    animation: ColorRotate 25s linear infinite;
-  }
-
-  @keyframes ColorRotate {
-    0%, 100% {color: #ff0000}
-    17% {color: #ffff00}
-    33% {color: #00ff00}
-    50% {color: #00ffff}
-    66% {color: #0000ff}
-    83% {color: #ff00ff}
-  }
-
-  .dance {
-    animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-  }
-
-  @keyframes Dance {
-    0%, 100% {transform: rotate(20deg)}
-    50% {transform: rotate(-20deg)}
-  }
-
-  .growShrink {
-    animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-  }
-
-  @keyframes GrowShrink {
-    0%, 100% {transform: scale(1)}
-    50% {transform: scale(0.2)}
-  }
-
-  .growShrinkShort {
-    animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-    display: inline-block;
-  }
-
-  @keyframes GrowShrinkShort {
-    0%, 100% {transform: scale(1)}
-    50% {transform: scale(0.75)}
-  }
-
-
-  .spin {
-    animation: Spin 2000ms linear infinite;
-  }
-
-  @keyframes Spin {
-    0% {transform: rotate(0deg)}
-    100% {transform: rotate(360deg)}
-  }
-
-
-  .hSiren {
-    animation: HSiren 2000ms linear infinite;
-  }
-
-  @keyframes HSiren {
-    0% {transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)}
-    100% {transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)}
-  }
-
-  .vSiren {
-    animation: VSiren 2000ms linear infinite;
-  }
-
-  @keyframes VSiren {
-    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)}
-    100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)}
-  }
-
-  .vSirenShort {
-    animation: VSirenShort 2000ms linear infinite;
-  }
-
-  @keyframes VSirenShort {
-    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)}
-    100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)}
-  }
-
-
-
-  .hPivot {
-    animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-  }
-
-  @keyframes HPivot {
-    0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)}
-    50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)}
-  }
-
-  .vPivot {
-    animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-  }
-
-
-  @keyframes VPivot {
-    0%, 100% {transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)}
-    50% {transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)}
-  }
-
-
-
-  .vFlip {
-    animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
-  }
-
-  @keyframes VFlip {
-    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg)}
-    100% {transform: perspective(500px) rotate3d(2,0,0, 1800deg)}
-  }
-
-
-  .hFlip {
-    animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
-  }
-
-  @keyframes HFlip {
-    0% {transform: perspective(500px) rotate3d(0,2,0, 0deg)}
-    100% {transform: perspective(500px) rotate3d(0,2,0, 1800deg)}
-  }
-
-
-  .breathe {
-    animation: Breathe 2000ms ease-in-out infinite;
-  }
-
-  @keyframes Breathe {
-    0%, 100% {transform: scaleX(1) scaleY(1)}
-    50% {transform: scaleX(0.8) scaleY(0.9)}
-  }
-
-
-  .flamingHot {
-    animation: FlamingHot 2000ms ease-in-out infinite;
-  }
-
-  @keyframes FlamingHot {
-    0% {
-      transform: scale(1) translateY(0);
-      opacity: 1;
-    }
-    75% {
-      opacity: 0;
-      transform: scale(1.15) translateY(-0.2em);
-    }
-    80% {
-      opacity: 0;
-      transform: scale(1) translateY(0);
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  .leftRight {
-    width: 100%;
-
-    animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-    font-size: 10vmin;
-  }
-
-  .leftRight > * {
-    animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
-    display: inline-block;
-    white-space: nowrap;
-  }
-
-  @keyframes LeftRightChild {
-    0%, 100% {transform: translateX(0)}
-    50% {transform: translateX(-100%)}
-  }
-
-  @keyframes LeftRight {
-    0%, 100% {transform: translateX(0)}
-    50% {transform: translateX(100%)}
-  }
-
-
-  .shrinkingBorder {
-    animation: ShrinkingBorder 2000ms linear infinite;
-  }
-  .spinningBorder {
-    animation: Spin 2000ms linear infinite;
-  }
-
-  @keyframes ShrinkingBorder {
-    0% {transform: scale(105%)}
-    100% {transform: scale(0%)}
-  }
-
-  .shrinkingSpinningBorder {
-    animation: SpinningShrinkingBorder 2000ms linear infinite;
-  }
-
-  @keyframes SpinningShrinkingBorder {
-    0% {transform: scale(105%) rotate(0deg)}
-    100% {transform: scale(0%) rotate(45deg)}
-  }
-
-  .wave {
-    animation: Wave 4500ms linear infinite;
-  }
-  .climb {
-    animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
-  }
-
-  @keyframes Wave {
-    0%, 100% {transform: translate3d(0%, 30%, 0) rotate(0deg)}
-    25% {transform: translate3d(0%, 0%, 0) rotate(12deg)}
-    50% {transform: translate3d(0%, -30%, 0) rotate(0deg)}
-    75% {transform: translate3d(0%, 0%, 0) rotate(-12deg)}
-  }
-
-
-  .hexagon {
-    animation: Hexagon 2000ms linear infinite;
-  }
-
-  @keyframes Hexagon {
-    0%, 100% {transform: translate(0, 0.5em)}
-    17% {transform: translate(0.43em, 0.25em)}
-    33% {transform: translate(0.43em, -0.25em)}
-    50% {transform: translate(0, -0.5em)}
-    66% {transform: translate(-0.43em, -0.25em)}
-    83% {transform: translate(-0.43em, 0.25em)}
-  }
-`)
+css(`.marquee {display:inline-block;width:100%;box-sizing:border-box;line-height:1;} .marqueeInner {display:inline-flex;} .marqueeForward {animation:Marquee 50s linear infinite;} .marqueeInner > * {display:inline-block;white-space:nowrap;} @keyframes Marquee {0% {transform:translate3d(-50%, 0, 0)} 100% {transform:translate3d(0%, 0, 0)} } .bgAnimation {z-index:-1;} .updownChars {animation:UpDownChars 2s ease-in-out infinite;display:inline-block;} @keyframes UpDownChars {0%, 100% {transform:translate3d(0%, 10%, 0)} 50% {transform:translate3d(0%, -10%, 0)} } .updownLong {height:100%;animation:UpDownLong 1000ms ease-in-out infinite;} .updownLong > * {animation:UpDownLongChild 2000ms ease-in-out infinite;} @keyframes UpDownLongChild {0%, 100% {transform:translateY(0)} 50% {transform:translateY(-100%)} } @keyframes UpDownLong {0%, 100% {transform:translateY(0)} 50% {transform:translateY(100%)} } .blink {animation:Blink 1.5s steps(2, start) infinite;} @keyframes Blink {to {visibility:hidden;} } .colorChars {animation:FullColorRotate 1.5s steps(6, start) infinite;} .borderBlink {border-width:0.05em;animation:BorderBlink 1.5s steps(2, start) infinite;box-sizing:border-box;} @keyframes BorderBlink {50% {border-style:hidden;} } .colorBlink {animation:ColorBlink 4s steps(1, start) infinite;} @keyframes ColorBlink {${colorBlinkAnim()} } .fullColorRotate {animation:FullColorRotate 25s linear infinite;} @keyframes FullColorRotate {0%, 100% {color:#ff0000} 17% {color:#ffff00} 33% {color:#00ff00} 50% {color:#00ffff} 66% {color:#0000ff} 83% {color:#ff00ff} } .colorShift {animation:ColorRotate 25s linear infinite;} @keyframes ColorRotate {0%, 100% {color:#ff0000} 17% {color:#ffff00} 33% {color:#00ff00} 50% {color:#00ffff} 66% {color:#0000ff} 83% {color:#ff00ff} } .dance {animation:Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes Dance {0%, 100% {transform:rotate(20deg)} 50% {transform:rotate(-20deg)} } .growShrink {animation:GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes GrowShrink {0%, 100% {transform:scale(1)} 50% {transform:scale(0.2)} } .growShrinkShort {animation:GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;display:inline-block;} @keyframes GrowShrinkShort {0%, 100% {transform:scale(1)} 50% {transform:scale(0.75)} } .spin {animation:Spin 2000ms linear infinite;} @keyframes Spin {0% {transform:rotate(0deg)} 100% {transform:rotate(360deg)} } .hSiren {animation:HSiren 2000ms linear infinite;} @keyframes HSiren {0% {transform:perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)} 100% {transform:perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)} } .vSiren {animation:VSiren 2000ms linear infinite;} @keyframes VSiren {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)} 100% {transform:perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)} } .vSirenShort {animation:VSirenShort 2000ms linear infinite;} @keyframes VSirenShort {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)} 100% {transform:perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)} } .hPivot {animation:HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes HPivot {0%, 100% {transform:perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)} 50% {transform:perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)} } .vPivot {animation:VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes VPivot {0%, 100% {transform:perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)} 50% {transform:perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)} } .vFlip {animation:VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes VFlip {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg)} 100% {transform:perspective(500px) rotate3d(2,0,0, 1800deg)} } .hFlip {animation:HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes HFlip {0% {transform:perspective(500px) rotate3d(0,2,0, 0deg)} 100% {transform:perspective(500px) rotate3d(0,2,0, 1800deg)} } .breathe {animation:Breathe 2000ms ease-in-out infinite;} @keyframes Breathe {0%, 100% {transform:scaleX(1) scaleY(1)} 50% {transform:scaleX(0.8) scaleY(0.9)} } .flamingHot {animation:FlamingHot 2000ms ease-in-out infinite;} @keyframes FlamingHot {0% {transform:scale(1) translateY(0);opacity:1;} 75% {opacity:0;transform:scale(1.15) translateY(-0.2em);} 80% {opacity:0;transform:scale(1) translateY(0);} 100% {opacity:1;} } .leftRight {width:100%;animation:LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;font-size:10vmin;} .leftRight > * {animation:LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;display:inline-block;white-space:nowrap;} @keyframes LeftRightChild {0%, 100% {transform:translateX(0)} 50% {transform:translateX(-100%)} } @keyframes LeftRight {0%, 100% {transform:translateX(0)} 50% {transform:translateX(100%)} } .shrinkingBorder {animation:ShrinkingBorder 2000ms linear infinite;} .spinningBorder {animation:Spin 2000ms linear infinite;} @keyframes ShrinkingBorder {0% {transform:scale(105%)} 100% {transform:scale(0%)} } .shrinkingSpinningBorder {animation:SpinningShrinkingBorder 2000ms linear infinite;} @keyframes SpinningShrinkingBorder {0% {transform:scale(105%) rotate(0deg)} 100% {transform:scale(0%) rotate(45deg)} } .wave {animation:Wave 4500ms linear infinite;} .climb {animation:Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes Wave {0%, 100% {transform:translate3d(0%, 30%, 0) rotate(0deg)} 25% {transform:translate3d(0%, 0%, 0) rotate(12deg)} 50% {transform:translate3d(0%, -30%, 0) rotate(0deg)} 75% {transform:translate3d(0%, 0%, 0) rotate(-12deg)} } .hexagon {animation:Hexagon 2000ms linear infinite;} @keyframes Hexagon {0%, 100% {transform:translate(0, 0.5em)} 17% {transform:translate(0.43em, 0.25em)} 33% {transform:translate(0.43em, -0.25em)} 50% {transform:translate(0, -0.5em)} 66% {transform:translate(-0.43em, -0.25em)} 83% {transform:translate(-0.43em, 0.25em)}}`)
 
 function colorBlinkAnim() {
   const h = chooseHue()
-  const start = `
-    0%, 100% {
-      color: ${getColorFromHue(h)};
-      background-color: ${getColorFromHue(h + possibleHues[1])};
-    }
-  `
+  const start = `0%, 100% {color:${getColorFromHue(h)};background-color:${getColorFromHue(h + possibleHues[1])};}`
   return start + possibleHues.length === 2
-    ? `
-      50% {
-        color: ${getColorFromHue(h + possibleHues[1])};
-        background-color: ${getColorFromHue(h)};
-      }
-    `
-    : `
-      33% {
-        color: ${getColorFromHue(h + possibleHues[1])};
-        background-color: ${getColorFromHue(h + possibleHues[2])};
-      }
-
-      66% {
-        color: ${getColorFromHue(h + possibleHues[2])};
-        background-color: ${getColorFromHue(h)};
-      }
-    `
+    ? `50% {color:${getColorFromHue(h + possibleHues[1])};background-color:${getColorFromHue(h)};}`
+    : `33% {color:${getColorFromHue(h + possibleHues[1])};background-color:${getColorFromHue(h + possibleHues[2])};} 66% {color:${getColorFromHue(h + possibleHues[2])};background-color:${getColorFromHue(h)};}`
 }
 
 function marquee(children, args={}) {
@@ -1704,7 +1199,6 @@ function marquee(children, args={}) {
   const msgAnimation = args.msgAnimation || iden
   const isEmoji = elementIsEmoji(children)
 
-
   const repeat = isEmoji ? 60 : 40
 
   const handleAnimation = (child, i, j) => {
@@ -1713,11 +1207,7 @@ function marquee(children, args={}) {
     return msgAnimation(
       $.span(
         child,
-        { style: `
-          margin-left: ${spacing};
-          margin-right: ${spacing};
-          font-size: ${isEmoji ? 0.9 : 1}em;
-        ` }
+        { style: `margin-left:${spacing};margin-right:${spacing};font-size:${isEmoji ? 0.9 : 1}em;` }
       ).cloneNode(true),
       { delay: i*100 + j/2}
     )
@@ -1732,18 +1222,14 @@ function marquee(children, args={}) {
     ).flat(),
     {
       class: `marqueeInner marqueeForward`,
-      style: `
-        animation-delay: -${delay}s;
-        animation-duration: ${duration/(repeat/40)}s;
-        animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
-      `
+      style: `animation-delay:-${delay}s;animation-duration:${duration/(repeat/40)}s;animation-direction:${direction === 1 ? 'normal' : 'reverse'};`
     }
   )
 
   return $.div(
     inner,
     {
-      style: style + (sideways ? `transform: rotate(${sample([90, 270])}deg);` : ''),
+      style: style + (sideways ? `transform:rotate(${sample([90, 270])}deg);` : ''),
       class: `component marquee ${className}`,
     }
   )
@@ -1763,12 +1249,7 @@ function genericAnimatingComponent(name) {
     return trailFn(
       $.div(children, {
         class: `${name} ${className} animatingComponent`,
-        style: `
-          animation-duration: ${duration}ms;
-          animation-delay: -${delay}ms;
-          animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
-          ${style}
-        `
+        style: `animation-duration:${duration}ms;animation-delay:-${delay}ms;animation-direction:${direction === 1 ? 'normal' : 'reverse'};${style}`
       }),
       args
     )
@@ -1795,19 +1276,12 @@ const climb = genericAnimatingComponent('climb')
 const hexagon = genericAnimatingComponent('hexagon')
 const breathe = genericAnimatingComponent('breathe')
 
-// const wave = (grandChild, args={}) => {
-//   const delay = args.delay || 0
-
-//   return dance(updown(grandChild, { style: `font-size: 10vmin`, delay: 200 + delay }), args)
-// }
-
-
 const updownLongParent = genericAnimatingComponent('updownLong')
 const updownLong = (grandChild, args={}) => {
   const duration = args.duration || 1000
   const delay = args.delay || 0
 
-  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
+  const child = $.div(grandChild, { style: `animation-duration:${duration}ms;animation-delay:-${delay}ms;` })
   return updownLongParent(child, args)
 }
 
@@ -1816,7 +1290,7 @@ const leftRight = (grandChild, args={}) => {
   const duration = args.duration || 1000
   const delay = args.delay || 0
 
-  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
+  const child = $.div(grandChild, { style: `animation-duration:${duration}ms;animation-delay:-${delay}ms;` })
   return leftRightParent(child, args)
 }
 
@@ -1855,20 +1329,11 @@ const withTrails = (grandChild, args={}) => {
 
 const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
     class: className + ' bgAnimation',
-    style: `
-      border: 1vmin ${borderStyle};
-      position: absolute;
-      height: ${100*rSpan/rows}vh;
-      width: ${100*cSpan/cols}vw;
-      animation-delay: -${args.delay || 0}ms;
-      animation-duration: ${args.duration || 2000}ms;
-      animation-direction: ${args.direction === -1 ? 'reverse' : 'normal'};
-      ${args.style || ''}
-    `
+    style: `border:1vmin ${borderStyle};position:absolute;height:${100*rSpan/rows}vh;width:${100*cSpan/cols}vw;animation-delay:-${args.delay || 0}ms;animation-duration:${args.duration || 2000}ms;animation-direction:${args.direction === -1 ? 'reverse' : 'normal'};${args.style || ''}`
   })
 
 function staticBgsMultiple(rSpan, cSpan) {
-  return times(6, i => bgAnimation('',rSpan, cSpan, { style: `transform: scale(${i/6});`}))
+  return times(6, i => bgAnimation('',rSpan, cSpan, { style: `transform:scale(${i/6});`}))
 }
 function shrinkingBgSingle(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
@@ -1908,7 +1373,7 @@ function colorShiftingBgMultiple(rSpan, cSpan) {
     delay: i * 500,
     duration,
     direction,
-    style: `transform: scale(${0.95 - i/squares});`
+    style: `transform:scale(${0.95 - i/squares});`
   }))
 }
 
@@ -1938,7 +1403,6 @@ function withBgAnimation(child, rSpan, cSpan) {
 }
 
 
-
 function genericCharacterComponent(name, durMin, durMax) {
   return (children, args={}) => {
     const splitAnimation = txt => {
@@ -1947,10 +1411,7 @@ function genericCharacterComponent(name, durMin, durMax) {
 
       return split.map((c, i) => $.span(c, {
         class: name + ' charContent',
-        style: `
-          animation-delay: -${i * duration}ms;
-          ${c === ' ' ? 'margin-right: 0.5em;' : ''}
-        `
+        style: `animation-delay:-${i * duration}ms;${c === ' ' ? 'margin-right:0.5em;' : ''}`
       }))
     }
 
@@ -1961,16 +1422,12 @@ function genericCharacterComponent(name, durMin, durMax) {
         splitAnimation(txt),
         {
           class: 'charContentWord',
-          style: `
-            display: inline-block;
-            margin-left: 0.25em;
-            margin-right: 0.25em;
-          `
+          style: `display:inline-block;margin-left:0.25em;margin-right:0.25em;`
         }
       )
     ), {
       class: 'charContentGroup',
-      style: `display: inline-block;`
+      style: `display:inline-block;`
     })
   }
 }
@@ -1995,31 +1452,12 @@ function getContent(elem) {
 }
 
 
-const LR_PADDING = 'margin-left: 0.2em; margin-right: 0.2em;'
+const LR_PADDING = 'margin-left:0.2em;margin-right:0.2em;'
 
-css(`
-  .text {
-    font-size: 1em;
-  }
+css(`.text{font-size:1em;} .emoji {${LR_PADDING} font-size:${USE_EMOJI_POLYFILL ? 0.8 :0.9}em;} .emojiPolyfill {width:1em;height:1em;transform:translateY(7%);}`)
 
-  .emoji {
-    ${LR_PADDING}
-    font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em;
-  }
-
-  .emojiPolyfill {
-    width: 1em;
-    height: 1em;
-    transform: translateY(7%);
-  }
-`)
-
-const wordExt = (txt, className) => $.span(txt, { class: className })
-
-const word = txt => wordExt(txt, 'text content')
-
-const emoji = e => wordExt(e, 'emoji content')
-
+const word = txt => $.span(txt, { class: 'text content' })
+const emoji = e => $.span(e, { class: 'emoji content' })
 const emojis = es => es.split(' ').map(emoji)
 
 const link = txt => $.a(txt, {
@@ -2076,7 +1514,7 @@ const circusEmojis = emojis(`🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
 const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
 const sportsEmojis = emojis(`🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪`)
-const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬`)
+const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬 🌳`)
 
 const emojiLists = emojiOverride ? [emojiOverride] : [
   moneyFull,
@@ -2117,11 +1555,6 @@ const withEmoji = (txt, possibleEmojis, emojiProb=1) => !hasEmoji(txt) && prb(em
 
 const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possibleEmojis, emojiProb)
 
-
-/*
-  infinite, joy, certified, alert
-
-   */
 
 const luckyText = [
   'WINNER',
@@ -2561,31 +1994,7 @@ const adjustCharLength = (txt, pairedEmoji) => {
   emojiList.forEach(c => lenText = lenText.replace(c, '1'))
   return lenText.length + (!!pairedEmoji ? 3 : 0)
 }
-css(`
-  .sectionContainer {
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    cursor: pointer;
-    transition: 150ms;
-    filter: invert(${invertAll ? 1 : 0});
-    transition: 250ms;
-  }
-
-  .sectionContainer:hover {
-    filter: invert(${invertAll ? 0 : 1});
-  }
-
-  .sectionContainer:active {
-    opacity: 0.5;
-  }
-
-  .animationGridContainer {
-    line-height: 1;
-  }
-`)
+css(`.sectionContainer {overflow:hidden;display:flex;align-items:center;justify-content:center;user-select:none;cursor:pointer;transition:150ms;filter:invert(${invertAll ? 1 :0});transition:250ms;} .sectionContainer:hover {filter:invert(${invertAll ? 0 :1});} .sectionContainer:active {opacity:0.5;} .animationGridContainer {line-height:1;}`)
 
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
@@ -2636,22 +2045,20 @@ function createSound(animation, params, isGrid, extraDelay=0) {
 
 
   return fn({ ...params, delay: params.delay + extraDelay || 0 })
-
 }
 
 let sectionCount = 0
 function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
-  const txtColor = bw ? bwc.text : getColorFromHue(txtH)
-  const bgColor = bw ? bwc.bg : getBgColor(h)
+  const txtColor = BW ? bwc.text : getColorFromHue(txtH)
+  const bgColor = BW ? bwc.bg : getBgColor(h)
   const bgProp = bgColor.length > 200 ? '' : 'background: '
-
 
   const rotation = threeDRotations
     ? `perspective(500px) rotate3d(1,1,0.5,${lineRotation()}deg)`
     : `rotate(${lineRotation()}deg)`
 
-  const fontStyle = prb(italicRate) ? 'font-style: italic;' : ''
+  const fontStyle = prb(italicRate) ? 'font-style:italic;' : ''
 
   const borderWidth = min(rSpan, cSpan) * .05
   const rotateColor = prb(rotateColorPrb) ? 'fullColorRotate' : ''
@@ -2669,19 +2076,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     withBgAnimation(child, rSpan, cSpan),
     {
       class: classes,
-      style: `
-        border-style: ${borderStyle};
-        ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
-        grid-column: span ${cSpan};
-        grid-row: span ${rSpan};
-        ${bgProp}${(hideBg ? 'none;' : bgColor)};
-        color: ${txtColor};
-        ${fontStyle}
-        transform: ${rotation};
-        animation-delay: -${rnd(5)}s;
-        animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()};
-        animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s;
-      `
+      style: `border-style:${borderStyle};${showBorder ? `border-width:${borderWidth}vmin;box-sizing:border-box;` :'border-width:0;'} grid-column:span ${cSpan};grid-row:span ${rSpan};${bgProp}${(hideBg ? 'none;' :bgColor)};color:${txtColor};${fontStyle} transform:${rotation};animation-delay:-${rnd(5)}s;animation-direction:${rotateColor ? 'normal' :sectionAnimationDirection()};animation-duration:${rotateColor ? '25' : sectionAnimationDuration()}s;`
     }
   )
   const childContent = getContent(child)
@@ -2736,7 +2131,6 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
 
 
 const usedAnimations = []
-
 
 let marqueeCount = 0
 function marqueeContainter(rSpan, cSpan, contentOverride=false) {
@@ -2793,7 +2187,7 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   let emojiStyle = ''
 
   if (rotateEmoji) {
-    emojiStyle = 'transform: rotate(90deg); display: inline-block;'
+    emojiStyle = 'transform:rotate(90deg);display:inline-block;'
   }
 
   if (
@@ -2802,7 +2196,6 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   ) {
     emojiStyle += LR_PADDING
   }
-
 
 
   const clonedNode = $.span(child.cloneNode(true), {
@@ -2908,7 +2301,7 @@ function getFontSize(txt, rSpan, cSpan) {
   const charCols = adjustCharLength(longestWord)
   const charRows = adjustCharLength(txt)/charCols
 
-  return `calc(min(${rShare/charRows} * 100vh, ${cShare/charCols} * 100vw))`
+  return `calc(min(${rShare/charRows}*100vh,${cShare/charCols}*100vw))`
 }
 
 
@@ -3005,15 +2398,7 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     {
       class: 'animationContainer' + (ignoreCharAnimation ? ' emojiShadow' : ''),
       'data-h': txtH,
-      style: `
-        height: ${100*rSpan/rows}vh;
-        font-size: ${fontSize};
-        ${getShadow(txtH, !ignoreCharAnimation)}
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `,
+      style: `height:${100*rSpan/rows}vh;font-size:${fontSize};${getShadow(txtH, !ignoreCharAnimation)} text-align:center;display:flex;align-items:center;justify-content:center;`,
     }
   )
 
@@ -3049,9 +2434,6 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     }
   })
 }
-
-
-
 
 
 
@@ -3111,17 +2493,7 @@ function animationGridContainer(rSpan, cSpan, contentOverride=false) {
     {
       class: 'animationGridContainer emojiShadow',
       'data-h': txtH,
-      style: `
-        font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
-        height: ${100*rSpan/rows}vh;
-        width: ${100*cSpan/cols}vw;
-        display: grid;
-        align-items: center;
-        justify-items: center;
-        grid-template-rows: repeat(${r}, 1fr);
-        grid-template-columns: repeat(${c}, 1fr);
-        ${getShadow(txtH, false)}
-      `,
+      style: `font-size:${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;height:${100*rSpan/rows}vh;width:${100*cSpan/cols}vw;display:grid;align-items:center;justify-items:center;grid-template-rows:repeat(${r}, 1fr);grid-template-columns:repeat(${c}, 1fr);${getShadow(txtH, false)}`,
     }
   )
 
@@ -3318,16 +2690,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   return $.section(
     sections,
     {
-      style: `
-        width: ${100*colCells/cols}vw;
-        height: ${100*rowCells/rows}vh;
-        overflow: hidden;
-        grid-row: span ${rowCells};
-        grid-column: span ${colCells};
-        display: grid;
-        grid-template-rows: repeat(${rowCells}, 1fr);
-        grid-template-columns: repeat(${colCells}, 1fr);
-      `
+      style: `width:${100*colCells/cols}vw;height:${100*rowCells/rows}vh;overflow:hidden;grid-row:span ${rowCells};grid-column:span ${colCells};display:grid;grid-template-rows:repeat(${rowCells}, 1fr);grid-template-columns:repeat(${colCells}, 1fr);`
     }
   )
 }
@@ -3340,14 +2703,7 @@ function generateMain(id, contentOverride=false) {
     {
       id: `main`,
       class: `projection-plane-${id}`,
-      style: `
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-        display: grid;
-        grid-template-rows: repeat(${rows}, 1fr);
-        grid-template-columns: repeat(${cols}, 1fr);
-      `
+      style: `height:100vh;width:100vw;overflow:hidden;display:grid;grid-template-rows:repeat(${rows}, 1fr);grid-template-columns:repeat(${cols}, 1fr);`
     }
   )
 }
@@ -3550,16 +2906,4 @@ window.onload = () => {
   }
 }
 
-/*
-D ownload HTML
-O verdrive
-P ause
-A nhedonic Mode
-M ouse Hide
-I
-N o distraction mode (live view only)
-E moji Toggle
 
-
-Fullscreen
-*/

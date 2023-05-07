@@ -3,7 +3,6 @@ const max = Math.max
 const abs = Math.abs
 const round = Math.round
 const int = parseInt
-const btwn = (mn, mx, val) => max(mn, min(mx, val))
 const map = (val, low, high, mn, mx) => mn < mx
   ? mn + ((val - low)/(high-low)) * (mx - mn)
   : mn - ((val - low)/(high-low)) * (mn - mx)
