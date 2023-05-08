@@ -1797,7 +1797,8 @@ const sportsText = [
   'VICTORY LAP',
   'ACTION PACKED',
   'TRIPLE CROWN',
-  'ALL STAR'
+  'ALL STAR',
+  'SUPERSTAR',
 ]
 
 
