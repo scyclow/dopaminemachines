@@ -364,7 +364,8 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
 
   const disallowColorChars = layoutStyle === 7 && cellSize < 12 && prb(0.8)
 
-  const animation = sample([
+  const animation = updownChars
+  sample([
     dance,
     growShrink,
     spin,
@@ -396,7 +397,8 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
 
   const fontSize = getFontSize(child.innerHTML, rSpan, cSpan)
 
-  const secondAnimation = animation === updownLong || prb(0.75)
+  const secondAnimation = flamingHot
+  animation === updownLong || prb(0.75)
     ? iden
     : sample([
       dance,
@@ -708,7 +710,8 @@ function flexSection(rowCells, colCells, contentOverride=false) {
     const rSpan = getSpan(rowMin, rowsLeft, rowCells)
 
     const aspectRatio = cSpan / rSpan
-    const animationPrb = layoutStyle === 4 ? 0.75 : 0.5
+    const animationPrb = 1
+    layoutStyle === 4 ? 0.75 : 0.5
 
     sections.push(
       aspectRatio < 1.25 && aspectRatio > 0.8

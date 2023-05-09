@@ -42,7 +42,8 @@ const fontFamily = chance(
   [75, 'sans-serif'],
 )
 
-const layoutStyle = chance(
+const layoutStyle = 4
+chance(
   [55, 1], // anything goes
   [6, 2],  // anything goes (micro/large)
   [7, 3],  // anything goes (lean rows)
@@ -104,7 +105,8 @@ const freeFloating = ![0, 180].includes(lineRotation())
 const threeDRotations = lineRotation.isMild && prb(0.3333)
 
 const gradientBg = prb(0.25)
-const bgType = chance(
+const bgType = 2
+chance(
   [55, 0],
   [12, 1], // empty
   [20, 2], // gradiant
@@ -113,7 +115,8 @@ const bgType = chance(
   [2, 5], // zigzag med
 )
 
-const bgAnimationPrb = chance(
+const bgAnimationPrb = 0
+chance(
   [12, 0],
   [bgType < 3 && 6, rnd(0.25, 0.5)],
   [bgType < 3 && 2, 1],
@@ -212,7 +215,8 @@ const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
 
 
 const hideBg = freeFloating ? prb(0.5) : false
-const showBorder = prb(0.5)
+const showBorder = false
+prb(0.5)
 
 const bgAnimationType = chance(
   [3, 0], // colorShiftingBgMultiple
@@ -274,10 +278,10 @@ const gradientMix = sample([
   0.5 // mixed
 ])
 
-const getColorFromHue = h => `hsl(${h%360}deg, 100%, 50%)`
+const getColorFromHue = h => '#01aec1'//`hsl(${h%360}deg, 100%, 50%)`
 function getBgColor(h) {
-  const bg1 = getColorFromHue(h)
-  const bg2 = getColorFromHue(h+sample(gradientHues))
+  const bg1 = '#d90'//getColorFromHue(h)
+  const bg2 = '#900'//getColorFromHue(h+sample(gradientHues))
 
   if (bgType === 1) return 'none;'
   if (bgType === 2) return prb(gradientMix)
@@ -353,7 +357,8 @@ function starburstBg(h, rSpan, cSpan) {
   return cssClass
 }
 
-const bgColor = chance(
+const bgColor = '#000'
+chance(
   [bgType !== 1 && 2, `hsl(${chooseHue()}deg, 100%, 50%)`],
   [bgType !== 1 && 1, `#fff`],
   [1, `#000`]

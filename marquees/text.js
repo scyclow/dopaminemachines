@@ -364,19 +364,20 @@ const sportsText = [
 
 
 const textLists = [
-  luckyText,
-  dealsText,
-  cashText,
-  sexyText,
-  fomo,
-  hotText,
-  excitingText,
-  funText,
-  crypto,
-  disclaimer,
-  affirmations,
-  wwwText,
-  sportsText
+  // luckyText,
+  // dealsText,
+  // cashText,
+  // sexyText,
+  // fomo,
+  // hotText,
+  // excitingText,
+  // funText,
+  // crypto,
+  // disclaimer,
+  // affirmations,
+  // wwwText,
+  // sportsText
+  ['DOPAMINE SUMMER']
 ]
 
 

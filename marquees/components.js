@@ -69,7 +69,8 @@ css(`
   }
 
   .colorChars {
-    animation: FullColorRotate 1.5s steps(6, start) infinite;
+    animation: FullColorRotate 1.5s ease-in-out infinite;
+    display: inline-block;
   }
 
   .borderBlink {
@@ -612,7 +613,7 @@ function genericCharacterComponent(name, durMin, durMax) {
       }))
     }
 
-    const c = prb(0.5) ? [children.innerHTML] : children.innerHTML.split(' ')
+    const c = children.innerHTML.split(' ')
 
     return $.div(
       c.map(txt => $.div(
