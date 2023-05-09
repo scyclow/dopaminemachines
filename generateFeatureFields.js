@@ -94,14 +94,14 @@ const features = [
   {
     name: 'Random Calls',
     type: 'number',
-    max: 5000,
+    max: 15000,
     min: 1,
     step: 1,
   },
   {
     name: 'Sections',
     type: 'number',
-    max: 200,
+    max: 320,
     min: 1,
     step: 1,
   },
@@ -115,14 +115,14 @@ const features = [
   {
     name: 'Animations',
     type: 'number',
-    max: 200,
+    max: 320,
     min: 1,
     step: 1,
   },
   {
     name: 'Grids',
     type: 'number',
-    max: 200,
+    max: 250,
     min: 1,
     step: 1,
   },
