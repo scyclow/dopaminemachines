@@ -216,12 +216,6 @@ let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   || false
 )
 
-let ACTIVE_VOICE_IX = ls.get('__DOPAMINE_VOICE__') || null
-if (queryParams.voice) {
-  ACTIVE_VOICE_IX = Number(queryParams.voice)
-  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
-}
-
 
 const speed = prb(0.05) ? 100 : 3
 
@@ -457,7 +451,7 @@ const gradientHues = chance(
   [1, [60, 300]]
 )
 
-const zigzagBg = (bg1, bg2, size) => `background-color:${bg1};background-image:linear-gradient(135deg, ${bg2} 25%, transparent 25%), linear-gradient(225deg, ${bg2} 25%, transparent 25%), linear-gradient(45deg, ${bg2} 25%, transparent 25%), linear-gradient(315deg, ${bg2} 25%, ${bg1} 25%);background-position: ${size/2}em 0, ${size/2}em 0, 0 0, 0 0;background-size:${size}em ${size}em;background-repeat:repeat; `
+const zigzagBg = (bg1, bg2, size) => `background-color: ${bg1}; background-image: linear-gradient(135deg, ${bg2} 25%, transparent 25%), linear-gradient(225deg, ${bg2} 25%, transparent 25%), linear-gradient(45deg, ${bg2} 25%, transparent 25%), linear-gradient(315deg, ${bg2} 25%, ${bg1} 25%); background-position:  ${size/2}em 0, ${size/2}em 0, 0 0, 0 0; background-size: ${size}em ${size}em; background-repeat: repeat; `
 
 const gradientMix = sample([
   0,  // linear
@@ -517,7 +511,7 @@ function starburstBg(h, rSpan, cSpan) {
 
   const size = 128
 
-  css(` .${cssClass}::before {content:"";background:repeating-conic-gradient(${c1} 0deg ${deg}deg,  ${c2} ${deg}deg ${deg*2}deg);position:absolute;width:${size}00%;height:${size}00%;top:-${size/2 * 100 - 50}%;left:-${size/2 * 100 - 50}%;z-index:-1;animation:BgRotate${deg} ${rnd(1000, 5000)}ms linear infinite;animation-direction:${prb(0.5) ? 'normal' :'reverse'} } @keyframes BgRotate${deg} {0% {transform:rotate(0deg);} 100% {transform:rotate(${deg*2}deg);}}`)
+  css(`.${cssClass}::before {content: ""; background: repeating-conic-gradient(${c1} 0deg ${deg}deg,  ${c2} ${deg}deg ${deg*2}deg); position: absolute; width: ${size}00%; height: ${size}00%; top: -${size/2 * 100 - 50}%; left: -${size/2 * 100 - 50}%; z-index: -1; animation: BgRotate${deg} ${rnd(1000, 5000)}ms linear infinite; animation-direction: ${prb(0.5) ? 'normal' : 'reverse'} } @keyframes BgRotate${deg} {0% {transform: rotate(0deg); } 100% {transform: rotate(${deg*2}deg); } } `)
 
   return cssClass
 }
@@ -542,7 +536,7 @@ const colorBlinkPrb = chance(
 
 const fullHueRotation = prb(0.02)
 const invertAll = prb(0.02)
-css(`* {margin:0;padding:0;font-family:${fontFamily};font-weight:${fontWeight};} body, body::backdrop {background:${bgColor};margin:0;${fullHueRotation ? 'animation:HueRotation 10s linear infinite;' :''} } @keyframes HueRotation {0% { filter:hue-rotate(0deg) } 0% { filter:hue-rotate(360deg) } } .viewerMode {cursor:none;pointer-events:none;} .viewerMode .sectionContainer:hover {filter:invert(${invertAll ? 1 :0});} .pauseAll, .pauseAll *, .pauseAll *::before {animation-play-state:paused !important;} .fullScreen {position:absolute;top:0;bottom:0;left:0;right:0;height:100vh;width:100vw;z-index:100;} .overdrive .marquee * {animation-duration:10s !important;} .overdrive *::before {animation-duration:100ms !important;} .overdrive .bgAnimation {animation-duration:300ms !important;} .overdrive .animatingComponent {animation-duration:250ms !important;} .overdrive .sectionContainer {animation-duration:750ms !important;} .overdrive .charContent {animation-duration:205ms !important;} .overdrive {filter:contrast(300%) saturate(300%);} .anhedonic {background:#555;filter:blur(0.08vw) saturate(0.15);} .anhedonic .marquee * {animation-duration:800s !important;} .anhedonic *::before {animation-duration:3s !important;} .anhedonic .bgAnimation {animation-duration:12s !important;} .anhedonic .animatingComponent {animation-duration:16s !important;} .anhedonic .sectionContainer {animation-duration:32s !important;} .anhedonic .charContent {animation-duration:2505ms !important;} .invertAll {filter:invert(1);}`)
+css(`* {margin: 0; padding: 0; font-family: ${fontFamily}; font-weight: ${fontWeight}; } body, body::backdrop {background: ${bgColor}; margin: 0; ${fullHueRotation ? 'animation: HueRotation 10s linear infinite;' : ''} } @keyframes HueRotation {0% { filter: hue-rotate(0deg) } 0% { filter: hue-rotate(360deg) } } .viewerMode {cursor: none; pointer-events: none; } .viewerMode .sectionContainer:hover {filter: invert(${invertAll ? 1 : 0}); } .pauseAll, .pauseAll *, .pauseAll *::before {animation-play-state: paused !important; } .fullScreen {position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100vh; width: 100vw; z-index: 100; } .overdrive .marquee * {animation-duration: 10s !important; } .overdrive *::before {animation-duration: 100ms !important; } .overdrive .bgAnimation {animation-duration: 300ms !important; } .overdrive .animatingComponent {animation-duration: 250ms !important; } .overdrive .sectionContainer {animation-duration: 750ms !important; } .overdrive .charContent {animation-duration: 205ms !important; } .overdrive {filter: contrast(300%) saturate(300%); } .anhedonic {background: #555; filter: blur(0.08vw) saturate(0.15); } .anhedonic .marquee * {animation-duration: 800s !important; } .anhedonic *::before {animation-duration: 3s !important; } .anhedonic .bgAnimation {animation-duration: 12s !important; } .anhedonic .animatingComponent {animation-duration: 16s !important; } .anhedonic .sectionContainer {animation-duration: 32s !important; } .anhedonic .charContent {animation-duration: 2505ms !important; } .invertAll {filter: invert(1); } ::selection {color: #fff; background-color: #000; } `)
 
 let START_TIME = Date.now()
 const MAX_VOLUME = 0.04
@@ -1086,16 +1080,42 @@ function singleSound() {
 
 
 let voices
+let ACTIVE_VOICE_IX = 0
+const filterVoices = (voices) => {
+  const matchingVoiceLang = v => v.lang && v.lang.includes(queryParams.voiceLang || 'en-US')
+  try {
 
-const getDefaultVoiceIx = () => voices.filter(v => v.lang && v.lang.includes('en')[0] || 0)
+    let langVoices = voices.filter(matchingVoiceLang)
+    langVoices = langVoices.length ? langVoices : voices
+
+    let defaultVoice = queryParams.voice
+      ? voices.find(v => v.voiceURI.toLowerCase().includes(queryParams.voice.toLowerCase()))
+      : voices.find(v => v.default)
+
+    if (!matchingVoiceLang(defaultVoice)) defaultVoice = voices.find(matchingVoiceLang)
+
+    return queryParams.voice || !queryParams.voiceLang
+      ? [defaultVoice, ...langVoices.slice(1)]
+      : langVoices
+
+  } catch (e) {
+    return voices
+  }
+}
+
+function selectVoice(v) {
+  ACTIVE_VOICE_IX = voices.length && (v % voices.length)
+  console.log('VOICE SELECTED:', voices[ACTIVE_VOICE_IX].voiceURI)
+}
+
 const getVoices = () => {
   try {
+    window.speechSynthesis.cancel()
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
       else {
-        ACTIVE_VOICE_IX = ACTIVE_VOICE_IX || getDefaultVoiceIx()
-        if (ACTIVE_VOICE_IX === -1) ACTIVE_VOICE_IX = 0
+        voices = filterVoices(voices)
       }
     }, 200)
   } catch(e) {
@@ -1104,14 +1124,9 @@ const getVoices = () => {
 }
 getVoices()
 
-function selectVoice(v) {
-  ACTIVE_VOICE_IX = v % voices.length
-  console.log('VOICE SELECTED:', ACTIVE_VOICE_IX)
-  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
-}
-
 let utteranceQueue = []
 let utterancePriority = null
+let activeUtterance
 
 const triggerUtterance = () => {
   if (PAUSED) {
@@ -1130,10 +1145,10 @@ const triggerUtterance = () => {
   }
 
   if (!txt) return
+  activeUtterance = txt
 
   txt.volume = 0.88
-  txt.voice = voices[ACTIVE_VOICE_IX||0]
-
+  txt.voice = voices[ACTIVE_VOICE_IX]
 
   if (OVERDRIVE) {
     txt.pitch = sample(MAJOR_SCALE)
@@ -1152,11 +1167,15 @@ const triggerUtterance = () => {
     txt.rate = 1
   }
 
-  window.speechSynthesis.speak(txt)
-
   txt.onend = () => {
     if (utteranceQueue.length) triggerUtterance()
   }
+
+  txt.addEventListener('error', (e) => {
+    console.error('SpeechSynthesisUtterance error', e)
+  })
+
+  window.speechSynthesis.speak(txt)
 }
 
 const stopUtter = txt => {
@@ -1174,18 +1193,18 @@ const utter = (txt, t=1, i=7) => {
     utterancePriority = a
     if (!startingQueue) triggerUtterance()
   } catch (b) {
-
+    console.log(b)
   }
 }
 
-css(`.marquee {display:inline-block;width:100%;box-sizing:border-box;line-height:1;} .marqueeInner {display:inline-flex;} .marqueeForward {animation:Marquee 50s linear infinite;} .marqueeInner > * {display:inline-block;white-space:nowrap;} @keyframes Marquee {0% {transform:translate3d(-50%, 0, 0)} 100% {transform:translate3d(0%, 0, 0)} } .bgAnimation {z-index:-1;} .updownChars {animation:UpDownChars 2s ease-in-out infinite;display:inline-block;} @keyframes UpDownChars {0%, 100% {transform:translate3d(0%, 10%, 0)} 50% {transform:translate3d(0%, -10%, 0)} } .updownLong {height:100%;animation:UpDownLong 1000ms ease-in-out infinite;} .updownLong > * {animation:UpDownLongChild 2000ms ease-in-out infinite;} @keyframes UpDownLongChild {0%, 100% {transform:translateY(0)} 50% {transform:translateY(-100%)} } @keyframes UpDownLong {0%, 100% {transform:translateY(0)} 50% {transform:translateY(100%)} } .blink {animation:Blink 1.5s steps(2, start) infinite;} @keyframes Blink {to {visibility:hidden;} } .colorChars {animation:FullColorRotate 1.5s steps(6, start) infinite;} .borderBlink {border-width:0.05em;animation:BorderBlink 1.5s steps(2, start) infinite;box-sizing:border-box;} @keyframes BorderBlink {50% {border-style:hidden;} } .colorBlink {animation:ColorBlink 4s steps(1, start) infinite;} @keyframes ColorBlink {${colorBlinkAnim()} } .fullColorRotate {animation:FullColorRotate 25s linear infinite;} @keyframes FullColorRotate {0%, 100% {color:#ff0000} 17% {color:#ffff00} 33% {color:#00ff00} 50% {color:#00ffff} 66% {color:#0000ff} 83% {color:#ff00ff} } .colorShift {animation:ColorRotate 25s linear infinite;} @keyframes ColorRotate {0%, 100% {color:#ff0000} 17% {color:#ffff00} 33% {color:#00ff00} 50% {color:#00ffff} 66% {color:#0000ff} 83% {color:#ff00ff} } .dance {animation:Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes Dance {0%, 100% {transform:rotate(20deg)} 50% {transform:rotate(-20deg)} } .growShrink {animation:GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes GrowShrink {0%, 100% {transform:scale(1)} 50% {transform:scale(0.2)} } .growShrinkShort {animation:GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;display:inline-block;} @keyframes GrowShrinkShort {0%, 100% {transform:scale(1)} 50% {transform:scale(0.75)} } .spin {animation:Spin 2000ms linear infinite;} @keyframes Spin {0% {transform:rotate(0deg)} 100% {transform:rotate(360deg)} } .hSiren {animation:HSiren 2000ms linear infinite;} @keyframes HSiren {0% {transform:perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)} 100% {transform:perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)} } .vSiren {animation:VSiren 2000ms linear infinite;} @keyframes VSiren {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)} 100% {transform:perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)} } .vSirenShort {animation:VSirenShort 2000ms linear infinite;} @keyframes VSirenShort {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)} 100% {transform:perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)} } .hPivot {animation:HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes HPivot {0%, 100% {transform:perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)} 50% {transform:perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)} } .vPivot {animation:VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes VPivot {0%, 100% {transform:perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)} 50% {transform:perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)} } .vFlip {animation:VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes VFlip {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg)} 100% {transform:perspective(500px) rotate3d(2,0,0, 1800deg)} } .hFlip {animation:HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes HFlip {0% {transform:perspective(500px) rotate3d(0,2,0, 0deg)} 100% {transform:perspective(500px) rotate3d(0,2,0, 1800deg)} } .breathe {animation:Breathe 2000ms ease-in-out infinite;} @keyframes Breathe {0%, 100% {transform:scaleX(1) scaleY(1)} 50% {transform:scaleX(0.8) scaleY(0.9)} } .flamingHot {animation:FlamingHot 2000ms ease-in-out infinite;} @keyframes FlamingHot {0% {transform:scale(1) translateY(0);opacity:1;} 75% {opacity:0;transform:scale(1.15) translateY(-0.2em);} 80% {opacity:0;transform:scale(1) translateY(0);} 100% {opacity:1;} } .leftRight {width:100%;animation:LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;font-size:10vmin;} .leftRight > * {animation:LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;display:inline-block;white-space:nowrap;} @keyframes LeftRightChild {0%, 100% {transform:translateX(0)} 50% {transform:translateX(-100%)} } @keyframes LeftRight {0%, 100% {transform:translateX(0)} 50% {transform:translateX(100%)} } .shrinkingBorder {animation:ShrinkingBorder 2000ms linear infinite;} .spinningBorder {animation:Spin 2000ms linear infinite;} @keyframes ShrinkingBorder {0% {transform:scale(105%)} 100% {transform:scale(0%)} } .shrinkingSpinningBorder {animation:SpinningShrinkingBorder 2000ms linear infinite;} @keyframes SpinningShrinkingBorder {0% {transform:scale(105%) rotate(0deg)} 100% {transform:scale(0%) rotate(45deg)} } .wave {animation:Wave 4500ms linear infinite;} .climb {animation:Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes Wave {0%, 100% {transform:translate3d(0%, 30%, 0) rotate(0deg)} 25% {transform:translate3d(0%, 0%, 0) rotate(12deg)} 50% {transform:translate3d(0%, -30%, 0) rotate(0deg)} 75% {transform:translate3d(0%, 0%, 0) rotate(-12deg)} } .hexagon {animation:Hexagon 2000ms linear infinite;} @keyframes Hexagon {0%, 100% {transform:translate(0, 0.5em)} 17% {transform:translate(0.43em, 0.25em)} 33% {transform:translate(0.43em, -0.25em)} 50% {transform:translate(0, -0.5em)} 66% {transform:translate(-0.43em, -0.25em)} 83% {transform:translate(-0.43em, 0.25em)}}`)
+css(`.marquee {display: inline-block; width: 100%; box-sizing: border-box; line-height: 1; } .marqueeInner {display: inline-flex; } .marqueeForward {animation: Marquee 50s linear infinite; } .marqueeInner > * {display: inline-block; white-space: nowrap; } @keyframes Marquee {0% {transform: translate3d(-50%, 0, 0)} 100% {transform: translate3d(0%, 0, 0)} } .bgAnimation {z-index: -1; } .updownChars {animation: UpDownChars 2s ease-in-out infinite; display: inline-block; } @keyframes UpDownChars {0%, 100% {transform: translate3d(0%, 10%, 0)} 50% {transform: translate3d(0%, -10%, 0)} } .updownLong {height: 100%; animation: UpDownLong 1000ms ease-in-out infinite; } .updownLong > * {animation: UpDownLongChild 2000ms ease-in-out infinite; } @keyframes UpDownLongChild {0%, 100% {transform: translateY(0)} 50% {transform: translateY(-100%)} } @keyframes UpDownLong {0%, 100% {transform: translateY(0)} 50% {transform: translateY(100%)} } .blink {animation: Blink 1.5s steps(2, start) infinite; } @keyframes Blink {to {visibility: hidden; } } .colorChars {animation: FullColorRotate 1.5s steps(6, start) infinite; } .borderBlink {border-width: 0.05em; animation: BorderBlink 1.5s steps(2, start) infinite; box-sizing: border-box; } @keyframes BorderBlink {50% {border-style: hidden; } } .colorBlink {animation: ColorBlink 4s steps(1, start) infinite; } @keyframes ColorBlink {${colorBlinkAnim()} } .fullColorRotate {animation: FullColorRotate 25s linear infinite; } @keyframes FullColorRotate {0%, 100% {color: #ff0000} 17% {color: #ffff00} 33% {color: #00ff00} 50% {color: #00ffff} 66% {color: #0000ff} 83% {color: #ff00ff} } .colorShift {animation: ColorRotate 25s linear infinite; } @keyframes ColorRotate {0%, 100% {color: #ff0000} 17% {color: #ffff00} 33% {color: #00ff00} 50% {color: #00ffff} 66% {color: #0000ff} 83% {color: #ff00ff} } .dance {animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes Dance {0%, 100% {transform: rotate(20deg)} 50% {transform: rotate(-20deg)} } .growShrink {animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes GrowShrink {0%, 100% {transform: scale(1)} 50% {transform: scale(0.2)} } .growShrinkShort {animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; display: inline-block; } @keyframes GrowShrinkShort {0%, 100% {transform: scale(1)} 50% {transform: scale(0.75)} } .spin {animation: Spin 2000ms linear infinite; } @keyframes Spin {0% {transform: rotate(0deg)} 100% {transform: rotate(360deg)} } .hSiren {animation: HSiren 2000ms linear infinite; } @keyframes HSiren {0% {transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)} 100% {transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)} } .vSiren {animation: VSiren 2000ms linear infinite; } @keyframes VSiren {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)} 100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)} } .vSirenShort {animation: VSirenShort 2000ms linear infinite; } @keyframes VSirenShort {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)} 100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)} } .hPivot {animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes HPivot {0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)} 50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)} } .vPivot {animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; } @keyframes VPivot {0%, 100% {transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)} 50% {transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)} } .vFlip {animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes VFlip {0% {transform: perspective(500px) rotate3d(2,0,0, 0deg)} 100% {transform: perspective(500px) rotate3d(2,0,0, 1800deg)} } .hFlip {animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes HFlip {0% {transform: perspective(500px) rotate3d(0,2,0, 0deg)} 100% {transform: perspective(500px) rotate3d(0,2,0, 1800deg)} } .breathe {animation: Breathe 2000ms ease-in-out infinite; } @keyframes Breathe {0%, 100% {transform: scaleX(1) scaleY(1)} 50% {transform: scaleX(0.8) scaleY(0.9)} } .flamingHot {animation: FlamingHot 2000ms ease-in-out infinite; } @keyframes FlamingHot {0% {transform: scale(1) translateY(0); opacity: 1; } 75% {opacity: 0; transform: scale(1.15) translateY(-0.2em); } 80% {opacity: 0; transform: scale(1) translateY(0); } 100% {opacity: 1; } } .leftRight {width: 100%; animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; font-size: 10vmin; } .leftRight > * {animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite; display: inline-block; white-space: nowrap; } @keyframes LeftRightChild {0%, 100% {transform: translateX(0)} 50% {transform: translateX(-100%)} } @keyframes LeftRight {0%, 100% {transform: translateX(0)} 50% {transform: translateX(100%)} } .shrinkingBorder {animation: ShrinkingBorder 2000ms linear infinite; } .spinningBorder {animation: Spin 2000ms linear infinite; } @keyframes ShrinkingBorder {0% {transform: scale(105%)} 100% {transform: scale(0%)} } .shrinkingSpinningBorder {animation: SpinningShrinkingBorder 2000ms linear infinite; } @keyframes SpinningShrinkingBorder {0% {transform: scale(105%) rotate(0deg)} 100% {transform: scale(0%) rotate(45deg)} } .wave {animation: Wave 4500ms linear infinite; } .climb {animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite; } @keyframes Wave {0%, 100% {transform: translate3d(0%, 30%, 0) rotate(0deg)} 25% {transform: translate3d(0%, 0%, 0) rotate(12deg)} 50% {transform: translate3d(0%, -30%, 0) rotate(0deg)} 75% {transform: translate3d(0%, 0%, 0) rotate(-12deg)} } .hexagon {animation: Hexagon 2000ms linear infinite; } @keyframes Hexagon {0%, 100% {transform: translate(0, 0.5em)} 17% {transform: translate(0.43em, 0.25em)} 33% {transform: translate(0.43em, -0.25em)} 50% {transform: translate(0, -0.5em)} 66% {transform: translate(-0.43em, -0.25em)} 83% {transform: translate(-0.43em, 0.25em)} } `)
 
 function colorBlinkAnim() {
   const h = chooseHue()
-  const start = `0%, 100% {color:${getColorFromHue(h)};background-color:${getColorFromHue(h + possibleHues[1])};}`
+  const start = `0%, 100% {color: ${getColorFromHue(h)}; background-color: ${getColorFromHue(h + possibleHues[1])}; } `
   return start + possibleHues.length === 2
-    ? `50% {color:${getColorFromHue(h + possibleHues[1])};background-color:${getColorFromHue(h)};}`
-    : `33% {color:${getColorFromHue(h + possibleHues[1])};background-color:${getColorFromHue(h + possibleHues[2])};} 66% {color:${getColorFromHue(h + possibleHues[2])};background-color:${getColorFromHue(h)};}`
+    ? `50% {color: ${getColorFromHue(h + possibleHues[1])}; background-color: ${getColorFromHue(h)}; } `
+    : `33% {color: ${getColorFromHue(h + possibleHues[1])}; background-color: ${getColorFromHue(h + possibleHues[2])}; } 66% {color: ${getColorFromHue(h + possibleHues[2])}; background-color: ${getColorFromHue(h)}; } `
 }
 
 function marquee(children, args={}) {
@@ -1206,7 +1225,7 @@ function marquee(children, args={}) {
     return msgAnimation(
       $.span(
         child,
-        { style: `margin-left:${spacing};margin-right:${spacing};font-size:${isEmoji ? 0.9 : 1}em;` }
+        { style: `margin-left: ${spacing}; margin-right: ${spacing}; font-size: ${isEmoji ? 0.9 : 1}em;` }
       ).cloneNode(true),
       { delay: i*100 + j/2}
     )
@@ -1221,14 +1240,14 @@ function marquee(children, args={}) {
     ).flat(),
     {
       class: `marqueeInner marqueeForward`,
-      style: `animation-delay:-${delay}s;animation-duration:${duration/(repeat/40)}s;animation-direction:${direction === 1 ? 'normal' : 'reverse'};`
+      style: `animation-delay: -${delay}s; animation-duration: ${duration/(repeat/40)}s; animation-direction: ${direction === 1 ? 'normal' : 'reverse'}; `
     }
   )
 
   return $.div(
     inner,
     {
-      style: style + (sideways ? `transform:rotate(${sample([90, 270])}deg);` : ''),
+      style: style + (sideways ? `transform: rotate(${sample([90, 270])}deg);` : ''),
       class: `component marquee ${className}`,
     }
   )
@@ -1248,7 +1267,7 @@ function genericAnimatingComponent(name) {
     return trailFn(
       $.div(children, {
         class: `${name} ${className} animatingComponent`,
-        style: `animation-duration:${duration}ms;animation-delay:-${delay}ms;animation-direction:${direction === 1 ? 'normal' : 'reverse'};${style}`
+        style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms; animation-direction: ${direction === 1 ? 'normal' : 'reverse'}; ${style} `
       }),
       args
     )
@@ -1280,7 +1299,7 @@ const updownLong = (grandChild, args={}) => {
   const duration = args.duration || 1000
   const delay = args.delay || 0
 
-  const child = $.div(grandChild, { style: `animation-duration:${duration}ms;animation-delay:-${delay}ms;` })
+  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
   return updownLongParent(child, args)
 }
 
@@ -1289,7 +1308,7 @@ const leftRight = (grandChild, args={}) => {
   const duration = args.duration || 1000
   const delay = args.delay || 0
 
-  const child = $.div(grandChild, { style: `animation-duration:${duration}ms;animation-delay:-${delay}ms;` })
+  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
   return leftRightParent(child, args)
 }
 
@@ -1328,11 +1347,11 @@ const withTrails = (grandChild, args={}) => {
 
 const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
     class: className + ' bgAnimation',
-    style: `border:1vmin ${borderStyle};position:absolute;height:${100*rSpan/rows}vh;width:${100*cSpan/cols}vw;animation-delay:-${args.delay || 0}ms;animation-duration:${args.duration || 2000}ms;animation-direction:${args.direction === -1 ? 'reverse' : 'normal'};${args.style || ''}`
+    style: `border: 1vmin ${borderStyle}; position: absolute; height: ${100*rSpan/rows}vh; width: ${100*cSpan/cols}vw; animation-delay: -${args.delay || 0}ms; animation-duration: ${args.duration || 2000}ms; animation-direction: ${args.direction === -1 ? 'reverse' : 'normal'}; ${args.style || ''} `
   })
 
 function staticBgsMultiple(rSpan, cSpan) {
-  return times(6, i => bgAnimation('',rSpan, cSpan, { style: `transform:scale(${i/6});`}))
+  return times(6, i => bgAnimation('',rSpan, cSpan, { style: `transform: scale(${i/6});`}))
 }
 function shrinkingBgSingle(rSpan, cSpan) {
   const direction = prb(0.5) ? 1 : -1
@@ -1372,7 +1391,7 @@ function colorShiftingBgMultiple(rSpan, cSpan) {
     delay: i * 500,
     duration,
     direction,
-    style: `transform:scale(${0.95 - i/squares});`
+    style: `transform: scale(${0.95 - i/squares});`
   }))
 }
 
@@ -1410,7 +1429,10 @@ function genericCharacterComponent(name, durMin, durMax) {
 
       return split.map((c, i) => $.span(c, {
         class: name + ' charContent',
-        style: `animation-delay:-${i * duration}ms;${c === ' ' ? 'margin-right:0.5em;' : ''}`
+        style: `
+          animation-delay: -${i * duration}ms;
+          ${c === ' ' ? 'margin-right: 0.5em;' : ''}
+        `
       }))
     }
 
@@ -1421,12 +1443,12 @@ function genericCharacterComponent(name, durMin, durMax) {
         splitAnimation(txt),
         {
           class: 'charContentWord',
-          style: `display:inline-block;margin-left:0.25em;margin-right:0.25em;`
+          style: `display: inline-block; margin-left: 0.25em; margin-right: 0.25em; `
         }
       )
     ), {
       class: 'charContentGroup',
-      style: `display:inline-block;`
+      style: `display: inline-block;`
     })
   }
 }
@@ -1451,9 +1473,9 @@ function getContent(elem) {
 }
 
 
-const LR_PADDING = 'margin-left:0.2em;margin-right:0.2em;'
+const LR_PADDING = 'margin-left: 0.2em; margin-right: 0.2em;'
 
-css(`.text{font-size:1em;} .emoji {${LR_PADDING} font-size:${USE_EMOJI_POLYFILL ? 0.8 :0.9}em;} .emojiPolyfill {width:1em;height:1em;transform:translateY(7%);}`)
+css(`.text {font-size: 1em; } .emoji {${LR_PADDING} font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em; } .emojiPolyfill {width: 1em; height: 1em; transform: translateY(7%); } `)
 
 const word = txt => $.span(txt, { class: 'text content' })
 const emoji = e => $.span(e, { class: 'emoji content' })
@@ -1599,7 +1621,8 @@ const dealsText = [
   'MORE',
   'MORE IS MORE',
   'I WANT MORE',
-  'SATISFACTION GUARANTEED'
+  'SATISFACTION GUARANTEED',
+  'SUPERSIZE'
 ]
 
 const cashText = [
@@ -1994,7 +2017,7 @@ const adjustCharLength = (txt, pairedEmoji) => {
   emojiList.forEach(c => lenText = lenText.replace(c, '1'))
   return lenText.length + (!!pairedEmoji ? 3 : 0)
 }
-css(`.sectionContainer {overflow:hidden;display:flex;align-items:center;justify-content:center;user-select:none;cursor:pointer;transition:150ms;filter:invert(${invertAll ? 1 :0});transition:250ms;} .sectionContainer:hover {filter:invert(${invertAll ? 0 :1});} .sectionContainer:active {opacity:0.5;} .animationGridContainer {line-height:1;}`)
+css(`.sectionContainer {overflow: hidden; display: flex; align-items: center; justify-content: center; user-select: none; cursor: pointer; transition: 150ms; filter: invert(${invertAll ? 1 : 0}); transition: 250ms; } .sectionContainer:hover {filter: invert(${invertAll ? 0 : 1}); } .sectionContainer:active {opacity: 0.5; } .animationGridContainer {line-height: 1; } `)
 
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
@@ -2058,7 +2081,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     ? `perspective(500px) rotate3d(1,1,0.5,${lineRotation()}deg)`
     : `rotate(${lineRotation()}deg)`
 
-  const fontStyle = prb(italicRate) ? 'font-style:italic;' : ''
+  const fontStyle = prb(italicRate) ? 'font-style: italic;' : ''
 
   const borderWidth = min(rSpan, cSpan) * .05
   const rotateColor = prb(rotateColorPrb) ? 'fullColorRotate' : ''
@@ -2076,7 +2099,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
     withBgAnimation(child, rSpan, cSpan),
     {
       class: classes,
-      style: `border-style:${borderStyle};${showBorder ? `border-width:${borderWidth}vmin;box-sizing:border-box;` :'border-width:0;'} grid-column:span ${cSpan};grid-row:span ${rSpan};${bgProp}${(hideBg ? 'none;' :bgColor)};color:${txtColor};${fontStyle} transform:${rotation};animation-delay:-${rnd(5)}s;animation-direction:${rotateColor ? 'normal' :sectionAnimationDirection()};animation-duration:${rotateColor ? '25' : sectionAnimationDuration()}s;`
+      style: `border-style: ${borderStyle}; ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'} grid-column: span ${cSpan}; grid-row: span ${rSpan}; ${bgProp}${(hideBg ? 'none;' : bgColor)}; color: ${txtColor}; ${fontStyle} transform: ${rotation}; animation-delay: -${rnd(5)}s; animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()}; animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s; `
     }
   )
   const childContent = getContent(child)
@@ -2187,7 +2210,7 @@ function marqueeContainter(rSpan, cSpan, contentOverride=false) {
   let emojiStyle = ''
 
   if (rotateEmoji) {
-    emojiStyle = 'transform:rotate(90deg);display:inline-block;'
+    emojiStyle = 'transform: rotate(90deg); display: inline-block;'
   }
 
   if (
@@ -2301,7 +2324,7 @@ function getFontSize(txt, rSpan, cSpan) {
   const charCols = adjustCharLength(longestWord)
   const charRows = adjustCharLength(txt)/charCols
 
-  return `calc(min(${rShare/charRows}*100vh,${cShare/charCols}*100vw))`
+  return `calc(min(${rShare/charRows} * 100vh, ${cShare/charCols} * 100vw))`
 }
 
 
@@ -2398,7 +2421,7 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
     {
       class: 'animationContainer' + (ignoreCharAnimation ? ' emojiShadow' : ''),
       'data-h': txtH,
-      style: `height:${100*rSpan/rows}vh;font-size:${fontSize};${getShadow(txtH, !ignoreCharAnimation)} text-align:center;display:flex;align-items:center;justify-content:center;`,
+      style: `height: ${100*rSpan/rows}vh; font-size: ${fontSize}; ${getShadow(txtH, !ignoreCharAnimation)} text-align: center; display: flex; align-items: center; justify-content: center; `,
     }
   )
 
@@ -2493,7 +2516,7 @@ function animationGridContainer(rSpan, cSpan, contentOverride=false) {
     {
       class: 'animationGridContainer emojiShadow',
       'data-h': txtH,
-      style: `font-size:${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;height:${100*rSpan/rows}vh;width:${100*cSpan/cols}vw;display:grid;align-items:center;justify-items:center;grid-template-rows:repeat(${r}, 1fr);grid-template-columns:repeat(${c}, 1fr);${getShadow(txtH, false)}`,
+      style: `font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin; height: ${100*rSpan/rows}vh; width: ${100*cSpan/cols}vw; display: grid; align-items: center; justify-items: center; grid-template-rows: repeat(${r}, 1fr); grid-template-columns: repeat(${c}, 1fr); ${getShadow(txtH, false)} `,
     }
   )
 
@@ -2690,7 +2713,7 @@ function flexSection(rowCells, colCells, contentOverride=false) {
   return $.section(
     sections,
     {
-      style: `width:${100*colCells/cols}vw;height:${100*rowCells/rows}vh;overflow:hidden;grid-row:span ${rowCells};grid-column:span ${colCells};display:grid;grid-template-rows:repeat(${rowCells}, 1fr);grid-template-columns:repeat(${colCells}, 1fr);`
+      style: `width: ${100*colCells/cols}vw; height: ${100*rowCells/rows}vh; overflow: hidden; grid-row: span ${rowCells}; grid-column: span ${colCells}; display: grid; grid-template-rows: repeat(${rowCells}, 1fr); grid-template-columns: repeat(${colCells}, 1fr); `
     }
   )
 }
@@ -2702,8 +2725,8 @@ function generateMain(id, contentOverride=false) {
     flexSection(rows, cols, contentOverride),
     {
       id: `main`,
-      class: `projection-plane-${id}`,
-      style: `height:100vh;width:100vw;overflow:hidden;display:grid;grid-template-rows:repeat(${rows}, 1fr);grid-template-columns:repeat(${cols}, 1fr);`
+      class: `projection-page-${id}`,
+      style: `height: 100vh; width: 100vw; overflow: hidden; display: grid; grid-template-rows: repeat(${rows}, 1fr); grid-template-columns: repeat(${cols}, 1fr); `
     }
   )
 }
@@ -2890,7 +2913,7 @@ window.onload = () => {
     }
 
     else if (key === 'ArrowDown') {
-      selectVoice(getDefaultVoiceIx())
+      selectVoice(0)
     }
   }
   document.onkeydown = e => keyevent(e.key)
@@ -2906,4 +2929,6 @@ window.onload = () => {
   }
 }
 
-
+function help() {
+  console.log('Keys:\n~ 0-7 => View alternate page\n~ left/right/down => Switch voice\nQuery Params:\n~ voice => Override default voice\n~ voiceLang => Override default voiceLang')
+}

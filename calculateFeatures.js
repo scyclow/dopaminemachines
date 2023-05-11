@@ -255,12 +255,6 @@ let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   || false
 )
 
-let ACTIVE_VOICE_IX = ls.get('__DOPAMINE_VOICE__') || null
-if (queryParams.voice) {
-  ACTIVE_VOICE_IX = Number(queryParams.voice)
-  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
-}
-
 
 const speed = prb(0.05) ? 100 : 3
 
@@ -704,6 +698,11 @@ css(`
   }
   .invertAll {
     filter: invert(1);
+  }
+
+  ::selection {
+    color: #fff;
+    background-color: #000;
   }
 `)
 
@@ -1249,16 +1248,42 @@ function singleSound() {
 
 
 let voices
+let ACTIVE_VOICE_IX = 0
+const filterVoices = (voices) => {
+  const matchingVoiceLang = v => v.lang && v.lang.includes(queryParams.voiceLang || 'en-US')
+  try {
 
-const getDefaultVoiceIx = () => voices.filter(v => v.lang && v.lang.includes('en')[0] || 0)
+    let langVoices = voices.filter(matchingVoiceLang)
+    langVoices = langVoices.length ? langVoices : voices
+
+    let defaultVoice = queryParams.voice
+      ? voices.find(v => v.voiceURI.toLowerCase().includes(queryParams.voice.toLowerCase()))
+      : voices.find(v => v.default)
+
+    if (!matchingVoiceLang(defaultVoice)) defaultVoice = voices.find(matchingVoiceLang)
+
+    return queryParams.voice || !queryParams.voiceLang
+      ? [defaultVoice, ...langVoices.slice(1)]
+      : langVoices
+
+  } catch (e) {
+    return voices
+  }
+}
+
+function selectVoice(v) {
+  ACTIVE_VOICE_IX = voices.length && (v % voices.length)
+  console.log('VOICE SELECTED:', voices[ACTIVE_VOICE_IX].voiceURI)
+}
+
 const getVoices = () => {
   try {
+    window.speechSynthesis.cancel()
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
       else {
-        ACTIVE_VOICE_IX = ACTIVE_VOICE_IX || getDefaultVoiceIx()
-        if (ACTIVE_VOICE_IX === -1) ACTIVE_VOICE_IX = 0
+        voices = filterVoices(voices)
       }
     }, 200)
   } catch(e) {
@@ -1267,14 +1292,9 @@ const getVoices = () => {
 }
 getVoices()
 
-function selectVoice(v) {
-  ACTIVE_VOICE_IX = v % voices.length
-  console.log('VOICE SELECTED:', ACTIVE_VOICE_IX)
-  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
-}
-
 let utteranceQueue = []
 let utterancePriority = null
+let activeUtterance
 
 const triggerUtterance = () => {
   if (PAUSED) {
@@ -1293,10 +1313,10 @@ const triggerUtterance = () => {
   }
 
   if (!txt) return
+  activeUtterance = txt
 
   txt.volume = 0.88
-  txt.voice = voices[ACTIVE_VOICE_IX||0]
-
+  txt.voice = voices[ACTIVE_VOICE_IX]
 
   if (OVERDRIVE) {
     txt.pitch = sample(MAJOR_SCALE)
@@ -1315,11 +1335,15 @@ const triggerUtterance = () => {
     txt.rate = 1
   }
 
-  window.speechSynthesis.speak(txt)
-
   txt.onend = () => {
     if (utteranceQueue.length) triggerUtterance()
   }
+
+  txt.addEventListener('error', (e) => {
+    console.error('SpeechSynthesisUtterance error', e)
+  })
+
+  window.speechSynthesis.speak(txt)
 }
 
 const stopUtter = txt => {
@@ -1337,7 +1361,7 @@ const utter = (txt, t=1, i=7) => {
     utterancePriority = a
     if (!startingQueue) triggerUtterance()
   } catch (b) {
-
+    console.log(b)
   }
 }
 
@@ -2159,7 +2183,8 @@ const dealsText = [
   'MORE',
   'MORE IS MORE',
   'I WANT MORE',
-  'SATISFACTION GUARANTEED'
+  'SATISFACTION GUARANTEED',
+  'SUPERSIZE'
 ]
 
 const cashText = [

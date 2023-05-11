@@ -901,6 +901,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: SUPERSIZE",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: SUPERSTAR",
         "type": "boolean"
     },

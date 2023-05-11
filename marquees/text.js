@@ -161,7 +161,8 @@ const dealsText = [
   'MORE',
   'MORE IS MORE',
   'I WANT MORE',
-  'SATISFACTION GUARANTEED'
+  'SATISFACTION GUARANTEED',
+  'SUPERSIZE'
 ]
 
 const cashText = [

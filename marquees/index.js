@@ -4,7 +4,7 @@ function generateMain(id, contentOverride=false) {
     flexSection(rows, cols, contentOverride),
     {
       id: `main`,
-      class: `projection-plane-${id}`,
+      class: `projection-page-${id}`,
       style: `
         height: 100vh;
         width: 100vw;
@@ -199,7 +199,7 @@ window.onload = () => {
     }
 
     else if (key === 'ArrowDown') {
-      selectVoice(getDefaultVoiceIx())
+      selectVoice(0)
     }
   }
   document.onkeydown = e => keyevent(e.key)
@@ -215,16 +215,6 @@ window.onload = () => {
   }
 }
 
-/*
-D ownload HTML
-O verdrive
-P ause
-A nhedonic Mode
-M ouse Hide
-I
-N o distraction mode (live view only)
-E moji Toggle
-
-
-Fullscreen
-*/
+function help() {
+  console.log('Keys:\n~ 0-7 => View alternate page\n~ left/right/down => Switch voice\nQuery Params:\n~ voice => Override default voice\n~ voiceLang => Override default voiceLang')
+}

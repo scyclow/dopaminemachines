@@ -14,12 +14,6 @@ let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
   || false
 )
 
-let ACTIVE_VOICE_IX = ls.get('__DOPAMINE_VOICE__') || null
-if (queryParams.voice) {
-  ACTIVE_VOICE_IX = Number(queryParams.voice)
-  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
-}
-
 
 const speed = prb(0.05) ? 100 : 3
 
@@ -463,5 +457,10 @@ css(`
   }
   .invertAll {
     filter: invert(1);
+  }
+
+  ::selection {
+    color: #fff;
+    background-color: #000;
   }
 `)

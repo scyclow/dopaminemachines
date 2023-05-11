@@ -540,16 +540,41 @@ function singleSound() {
 
 
 let voices
+let ACTIVE_VOICE_IX = 0
+const filterVoices = (voices) => {
+  const matchingVoiceLang = v => v.lang && v.lang.includes(queryParams.voiceLang || 'en-US')
+  try {
 
-const getDefaultVoiceIx = () => voices.filter(v => v.lang && v.lang.includes('en')[0] || 0)
+    let langVoices = voices.filter(matchingVoiceLang)
+    langVoices = langVoices.length ? langVoices : voices
+
+    let defaultVoice = queryParams.voice
+      ? voices.find(v => v.voiceURI.toLowerCase().includes(queryParams.voice.toLowerCase()))
+      : voices.find(v => v.default)
+
+    if (!matchingVoiceLang(defaultVoice)) defaultVoice = voices.find(matchingVoiceLang)
+
+    return queryParams.voice || !queryParams.voiceLang
+      ? [defaultVoice, ...langVoices.slice(1)]
+      : langVoices
+
+  } catch (e) {
+    return voices
+  }
+}
+
+function selectVoice(v) {
+  ACTIVE_VOICE_IX = voices.length && (v % voices.length)
+  console.log('VOICE SELECTED:', voices[ACTIVE_VOICE_IX].voiceURI)
+}
+
 const getVoices = () => {
   try {
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
       else {
-        ACTIVE_VOICE_IX = ACTIVE_VOICE_IX || getDefaultVoiceIx()
-        if (ACTIVE_VOICE_IX === -1) ACTIVE_VOICE_IX = 0
+        voices = filterVoices(voices)
       }
     }, 200)
   } catch(e) {
@@ -558,14 +583,9 @@ const getVoices = () => {
 }
 getVoices()
 
-function selectVoice(v) {
-  ACTIVE_VOICE_IX = v % voices.length
-  console.log('VOICE SELECTED:', ACTIVE_VOICE_IX)
-  ls.set('__DOPAMINE_VOICE__', ACTIVE_VOICE_IX)
-}
-
 let utteranceQueue = []
 let utterancePriority = null
+let activeUtterance
 
 const triggerUtterance = () => {
   if (PAUSED) {
@@ -584,10 +604,10 @@ const triggerUtterance = () => {
   }
 
   if (!txt) return
+  activeUtterance = txt
 
   txt.volume = 0.88
-  txt.voice = voices[ACTIVE_VOICE_IX||0]
-
+  txt.voice = voices[ACTIVE_VOICE_IX]
 
   if (OVERDRIVE) {
     txt.pitch = sample(MAJOR_SCALE)
@@ -606,10 +626,26 @@ const triggerUtterance = () => {
     txt.rate = 1
   }
 
-  window.speechSynthesis.speak(txt)
-
   txt.onend = () => {
     if (utteranceQueue.length) triggerUtterance()
+  }
+
+  txt.addEventListener('error', (e) => {
+    console.error('SpeechSynthesisUtterance error', e)
+  })
+
+  window.speechSynthesis.speak(txt)
+  setTimeout(() => rescueSS(txt), 6000)
+}
+
+let isRescuing
+function rescueSS(txt) {
+  if (isRescuing) return
+  if (activeUtterance === txt) {
+    isRescuing = true
+    window.speechSynthesis.cancel()
+    window.speechSynthesis.speak(txt)
+    isRescuing = false
   }
 }
 
@@ -619,15 +655,17 @@ const stopUtter = txt => {
 }
 
 const utter = (txt, t=1, i=7) => {
+  const _t = txt.toLowerCase()
   try {
-    let a = new window.SpeechSynthesisUtterance(txt.toLowerCase())
     const startingQueue = utteranceQueue.length
     times(t, () => {
-      utteranceQueue.push(a)
+      utteranceQueue.push(
+        new window.SpeechSynthesisUtterance(_t)
+      )
     })
-    utterancePriority = a
+    utterancePriority = new window.SpeechSynthesisUtterance(_t)
     if (!startingQueue) triggerUtterance()
-  } catch (b) {
-
+  } catch (e) {
+    console.log(e)
   }
 }
