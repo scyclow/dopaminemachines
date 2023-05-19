@@ -1278,7 +1278,6 @@ function selectVoice(v) {
 
 const getVoices = () => {
   try {
-    window.speechSynthesis.cancel()
     voices = window.speechSynthesis.getVoices()
     setTimeout(() => {
       if (!voices.length) getVoices()
@@ -1344,6 +1343,18 @@ const triggerUtterance = () => {
   })
 
   window.speechSynthesis.speak(txt)
+  setTimeout(() => rescueSS(txt), 6000)
+}
+
+let isRescuing
+function rescueSS(txt) {
+  if (isRescuing) return
+  if (activeUtterance === txt) {
+    isRescuing = true
+    window.speechSynthesis.cancel()
+    window.speechSynthesis.speak(txt)
+    isRescuing = false
+  }
 }
 
 const stopUtter = txt => {
@@ -1352,16 +1363,18 @@ const stopUtter = txt => {
 }
 
 const utter = (txt, t=1, i=7) => {
+  const _t = txt.toLowerCase()
   try {
-    let a = new window.SpeechSynthesisUtterance(txt.toLowerCase())
     const startingQueue = utteranceQueue.length
     times(t, () => {
-      utteranceQueue.push(a)
+      utteranceQueue.push(
+        new window.SpeechSynthesisUtterance(_t)
+      )
     })
-    utterancePriority = a
+    utterancePriority = new window.SpeechSynthesisUtterance(_t)
     if (!startingQueue) triggerUtterance()
-  } catch (b) {
-    console.log(b)
+  } catch (e) {
+    console.log(e)
   }
 }
 

@@ -37,4 +37,4 @@ Controls:
 
 [Left/Right/Down] 🗣 Change Voice
 
-URL COMMANDS: `` `${url}?text=${encodeURI('FIRST OVERRIDE,SECOND OVERRIDE')}&emojis=${encodeURI('🦞,🐙')}&keys=a,i&voice=0`` `
+URL COMMANDS: `` `${url}?text=${encodeURI('FIRST OVERRIDE,SECOND OVERRIDE')}&emojis=${encodeURI('🦞,🐙')}&keys=a,i&voice=daniel`` `

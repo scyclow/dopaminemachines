@@ -640,7 +640,7 @@ const triggerUtterance = () => {
 
 let isRescuing
 function rescueSS(txt) {
-  if (isRescuing) return
+  if (isRescuing || !utteranceQueue.some(u => u.text === txt.text) || PAUSED) return
   if (activeUtterance === txt) {
     isRescuing = true
     window.speechSynthesis.cancel()
