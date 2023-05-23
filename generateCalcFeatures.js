@@ -46,8 +46,9 @@ const calcFeatures = `
     'ZigZag'
 
 
+  const shadowLetters = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
 
-  features['Shadow Style'] = shadowType
+  features['Shadow Style'] = shadowLetters[shadowType]
   features['Font'] = fontFamily
   features['Borders'] = showBorder ? borderStyle : 'none'
   features['Askew'] = freeFloating

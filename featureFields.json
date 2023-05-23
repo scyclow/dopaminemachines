@@ -57,16 +57,17 @@
         "name": "Shadow Style",
         "type": "enum",
         "options": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I"
         ]
+
     },
     {
         "name": "Font Weight",
@@ -465,6 +466,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: DOPAMINE MACHINE",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: DOPAMINE RUSH",
         "type": "boolean"
     },
@@ -681,6 +686,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: LIGHTNING ROUND",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: LIKE",
         "type": "boolean"
     },
@@ -737,6 +746,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: MONEY MAKING OPPORTUNITY",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: MORE",
         "type": "boolean"
     },
@@ -774,6 +787,10 @@
     },
     {
         "name": "_Content: NOT FINANCIAL ADVICE",
+        "type": "boolean"
+    },
+    {
+        "name": "_Content: OBSESSION",
         "type": "boolean"
     },
     {

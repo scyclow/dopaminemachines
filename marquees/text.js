@@ -182,7 +182,8 @@ const cashText = [
   'GET RICH QUICK',
   `YIELD EXPLOSION`,
   'TREASURE TROVE',
-  'PROFITS'
+  'PROFITS',
+  'MONEY MAKING OPPORTUNITY',
 ]
 
 const sexyText = [
@@ -200,6 +201,7 @@ const sexyText = [
   'ECSTASY',
   'LUST',
   'DESIRE',
+  'OBSESSION',
 ]
 
 const fomo = [
@@ -261,7 +263,8 @@ const excitingText = [
   `LET'S GO`,
   'FRENZY',
   'WILD',
-  'DELIGHTFUL'
+  'DELIGHTFUL',
+  'DOPAMINE MACHINE',
 ]
 
 const funText = [
@@ -361,6 +364,7 @@ const sportsText = [
   'TRIPLE CROWN',
   'ALL STAR',
   'SUPERSTAR',
+  'LIGHTNING ROUND',
 ]
 
 

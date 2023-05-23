@@ -2217,7 +2217,8 @@ const cashText = [
   'GET RICH QUICK',
   `YIELD EXPLOSION`,
   'TREASURE TROVE',
-  'PROFITS'
+  'PROFITS',
+  'MONEY MAKING OPPORTUNITY',
 ]
 
 const sexyText = [
@@ -2235,6 +2236,7 @@ const sexyText = [
   'ECSTASY',
   'LUST',
   'DESIRE',
+  'OBSESSION',
 ]
 
 const fomo = [
@@ -2296,7 +2298,8 @@ const excitingText = [
   `LET'S GO`,
   'FRENZY',
   'WILD',
-  'DELIGHTFUL'
+  'DELIGHTFUL',
+  'DOPAMINE MACHINE',
 ]
 
 const funText = [
@@ -2396,6 +2399,7 @@ const sportsText = [
   'TRIPLE CROWN',
   'ALL STAR',
   'SUPERSTAR',
+  'LIGHTNING ROUND',
 ]
 
 
@@ -3397,7 +3401,9 @@ function flexSection(rowCells, colCells, contentOverride=false) {
 
 
 
-  features['Shadow Style'] = shadowType
+  const shadowLetters = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+
+  features['Shadow Style'] = shadowLetters[shadowType]
   features['Font'] = fontFamily
   features['Borders'] = showBorder ? borderStyle : 'none'
   features['Askew'] = freeFloating

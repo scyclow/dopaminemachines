@@ -161,12 +161,24 @@ const addMetaTag = (args) => {
   document.head.appendChild(meta)
 }
 
+const addThumbnail = (fill) => {
+  const existing = document.getElementById('favicon')
+  if (existing) document.head.removeChild(existing)
+  const link = document.createElement('link')
+  link.href = `data:image/svg+xml;base64,${btoa(
+    `<svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="1" height="1" fill="${fill}"></rect></svg>`
+  )}`
+  link.rel = 'shortcut icon'
+  link.type = 'image/svg+xml'
+  link.id = 'favicon'
+  document.head.appendChild(link)
+}
+
 function css(style) {
   const s = document.createElement('style')
   s.innerHTML = style
   document.head.appendChild(s)
 }
-
 
 function setMetadata(usedContent) {
   $html.translate = false
@@ -179,7 +191,15 @@ function setMetadata(usedContent) {
 
   addMetaTag({ name: 'google', content: 'notranslate' })
   addMetaTag({ name: 'description', content: title })
-  addMetaTag({ name: 'keywords', content: usedContent.join(', ') })
+  addMetaTag({ name: 'keywords', content: usedContent.join(', ').toLowerCase() })
+
+  setRunInterval(() => {
+    addThumbnail(
+      BW
+        ? prb(0.5) ? '#000' : '#fff'
+        : getShadowColor(chooseHue())
+    )
+  }, 1000)
 
   console.log(title)
 }
@@ -1652,7 +1672,8 @@ const cashText = [
   'GET RICH QUICK',
   `YIELD EXPLOSION`,
   'TREASURE TROVE',
-  'PROFITS'
+  'PROFITS',
+  'MONEY MAKING OPPORTUNITY',
 ]
 
 const sexyText = [
@@ -1670,6 +1691,7 @@ const sexyText = [
   'ECSTASY',
   'LUST',
   'DESIRE',
+  'OBSESSION',
 ]
 
 const fomo = [
@@ -1731,7 +1753,8 @@ const excitingText = [
   `LET'S GO`,
   'FRENZY',
   'WILD',
-  'DELIGHTFUL'
+  'DELIGHTFUL',
+  'DOPAMINE MACHINE',
 ]
 
 const funText = [
@@ -1831,6 +1854,7 @@ const sportsText = [
   'TRIPLE CROWN',
   'ALL STAR',
   'SUPERSTAR',
+  'LIGHTNING ROUND',
 ]
 
 
