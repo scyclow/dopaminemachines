@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dopamine Machines</title>
+
+
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      color: #fff;
+    }
+
+    body {
+      background: #000;
+    }
+
+    #heroGrid {
+      height: 100vh;
+      width: 100vw;
+      display: grid;
+      grid-template-rows: repeat(40, 1fr);
+      grid-template-columns: repeat(40, 1fr);
+    }
+
+    #heroGrid > * {
+      overflow: hidden;
+/*      border-top: 1px solid;
+      border-bottom: 1px solid;*/
+    }
+
+    #marquee1 {
+      align-self: center;
+      grid-column: span 40;
+      grid-row: span 1;
+    }
+
+    #marquee2 {
+      align-self: center;
+      grid-column: span 40;
+      grid-row-start: -2;
+    }
+
+    #marquee3 {
+      grid-row: 2/-2;
+      grid-column: span 1;
+    }
+
+    #marquee4 {
+      grid-row: 2/-2;
+      grid-column: span 1;
+      grid-column-start: -2;
+    }
+
+    #marquee5 {
+      align-self: center;
+      grid-column: 2/-2;
+      grid-row: span 1;
+    }
+
+    #marquee6 {
+      align-self: center;
+      grid-column: 2/-2;
+      grid-row: span 1;
+      grid-row-start: -3;
+    }
+
+    #marquee7 {
+      grid-row: 3/-3;
+      grid-column: span 1;
+    }
+
+    #marquee8 {
+      grid-row: 3/-3;
+      grid-column: span 1;
+      grid-column-start: -3;
+    }
+
+    #marquee3, #marquee4, #marquee7, #marquee8 {
+      font-size: 2.5vw;
+    }
+
+    #marquee1, #marquee2, #marquee5, #marquee6 {
+      font-size: 2.5vh;
+    }
+
+    #heroText {
+      grid-column: 3/-3;
+      grid-row: 3/20;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+    }
+
+    #heroText h1 {
+      font-size: calc(min(0.22 * 100vh, 0.1 * 100vw));
+      text-align:  center;
+    }
+
+  </style>
+</head>
+
+<body>
+  <section id="heroGrid">
+    <div id="marquee1"></div>
+    <div id="marquee2"></div>
+    <div id="marquee3"></div>
+    <div id="marquee4"></div>
+    <div id="marquee5"></div>
+    <div id="marquee6"></div>
+    <div id="marquee7"></div>
+    <div id="marquee8"></div>
+
+    <div id="heroText">
+      <h1>DOPAMINE MACHINES</h1>
+    </div>
+  </section>
+
+  <main>
+    stuff
+    stuff
+    stuff
+    stuff
+    stuff
+  </main>
+</body>
+
+
+<script type="text/javascript">
+let hash = '0x'
+for (let i = 0; i < 64; i++) {
+  hash += Math.floor(Math.random() * 16).toString(16)
+}
+const tokenData = { hash, tokenId: 0 }
+</script>
+<script src="../dev/utils.js"></script>
+<script src="../dev/$.js"></script>
+<script src="./components.js"></script>
+
+<script type="text/javascript">
+
+
+
+
+  $.render(
+    document.getElementById('marquee1'),
+    marquee($.span('6/21/2023'), { duration: 40, direction: -1})
+  )
+
+  $.render(
+    document.getElementById('marquee2'),
+    marquee($.span('1.99 ETH -> 0.0899 ETH'), { duration: 40})
+  )
+
+  $.render(
+    document.getElementById('marquee5'),
+    marquee($.span('2PM EDT'), { duration: 40})
+  )
+
+  $.render(
+    document.getElementById('marquee6'),
+    marquee($.span('30 MINUTE DUTCH AUCTION'), { duration: 40, direction: -1})
+  )
+
+  $.render(
+    document.getElementById('marquee3'),
+    marquee($.span('COMING SOON'), { duration: 40, rotate: 90, })
+  )
+
+  $.render(
+    document.getElementById('marquee4'),
+    marquee($.span('THIS NFT SELLS ITSELF'), { duration: 40, rotate: 270, })
+  )
+
+
+  $.render(
+    document.getElementById('marquee7'),
+    marquee($.span('ART BLOCKS CURATED'), { duration: 70, rotate: 270, })
+  )
+
+  $.render(
+    document.getElementById('marquee8'),
+    marquee($.span('777 EDITIONS'), { duration: 40, rotate: 90, })
+  )
+
+
+</script>
+
+</html>

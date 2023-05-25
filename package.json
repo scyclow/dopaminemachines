@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "split": "split -b 20k marquees/min.js minified",
+    "split": "split -b 20k dev/min.js minified",
     "bld": "node generateFeatureFields.js && node generateCalcFeatures.js && node preMinify.js"
   },
   "repository": {
