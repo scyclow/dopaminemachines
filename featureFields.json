@@ -67,7 +67,6 @@
             "H",
             "I"
         ]
-
     },
     {
         "name": "Font Weight",
@@ -1387,10 +1386,6 @@
     },
     {
         "name": "_Content: 🐐",
-        "type": "boolean"
-    },
-    {
-        "name": "_Content: 🐭",
         "type": "boolean"
     },
     {

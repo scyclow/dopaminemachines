@@ -492,7 +492,7 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
 
 
 function getEmojiGrid(rSpan, cSpan) {
-  const divisor = rndint(1, min(rSpan/2, cSpan/2))
+  const divisor = rndint(1, min(rSpan/2, cSpan/2)) || 1
   return [
     max(1, int(rSpan/divisor)),
     max(1, int(cSpan/divisor))

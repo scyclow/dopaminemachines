@@ -1,12 +1,12 @@
 const fs = require('fs')
 
-const utils = fs.readFileSync('./marquees/utils.js', 'utf8')
-const mock$ = fs.readFileSync('./marquees/mock$.js', 'utf8')
-const globals = fs.readFileSync('./marquees/globals.js', 'utf8')
-const sound = fs.readFileSync('./marquees/sound.js', 'utf8')
-const components = fs.readFileSync('./marquees/components.js', 'utf8')
-const text = fs.readFileSync('./marquees/text.js', 'utf8')
-const sections = fs.readFileSync('./marquees/sections.js', 'utf8')
+const utils = fs.readFileSync('./dev/utils.js', 'utf8')
+const mock$ = fs.readFileSync('./dev/mock$.js', 'utf8')
+const globals = fs.readFileSync('./dev/globals.js', 'utf8')
+const sound = fs.readFileSync('./dev/sound.js', 'utf8')
+const components = fs.readFileSync('./dev/components.js', 'utf8')
+const text = fs.readFileSync('./dev/text.js', 'utf8')
+const sections = fs.readFileSync('./dev/sections.js', 'utf8')
 const calcFeatures = `
   const main = $.main(
     flexSection(rows, cols),

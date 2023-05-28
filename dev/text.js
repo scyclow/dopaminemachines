@@ -73,7 +73,7 @@ const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍�
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const circusEmojis = emojis(`🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
-const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
+const hedonicTreadmill = [...emojis(`🏃`), ...miscFood, ...symbols]
 const sportsEmojis = emojis(`🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪`)
 const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬 🌳`)
 
@@ -404,7 +404,7 @@ const emojiTextRelationships = {
     'JUICY': fruit1,
     'ALL NATURAL': fruit1,
     'PURE ENERGY': energy,
-    `RUN, DON'T WALK`: emojis(`🏃`),
+    "RUN, DON'T WALK": emojis(`🏃`),
     'MIND = BLOWN': emojis(`🤯`),
     '100%': emojis(`💯`),
     'GREATEST OF ALL TIME': emojis(`🐐`),

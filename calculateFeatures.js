@@ -1348,7 +1348,7 @@ const triggerUtterance = () => {
 
 let isRescuing
 function rescueSS(txt) {
-  if (isRescuing) return
+  if (isRescuing || !utteranceQueue.some(u => u.text === txt.text) || PAUSED) return
   if (activeUtterance === txt) {
     isRescuing = true
     window.speechSynthesis.cancel()
@@ -2108,7 +2108,7 @@ const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍�
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const circusEmojis = emojis(`🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
-const hedonicTreadmill = [...emojis(`🐭 🏃`), ...miscFood, ...symbols]
+const hedonicTreadmill = [...emojis(`🏃`), ...miscFood, ...symbols]
 const sportsEmojis = emojis(`🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪`)
 const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬 🌳`)
 
@@ -2439,7 +2439,7 @@ const emojiTextRelationships = {
     'JUICY': fruit1,
     'ALL NATURAL': fruit1,
     'PURE ENERGY': energy,
-    `RUN, DON'T WALK`: emojis(`🏃`),
+    "RUN, DON'T WALK": emojis(`🏃`),
     'MIND = BLOWN': emojis(`🤯`),
     '100%': emojis(`💯`),
     'GREATEST OF ALL TIME': emojis(`🐐`),
@@ -3091,7 +3091,7 @@ function animationContainer(rSpan, cSpan, contentOverride=false) {
 
 
 function getEmojiGrid(rSpan, cSpan) {
-  const divisor = rndint(1, min(rSpan/2, cSpan/2))
+  const divisor = rndint(1, min(rSpan/2, cSpan/2)) || 1
   return [
     max(1, int(rSpan/divisor)),
     max(1, int(cSpan/divisor))
@@ -3399,7 +3399,6 @@ function flexSection(rowCells, colCells, contentOverride=false) {
     bgType === 1 ? 'Empty' :
     bgType === 2 ? 'Gradient' :
     'ZigZag'
-
 
 
   const shadowLetters = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
