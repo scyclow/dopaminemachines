@@ -21,7 +21,7 @@ _WARNING: Dopamine Machines contain visual effects that may induce seizures in i
 
 _None of the emojis or text contained within a Dopamine Machine constitutes financial advice. If you suspect you may have a gambling problem, please contact the National Problem Gambling Helpline Network at 1-800-522-4700. By using Dopamine Machines, you acknowledge and accept these potential risks and agree that the Artist shall not be held liable for any damages or injuries resulting from such use._
 
-_All Dopamine Machiness are presented "AS IS" without any warrenty whatsoever, either express or implied. While each resultant HTML Document is intended to work on all devices, sizes, and aspect ratios, the Artist makes no guarantees related to the consistency of appearance and functionality in obsolete and future web browsers._
+_All Dopamine Machiness are presented "AS IS" without any warranty whatsoever, either express or implied. While each resultant HTML Document is intended to work on all devices, sizes, and aspect ratios, the Artist makes no guarantees related to the consistency of appearance and functionality in obsolete and future web browsers._
 
 
 Controls:
