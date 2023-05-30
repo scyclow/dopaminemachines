@@ -153,7 +153,7 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
         if (notifyingTimeout) clearTimeout(notifyingTimeout)
       }
 
-      if (navigator.clipboard && window.innerWidth > 500) navigator.clipboard.writeText(childContent)
+      if (navigator.clipboard) navigator.clipboard.writeText(childContent)
 
       if (childContent.includes('FAST CASH')) setTimeout(() => window.open('http://fastcashmoneyplus.biz', '_blank'))
       if (triggersPopup) setTimeout(() => window.alert(childContent))
