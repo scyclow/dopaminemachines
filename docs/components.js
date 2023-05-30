@@ -183,8 +183,8 @@ css(`
   }
 
   @keyframes HPivot {
-    0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)}
-    50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)}
+    0%, 100% {transform: perspective(600px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)}
+    50% {transform: perspective(600px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)}
   }
 
   .vPivot {
@@ -541,7 +541,7 @@ function genericCharacterComponent(name, durMin, durMax) {
       }))
     }
 
-    const c = prb(0.5) ? [children.innerHTML] : children.innerHTML.split(' ')
+    const c = children.innerHTML.split(' ')
 
     return $.div(
       c.map(txt => $.div(
