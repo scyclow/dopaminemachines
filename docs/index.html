@@ -142,18 +142,18 @@
     }
 
     #infoMarquee1 {
-      grid-row: 2/-2;
+      grid-row: 1/-1;
       grid-column: span 2;
       overflow: hidden;
       font-size: 5vw;
-      color: #f06;
+      color: #f0f;
     }
     #infoMarquee2 {
-      grid-row: 2/-2;
+      grid-row: 1/-1;
       grid-column: -1/-3;
       font-size: 5vw;
       overflow: hidden;
-      color: #0ff;
+      color: #0f0;
     }
 
     .center {
@@ -226,6 +226,55 @@
   </section>
 
   <main>
+    <style type="text/css">
+      #preview {
+        display: grid;
+        grid-template-rows: repeat(40, 1fr);
+        grid-template-columns: repeat(40, 1fr);
+        overflow: hidden;
+      }
+      #preview h1 {
+        text-align: center;
+        margin: 2em;
+        font-size: 4vw;
+        text-shadow: 0.1em 0.1em 0 #f00, -0.1em -0.1em 0 #00f;
+      }
+
+      #preview a, #preview a:visited {
+        color: #fff;
+      }
+
+      #previewMarquee1 {
+        grid-row: 1/-1;
+        grid-column: span 2;
+        overflow: hidden;
+        font-size: 5vw;
+        color: #f06;
+      }
+      #previewMarquee2 {
+        grid-row: 1/-1;
+        grid-column: -1/-3;
+        font-size: 5vw;
+        overflow: hidden;
+        color: #0ff;
+      }
+
+      #previewLinks {
+        grid-row: span 40;
+        grid-column: 3/37;
+      }
+    </style>
+    <section id="preview">
+      <div id="previewMarquee1"></div>
+      <div id="previewLinks">
+        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+      </div>
+      <div id="previewMarquee2"></div>
+    </section>
 
     <style type="text/css">
       .info2 {
@@ -259,9 +308,9 @@
     </style>
 
     <section class="info2">
-      <div class="growShrink" style="animation-delay: -0s; font-size: 5em">🤩</div>
+      <div class="growShrink" style="animation-delay: -0s; font-size: 5em">🤑</div>
       <div class="growShrink" style="animation-delay: -0.25s">337 Emojis + Phrases!</div>
-      <div class="growShrink" style="animation-delay: -0.5s; font-size: 5em">💪</div>
+      <div class="growShrink" style="animation-delay: -0.5s; font-size: 5em">😂</div>
 
       <div class="growShrink" style="animation-delay: -0.75s">22 Animation Types!</div>
       <div class="growShrink" style="animation-delay: -1s; font-size: 5em">💥</div>
@@ -286,17 +335,17 @@
     <section style="background: linear-gradient(45deg, #ff0, #00f); border: 8px solid #f00; text-shadow: 0.1em 0.1em 0 #000;">
       <div id="marquee9" style="overflow: hidden; border-bottom: 8px solid #f00; margin: 0.25em 0"></div>
       <div class="center" style="margin: 3em 0; flex-direction: column;">
-        <h2 class="blink" style="animation-delay: -0.5s; font-size: 5vw;">💸💸💸💸💸💸</h2>
+        <h2 class="blink" style="animation-delay: -0.5s; font-size: 5vw;">🔥 🎁 🔥 🎁 🔥</h2>
         <h2 class="blink" style="margin: 1em 0; font-size: 5vw; animation-duration: 1s">FIRST 100 MINTS → FREE PRINT</h2>
 
-        <div class="blink" style="animation-delay: -1s; animation-duration: 4s; border: 8px solid #f0f">
-          <img style="max-width: 50vw; min-width: 250px; max-height: 70vh;" src="./test.jpg">
+        <div style="border: 8px solid #f0f">
+          <img style="max-width: 50vw; min-width: 250px; max-height: 70vh;" src="./rewards.png">
         </div>
-        <h2 class="blink" style="animation-delay: -0.75s; font-size: 5vw;">🤑🤑🤑🤑🤑</h2>
+        <h2 class="blink" style="animation-delay: -0.75s; font-size: 5vw;">🤩 WOW 🤩</h2>
         <h2 class="blink" style="margin: 1em 0; font-size: 5vw; animation-delay: -1s;">BUT WAIT, THERE'S MORE!!</h2>
         <h2 class="blink" style="animation-delay: -1.5s; font-size: 5vw;">🚀🚀🚀🚀</h2>
         <h2 class="blink" style="margin: 1em 0; font-size: 5vw; animation-delay: -2s;">ALL MINTS → 1 $FASTCASH</h2>
-        <h2 class="blink" style="animation-delay: -2.5s; font-size: 5vw;">🔥🔥🔥</h2>
+        <h2 class="blink" style="animation-delay: -2.5s; font-size: 5vw;">💸💸💸</h2>
       </div>
     </section>
 
@@ -381,15 +430,20 @@ const tokenData = { hash, tokenId: 0 }
 
 
 
-  const triggerSound = sirenSound({ duration: 1500 })
+  const triggerSound1 = sirenSound({ duration: 1500 })
+  const triggerSound2 = blinkCharSound({ duration: 1500 })
 
   let stopSound
 
   id('heroGrid').onclick = () => {
 
+    if (window.navigator) window.navigator.vibrate(50)
+
     const u = new window.SpeechSynthesisUtterance('dopamine machines. art blocks curated. 777 editions. june 21st 2023. 1pm eastern daylight time. 30 minute dutch auction. 1.99 eth to 0.0999 eth. responsive, interactive, and audio-visual NFTs! stevie p')
 
-    window.speechSynthesis.speak(u)
+    setTimeout(() => {
+      window.speechSynthesis.speak(u)
+    }, 4000)
 
     const setNotification = () => {
       notifyingTimeout = setTimeout(() => {
@@ -405,7 +459,7 @@ const tokenData = { hash, tokenId: 0 }
           'steviep',
         ]))
         setNotification()
-      }, rndint(100, 1000))
+      }, rndint(100, 5000))
     }
 
     Notification.requestPermission().then(p => {
@@ -415,7 +469,8 @@ const tokenData = { hash, tokenId: 0 }
     if (navigator.clipboard) navigator.clipboard.writeText('Dopamine Machines - 6/21 @ 1pm EDT - artblocks.io')
 
 
-    triggerSound()
+    triggerSound1()
+    triggerSound2()
   }
 
 
@@ -474,6 +529,17 @@ const tokenData = { hash, tokenId: 0 }
   $.render(
     id('infoMarquee2'),
     marquee($.span("THIS WON'T LAST"), { duration: 40, rotate: 270, })
+  )
+
+
+  $.render(
+    id('previewMarquee1'),
+    marquee($.span('PREVIEW'), { duration: 40, rotate: 90, })
+  )
+
+  $.render(
+    id('previewMarquee2'),
+    marquee($.span("PREVIEW"), { duration: 40, rotate: 270, })
   )
 
   $.render(
@@ -620,6 +686,64 @@ function sirenSound({ duration }, waveType='square', freqAdj=1) {
     }
   }
 }
+
+function blinkCharSound({duration}, seq=null) {
+  const sequence = sample([0, 1, 2])
+  const isSmooth = prb(0.5)
+  const twoTone = prb(0.1)
+
+  const baseFreq = sample(MAJOR_SCALE) * BASE_FREQ * chance(
+    [5, 1],
+    [3, 2],
+    [1, 0.5],
+    [1, 0.25],
+  )
+
+  const ttMult = sample([2, 1.5, 1.3333])
+  duration = duration ? map(duration, 750, 5000, 500, 2000) : rnd(500, 2000)
+  const interval = duration / 8
+
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource()
+    const src2 = createSource()
+
+    if (isSmooth) {
+      smoothGain(MAX_VOLUME*0.65)
+      if (twoTone) src2.smoothGain(MAX_VOLUME*0.65)
+    }
+
+    const stopInterval = setRunInterval((i) => {
+      if (!isSmooth) {
+        smoothGain(MAX_VOLUME*0.65)
+        if (twoTone) src2.smoothGain(MAX_VOLUME*0.65)
+      }
+
+      let ix
+      switch (sequence) {
+        case 0: ix = i%8; break
+        case 1: ix = abs(7 - i%8); break
+        case 2: ix = i%14 < 7 ? i%14 : abs(7 - i%7); break
+      }
+
+      const freq = MAJOR_SCALE[ix]
+
+      smoothFreq(baseFreq * freq)
+      if (twoTone) src2.smoothFreq(baseFreq * freq*ttMult)
+
+      if (!isSmooth) setTimeout(() => {
+        smoothGain(0, 0.04)
+         if (twoTone)  src2.smoothGain(0, 0.04)
+      }, interval*0.75)
+    }, interval)
+
+    return () => {
+      smoothGain(0, 0.04)
+      if (twoTone) src2.smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
 
 
 setRunInterval(() => {
