@@ -30,15 +30,15 @@ const calcFeatures = `
   }, {})
 
 
-  features['Layout Style'] =
+  features['Layout'] =
     layoutStyle === 1 ? 'Anything Goes' :
     layoutStyle === 4 ? 'Less is More' :
     layoutStyle === 2 || layoutStyle === 9 ? 'More is More' :
-    layoutStyle === 3 || layoutStyle === 5 ? 'Horizontal' :
-    layoutStyle === 6 ? 'Vertical' :
+    layoutStyle === 3 || layoutStyle === 5 ? 'Rows' :
+    layoutStyle === 6 ? 'Columns' :
     'Grid'
 
-  features['Background Style'] =
+  features['Background'] =
     hideBg ? 'Empty' :
     bgType === 0 || BW ? 'Solid' :
     bgType === 1 ? 'Empty' :
@@ -68,10 +68,10 @@ const calcFeatures = `
   features['Sections'] = sectionCount
   features['Marquees'] = marqueeCount
   features['Animations'] = animationCount
-  features['Grids'] = gridCount
+  features['Emoji Groups'] = gridCount
   features['Font Weight'] = fontWeight
   features['Full Hue Rotation'] = fullHueRotation
-  features['BG Boxes'] = bgAnimationCount
+  features['Box BGs'] = bgAnimationCount
   features['Starbursts'] = starburstCount
   features['Section Animation'] = !!sectionAnimation
 

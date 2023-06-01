@@ -1,18 +1,18 @@
 [
     {
-        "name": "Layout Style",
+        "name": "Layout",
         "type": "enum",
         "options": [
             "Anything Goes",
             "Less is More",
             "More is More",
-            "Horizontal",
-            "Vertical",
+            "Rows",
+            "Columns",
             "Grid"
         ]
     },
     {
-        "name": "Background Style",
+        "name": "Background",
         "type": "enum",
         "options": [
             "Empty",
@@ -78,7 +78,7 @@
         ]
     },
     {
-        "name": "BG Boxes",
+        "name": "Box BGs",
         "type": "boolean"
     },
     {
@@ -130,7 +130,7 @@
         "step": 1
     },
     {
-        "name": "Grids",
+        "name": "Emoji Groups",
         "type": "number",
         "max": 250,
         "min": 1,

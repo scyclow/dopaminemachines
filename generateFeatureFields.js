@@ -10,19 +10,19 @@ const content = Array.from(
 
 const features = [
   {
-    name: 'Layout Style',
+    name: 'Layout',
     type: 'enum',
     options: [
       'Anything Goes',
       'Less is More',
       'More is More',
-      'Horizontal',
-      'Vertical',
+      'Rows',
+      'Columns',
       'Grid'
     ],
   },
   {
-    name: 'Background Style',
+    name: 'Background',
     type: 'enum',
     options: [
       'Empty',
@@ -68,7 +68,7 @@ const features = [
     options: [100, 500, 900],
   },
   {
-    name: 'BG Boxes',
+    name: 'Box BGs',
     type: 'boolean',
   },
   {
@@ -120,7 +120,7 @@ const features = [
     step: 1,
   },
   {
-    name: 'Grids',
+    name: 'Emoji Groups',
     type: 'number',
     max: 250,
     min: 1,
