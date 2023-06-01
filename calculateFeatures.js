@@ -2501,9 +2501,9 @@ function sampleContent(contentOverride=false, onlyEmojis=false) {
   }
 
   if (showEmojis) {
-    sampledEmojiContent.push(mainContent)
+    sampledEmojiContent.push(replacementContent)
   } else {
-    sampledTextContent.push(mainContent)
+    sampledTextContent.push(replacementContent)
   }
 
   return [mainContent, replacementContent]
