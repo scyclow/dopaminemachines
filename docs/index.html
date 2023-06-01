@@ -7,7 +7,7 @@
   <meta name="google" content="notranslate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="Dopamine Machines. Art Blocks Curated. 777 Editions. June 21st 2023. 1pm Eastern Daylight Time. 30 minute Dutch Auction. 1.99 ETH to 0.0999 ETH. Responsive, Interactive, and Audio-Visual NFTs! steviep.">
+  <meta name="description" content="Dopamine Machines. Art Blocks Curated. 777 Editions. Wednesday June 21st 2023. 1pm Eastern Daylight Time. 30 minute Dutch Auction. 1.99 ETH to 0.0999 ETH. Responsive, Interactive, and Audio-Visual NFTs! steviep.">
   <meta name="keywords" content="dopamine machines, dopamine machine, dopamine, machine, nft, nfts, exciting, art, website, art blocks, crypto, fastcash, ethereum, steviep, steve pikelny, pikelny">
 
   <meta name="twitter:image" content="https://dopaminemachines.website/dm-thumbnail.png">
@@ -439,11 +439,11 @@ const tokenData = { hash, tokenId: 0 }
 
     if (window.navigator) window.navigator.vibrate(50)
 
-    const u = new window.SpeechSynthesisUtterance('dopamine machines. art blocks curated. 777 editions. june 21st 2023. 1pm eastern daylight time. 30 minute dutch auction. 1.99 eth to 0.0999 eth. responsive, interactive, and audio-visual NFTs! stevie p')
+    const u = new window.SpeechSynthesisUtterance('dopamine machines. art blocks curated. 777 editions. june 21st 2023. 1pm eastern daylight time. wednesday. 30 minute dutch auction. 1.99 eth to 0.0999 eth. responsive interactive and audio-visual NFTs! stevie p')
 
     setTimeout(() => {
       window.speechSynthesis.speak(u)
-    }, 4000)
+    }, 2000)
 
     const setNotification = () => {
       notifyingTimeout = setTimeout(() => {
@@ -482,7 +482,7 @@ const tokenData = { hash, tokenId: 0 }
 
   $.render(
     id('marquee2'),
-    marquee($.span('1PM EDT'), { duration: 40})
+    marquee($.span('WEDNESDAY'), { duration: 40})
   )
 
   $.render(
@@ -492,7 +492,7 @@ const tokenData = { hash, tokenId: 0 }
 
   $.render(
     id('marquee6'),
-    marquee($.span('6/21/23'), { duration: 40, direction: -1})
+    marquee($.span('6/21/23 @ 1PM EDT'), { duration: 60, direction: -1})
   )
 
   $.render(
