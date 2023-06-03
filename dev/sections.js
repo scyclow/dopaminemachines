@@ -24,6 +24,7 @@ css(`
   }
 `)
 
+SOUND_SAMPLE = []
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
 
@@ -161,6 +162,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   }
 
   sectionCount++
+
+  SOUND_SAMPLE.push(onclick)
 
   return container
 }

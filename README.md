@@ -34,6 +34,6 @@ Controls:
 [N] 🙈 No Distraction Mode (live-view only)
 [E] 🙃 Emoji Polyfill Toggle (with global twemoji injection)
 
-[Left/Right/Down] 🗣 Change Voice
+[⬅️/⬆️/➡️] 🗣 Change Voice
 
 URL COMMANDS: `` `${url}?text=${encodeURI('FIRST OVERRIDE,SECOND OVERRIDE')}&emojis=${encodeURI('🦞,🐙')}&keys=a,i&voice=daniel`` `

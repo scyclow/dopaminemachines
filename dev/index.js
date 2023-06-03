@@ -199,7 +199,17 @@ window.onload = () => {
     }
 
     else if (key === 'ArrowDown') {
+      window.speechSynthesis.cancel()
+      triggerUtterance()
+    }
+
+    else if (key === 'ArrowUp') {
       selectVoice(0)
+    }
+
+    else if (key === ' ') {
+      const s = sample(SOUND_SAMPLE)
+      if (s) s()
     }
   }
   document.onkeydown = e => keyevent(e.key)
@@ -216,5 +226,5 @@ window.onload = () => {
 }
 
 function help() {
-  console.log('Keys:\n~ 0-7 => View alternate page\n~ left/right/down => Switch voice\nQuery Params:\n~ voice => Override default voice\n~ voiceLang => Override default voiceLang')
+  console.log('Keys:\n~ 0-7 => View alternate page\n~ Left/Right/Up => Switch voice\n~ Down => Reset voice\n~ Space => ???\n\nQuery Params:\n~ voice => Override default voice\n~ voiceLang => Override default voiceLang')
 }

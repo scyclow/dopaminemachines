@@ -2054,6 +2054,7 @@ const adjustCharLength = (txt, pairedEmoji) => {
 }
 css(`.sectionContainer {overflow:hidden;display:flex;align-items:center;justify-content:center;user-select:none;cursor:pointer;transition:150ms;filter:invert(${invertAll ? 1 :0});transition:250ms;} .sectionContainer:hover {filter:invert(${invertAll ? 0 :1});} .sectionContainer:active {opacity:0.5;} .animationGridContainer {line-height:1;}`)
 
+SOUND_SAMPLE = []
 function createSound(animation, params, isGrid, extraDelay=0) {
   let fn
 
@@ -2179,6 +2180,8 @@ function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
   }
 
   sectionCount++
+
+  SOUND_SAMPLE.push(onclick)
 
   return container
 }
@@ -2948,7 +2951,17 @@ window.onload = () => {
     }
 
     else if (key === 'ArrowDown') {
+      window.speechSynthesis.cancel()
+      triggerUtterance()
+    }
+
+    else if (key === 'ArrowUp') {
       selectVoice(0)
+    }
+
+    else if (key === ' ') {
+      const s = sample(SOUND_SAMPLE)
+      if (s) s()
     }
   }
   document.onkeydown = e => keyevent(e.key)
@@ -2965,5 +2978,5 @@ window.onload = () => {
 }
 
 function help() {
-  console.log('Keys:\n~ 0-7 => View alternate page\n~ left/right/down => Switch voice\nQuery Params:\n~ voice => Override default voice\n~ voiceLang => Override default voiceLang')
+  console.log('Keys:\n~ 0-7 => View alternate page\n~ Left/Right/Up => Switch voice\n~ Down => Reset voice\n~ Space => ???\n\nQuery Params:\n~ voice => Override default voice\n~ voiceLang => Override default voiceLang')
 }
