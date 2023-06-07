@@ -246,7 +246,7 @@
 
       #preview iframe {
         margin: 1em auto;
-        box-shadow: 0.5em 0.5em 0 #f00, -0.5em -0.5em 0 #00f;
+        box-shadow: 0 0 5em #fff4bd;
         border: 0.25em solid #fff;
         max-width: 70vw;
       }
@@ -272,37 +272,77 @@
 
       #previewLinks {
         grid-row: span 40;
-        grid-column: 3/37;
+        grid-column: 3/39;
+      }
+
+      .controls h2 {
+        font-family: monospace !important;
+      }
+
+      button {
+        cursor: pointer;
       }
     </style>
     <section id="preview">
       <div id="previewMarquee1"></div>
       <div id="previewLinks">
-        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+
+        <div class="center">
+          <h1>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+          </h1>
+
+          <h1>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+          </h1>
+        </div>
         <div>
-          <iframe src="./preview.html" class="center" style="width: 320px; height: 200px"></iframe>
-          <h4>(Live Preview)</h4>
+          <iframe src="./preview.html" id="mainPreview" class="center" style="width: 640px; height: 400px"></iframe>
+          <h4>(Live Preview)
+            <button style="margin: 0.5em auto; padding: 0.25em;" onclick="location.reload(true)">
+              RELOAD
+            </button>
+          </h4>
+
         </div>
 
-        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
-        <div>
-          <iframe src="./preview.html" class="center" style="width: 200px; height: 320px;"></iframe>
-          <h4>(Live Preview)</h4>
+        <div class="center controls" style="flex-direction: column; margin-top: 2em; font-family: monospace;">
+          <div>
+            <h2 style="text-align: center; margin-bottom: 0.5em; text-decoration: underline;">Controls:</h2>
+            <h2>[D] ⬇️ Download HTML</h2>
+            <h2>[O] ⚠️ Overdrive</h2>
+            <h2>[P] ✋ Pause</h2>
+            <h2>[A] 😐 Anti-Anxiety Mode</h2>
+            <h2>[M] 🐁 Mouse Hide</h2>
+            <h2>[I] ↔️ Invert</h2>
+            <h2>[N] 🙈 No Distraction Mode</h2>
+            <h2>[E] 🙃 Emoji Polyfill Toggle</h2>
+          </div>
         </div>
 
-        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+        <h1><a href="./preview.html" target="_blank">→ FULL SCREEN PREVIEW ←</a></h1>
         <div>
-          <iframe src="./preview.html" class="center" style="width: 260px; height: 260px"></iframe>
-          <h4>(Live Preview)</h4>
+          <iframe src="./preview.html" class="center" style="width: 400px; height: 640px;"></iframe>
+          <h4>(1 X 2 Live Preview)</h4>
         </div>
 
-        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+        <h1><a href="./preview.html" target="_blank">→ FULL SCREEN PREVIEW ←</a></h1>
         <div>
-          <iframe src="./preview.html" class="center" style="width: 350px; height: 100px"></iframe>
-          <h4>(Live Preview)</h4>
+          <iframe src="./preview.html" class="center" style="width: 520px; height: 520px"></iframe>
+          <h4>(1 x 1 Live Preview)</h4>
         </div>
 
-        <h1><a href="./preview.html" target="_blank">→ CLICK HERE FOR PREVIEW ←</a></h1>
+        <h1><a href="./preview.html" target="_blank">→ FULL SCREEN PREVIEW ←</a></h1>
+        <div>
+          <iframe src="./preview.html" class="center" style="width: 640px; height: 200px"></iframe>
+          <h4>(4 x 1 Live Preview)</h4>
+        </div>
+
+        <h1></h1>
       </div>
       <div id="previewMarquee2"></div>
     </section>
@@ -370,7 +410,7 @@
         <h2 class="blink" style="margin: 1em 0; font-size: 5vw; animation-duration: 1s">FIRST 100 MINTS → FREE PRINT</h2>
 
         <div style="border: 8px solid #f0f">
-          <img style="max-width: 50vw; min-width: 250px; max-height: 70vh;" src="./rewards.png">
+          <a href="./rewards.png" target="_blank"><img style="max-width: 50vw; min-width: 250px; max-height: 70vh;" src="./rewards.png"></a>
         </div>
         <h2 class="blink" style="animation-delay: -0.75s; font-size: 5vw;">🤩 WOW 🤩</h2>
         <h2 class="blink" style="margin: 1em 0; font-size: 5vw; animation-delay: -1s;">BUT WAIT, THERE'S MORE!!</h2>
@@ -417,14 +457,14 @@
         padding: 0 1em;
         font-style:  italic;
         line-height: 1.3;
-        max-width: 800px;
+        max-width: 700px;
 
       }
     </style>
 
     <section id="disclaimer">
-      <div class="center" style="flex-direction: column;">
-        <p>Dopamine Machines contain visual effects that may induce seizures in individuals with photosensitive epilepsy. In addition, frequent use of Dopamine Machines may lead to anxiety, psychosis, manic behavior, addiction, aggression, insomnia, and restlessness in otherwise healthy individuals. Dopamine Machines may also inhibit future dopamine transmission for some users, which may lead to depression, apathy, and/or anhedonia.</p>
+      <div class="center" style="flex-direction: column; text-align: justify;">
+        <p>WARNING: Dopamine Machines contain visual effects that may induce seizures in individuals with photosensitive epilepsy. In addition, frequent use of Dopamine Machines may lead to anxiety, psychosis, manic behavior, addiction, aggression, insomnia, and restlessness in otherwise healthy individuals. Dopamine Machines may also inhibit future dopamine transmission for some users, which may lead to depression, apathy, and/or anhedonia.</p>
         <p>None of the emojis or text contained within a Dopamine Machine constitutes financial advice. If you suspect you may have a gambling problem, please contact the National Problem Gambling Helpline Network at 1-800-522-4700. By using Dopamine Machines, you acknowledge and accept these potential risks and agree that the Artist shall not be held liable for any damages or injuries resulting from such use.</p>
         <p>All Dopamine Machiness are presented "AS IS" without any warranty whatsoever, either express or implied. While each resultant HTML Document is intended to work on all devices, sizes, and aspect ratios, the Artist makes no guarantees related to the consistency of appearance and functionality in obsolete and future web browsers.</p>
       </div>
