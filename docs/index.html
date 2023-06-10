@@ -41,6 +41,7 @@
     #heroGrid {
       height: 100vh;
       width: 100vw;
+      /*max-height: 175vw;*/
       display: grid;
       grid-template-rows: repeat(40, 1fr);
       grid-template-columns: repeat(40, 1fr);
@@ -123,13 +124,48 @@
       display: flex;
       justify-content: center;
       align-items: center;
-
+      flex-direction: column;
     }
 
     #heroText h1 {
-      font-size: calc(min(0.22 * 100vh, 0.14 * 100vw));
+      font-size: calc(min(22vh, 14vw));
       text-align:  center;
       text-shadow: 0 0 0.15em #fff;
+    }
+
+    #heroText .downArrow {
+      display: none;
+      color: #fff;
+      font-size: calc(min(15vh, 10vw));
+      text-shadow: 0 0 1em #ff6000;
+    }
+
+
+
+
+    @media (max-width: 90vh) {
+      #heroText .downArrow {
+        margin-top: 1em;
+        height: 2em;
+        display: block;
+        animation-duration: 3s;
+      }
+
+      .fadein {
+        animation: FadeIn 3s linear;
+        opacity: 1;
+
+      }
+
+      @keyframes FadeIn {
+        0%, 66% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
     }
 
 
@@ -222,6 +258,12 @@
 
     <div id="heroText">
       <h1 id="heroTextText"></h1>
+      <div class="fadein" style="display: flex">
+        <div class="downArrow updownLong">⬇</div>
+        <div class="downArrow updownLong" style="animation-delay: .333s">⬇</div>
+        <div class="downArrow updownLong" style="animation-delay: .666s">⬇</div>
+        <div class="downArrow updownLong" style="animation-delay: 1s">⬇</div>
+      </div>
     </div>
   </section>
 
@@ -451,6 +493,7 @@
     <style type="text/css">
       #disclaimer {
         margin-top: 5em;
+        padding: 0 1em;
       }
       #disclaimer p {
         margin: 1em 0;
