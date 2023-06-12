@@ -23,7 +23,6 @@ _None of the emojis or text contained within a Dopamine Machine constitutes fina
 
 _All Dopamine Machiness are presented "AS IS" without any warranty whatsoever, either express or implied. While each resultant HTML Document is intended to work on all devices, sizes, and aspect ratios, the Artist makes no guarantees related to the consistency of appearance and functionality in obsolete and future web browsers._
 
-
 Controls:
 [D] ⬇️ Download HTML
 [O] ⚠️ Overdrive
