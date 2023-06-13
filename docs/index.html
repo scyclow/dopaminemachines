@@ -542,6 +542,31 @@ const tokenData = { hash, tokenId: 0 }
     return document.getElementById(i)
   }
 
+  function getTimezone() {
+    try {
+      const d = new Date()
+      const offset = d.getTimezoneOffset() / 60
+      if (offset % 1 < 1) return '1PM EDT'
+      const adjustedHour = (24 + 17 - offset) % 24
+      const tz = d.toString().match(/\(([A-Za-z\s].*)\)/)[1].replace(/[^A-Z]/g, '')
+
+      const amPm = adjustedHour < 12 ? 'AM' : 'PM'
+
+      const displayHour = (adjustedHour > 12 ? adjustedHour - 12 : adjustedHour) || 12
+      return displayHour + amPm + ' ' + tz
+    } catch (e) {
+      return '1PM EDT'
+    }
+  }
+
+  function getAdjustedDay() {
+    const d = new Date()
+    const offset = d.getTimezoneOffset() / 60
+    const adjustedHour = (17 - offset)
+
+    if (adjustedHour >= 24) return 22
+    else return 21
+  }
 
 
   const triggerSound1 = sirenSound({ duration: 1500 })
@@ -580,7 +605,7 @@ const tokenData = { hash, tokenId: 0 }
       setNotification()
     })
 
-    if (navigator.clipboard) navigator.clipboard.writeText('Dopamine Machines - 6/21 @ 1pm EDT - artblocks.io')
+    if (navigator.clipboard) navigator.clipboard.writeText(`Dopamine Machines - 6/${getAdjustedDay()} @ ${getTimezone()} - artblocks.io`)
 
 
     triggerSound1()
@@ -606,7 +631,7 @@ const tokenData = { hash, tokenId: 0 }
 
   $.render(
     id('marquee6'),
-    marquee($.span('6/21/23 @ 1PM EDT'), { duration: 60, direction: -1})
+    marquee($.span(`6/${getAdjustedDay()}/23 @ ${getTimezone()}`), { duration: 60, direction: -1})
   )
 
   $.render(
