@@ -11,22 +11,22 @@ const STUFF = require('../../DEV_KEYS/stuff.json')
 
 
 const OUTPUT_PATH = `/Users/steviep/Desktop/dopamine-machines-final-test`
-const RENDER_URL = 'http://localhost:51543'
-const generateUrl = (hash, tokenId) => `${RENDER_URL}?hash=${hash}&tokenId=${tokenId}`
+const generateUrl = (hash, tokenId) => `http://localhost:51543?hash=${hash}&tokenId=${tokenId}`
 
 const AB_CONTRACT = '0x99a9B7c1116f9ceEB1652de04d5969CcE509B069'
 
-const TOKEN_START = 0
-const TOKEN_STOP = 10//777
+const TOKEN_ID_START = 0
+const TOKEN_ID_STOP = 3//777
 const PROJECT_ID = 457
 
 const WIDTH = 456
 const HEIGHT = 256
 const FPS = 24
 const DURATION = 5
-const QUALITY = 10
+const QUALITY = 8
 
 const RENDER_LOCAL = true
+const RENDER_GIF = true
 
 const abABI = [
   'function tokenIdToHash(uint256 tokenId) view returns (bytes32 hash)',
@@ -42,23 +42,30 @@ if (!fs.existsSync(OUTPUT_PATH)){
   fs.mkdirSync(OUTPUT_PATH);
 }
 
-(async () => renderGifs(PROJECT_ID, TOKEN_START, TOKEN_STOP, OUTPUT_PATH))()
 
 
 
 
-async function renderGifs(projectId, idStart, idStop, outputPath) {
-  const hashes = await getHashes(projectId, idStart, idStop)
-  const projectScript = RENDER_LOCAL ? '' : await getProjectScript(projectId)
-  await generateAllGifs(hashes, projectScript, WIDTH, HEIGHT, FPS, DURATION, outputPath)
+(async function renderThumnails() {
+  await generateAllThumbnails({
+    tokenData: await getTokenData(PROJECT_ID, TOKEN_ID_START, TOKEN_ID_STOP),
+    projectScript: RENDER_LOCAL ? '' : await getProjectScript(PROJECT_ID),
+    width: WIDTH,
+    height: HEIGHT,
+    fps: FPS,
+    duration: DURATION,
+    outputPath: OUTPUT_PATH,
+    renderLocal: RENDER_LOCAL,
+    renderGif: RENDER_GIF
+  })
+})()
 
-}
 
 
 
 
 
-function getHashes(projectId, idStart, idStop) {
+function getTokenData(projectId, idStart, idStop) {
   const iterations = idStop - idStart
 
   if (RENDER_LOCAL) return times(iterations, i => {
@@ -113,19 +120,8 @@ async function generateHtmlContent(projectScript, projectId, tokenId) {
 }
 
 
-async function generateSingleGif(page, projectScript, tokenId, tokenHash, w, h, fps, duration, outputPath) {
+async function generateSingleGif(page, tokenId, w, h, fps, duration, outputPath) {
   try {
-    console.log(`================ [${tokenId}] ================`)
-
-    if (RENDER_LOCAL) {
-      await page.goto(generateUrl(tokenHash, tokenId))
-
-    } else {
-      const htmlContent = await generateHtmlContent(projectScript, tokenHash, tokenId)
-      await page.setContent(htmlContent)
-    }
-
-
     console.log(`[${tokenId}] Waiting for selector`)
     await page.waitForSelector('#main');
     console.log(`[${tokenId}] Getting element`)
@@ -164,11 +160,8 @@ async function generateSingleGif(page, projectScript, tokenId, tokenHash, w, h, 
 }
 
 
-async function generateSingleImage(page, tokenId, tokenHash, _, __, outputPath) {
+async function generateSinglePNG(page, tokenId, outputPath) {
   try {
-    console.log(`================ [${tokenId}] ================`)
-    await page.goto(generateUrl(tokenHash, tokenId))
-
     console.log(`[${tokenId}] Waiting for selector`)
     await page.waitForSelector('#main');
     console.log(`[${tokenId}] Getting element`)
@@ -186,7 +179,17 @@ async function generateSingleImage(page, tokenId, tokenHash, _, __, outputPath) 
 }
 
 
-async function generateAllGifs(tokens, projectScript, width, height, fps, duration, outputPath) {
+async function generateAllThumbnails({
+  tokenData,
+  projectScript,
+  width,
+  height,
+  fps,
+  duration,
+  outputPath,
+  renderLocal,
+  renderGif
+}) {
   let longestRender = 0
   const startTime = Date.now()
   const renderTimes = []
@@ -200,10 +203,25 @@ async function generateAllGifs(tokens, projectScript, width, height, fps, durati
   console.log(`SETTING VIEWPORT`)
   await page.setViewport({ width, height })
 
-  for (let [tokenId, tokenHash] of tokens) {
+  for (let [tokenId, tokenHash] of tokenData) {
     const start = Date.now()
-    await generateSingleGif(page, projectScript, tokenId, tokenHash, width, height, fps, duration, outputPath)
-    // await generateSingleImage(page, tokenId, tokenHash, fps, duration, outputPath)
+
+    console.log(`================ [${tokenId}] ================`)
+
+    if (renderLocal) {
+      await page.goto(generateUrl(tokenHash, tokenId))
+
+    } else {
+      const htmlContent = await generateHtmlContent(projectScript, tokenHash, tokenId)
+      await page.setContent(htmlContent)
+    }
+
+
+    if (renderGif) {
+      await generateSingleGif(page, tokenId, width, height, fps, duration, outputPath)
+    } else {
+      await generateSinglePNG(page, tokenId, outputPath)
+    }
 
     const renderTime = Date.now() - start
     if (renderTime > longestRender) {
@@ -215,7 +233,7 @@ async function generateAllGifs(tokens, projectScript, width, height, fps, durati
 
   const totalRenderTime = renderTimes.reduce((sum, t) => sum + t, 0)
   console.log(`################## Total render time: ${(Date.now() - startTime)/1000}s`)
-  console.log(`################## Average render time: ${(totalRenderTime/tokens.length)/1000}s`)
+  console.log(`################## Average render time: ${(totalRenderTime/tokenData.length)/1000}s`)
   console.log(`################## Longest render time: ${(longestRender)/1000}s`)
 }
 
