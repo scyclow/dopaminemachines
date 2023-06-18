@@ -1,0 +1,24 @@
+{
+  "name": "renderer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "alchemy-sdk": "^2.9.0",
+    "canvas": "^2.8.0",
+    "gifencoder": "^2.0.1",
+    "jsdom": "^17.0.0",
+    "png-file-stream": "^1.2.1",
+    "puppeteer": "^10.2.0",
+    "puppeteer-core": "^10.2.0",
+    "tempdir": "^2.0.0"
+  },
+  "devDependencies": {
+    "ethers": "^6.6.0"
+  }
+}
