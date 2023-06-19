@@ -12,11 +12,11 @@ $.cls = (elem, selector) => Array.isArray(elem)
 
 $.render = (e, children) => {
   if (!children) return
-  else if (typeof children === 'string') e.innerHTML = children
+  else if (typeof children === 'string') e.textContent = children
   else if (Array.isArray(children)) {
     if (typeof children[0] === 'string') {
       children.forEach(child => {
-        e.innerHTML += (
+        e.textContent += (
           typeof child === 'string' ? child : child.outerHTML
         )
       })

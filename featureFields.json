@@ -1629,6 +1629,10 @@
         "type": "boolean"
     },
     {
+        "name": "_Content: 🧠",
+        "type": "boolean"
+    },
+    {
         "name": "_Content: 🧨",
         "type": "boolean"
     },

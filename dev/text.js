@@ -73,7 +73,7 @@ const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍�
 const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
 const circusEmojis = emojis(`🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹`)
 const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
-const hedonicTreadmill = [...emojis(`🏃`), ...miscFood, ...symbols]
+const hedonicTreadmill = [...emojis(`🏃 🧠`), ...miscFood, ...symbols]
 const sportsEmojis = emojis(`🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪`)
 const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬 🌳`)
 
