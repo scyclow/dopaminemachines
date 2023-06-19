@@ -10,14 +10,14 @@ const STUFF = require('../../DEV_KEYS/stuff.json')
 
 
 
-const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-promo`
-const generateUrl = (hash, tokenId) => `http://localhost:62550?hash=${hash}&tokenId=${tokenId}&text=2%20MORE%20DAYS!`
+const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-test-3`
+const generateUrl = (hash, tokenId) => `http://localhost:62550?hash=${hash}&tokenId=${tokenId}`
 
 const AB_CONTRACT = '0x99a9B7c1116f9ceEB1652de04d5969CcE509B069'
 
 
 const TOKEN_ID_START = 0
-const TOKEN_ID_STOP = 12
+const TOKEN_ID_STOP = 777
 const PROJECT_ID = 457
 
 // const ITERATION = 8
