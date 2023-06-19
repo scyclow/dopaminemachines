@@ -10,7 +10,7 @@ const STUFF = require('../../DEV_KEYS/stuff.json')
 
 
 
-const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-test-2`
+const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-test-3`
 const generateUrl = (hash, tokenId) => `http://localhost:62550?hash=${hash}&tokenId=${tokenId}`
 
 const AB_CONTRACT = '0x99a9B7c1116f9ceEB1652de04d5969CcE509B069'
@@ -64,12 +64,21 @@ if (!fs.existsSync(OUTPUT_PATH)){
   const TOTAL_RENDERS = TOKEN_ID_STOP - TOKEN_ID_START
   const Q_LENGTH = TOTAL_RENDERS / THREADS
 
-  const renderTimes = times(THREADS, async i => {
+
+
+
+  const tokenData = await Promise.all(times(THREADS, i => {
     const start = parseInt(i * Q_LENGTH)
     const end = parseInt((i+1) * Q_LENGTH)
 
+    return getTokenData(PROJECT_ID, start, end)
+  }))
+
+  fs.writeFileSync(OUTPUT_PATH + '/tokenData.json', JSON.stringify(tokenData.flat()))
+
+  const renderTimes = times(THREADS, async i => {
     return generateAllThumbnails({
-      tokenData: await getTokenData(PROJECT_ID, start, end),
+      tokenData: tokenData[i],
       projectScript: RENDER_LOCAL ? '' : await getProjectScript(PROJECT_ID),
       width: WIDTH,
       height: HEIGHT,
@@ -86,12 +95,11 @@ if (!fs.existsSync(OUTPUT_PATH)){
 
 
   try {
-    const tokenData = (await Promise.all(renderTimes)).flat()
+    const tokenTimes = (await Promise.all(renderTimes)).flat()
 
-    const totalRenderTime = tokenData.reduce((sum, t) => sum + t, 0)
+    const totalRenderTime = tokenTimes.reduce((sum, t) => sum + t, 0)
     console.log(`################## Total render time: ${(Date.now() - startTime)/1000}s`)
     console.log(`################## Average render time: ${(totalRenderTime/TOTAL_RENDERS)/1000}s`)
-    fs.writeFileSync(OUTPUT_PATH + '/tokenData.json', JSON.stringify(tokenData))
 
   } catch (e) {
     console.log(e)
