@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+<body>
+  <pre id="tokenData"></pre>
+</body>
+
+<script src="./min.ethers.js"></script>
+<script type="text/javascript">
+
+
+;(async () => {
+
+  const PROJECT_ID = 457
+  const AB_CONTRACT = '0x99a9B7c1116f9ceEB1652de04d5969CcE509B069'
+
+  let isEthBrowser
+
+  if (window.ethereum) {
+    console.log('web3')
+    window.provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+    window.signer = provider.getSigner()
+    isEthBrowser = true
+
+  } else {
+    console.log('no Web3 detected')
+    return
+  }
+
+
+  const abABI = [
+    'function tokenIdToHash(uint256 tokenId) view returns (bytes32 hash)',
+    'function projectScriptByIndex(uint256 projectId, uint256 index) view returns (string script)',
+    'function projectScriptInfo(uint256 projectId) view returns (string memory scriptJSON, uint256 scriptCount, bool useHashString, string memory ipfsHash, bool locked, bool paused)',
+  ]
+
+  const ArtBlocksContract = new ethers.Contract(AB_CONTRACT, abABI, provider)
+
+
+  const tokenData = await Promise.all(
+    times(
+      777,
+      async i => {
+        const tokenId = PROJECT_ID * 1_000_000 + i
+        return [
+          tokenId,
+          await ArtBlocksContract.tokenIdToHash(tokenId)
+        ]
+      }
+    )
+  )
+
+  document.getElementById('tokenData').innerHTML = JSON.stringify(tokenData, null, 2)
+
+
+
+})()
+
+
+function times(t, fn) {
+  const out = []
+  for (let i = 0; i < t; i++) out.push(fn(i))
+  return out
+}
+
+
+</script>
+</html>

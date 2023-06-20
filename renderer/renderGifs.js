@@ -6,12 +6,13 @@ const tempdir = require('tempdir')
 const ethers = require('ethers')
 
 const STUFF = require('../../DEV_KEYS/stuff.json')
+const TOKEN_DATA = require('./tokenData.json')
 
 
 
 
-const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-test-3`
-const generateUrl = (hash, tokenId) => `http://localhost:62550?hash=${hash}&tokenId=${tokenId}`
+const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-test-4`
+const generateUrl = (hash, tokenId) => `http://localhost:59708?hash=${hash}&tokenId=${tokenId}`
 
 const AB_CONTRACT = '0x99a9B7c1116f9ceEB1652de04d5969CcE509B069'
 
@@ -68,13 +69,12 @@ if (!fs.existsSync(OUTPUT_PATH)){
 
 
   const tokenData = await Promise.all(times(THREADS, i => {
-    const start = parseInt(i * Q_LENGTH)
-    const end = parseInt((i+1) * Q_LENGTH)
+    const start = TOKEN_ID_START + parseInt(i * Q_LENGTH)
+    const end = TOKEN_ID_START + parseInt((i+1) * Q_LENGTH)
 
     return getTokenData(PROJECT_ID, start, end)
   }))
 
-  fs.writeFileSync(OUTPUT_PATH + '/tokenData.json', JSON.stringify(tokenData.flat()))
 
   const renderTimes = times(THREADS, async i => {
     return generateAllThumbnails({
@@ -113,17 +113,20 @@ if (!fs.existsSync(OUTPUT_PATH)){
 
 
 function getTokenData(projectId, idStart=0, idStop=10) {
-  const iterations = idStop - idStart
+  return TOKEN_DATA.slice(idStart, idStop)
 
-  if (RENDER_LOCAL) return times(iterations, i => {
-    const tokenId = projectId * 1_000_000 + i + idStart
-    let tokenHash = '0x'
-    for (let i = 0; i < 64; i++) {
-      tokenHash += Math.floor(Math.random() * 16).toString(16)
-    }
+  // console.log(idStart, idStop)
+  // const iterations = idStop - idStart
 
-    return [tokenId, tokenHash]
-  })
+  // if (RENDER_LOCAL) return times(iterations, i => {
+  //   const tokenId = projectId * 1_000_000 + i + idStart
+  //   let tokenHash = '0x'
+  //   for (let i = 0; i < 64; i++) {
+  //     tokenHash += Math.floor(Math.random() * 16).toString(16)
+  //   }
+
+  //   return [tokenId, tokenHash]
+  // })
 
   // if (RENDER_LOCAL) return [
   //   [457000000, '0x38c0d49a4868b743d4d0fecac39ca00c5c6439ce8664a7fb51830ea098c59d67'],
@@ -140,18 +143,18 @@ function getTokenData(projectId, idStart=0, idStop=10) {
 
 
 
-  return Promise.all(
-    times(
-      iterations,
-      async i => {
-        const tokenId = projectId * 1_000_000 + i + idStart
-        return [
-          tokenId,
-          await ArtBlocksContract.tokenIdToHash(tokenId)
-        ]
-      }
-    )
-  )
+  // return Promise.all(
+  //   times(
+  //     iterations,
+  //     async i => {
+  //       const tokenId = projectId * 1_000_000 + i + idStart
+  //       return [
+  //         tokenId,
+  //         await ArtBlocksContract.tokenIdToHash(tokenId)
+  //       ]
+  //     }
+  //   )
+  // )
 }
 
 async function getProjectScript(projectId) {
