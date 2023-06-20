@@ -11,15 +11,16 @@ const TOKEN_DATA = require('./tokenData.json')
 
 
 
-const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-test-4`
+const ITERATION = ''
+const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-final`
 const generateUrl = (hash, tokenId) => `http://localhost:59708?hash=${hash}&tokenId=${tokenId}`
 
 const AB_CONTRACT = '0x99a9B7c1116f9ceEB1652de04d5969CcE509B069'
 
 
-const TOKEN_ID_START = 0
-const TOKEN_ID_STOP = 777
-const PROJECT_ID = 457
+const TOKEN_ID_START = Number(process.env.TOKEN_ID_START) || 0
+const TOKEN_ID_STOP = Number(process.env.TOKEN_ID_STOP) || 777
+const PROJECT_ID = 426
 
 // const ITERATION = 8
 // const HEIGHT = 256/2
@@ -29,7 +30,6 @@ const PROJECT_ID = 457
 // const QUALITY = 10
 
 // const ITERATION = '-' + 15
-const ITERATION = ''
 const HEIGHT = 256
 const WIDTH = HEIGHT * 1.625//456/2
 const FPS = 12
@@ -66,19 +66,17 @@ if (!fs.existsSync(OUTPUT_PATH)){
   const Q_LENGTH = TOTAL_RENDERS / THREADS
 
 
-
-
-  const tokenData = await Promise.all(times(THREADS, i => {
+  const tokenData = (await Promise.all(times(THREADS, i => {
     const start = TOKEN_ID_START + parseInt(i * Q_LENGTH)
     const end = TOKEN_ID_START + parseInt((i+1) * Q_LENGTH)
 
     return getTokenData(PROJECT_ID, start, end)
-  }))
+  }))).flat()
 
 
   const renderTimes = times(THREADS, async i => {
     return generateAllThumbnails({
-      tokenData: tokenData[i],
+      tokenData,
       projectScript: RENDER_LOCAL ? '' : await getProjectScript(PROJECT_ID),
       width: WIDTH,
       height: HEIGHT,
@@ -184,43 +182,38 @@ async function generateHtmlContent(projectScript, projectId, tokenId) {
 
 
 async function generateSingleGif(page, tokenId, w, h, fps, duration, outputPath) {
-  try {
-    console.log(`[${tokenId}] Waiting for selector`)
-    await page.waitForSelector('#main');
-    console.log(`[${tokenId}] Getting element`)
-    const element = await page.$('#main')
+  console.log(`[${tokenId}] Waiting for selector`)
+  await page.waitForSelector('#main');
+  console.log(`[${tokenId}] Getting element`)
+  const element = await page.$('#main')
 
-    await wait(100)
+  await wait(100)
 
-    const screenshots = fps * duration
-    const workdir = await tempdir()
-    const getWorkdir = name => `${workdir}/T${name}.png`
+  const screenshots = fps * duration
+  const workdir = await tempdir()
+  const getWorkdir = name => `${workdir}/T${name}.png`
 
 
-    for (let i = 0; i < screenshots; i++) {
-      await page.keyboard.press('p')
-      await wait(200)
+  for (let i = 0; i < screenshots; i++) {
+    await page.keyboard.press('p')
+    await wait(200)
 
-      await element.screenshot({
-        path: getWorkdir(new Date().getTime())
-      })
+    await element.screenshot({
+      path: getWorkdir(new Date().getTime())
+    })
 
-      // console.log(`[${tokenId}] ... ${i}`)
+    // console.log(`[${tokenId}] ... ${i}`)
 
-      await page.keyboard.press('p')
-      await wait(1000/fps)
-    }
-
-    console.log(`[${tokenId}] Encoding`)
-    const encoder = new GIFEncoder(w, h)
-
-    await pngFileStream(getWorkdir('*'))
-      .pipe(encoder.createWriteStream({ repeat: 0, delay: 1000/fps, quality: QUALITY }))
-      .pipe(fs.createWriteStream(`${outputPath}/${tokenId}${ITERATION}.gif`));
-
-  } catch (e) {
-    console.error(e)
+    await page.keyboard.press('p')
+    await wait(1000/fps)
   }
+
+  console.log(`[${tokenId}] Encoding`)
+  const encoder = new GIFEncoder(w, h)
+
+  await pngFileStream(getWorkdir('*'))
+    .pipe(encoder.createWriteStream({ repeat: 0, delay: 1000/fps, quality: QUALITY }))
+    .pipe(fs.createWriteStream(`${outputPath}/${tokenId}${ITERATION}.gif`));
 }
 
 
@@ -258,10 +251,10 @@ async function generateAllThumbnails({
   const renderTimes = []
 
   console.log('LAUNCHING')
-  const browser = await puppeteer.launch()
+  let browser = await puppeteer.launch()
 
   console.log('NEW PAGE')
-  const page = await browser.newPage()
+  let page = await browser.newPage()
 
   console.log(`SETTING VIEWPORT`)
   await page.setViewport({ width, height })
@@ -269,10 +262,14 @@ async function generateAllThumbnails({
 
 
   let i = 1
-  for (let [tokenId, tokenHash] of tokenData) {
+  while (tokenData.length) {
     const start = Date.now()
+    const activeTokenData = tokenData.shift()
+    const [tokenId, tokenHash] = activeTokenData
 
-    console.log(`================ T:${thread} [${tokenId}] (${(i*100/tokenData.length).toFixed(2)}%) ${new Date} ================`)
+    const ix = tokenId - (PROJECT_ID * 1_000_000)
+
+    console.log(`================ T:${thread} [${tokenId}] (${(ix*100/TOKEN_ID_STOP).toFixed(2)}% ${ix}/${TOKEN_ID_STOP}) ${new Date} ================`)
 
     try {
       if (renderLocal) {
@@ -295,6 +292,28 @@ async function generateAllThumbnails({
     } catch (e) {
       console.log(e)
       console.log(`>>>>>>>>>>>>>>> RERENDER >>>>>>>>>>>>>>>>>> T:${thread} [${tokenId}] ${new Date}`)
+
+      await browser.close()
+      console.log(`[${thread}] RELAUNCHING`)
+      browser = await puppeteer.launch()
+      page = await browser.newPage()
+      await generateAllThumbnails({
+        tokenData: [activeTokenData],
+        projectScript, width, height, fps, duration, outputPath, renderLocal, renderGif, thread
+      })
+
+      await generateAllThumbnails({
+        tokenData,
+        projectScript,
+        width,
+        height,
+        fps,
+        duration,
+        outputPath,
+        renderLocal,
+        renderGif,
+        thread
+      })
     }
     i++
   }
