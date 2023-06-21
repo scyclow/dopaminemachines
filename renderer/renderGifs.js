@@ -13,14 +13,14 @@ const TOKEN_DATA = require('./tokenData.json')
 
 const ITERATION = ''
 const OUTPUT_PATH = `/Users/steviep/Desktop/dm-gif-final`
-const generateUrl = (hash, tokenId) => `http://localhost:59708?hash=${hash}&tokenId=${tokenId}`
+const generateUrl = (hash, tokenId) => `http://localhost:50001?hash=${hash}&tokenId=${tokenId}`
 
 const AB_CONTRACT = '0x99a9B7c1116f9ceEB1652de04d5969CcE509B069'
 
 
 const TOKEN_ID_START = Number(process.env.TOKEN_ID_START) || 0
 const TOKEN_ID_STOP = Number(process.env.TOKEN_ID_STOP) || 777
-const PROJECT_ID = 426
+const PROJECT_ID = 457
 
 // const ITERATION = 8
 // const HEIGHT = 256/2
@@ -74,6 +74,7 @@ if (!fs.existsSync(OUTPUT_PATH)){
   }))).flat()
 
 
+  const globalStart = Date.now()
   const renderTimes = times(THREADS, async i => {
     return generateAllThumbnails({
       tokenData,
@@ -85,7 +86,9 @@ if (!fs.existsSync(OUTPUT_PATH)){
       outputPath: OUTPUT_PATH,
       renderLocal: RENDER_LOCAL,
       renderGif: RENDER_GIF,
-      thread: i
+      thread: i,
+      globalStart,
+      totalRenders: TOTAL_RENDERS
     })
 
   })
@@ -246,7 +249,9 @@ async function generateAllThumbnails({
   outputPath,
   renderLocal,
   renderGif,
-  thread
+  thread,
+  globalStart,
+  totalRenders
 }) {
   const renderTimes = []
 
@@ -264,6 +269,14 @@ async function generateAllThumbnails({
   let i = 1
   while (tokenData.length) {
     const start = Date.now()
+
+    if (i > 1) {
+      const completedRenders = totalRenders - tokenData.length
+      const timeElapsed = start - globalStart
+      const rendersLeft = tokenData.length
+      const averageTime = timeElapsed / completedRenders
+      console.log(`Time Left => ${(rendersLeft/averageTime)/240000} m`)
+    }
     const activeTokenData = tokenData.shift()
     const [tokenId, tokenHash] = activeTokenData
 
@@ -299,7 +312,7 @@ async function generateAllThumbnails({
       page = await browser.newPage()
       await generateAllThumbnails({
         tokenData: [activeTokenData],
-        projectScript, width, height, fps, duration, outputPath, renderLocal, renderGif, thread
+        projectScript, width, height, fps, duration, outputPath, renderLocal, renderGif, thread, globalStart, totalRenders
       })
 
       await generateAllThumbnails({
@@ -312,7 +325,9 @@ async function generateAllThumbnails({
         outputPath,
         renderLocal,
         renderGif,
-        thread
+        thread,
+        globalStart,
+        totalRenders
       })
     }
     i++
