@@ -275,7 +275,13 @@ async function generateAllThumbnails({
       const timeElapsed = start - globalStart
       const rendersLeft = tokenData.length
       const averageTime = timeElapsed / completedRenders
-      console.log(`Time Left => ${(rendersLeft/averageTime)/240000} m`)
+
+      const progress = completedRenders / totalRenders
+      const progressRemaining = 1 - progress
+      const estimate2 = (timeElapsed * progressRemaining)/progress
+
+      console.log(`Time Left EST 1 => ${(rendersLeft*averageTime)/30000} m`)
+      console.log(`Time Left EST 2 => ${(estimate2)/60000} m`)
     }
     const activeTokenData = tokenData.shift()
     const [tokenId, tokenHash] = activeTokenData
