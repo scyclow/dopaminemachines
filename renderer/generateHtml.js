@@ -20,8 +20,11 @@ fs.writeFileSync(OUTPUT_PATH + `/explore.html`,
 `<!DOCTYPE html>
 <html>
 <head>
+
+  <link rel="shortcut icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMSAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiPjwvcmVjdD48L3N2Zz4=">
+
   <meta charset="utf-8">
-  <title>DOPAMINE MACHINES EXPLORER</title>
+  <title>Dopamine Machine Explorer</title>
 
   <meta name="google" content="notranslate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -161,7 +164,7 @@ function generateHtmlContent(tokenId, hash) {
       }
 
       else if (e.key === 'r') {
-        window.location.href = './${parseInt(Math.random() * 777)}'
+        window.location.href = './' + parseInt(Math.random() * 777)'
       }
     })
   </script>
