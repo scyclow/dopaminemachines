@@ -382,6 +382,39 @@
         cursor: pointer;
       }
     </style>
+
+    <style>
+      #view {
+        border: 2vw double;
+        animation: ColorShift 6s linear infinite;
+        padding: 1em;
+      }
+
+      #view a, #view a:visited {
+        animation: ColorShift 6s linear infinite;
+        animation-delay: -3s;
+      }
+
+      #view h2 {
+        text-align: center;
+        font-size: 4em;
+      }
+
+  @keyframes ColorShift {
+    0% {color: #f00}
+    16% {color: #ff0}
+    32% {color: #0f0}
+    50% {color: #0ff}
+    66% {color: #00f}
+    83% {color: #f0f}
+    100% {color: #f00}
+  }
+    </style>
+
+    <section id="view" >
+      <h2><a href="./explore">Explore The Collection</a></h2>
+    </section>
+
     <section id="preview">
       <div id="previewMarquee1"></div>
       <div id="previewLinks">

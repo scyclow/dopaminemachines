@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <body id="#main"></body>
+  <script>window.tokenData = { tokenId: 6, hash: "0x545ff1dcd19286c7f800cae2772cfe60bb9ab1e0fde990f20548bd5337459b76" }</script>
+  <script src="./twemoji.min.js"></script>
+  <script src="./min.js"></script>
+  <script>
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '[') {
+        window.location.href = './5'
+      }
+      else if (e.key === ']') {
+        window.location.href = './7'
+      }
+
+      else if (e.key === 'r') {
+        window.location.href = './42'
+      }
+    })
+  </script>
+</html>
