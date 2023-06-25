@@ -164,7 +164,7 @@ function generateHtmlContent(tokenId, hash) {
       }
 
       else if (e.key === 'r') {
-        window.location.href = './' + parseInt(Math.random() * 777)'
+        window.location.href = './' + parseInt(Math.random() * 777)
       }
     })
   </script>
