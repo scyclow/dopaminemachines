@@ -83,7 +83,7 @@ fs.writeFileSync(OUTPUT_PATH + `/explore.html`,
 <body>
 <h1>Dopamine Machine Explorer</h1>
 <h2>Switch Dopamine Machines with the '[' and ']' keys.</h2>
-<h2>Go to a random Dopamine Machine with the 'r' key.</h2>
+<h2>Go to a random Dopamine Machine press 'Enter'.</h2>
 <div style=" font-size: 0.75em; max-width: 260px; margin: auto; margin-top: 3em">
   <h2 style="text-align: center; margin-bottom: 0.5em; text-decoration: underline;">Standard Controls:</h2>
   <h2 style="text-align: left; font-family: monospace">[D] ⬇️ Download HTML</h2>
@@ -135,7 +135,7 @@ ${TOKEN_DATA.map(([tokenId, hash]) => {
         window.location.href = './0'
       }
 
-      else if (e.key === 'r') {
+      else if (e.key === 'Enter') {
         window.location.href = './${parseInt(Math.random() * 777)}'
       }
     })
@@ -163,9 +163,10 @@ function generateHtmlContent(tokenId, hash) {
         window.location.href = './${tokenId < 776 ? tokenId + 1 : 0}'
       }
 
-      else if (e.key === 'r') {
+      else if (e.key === 'Enter') {
         window.location.href = './' + parseInt(Math.random() * 777)
       }
+      console.log(e.key)
     })
   </script>
 </html>`
