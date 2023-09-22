@@ -1,1 +1,3582 @@
-const min=Math.min,max=Math.max,abs=Math.abs,round=Math.round,int=parseInt,map=(e,t,n,o,i)=>o<i?o+(e-t)/(n-t)*(i-o):o-(e-t)/(n-t)*(o-i);let __randomSeed=int(tokenData.hash.slice(50,58),16),rCount=0;function rnd(e,t){rCount++,__randomSeed^=__randomSeed<<13,__randomSeed^=__randomSeed>>17;const n=((__randomSeed^=__randomSeed<<5)<0?1+~__randomSeed:__randomSeed)%1e3/1e3;return null!=t?e+n*(t-e):null!=e?n*e:n}const iden=e=>e,rndint=(e,t)=>int(rnd(e,t)),prb=e=>rnd()<e,posOrNeg=()=>prb(.5)?1:-1,sample=e=>e[Math.floor(rnd(e.length))],noop=()=>{};function chance(...e){const t=e.reduce((e,t)=>e+t[0],0),n=rnd();let o=0;for(let i=0;i<e.length;i++){if(n<=(o+=(!0===e[i][0]?1:!1===e[i][0]?0:e[i][0])/t)&&e[i][0])return e[i][1]}}function times(e,t){const n=[];for(let o=0;o<e;o++)n.push(t(o));return n}const allRunningIntervals=[];function setRunInterval(e,t,n=0){const o=()=>{e(n),n++};o();let i=!1,r=setInterval(o,t);const a=()=>{i||(clearInterval(r),i=!0)};return allRunningIntervals.push({newInterval:e=>{i||(clearInterval(r),r=setInterval(o,e))},stopInterval:a,originalMs:t}),a}const IS_HEADLESS=((window.navigator||{}).userAgent||[]).includes("eadless"),TWEMOJI_PRESENT=!!window.twemoji,$=(e,t,n)=>e.style[t]=n;$.cls=((e,t)=>Array.isArray(e)?e.map(e=>$.cls(e,t)).flat():Array.from(e.getElementsByClassName(t))),$.render=((e,t)=>{t&&("string"==typeof t?e.textContent=t:Array.isArray(t)?"string"==typeof t[0]?t.forEach(t=>{e.textContent+="string"==typeof t?t:t.outerHTML}):e.append(...t.flat()):e.append(t))}),$.create=(e=>(t,n={})=>{const o=document.createElement(e);return $.render(o,t),Object.keys(n).forEach(e=>{o.setAttribute(e,n[e])}),o}),$.a=$.create("a"),$.div=$.create("div"),$.span=$.create("span"),$.main=$.create("main"),$.section=$.create("section");const $html=document.getElementsByTagName("html")[0];let queryParams;try{queryParams=window.location.search?window.location.search.replace("?","").split("&").reduce((e,t)=>{const[n,o]=t.split("=");return e[n]=o,e},{}):{}}catch(e){queryParams={}}const addMetaTag=e=>{const t=document.createElement("meta");Object.keys(e).forEach(n=>{t[n]=e[n]}),document.head.appendChild(t)},addThumbnail=e=>{const t=document.getElementById("favicon");t&&document.head.removeChild(t);const n=document.createElement("link");n.href=`data:image/svg+xml;base64,${btoa(`<svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="1" height="1" fill="${e}"></rect></svg>`)}`,n.rel="shortcut icon",n.type="image/svg+xml",n.id="favicon",document.head.appendChild(n)};function css(e){const t=document.createElement("style");t.innerHTML=e,document.head.appendChild(t)}function setMetadata(e){$html.translate=!1,$html.lang="en",$html.className="notranslate";const t=e.join(" ");document.title=t,addMetaTag({name:"google",content:"notranslate"}),addMetaTag({name:"description",content:t}),addMetaTag({name:"keywords",content:e.join(", ").toLowerCase()}),setRunInterval(()=>{addThumbnail(BW?prb(.5)?"#000":"#fff":getShadowColor(chooseHue()))},1e3),console.log(t)}const ls={get(e){try{return window.localStorage&&window.localStorage.getItem&&JSON.parse(window.localStorage.getItem(e))}catch(e){console.log(e)}},set(e,t){try{return window.localStorage.setItem(e,t)}catch(e){console.log(e)}}},cols=60,rows=48,EDITION_SIZE=777,projectionPages={};let LAST_PAUSED,OVERDRIVE,ANHEDONIC,INVERT_ALL,PAUSED=ls.get("__DOPAMINE_IS_PAUSED__")||!1,USE_EMOJI_POLYFILL=TWEMOJI_PRESENT&&(IS_HEADLESS||ls.get("__DOPAMINE_EMOJI_TOGGLE__")||!1);const speed=prb(.05)?100:3,italicRate=chance([1,rnd()],[1,1],[8,0]),fontWeight=chance([1,100],[8,500],[1,900]),fontFamily=chance([5,"serif"],[5,"cursive"],[15,"monospace"],[75,"sans-serif"]),layoutStyle=chance([55,1],[6,2],[7,3],[6,4],[7,5],[5,6],[6,7],[3,8],[5,9]),rowSize=sample([1,2,3,4,6,8,12,16,24]),colSize=sample([2,3,4,6,10,15]),cellSize=sample([3,4,6,12,16]),sidewaysPrb=prb(.4)?0:rnd(.5,1),thinSidewaysPrb=6!==layoutStyle?.95:chance([9,.66],[9,.95],[2,0]),marqueeAnimationRate=chance([85,0],[20,rnd(.25,.5)],[5,1]),tokenId=Number(tokenData.tokenId)%1e6,is69=69===tokenId,is7=[7,77].includes(tokenId),is100=100===tokenId,is420=420===tokenId,is666=666===tokenId,projectId=(Number(tokenData.tokenId)-tokenId)/1e6,showEmojis=is100||is666||is7||is420||is69||prb(.5),pairedEmojiPrb=chance([2,0],[1,.5],[1,1]),upsideDownRate=chance([9,0],[1,rnd(.1,.3)]),mildRotation=()=>rnd(20);mildRotation.isMild=!0;const lineRotation=chance([92,()=>prb(upsideDownRate)?180:0],[6,mildRotation],[2,()=>rnd(20,180)]),freeFloating=![0,180].includes(lineRotation()),threeDRotations=lineRotation.isMild&&prb(.3333),bgType=chance([55,0],[12,1],[20,2],[8,3],[3,4],[2,5]),bgAnimationPrb=chance([12,0],[bgType<3&&6,rnd(.25,.5)],[bgType<3&&2,1]),BW=prb(.15),STARTING_HUE=rnd(360),randomHue=prb(.02),chooseHue=()=>randomHue?rnd(360):STARTING_HUE+sample(possibleHues)%360,chooseAltHue=e=>{const t=chooseHue();return e===t?chooseAltHue(e):t},possibleHues=chance([1===bgType&&2,[0,1e-4]],[1,[0,180]],[1,[0,120,180]],[1,[0,180,240]],[1,[0,150]],[1,[0,210]],[1,[0,120,240]],[1,[0,75]]),shadowType=chance([4,1],[4,2],[BW?1:4,3],[4,4],[4,5],[2,6],[2,7],[4,8],[2,9]),defaultShadowLightness=BW||!prb(.75)&&75!==possibleHues[1]?50:20,getShadowColor=(e,t=50)=>`hsl(${e%360}deg, 100%, ${t}%)`,getShadowText=(e,t)=>{const n=8===shadowType?"#fff":getShadowColor(e+90,defaultShadowLightness),o=t?.0125:.025;return[1,8].includes(shadowType)?[`${o}em ${o}em ${n}`,`-${o}em ${o}em ${n}`,`${o}em -${o}em ${n}`,`-${o}em -${o}em ${n}`,`${o}em 0 ${n}`,`-${o}em 0 ${n}`,`0 -${o}em ${n}`,`0 ${o}em ${n}`,`0 0 0.4em ${n}`]:2===shadowType?[`0.05em 0.05em 0 ${n}`]:3===shadowType?[`0.1em 0.1em 0 ${n}`]:4===shadowType?[`0.05em 0.05em 0 ${n}`,`${t?"0.05em 0.05em":"0.1em 0.1em"} 0 ${getShadowColor(e+270)}`]:5===shadowType?[`0 0 0.05em ${n}`]:6===shadowType?times(4,t=>`${t<2?-.04:.04}em ${t%2?.04:-.04}em 0 ${getShadowColor(e+180+30*t)}`):7===shadowType?[`-0.05em -0.05em 0 ${getShadowColor(e+60)}`,`0.05em 0.025em 0 ${getShadowColor(e+240)}`]:["0 0 0.05em #000"]},getDropShadowValue=e=>getShadowText(e,!0).map(e=>`drop-shadow(${e})`).join(" "),getTextShadowValue=e=>getShadowText(e).join(","),getShadow=(e,t)=>USE_EMOJI_POLYFILL&&!t?`filter: ${getDropShadowValue(e)};`:`text-shadow: ${getTextShadowValue(e)};`,hideBg=!!freeFloating&&prb(.5),showBorder=prb(.5),bgAnimationType=chance([3,0],[2,1],[2,2],[2,3],[1,4]),increasedottedBorderStyle=bgAnimationPrb&&0===bgAnimationType,borderStyle=chance([4,"solid"],[increasedottedBorderStyle?5:1,"dashed"],[increasedottedBorderStyle?4:1,"dotted"],[1,"double"]),sectionAnimation=prb(.95)?"":sample([showBorder&&"borderBlink","blink","dance","growShrink","spin","hPivot","vPivot","breathe"].filter(iden)),sectionAnimationDirection=chance([1,()=>"normal"],[1,()=>"reverse"],[1,()=>prb(.5)?"normal":"reverse"]),sectionAnimationDuration=()=>rnd(2,"blink"===sectionAnimation?5:17),gradientHues=chance([3-possibleHues.length,possibleHues.slice(1)],[1,[30,330]],[1,[60,300]]),zigzagBg=(e,t,n)=>`background-color:${e};background-image:linear-gradient(135deg, ${t} 25%, transparent 25%), linear-gradient(225deg, ${t} 25%, transparent 25%), linear-gradient(45deg, ${t} 25%, transparent 25%), linear-gradient(315deg,${t} 25%, ${e} 25%);background-position:${n/2}em 0,${n/2}em 0,0 0,0 0;background-size:${n}em ${n}em;background-repeat:repeat;`,gradientMix=sample([0,1,.5]),getColorFromHue=e=>`hsl(${e%360}deg, 100%, 50%)`;function getBgColor(e){const t=getColorFromHue(e),n=getColorFromHue(e+sample(gradientHues));return 1===bgType?"none;":2===bgType?prb(gradientMix)?`radial-gradient(${t}, ${n});`:`linear-gradient(${rndint(360)}deg, ${t}, ${n});`:3===bgType?zigzagBg(t,n,.25):4===bgType?zigzagBg(t,n,rnd(8,16)):5===bgType?zigzagBg(t,n,1):t}const starburstBgPrb=chance([8.5,0],[1,.2],[.5,1]);let starburstCount=0;function starburstBg(e,t,n){if(!prb(starburstBgPrb)||t<4)return;starburstCount++;const o=chooseHue(),i=prb(.5)?{bg:"#000",text:"#fff"}:{bg:"#fff",text:"#000"},r=BW?i.text:`hsl(${e}deg, 100%, 50%)`;let a=BW?i.bg:`hsl(${o}deg, 100%, 50%)`;a=1===bgType?"#000":r===a?"#fff":a;const s=chance([2,2],[10,5],[8,10]),l=`cgBg-${int(e)}-${int(o)}`;return css(`.${l}::before {content:"";background:repeating-conic-gradient(${r} 0deg ${s}deg,  ${a} ${s}deg ${2*s}deg);position:absolute;width:12800%;height:12800%;top:-6350%;left:-6350%;z-index:-1;animation:BgRotate${s} ${rnd(1e3,5e3)}ms linear infinite;animation-direction:${prb(.5)?"normal":"reverse"}} @keyframes BgRotate${s} {0% {transform:rotate(0deg);} 100% {transform:rotate(${2*s}deg);}}`),l}const bgColor=chance([1!==bgType&&2,`hsl(${chooseHue()}deg, 100%, 50%)`],[1!==bgType&&1,"#fff"],[1,"#000"]),rotateColorPrb=chance([9,0],[1,rnd(.1,.2)]),colorBlinkPrb=chance([95,0],[4,rnd(.1,.2)],[1,1]),fullHueRotation=prb(.02),invertAll=prb(.02);css(`* {margin:0;padding:0;font-family:${fontFamily};font-weight:${fontWeight};} body, body::backdrop {background:${bgColor};margin:0;${fullHueRotation?"animation:HueRotation 10s linear infinite;":""} } @keyframes HueRotation {0% { filter:hue-rotate(0deg) } 0% { filter:hue-rotate(360deg) } } .viewerMode {cursor:none;pointer-events:none;} .viewerMode .sectionContainer:hover {filter:invert(${invertAll?1:0});} .pauseAll, .pauseAll *, .pauseAll *::before {animation-play-state:paused !important;} .fullScreen {position:absolute;top:0;bottom:0;left:0;right:0;height:100vh;width:100vw;z-index:100;} .overdrive .marquee * {animation-duration:10s !important;} .overdrive *::before {animation-duration:100ms !important;} .overdrive .bgAnimation {animation-duration:300ms !important;} .overdrive .animatingComponent {animation-duration:250ms !important;} .overdrive .sectionContainer {animation-duration:750ms !important;} .overdrive .charContent {animation-duration:205ms !important;} .overdrive {filter:contrast(300%) saturate(300%);} .anhedonic {background:#555;filter:blur(0.08vw) saturate(0.15);} .anhedonic .marquee * {animation-duration:800s !important;} .anhedonic *::before {animation-duration:3s !important;} .anhedonic .bgAnimation {animation-duration:12s !important;} .anhedonic .animatingComponent {animation-duration:16s !important;} .anhedonic .sectionContainer {animation-duration:32s !important;} .anhedonic .charContent {animation-duration:2505ms !important;} .invertAll {filter:invert(1);} ::selection {color:#fff; background-color:#000;}`);let START_TIME=Date.now();const MAX_VOLUME=.04,allSources=[];function createSource(e="square"){const t=new(window.AudioContext||window.webkitAudioContext),n=t.createOscillator(),o=t.createGain(),i=new StereoPannerNode(t);n.connect(o),o.connect(i),i.connect(t.destination),o.gain.value=0,n.type=ANHEDONIC?"sine":e,n.frequency.value=3e3,n.start();const r={source:n,gain:o,smoothFreq:(e,o=1e-5,i=!1)=>{PAUSED&&!i||n.frequency.exponentialRampToValueAtTime(e,t.currentTime+o)},smoothGain:(e,n=1e-5)=>{PAUSED||o.gain.setTargetAtTime(min(e,MAX_VOLUME),t.currentTime,n)},smoothPanner:(e,n=1e-5)=>{PAUSED||i.pan.exponentialRampToValueAtTime(e,t.currentTime+n)},originalSrcType:n.type};return allSources.push(r),r}function sourcesToAnhedonicMode(){allSources.forEach(e=>{e.gain.gain.value>0&&(e.source.type="sine")})}function sourcesToNormalMode(){allSources.forEach(e=>{e.gain.gain.value>0&&(e.source.type=e.originalSrcType)})}function soundOverdrive(e=1){allRunningIntervals.forEach(t=>{t.newInterval(t.originalMs/e)})}const BASE_FREQ=rnd(250,500),MAJOR_SCALE=[1,1.125,1.25,1.3333,1.5,1.6666,1.875,2],HEXATONIC_SCALE=[1,1.125,1.25,1.5,1.75,2],JACK_DUMP_SCALE=[1,1,1.25,1.3333,1.5,1.3333,1.25,1],getLoopsAtTime=(e,t,n)=>(OVERDRIVE?8:1)*(e-(START_TIME-t))/n;function sirenSound({delay:e,duration:t},n="square",o=1){let i=o*sample(MAJOR_SCALE)*BASE_FREQ,r=o*i/5;prb(.5)&&([i,r]=[r,i]);const a=i-r,s=n=>2*getLoopsAtTime(n,e,t),l=e=>{const t=(e=>int(s(e))%2?1:-1)(e),n=s(e)%1*a;return 1===t?r+n:i-n},c=prb(.1)?rnd(1e3,2500):2e3;return(e=0)=>{const{smoothFreq:o,smoothGain:i}=createSource(n);let r;return i(MAX_VOLUME),o(l(Date.now()+250),.25),setTimeout(()=>{const n=(1-s(Date.now()+e)%1)*t/2;o(l(Date.now()+n),n/1e3),setTimeout(()=>{r=setRunInterval(n=>{o(l(Date.now()+t/2+e),n%2?t/2e3:t/c)},t/16)},n)},250),()=>{i(0,.04),r&&r()}}}function shrinkCharSound({delay:e,duration:t}){const n=sirenSound({duration:t,delay:e},"sine"),o=sirenSound({duration:t,delay:e+.25*t},"sine",.5),i=sirenSound({duration:t,delay:e+.5*t},"sine",.5),r=sirenSound({duration:t,delay:e+.75*t},"sine",.5);return()=>{const e=createSource("sine"),t=createSource("sine");e.smoothFreq(BASE_FREQ/2),t.smoothFreq(BASE_FREQ/1.98),e.smoothGain(MAX_VOLUME,.1),t.smoothGain(MAX_VOLUME,.1);const a=n(),s=o(),l=i(),c=r();return()=>{e.smoothGain(0,.1),t.smoothGain(0,.1),a(),s(),l(),c()}}}function flipSound({delay:e,duration:t}){const n=sample(MAJOR_SCALE)*BASE_FREQ*8,o=n/3,i=i=>{const r=getLoopsAtTime(i,e,t)%1;return r<.3333?map(r,0,.3333,o,BASE_FREQ):r<.6666?map(r,.3333,.6666,BASE_FREQ,n):map(r,.6666,1,n,o)};return(n=0)=>{const{smoothFreq:o,smoothGain:r}=createSource();let a;return r(MAX_VOLUME),o(i(Date.now()+250),.25),setTimeout(()=>{const r=(1-getLoopsAtTime(Date.now()+n,e,t)%1)%.3333*t;o(i(Date.now()+r+n),r/1e3),setTimeout(()=>{a=setRunInterval(e=>{o(i(Date.now()+t/3+n),t/3e3)},t/24)},r)},250),()=>{r(0,.04),a&&a()}}}function smoothSound({delay:e,duration:t}){const n=int(map(t,0,5e3,5,0)),o=BASE_FREQ*[.5,1,1.25,1.5,2][n],i=prb(.3),r=i?1:.8;return(e=0)=>{const n=createSource(),a=createSource();let s,l;if(i)s=BASE_FREQ/8,l=BASE_FREQ/7.98;else{s=o,l=o+1e6/(t*o)}n.smoothFreq(s);const c=setRunInterval(()=>{PAUSED||OVERDRIVE?a.smoothFreq(s,1e-5,!0):a.smoothFreq(l)},500);return n.smoothGain(MAX_VOLUME*r,.25),a.smoothGain(MAX_VOLUME*r,.25),()=>{c&&c(),n.smoothGain(0,.25),a.smoothGain(0,.25)}}}function ticktockSound({duration:e,delay:t}){const n=BASE_FREQ*sample([1,.5,2]),o=e/2,i=sample(MAJOR_SCALE);return(r=0)=>{const{smoothFreq:a,smoothGain:s}=createSource(),{smoothFreq:l,smoothGain:c}=createSource(),m=(1-getLoopsAtTime(Date.now(),t,e)%1)%.5*e;let d;return setTimeout(()=>{d=setRunInterval(e=>{s(MAX_VOLUME,.03),c(MAX_VOLUME,.03),e%2?(a(n,.1),l(n+5,.1)):(a(n*i,.1),l(n*i+5,.1)),setTimeout(()=>s(0,.05),.25*o),setTimeout(()=>c(0,.05),.25*o)},o),OVERDRIVE&&soundOverdrive(6)},m),()=>{s(0,.03),c(0,.03),d&&d()}}}function blinkCharSound({duration:e,delay:t},n=null){const o=sample([0,1,2]),i=prb(.1),r=!i&&prb(.5),a=prb(.1),s=sample(MAJOR_SCALE)*BASE_FREQ*chance([5,1],[3,2],[1,.5],[1,.25]),l=sample([2,1.5,1.3333]),c=(e=e?map(e,750,5e3,500,2e3):rnd(500,2e3))/8;return(e=0)=>{const{smoothFreq:t,smoothGain:n}=createSource(),m=createSource();r&&(n(MAX_VOLUME),a&&m.smoothGain(MAX_VOLUME));const d=setRunInterval(e=>{let d;switch(r||(n(MAX_VOLUME),a&&m.smoothGain(MAX_VOLUME)),o){case 0:d=e%8;break;case 1:d=abs(7-e%8);break;case 2:d=e%14<7?e%14:abs(7-e%7)}const u=i?JACK_DUMP_SCALE[e%8]*(e%64<32?1:.85):MAJOR_SCALE[d];t(s*u),a&&m.smoothFreq(s*u*l),r||setTimeout(()=>{n(0,.04),a&&m.smoothGain(0,.04)},.75*c)},c);return OVERDRIVE&&soundOverdrive(6),()=>{n(0,.04),a&&m.smoothGain(0,.04),d&&d()}}}function hexSound({duration:e,delay:t}){const n=BASE_FREQ,o=e/6;sample(MAJOR_SCALE);return(i=0)=>{const{smoothFreq:r,smoothGain:a}=createSource(),{smoothFreq:s,smoothGain:l}=createSource(),c=(1-getLoopsAtTime(Date.now(),t,e)%1)%(1/6)*e;let m;return setTimeout(()=>{m=setRunInterval(e=>{r(8*n),s(8*n),a(MAX_VOLUME,.03),l(MAX_VOLUME,.03),r(n/4,.25),s(n/4,.25),setTimeout(()=>a(0,.05),.25*o+i),setTimeout(()=>l(0,.05),.25*o+i)},o)},c),()=>{m&&m(),a(0,.03),l(0,.03)}}}function climbSound({duration:e,delay:t}){const n=sample(HEXATONIC_SCALE)*BASE_FREQ,o=e/4;return(i=0)=>{const{smoothFreq:r,smoothGain:a}=createSource(),s=(1-getLoopsAtTime(Date.now(),t,e)%1)%.25*e;let l;return setTimeout(()=>{l=setRunInterval(t=>{a(MAX_VOLUME),r(n*HEXATONIC_SCALE[1===e?t%4:3-t%4]),setTimeout(()=>a(0,.05),.75*o+i)},e/4),OVERDRIVE&&soundOverdrive(6)},s+4*i),()=>{l&&l(),a(0,.04)}}}function zoomSound({duration:e,delay:t,switchChannels:n}){const o=sample(MAJOR_SCALE)*BASE_FREQ*4,i=o/16,r=n=>{const r=getLoopsAtTime(n,t,e)%1;return r<.25?i:r<.5?map(r,.25,.5,i,o):map(r,.5,1,o,1)};return(o=0)=>{const{smoothFreq:i,smoothGain:a,smoothPanner:s}=createSource(),l=(1-getLoopsAtTime(Date.now(),t,e)%1)%.25*e;let c;return a(MAX_VOLUME),i(r(Date.now()+l),l/1e3),setTimeout(()=>{if(c=setRunInterval(t=>{i(r(Date.now()+e/4+o),e/4e3)},e/4),n){const n=int(getLoopsAtTime(Date.now(),t,e))%2?150:50;setRunInterval(e=>{const t=map((e+n)%200,0,200,0,Math.PI),o=2*(Math.sin(t)-.5);s(o)},e/100)}},l),()=>{a(0,.04),c&&c()}}}function carSirenSound({duration:e,delay:t}){const n=sample(MAJOR_SCALE),o=n*BASE_FREQ/2,i=sample(MAJOR_SCALE.filter(e=>e!==n)),r=o/i,a=n=>{const i=getLoopsAtTime(n+250,t,e)%1;return i<.25||i>.75?r:o};return(n=0)=>{const o=createSource(),i=createSource(),r=createSource();o.smoothGain(.85*MAX_VOLUME),i.smoothGain(.85*MAX_VOLUME),r.smoothGain(.85*MAX_VOLUME);const s=(1-getLoopsAtTime(Date.now()+250,t,e)%1)%.5*e;let l;return o.smoothFreq(a(Date.now()),s/1e3),i.smoothFreq(1.3333*a(Date.now()),s/1e3),r.smoothFreq(1.6666*a(Date.now()),s/1e3),setTimeout(()=>{l=setRunInterval(e=>{o.smoothFreq(a(Date.now()+n),.25),i.smoothFreq(1.3333*a(Date.now()+n),.25),r.smoothFreq(1.6666*a(Date.now()+n),.25)},e/2)},s),()=>{o.smoothGain(0,.04),i.smoothGain(0,.04),r.smoothGain(0,.04),l&&l()}}}function singleSound(){const e=rndint(1e3,4e3),t=()=>{const{smoothFreq:n,smoothGain:o}=createSource();return o(MAX_VOLUME),n(e,.05),setTimeout(()=>{n(.1,1)},50),()=>{t()}};return t}let voices,ACTIVE_VOICE_IX=0;const filterVoices=e=>{const t=e=>e.lang&&e.lang.includes(queryParams.voiceLang||"en-US");try{let n=e.filter(t);n=n.length?n:e;let o=queryParams.voice?e.find(e=>e.voiceURI.toLowerCase().includes(queryParams.voice.toLowerCase())):e.find(e=>e.default);return t(o)||(o=e.find(t)),queryParams.voice||!queryParams.voiceLang?[o,...n.slice(1)]:n}catch(t){return e}};function selectVoice(e){ACTIVE_VOICE_IX=voices.length&&e%voices.length,console.log("VOICE SELECTED:",voices[ACTIVE_VOICE_IX].voiceURI)}const getVoices=()=>{try{voices=window.speechSynthesis.getVoices(),setTimeout(()=>{voices.length?voices=filterVoices(voices):getVoices()},200)}catch(e){console.log(e)}};getVoices();let activeUtterance,utteranceQueue=[],utterancePriority=null;const triggerUtterance=()=>{if(PAUSED)return void setTimeout(triggerUtterance,250);const e=rndint(utteranceQueue.length);let t;utterancePriority?(t=utterancePriority,utterancePriority=null):t=utteranceQueue.splice(e,1)[0],t&&(activeUtterance=t,t.volume=.88,t.voice=voices[ACTIVE_VOICE_IX],OVERDRIVE?(t.pitch=sample(MAJOR_SCALE),t.volume=1.1):t.pitch=1,t.rate=ANHEDONIC?.7:OVERDRIVE?1.4:1,t.onend=(()=>{utteranceQueue.length&&triggerUtterance()}),t.addEventListener("error",e=>{console.error("SpeechSynthesisUtterance error",e)}),window.speechSynthesis.speak(t),setTimeout(()=>rescueSS(t),6e3))};let isRescuing;function rescueSS(e){isRescuing||!utteranceQueue.some(t=>t.text===e.text)||PAUSED||activeUtterance===e&&(isRescuing=!0,window.speechSynthesis.cancel(),window.speechSynthesis.speak(e),isRescuing=!1)}const stopUtter=e=>{utteranceQueue=utteranceQueue.filter(t=>t.text!==e.toLowerCase()),utterancePriority=null},utter=(e,t=1,n=7)=>{const o=e.toLowerCase();try{const e=utteranceQueue.length;times(t,()=>{utteranceQueue.push(new window.SpeechSynthesisUtterance(o))}),utterancePriority=new window.SpeechSynthesisUtterance(o),e||triggerUtterance()}catch(e){console.log(e)}};function colorBlinkAnim(){const e=chooseHue();return`0%,100% {color:${getColorFromHue(e)};background-color:${getColorFromHue(e+possibleHues[1])};}`+possibleHues.length===2?`50% {color:${getColorFromHue(e+possibleHues[1])};background-color:${getColorFromHue(e)};}`:`33% {color:${getColorFromHue(e+possibleHues[1])};background-color:${getColorFromHue(e+possibleHues[2])};} 66% {color:${getColorFromHue(e+possibleHues[2])};background-color:${getColorFromHue(e)};}`}function marquee(e,t={}){const n=t.className||"",o=t.style||"",i=t.direction||1,r=t.delay||0,a=t.duration||1,s=t.sideways||!1,l=t.msgAnimation||iden,c=elementIsEmoji(e)?60:40,m=(e,t,n)=>{const o=elementIsEmoji(e),i=(o||n>0?.1:.5)+"em";return l($.span(e,{style:`margin-left:${i};margin-right:${i};font-size:${o?.9:1}em;`}).cloneNode(!0),{delay:100*t+n/2})},d=$.div(times(c,t=>Array.isArray(e)?e.map((e,n)=>m(e,t,n)):m(e,t,0)).flat(),{class:"marqueeInner marqueeForward",style:`animation-delay:-${r}s;animation-duration:${a/(c/40)}s;animation-direction:${1===i?"normal":"reverse"};`});return $.div(d,{style:o+(s?`transform: rotate(${sample([90,270])}deg);`:""),class:`component marquee ${n}`})}function genericAnimatingComponent(e){return(t,n={})=>{const o=n.className||"",i=n.style||"",r=n.delay||0,a=n.duration||1e3,s=n.direction||1;return(n.showTrails?withTrails:iden)($.div(t,{class:`${e} ${o} animatingComponent`,style:`animation-duration:${a}ms;animation-delay:-${r}ms;animation-direction:${1===s?"normal":"reverse"};${i}`}),n)}}css(`.marquee {display:inline-block;width:100%;box-sizing:border-box;line-height:1;} .marqueeInner {display:inline-flex;} .marqueeForward {animation:Marquee 50s linear infinite;} .marqueeInner > * {display:inline-block;white-space:nowrap;} @keyframes Marquee {0% {transform:translate3d(-50%, 0, 0)} 100% {transform:translate3d(0%, 0, 0)} } .bgAnimation {z-index:-1;} .updownChars {animation:UpDownChars 2s ease-in-out infinite;display:inline-block;} @keyframes UpDownChars {0%, 100% {transform:translate3d(0%, 10%, 0)} 50% {transform:translate3d(0%, -10%, 0)} } .updownLong {height:100%;animation:UpDownLong 1000ms ease-in-out infinite;} .updownLong > * {animation:UpDownLongChild 2000ms ease-in-out infinite;} @keyframes UpDownLongChild {0%, 100% {transform:translateY(0)} 50% {transform:translateY(-100%)} } @keyframes UpDownLong {0%, 100% {transform:translateY(0)} 50% {transform:translateY(100%)} } .blink {animation:Blink 1.5s steps(2, start) infinite;} @keyframes Blink {to {visibility:hidden;} } .colorChars {animation:FullColorRotate 1.5s steps(6, start) infinite;} .borderBlink {border-width:0.05em;animation:BorderBlink 1.5s steps(2, start) infinite;box-sizing:border-box;} @keyframes BorderBlink {50% {border-style:hidden;} } .colorBlink {animation:ColorBlink 4s steps(1, start) infinite;} @keyframes ColorBlink {${colorBlinkAnim()} } .fullColorRotate {animation:FullColorRotate 25s linear infinite;} @keyframes FullColorRotate {0%, 100% {color:#ff0000} 17% {color:#ffff00} 33% {color:#00ff00} 50% {color:#00ffff} 66% {color:#0000ff} 83% {color:#ff00ff} } .colorShift {animation:ColorRotate 25s linear infinite;} @keyframes ColorRotate {0%, 100% {color:#ff0000} 17% {color:#ffff00} 33% {color:#00ff00} 50% {color:#00ffff} 66% {color:#0000ff} 83% {color:#ff00ff} } .dance {animation:Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes Dance {0%, 100% {transform:rotate(20deg)} 50% {transform:rotate(-20deg)} } .growShrink {animation:GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes GrowShrink {0%, 100% {transform:scale(1)} 50% {transform:scale(0.2)} } .growShrinkShort {animation:GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;display:inline-block;} @keyframes GrowShrinkShort {0%, 100% {transform:scale(1)} 50% {transform:scale(0.75)} } .spin {animation:Spin 2000ms linear infinite;} @keyframes Spin {0% {transform:rotate(0deg)} 100% {transform:rotate(360deg)} } .hSiren {animation:HSiren 2000ms linear infinite;} @keyframes HSiren {0% {transform:perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)} 100% {transform:perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)} } .vSiren {animation:VSiren 2000ms linear infinite;} @keyframes VSiren {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)} 100% {transform:perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)} } .vSirenShort {animation:VSirenShort 2000ms linear infinite;} @keyframes VSirenShort {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)} 100% {transform:perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)} } .hPivot {animation:HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes HPivot {0%, 100% {transform:perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)} 50% {transform:perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)} } .vPivot {animation:VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;} @keyframes VPivot {0%, 100% {transform:perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)} 50% {transform:perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)} } .vFlip {animation:VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes VFlip {0% {transform:perspective(500px) rotate3d(2,0,0, 0deg)} 100% {transform:perspective(500px) rotate3d(2,0,0, 1800deg)} } .hFlip {animation:HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes HFlip {0% {transform:perspective(500px) rotate3d(0,2,0, 0deg)} 100% {transform:perspective(500px) rotate3d(0,2,0, 1800deg)} } .breathe {animation:Breathe 2000ms ease-in-out infinite;} @keyframes Breathe {0%, 100% {transform:scaleX(1) scaleY(1)} 50% {transform:scaleX(0.8) scaleY(0.9)} } .flamingHot {animation:FlamingHot 2000ms ease-in-out infinite;} @keyframes FlamingHot {0% {transform:scale(1) translateY(0);opacity:1;} 75% {opacity:0;transform:scale(1.15) translateY(-0.2em);} 80% {opacity:0;transform:scale(1) translateY(0);} 100% {opacity:1;} } .leftRight {width:100%;animation:LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;font-size:10vmin;} .leftRight > * {animation:LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;display:inline-block;white-space:nowrap;} @keyframes LeftRightChild {0%, 100% {transform:translateX(0)} 50% {transform:translateX(-100%)} } @keyframes LeftRight {0%, 100% {transform:translateX(0)} 50% {transform:translateX(100%)} } .shrinkingBorder {animation:ShrinkingBorder 2000ms linear infinite;} .spinningBorder {animation:Spin 2000ms linear infinite;} @keyframes ShrinkingBorder {0% {transform:scale(105%)} 100% {transform:scale(0%)} } .shrinkingSpinningBorder {animation:SpinningShrinkingBorder 2000ms linear infinite;} @keyframes SpinningShrinkingBorder {0% {transform:scale(105%) rotate(0deg)} 100% {transform:scale(0%) rotate(45deg)} } .wave {animation:Wave 4500ms linear infinite;} .climb {animation:Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;} @keyframes Wave {0%, 100% {transform:translate3d(0%, 30%, 0) rotate(0deg)} 25% {transform:translate3d(0%, 0%, 0) rotate(12deg)} 50% {transform:translate3d(0%, -30%, 0) rotate(0deg)} 75% {transform:translate3d(0%, 0%, 0) rotate(-12deg)} } .hexagon {animation:Hexagon 2000ms linear infinite;} @keyframes Hexagon {0%, 100% {transform:translate(0, 0.5em)} 17% {transform:translate(0.43em, 0.25em)} 33% {transform:translate(0.43em, -0.25em)} 50% {transform:translate(0, -0.5em)} 66% {transform:translate(-0.43em, -0.25em)} 83% {transform:translate(-0.43em, 0.25em)}}`);const blink=genericAnimatingComponent("blink"),dance=genericAnimatingComponent("dance"),growShrink=genericAnimatingComponent("growShrink"),growShrinkShort=genericAnimatingComponent("growShrinkShort"),spin=genericAnimatingComponent("spin"),hSiren=genericAnimatingComponent("hSiren"),vSiren=genericAnimatingComponent("vSiren"),vSirenShort=genericAnimatingComponent("vSirenShort"),hPivot=genericAnimatingComponent("hPivot"),vPivot=genericAnimatingComponent("vPivot"),vFlip=genericAnimatingComponent("vFlip"),hFlip=genericAnimatingComponent("hFlip"),wave=genericAnimatingComponent("wave"),climb=genericAnimatingComponent("climb"),hexagon=genericAnimatingComponent("hexagon"),breathe=genericAnimatingComponent("breathe"),updownLongParent=genericAnimatingComponent("updownLong"),updownLong=(e,t={})=>{const n=t.duration||1e3,o=t.delay||0,i=$.div(e,{style:`animation-duration:${n}ms;animation-delay:-${o}ms;`});return updownLongParent(i,t)},leftRightParent=genericAnimatingComponent("leftRight"),leftRight=(e,t={})=>{const n=t.duration||1e3,o=t.delay||0,i=$.div(e,{style:`animation-duration:${n}ms;animation-delay:-${o}ms;`});return leftRightParent(i,t)},flamingHotParent=genericAnimatingComponent("flamingHot"),flamingHot=(e,t={})=>flamingHotParent(e,{...t,showTrails:!0,baseIsPaused:!0,delayM:-10}),withTrails=(e,t={})=>{const n=t.delayM||1;return times(5,o=>{const i=e.cloneNode(!0);return o<4&&$(i,"position","absolute"),$(i,"opacity",.2+o/5),$(i,"text-shadow",`0 0 0.${.05*(5-o)}em`),4===o&&t.baseIsPaused?($(i,"animation-play-state","paused"),$(i,"animation-delay","0ms"),$(i,"animation-direction","normal")):$(i,"animation-delay",`${-t.delay+.025*t.duration*(5-o)*n}ms`),i})},bgAnimation=(e,t,n,o={})=>$.div([],{class:e+" bgAnimation",style:`border:1vmin ${borderStyle};position:absolute;height:${100*t/rows}vh;width:${100*n/cols}vw;animation-delay: -${o.delay||0}ms;animation-duration:${o.duration||2e3}ms;animation-direction:${-1===o.direction?"reverse":"normal"}; ${o.style||""}`});function staticBgsMultiple(e,t){return times(6,n=>bgAnimation("",e,t,{style:`transform: scale(${n/6});`}))}function shrinkingBgSingle(e,t){const n=prb(.5)?1:-1,o=rnd(750,3e3);return[bgAnimation("shrinkingBorder",e,t,{duration:o,direction:n})]}function shrinkingBgMultiple(e,t){const n=prb(.5)?1:-1,o=rnd(750,3e3);return times(4,i=>bgAnimation("shrinkingBorder",e,t,{delay:500*i,duration:o,direction:n}))}function shrinkingSpinningBgMultiple(e,t){const n=prb(.5)?1:-1,o=rnd(3e3,1e4);return times(4,i=>bgAnimation("shrinkingSpinningBorder",e,t,{delay:i*(o/4),duration:o,direction:n}))}function colorShiftingBgMultiple(e,t){const n=prb(.5)?1:-1,o=rnd(4e3,16e3),i=rndint(8,20);return times(i,r=>bgAnimation("colorShift",e,t,{delay:500*r,duration:o,direction:n,style:`transform: scale(${.95-r/i});`}))}const bgAnimationFn=0===bgAnimationType?colorShiftingBgMultiple:1===bgAnimationType?staticBgsMultiple:2===bgAnimationType?shrinkingBgSingle:3===bgAnimationType?shrinkingBgMultiple:shrinkingSpinningBgMultiple;let bgAnimationCount=0;function withBgAnimation(e,t,n){const o=n/t;if(bgAnimationFn!==colorShiftingBgMultiple&&(o>3||o<.3333))return e;const i=prb(bgAnimationPrb);return i&&bgAnimationCount++,[...i?bgAnimationFn(t,n):[],e]}function genericCharacterComponent(e,t,n){return(o,i={})=>{const r=prb(.5)?[o.innerHTML]:o.innerHTML.split(" ");return $.div(r.map(o=>$.div((o=>{const r=i.duration?map(i.duration,750,5e3,t,n):rnd(t,n);return o.split("").map((t,n)=>$.span(t,{class:e+" charContent",style:`animation-delay:-${n*r}ms;${" "===t?"margin-right: 0.5em;":""}`}))})(o),{class:"charContentWord",style:"display:inline-block;margin-left:0.25em;margin-right:0.25em;"})),{class:"charContentGroup",style:"display: inline-block;"})}}const updownChars=genericCharacterComponent("updownChars",100,500),shrinkChars=genericCharacterComponent("growShrinkShort",100,300),blinkChars=genericCharacterComponent("blink",50,200),colorChars=genericCharacterComponent("colorChars",50,200);function getContent(e){const t=$.cls(e,"content");return t.length?t[0].childElementCount?t[0].children[0].alt:t[0].innerHTML:$.cls(e,"charContentWord").map(e=>$.cls(e,"charContent").map(e=>e.innerHTML).join("")).join(" ")}const LR_PADDING="margin-left: 0.2em; margin-right: 0.2em;";css(`.text {font-size:1em;} .emoji {${LR_PADDING} font-size:${USE_EMOJI_POLYFILL?.8:.9}em;} .emojiPolyfill {width:1em;height:1em;transform:translateY(7%);}`);const word=e=>$.span(e,{class:"text content"}),emoji=e=>$.span(e,{class:"emoji content"}),emojis=e=>e.split(" ").map(emoji),link=e=>$.a(e,{target:"_blank",href:"./"+(1e6*projectId+rndint(777)),class:"text content"}),elementIsEmoji=e=>!Array.isArray(e)&&(e.getElementsByClassName("emoji").length||e.className.includes("emoji"));let emojiOverride,textOverride;try{queryParams.emojis&&(emojiOverride=queryParams.emojis.split(",").map(decodeURI).map(emoji)),queryParams.text&&(textOverride=queryParams.text.split(",").map(decodeURI)),(textOverride||emojiOverride)&&console.log("OVERRIDES:",textOverride,emojiOverride)}catch(e){}const money1=emojis("💸 💰 💎 👑 💍 🪙"),money2=emojis("🤑 💷 💴 💵 💶 💲 💸 💰"),moneyFull=[...emojis("💹 📈 💯"),...money1,...money2],fruit1=emojis("🍒 🍉 🍇 🍋 🍯"),fruit2=emojis("🍆 🍑 🌶"),miscFood=emojis("🥕 🍌 🥜 🧀 🍪"),booze=emojis("🍻 🍾 🥂"),hot=emojis("🌶 🔥 ❤️‍🔥 🌋"),lucky=[...emojis("🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓ 🃏 🎲"),...fruit1,...money1],drugs=[...emojis("🎄 🍄 ❄️ 😵‍💫"),...booze],party=[...emojis("🎉 🕺 💃 🎊 🥳 🎈"),...booze],energy=emojis("💫 🔥 🚀 ⚡️ ✨"),explosion1=emojis("💥 🤯 🧨 💣"),explosionFull=[...explosion1,...energy,...emojis("🌋 ☄️")],sexy=[...emojis("🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹 🥵"),...fruit2],yummy=[...emojis("🍬 🍭 🎂 🍫 🍦 🍄"),...fruit1,...fruit2,...miscFood],usa=emojis("🏎 🇺🇸 ★"),funny=emojis("🐄 🤡 💩 😂 🤣"),symbols=emojis("★ → ←"),justArrows=emojis("→ ← → ← → ← 🔴"),lunar=emojis("🌜 🌛 🌝 🌞 🌎 🌟",...energy),colorful=[...emojis("🍭 🎨 🌈 🦄 🎉"),...fruit1],loud=[...emojis("‼️ ❗️ 🔊"),...explosion1],computer=emojis("👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️ ❤️"),commonEmojis=emojis("💸 🤑 🔥 😂 💥"),circusEmojis=emojis("🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹"),excitingMisc=emojis("🙌 🤩 ‼️ 🏃 😃"),hedonicTreadmill=[...emojis("🏃 🧠"),...miscFood,...symbols],sportsEmojis=emojis("🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪"),misc=emojis("⚠️ 🐂 🤲 🐐 🎸 🚬 🌳"),emojiLists=emojiOverride?[emojiOverride]:[moneyFull,booze,hot,lucky,drugs,party,energy,explosion1,explosionFull,sexy,yummy,usa,funny,symbols,lunar,colorful,loud,computer,excitingMisc,commonEmojis,justArrows,hedonicTreadmill,circusEmojis,sportsEmojis],emojiList=[...emojiLists,misc].flat().map(e=>e.innerHTML),withEmoji=(e,t,n=1)=>!hasEmoji(e)&&prb(n)?$.span([e,$.span(sample(t),{style:"margin-left: 0.5em"})]):e,withEmojiLazy=(e,t)=>n=>withEmoji(n,e,t),luckyText=["WINNER","LUCKY","CONGRATULATIONS","WIN BIG","MEGA WIN","JACKPOT","HIT IT BIG","777","YOU CAN'T LOSE","EVERYONE'S A WINNER","DOUBLE DOWN","BINGO","MULTIPLIER","SURPRISE"],dealsText=["DEAL OF THE CENTURY","DEALS","DEALS GALORE","WHAT A BARGAIN","WHAT A DEAL","BARGAIN","BUY NOW","CHEAP","SO CHEAP","SELL OUT","GOOD PRICES","CRAZY DEALS","NEW","INSANE PRICES","LIMITED TIME OFFER","FREE","DEALS","UNLIMITED","EXTRA LARGE","NEW AND IMPROVED","RUN, DON'T WALK","SENSATIONAL","AMAZING SAVINGS","MORE","MORE IS MORE","I WANT MORE","SATISFACTION GUARANTEED","SUPERSIZE"],cashText=["Do you CRAVE YIELD?","MAKE GENERATIONAL WEALTH NOW","MAKE FAST CASH NOW","MAKE CASH FAST","GOLD MINE","FAST CASH","$$$$","CASH COW","MILLIONAIRE","BILLIONAIRE","TRILLIONAIRE","PUMP + DUMP","CRYPTO FORTUNE","GET RICH QUICK","YIELD EXPLOSION","TREASURE TROVE","PROFITS","MONEY MAKING OPPORTUNITY"],sexyText=["SEXY","XXX","HOT","SO HOT","SPICY","SO SEXY","PURE BLISS","DELICIOUS","FORBIDDEN PLEASURES","JUICY","PASSION","ECSTASY","LUST","DESIRE","OBSESSION"],fomo=["THINGS ARE MOVING FAST","Stop THROWING YOUR MONEY AWAY","DON'T MISS OUT","YOU CAN'T AFFORD TO PASS THIS UP","ACT NOW (Before It's Too Late)","FEAR OF MISSING OUT","FEAR UNCERTAINTY DOUBT","FOMO","FUD","THIS WON'T LAST","TIME IS RUNNING OUT","ACT NOW","DON'T WAIT","THIS IS WHAT YOU'VE BEEN WAITING FOR","THIS IS GOING TO BE HUGE"],hotText=["TOO HOT TO HANDLE","SO HOT","HOT STUFF","SIZZLING","HOTTEST ART AROUND","ELECTRIC","WHITE HOT"],excitingText=["FRESH","UNBELIEVABLE","BELIEVE THE HYPE","WOW","OMG","HYPE","AMAZING","INCREDIBLE","EXCITING","ECSTATIC","EUPHORIC","THRILLING","HOLY MOLY","WHAT A THRILL","HIGH OCTANE","HIGH VOLTAGE","SUPERCHARGED","HOLY COW","BONANZA","PURE ENERGY","PARTY TIME","INSTANT GRATIFICATION","MIND = BLOWN","DOPAMINE RUSH","DOPAMINE BOOST","STARSTRUCK","BLAST OFF","ALL OR NOTHING","LET'S GO","FRENZY","WILD","DELIGHTFUL","DOPAMINE MACHINE"],funText=["FUN","LOL","ROFL","LMAO","WAGMI","WTF","SO COOL","I LOVE IT","HA HA HA HA","SWEET","DOPE"],crypto=["ALPHA","NEW PARADIGM","DEGEN","NFTs","CRYPTO","MAKE FAST CASH NOW","WAGMI","GRAIL","THIS NFT SELLS ITSELF","STRAIGHT TO THE MOON","BULL MARKET","DIAMOND HANDS","ALL TIME HIGH","100%","THROBBING GAINS","MASSIVE GAINS","WHOPPING GAINS","RARE"],disclaimer=["WHAT YOU SEE IS WHAT YOU GET","NFA","NOT FINANCIAL ADVICE","WARNING","DANGER ZONE","DO YOUR OWN RESEARCH","DYOR","SAFE + SECURE","PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS"],affirmations=["OPPORTUNITY OF A LIFETIME","YOU WON'T BELIEVE THIS","THIS IS THE REAL DEAL","PAY ATTENTION","I COULDN'T BELIEVE IT EITHER","YOU'LL LOVE IT","YOU DESERVE IT","TOO GOOD TO BE TRUE","YOU ONLY LIVE ONCE","YOLO","NEVER LOOKED SO GOOD","AS GOOD AS IT GETS","FUCK YES","FINALLY","SPECIAL","YOU'RE #1","THIS ROCKS","ALL NATURAL","EASY AS 1 2 3","HAPPY","REWARDS"],wwwText=["WORLD WIDE WEB","ENGAGEMENT","CLICK HERE","VIRAL","LIKE","TRENDING","BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE"],sportsText=["SLAM DUNK","GOAL","HOME RUN","GRAND SLAM","MAKE SOME NOISE","LET'S GO","POWER PLAY","GREATEST OF ALL TIME","CHAMPION","WINNER","VICTORY LAP","ACTION PACKED","TRIPLE CROWN","ALL STAR","SUPERSTAR","LIGHTNING ROUND"],textLists=[luckyText,dealsText,cashText,sexyText,fomo,hotText,excitingText,funText,crypto,disclaimer,affirmations,wwwText,sportsText],emojiTextRelationships={single:{"CASH COW":[emoji`🐄`,...money2],"YIELD EXPLOSION":explosion1,"HOTTEST ART AROUND":emojis("🎨 🔥"),SUPERCHARGED:emojis("⚡️"),"HIGH VOLTAGE":emojis("⚡️"),"HOLY COW":emojis("🐄"),"STRAIGHT TO THE MOON":emojis("🌜 🌛 🌝 🚀"),"THROBBING GAINS":emojis("💪"),"MASSIVE GAINS":emojis("💪"),"BULL MARKET":emojis("🐂"),"DIAMOND HANDS":emojis("💎 🤲"),SWEET:yummy,ELECTRIC:emojis("⚡️"),"LIGHTNING ROUND":emojis("⚡️"),JUICY:fruit1,"ALL NATURAL":fruit1,"PURE ENERGY":energy,"RUN, DON'T WALK":emojis("🏃"),"MIND = BLOWN":emojis("🤯"),"100%":emojis("💯"),"GREATEST OF ALL TIME":emojis("🐐"),STARSTRUCK:emojis("🤩"),"BLAST OFF":emojis("🚀"),ROFL:emojis("🤣"),"THIS ROCKS":emojis("🎸")},group:[[luckyText,lucky],[dealsText,money2],[cashText,moneyFull],[sexyText,sexy],[hotText,hot],[excitingText,[...explosionFull,...hot,...loud,...excitingMisc]],[funText,funny],[crypto,[...moneyFull,...energy]],[disclaimer,emojis("⚠️ 🚨")],[wwwText,computer],[sportsText,sportsEmojis]]};function chooseEmojiForText(e,t=.1){if(prb(t)&&emojiTextRelationships.single[e])return sample(emojiOverride||emojiTextRelationships.single[e]);if(is420)return"🚬";for(let[n,o]of emojiTextRelationships.group)if(n.includes(e)){const e=sample(emojiOverride||o);return prb(t)?e:void 0}}const sampledTextContent=[],sampledEmojiContent=[];function sampleContent(e=!1,t=!1){if(e){const e=sample(t?sampledEmojiContent:[...sampledEmojiContent,...sampledTextContent]);return[e,e]}const n=t||prb(.3)&&_content.emojis.length||!_content.text.length,o=sample(_content.emojis),i=n?o:sample(_content.text);let r=n?o:sample((textOverride||[]).map(e=>word(e)));return textOverride||(r=i),n?sampledEmojiContent.push(r):sampledTextContent.push(r),[i,r]}const contentSample={text:[],emojis:[]};function chooseContent(){const e={text:[],emojis:[]},t=chance([30,1],[30,2],[25,3],[15,0]);t?times(t,e=>{const t=sample(textLists);contentSample.text.push(t);const n=emojiTextRelationships.group.find(e=>e[0]===t),o=n&&prb(.5)?n[1]:sample(emojiLists);contentSample.emojis.push(o)}):(contentSample.text=textLists,contentSample.emojis=emojiLists),is69?(contentSample.text=[sexyText],contentSample.emojis=[sexy]):is420?(contentSample.text=[funText],contentSample.emojis=emojis("🚬 🌳 🍄 😵‍💫")):is100?(contentSample.text=["100%"],contentSample.emojis=emojis("💯")):is666?(contentSample.text=[hotText],contentSample.emojis=[hot]):is7&&(contentSample.text=[luckyText],contentSample.emojis=[lucky]);const n=chance([15,1],[25,2],[35,3],[10,4],[10,5],[5,0]);emojiOverride&&(contentSample.emojis=emojiOverride),n?times(n,t=>{e.text.push(sample(contentSample.text)),e.emojis.push(sample(contentSample.emojis))}):(e.text=contentSample.text,e.emojis=contentSample.emojis);return e.text=e.text.flat().map(e=>"CLICK HERE"===e?link(e):word(e+(prb(.25)?"!":""))),e.emojis=showEmojis?e.emojis.flat():[],e}const _content=chooseContent(),content=[..._content.text,..._content.emojis],adjustCharLength=(e,t)=>{let n=e;return emojiList.forEach(e=>n=n.replace(e,"1")),n.length+(t?3:0)};function createSound(e,t,n,o=0){let i;if([spin,flamingHot].includes(e))i=smoothSound;else if([vPivot,hPivot,dance,updownLong,growShrink,breathe,growShrinkShort].includes(e))i=chance([4,e=>sirenSound({...e,duration:e.duration/2})],[4,e=>zoomSound({...e,delay:e.delay+e.duration/4,duration:e.duration/2})],[!n&&2,e=>carSirenSound(e)],[!n&&1,e=>ticktockSound(e)]);else if([hSiren,vSiren,wave,vSirenShort].includes(e))i=sirenSound;else if([hFlip,vFlip].includes(e))i=flipSound;else if([blinkChars,colorChars].includes(e))i=blinkCharSound;else if(blink===e)i=n?blinkCharSound:ticktockSound;else if([shrinkChars,updownChars].includes(e))i=shrinkCharSound;else if(e===hexagon)i=prb(.5)?hexSound:sirenSound;else if(e===climb)i=climbSound;else{if(e!==iden)return;i=singleSound}return i({...t,delay:t.delay+o||0})}css(`.sectionContainer {overflow:hidden;display:flex;align-items:center;justify-content:center;user-select:none;cursor:pointer;transition:150ms;filter:invert(${invertAll?1:0});transition:250ms;} .sectionContainer:hover {filter:invert(${invertAll?0:1});} .sectionContainer:active {opacity:0.5;} .animationGridContainer {line-height:1;}`),SOUND_SAMPLE=[];let sectionCount=0;function sectionContainer(e,t,n,o,i,r){const a=prb(.5)?{bg:"#000",text:"#fff"}:{bg:"#fff",text:"#000"},s=BW?a.text:getColorFromHue(i),l=BW?a.bg:getBgColor(o),c=l.length>200?"":"background: ",m=threeDRotations?`perspective(500px) rotate3d(1,1,0.5,${lineRotation()}deg)`:`rotate(${lineRotation()}deg)`,d=prb(italicRate)?"font-style: italic;":"",u=.05*min(t,n),p=prb(rotateColorPrb)?"fullColorRotate":"",h=prb(colorBlinkPrb)?"colorBlink":"",g=["sectionContainer",starburstBg(o,t,n),p,h,sectionAnimation].filter(iden).join(" "),S=$.div(withBgAnimation(e,t,n),{class:g,style:`border-style:${borderStyle};${showBorder?`border-width:${u}vmin;box-sizing:border-box;`:"border-width:0;"} grid-column:span ${n};grid-row:span ${t};${c}${hideBg?"none;":l};color:${s};${d} transform:${m};animation-delay:-${rnd(5)}s;animation-direction:${p?"normal":sectionAnimationDirection()};animation-duration:${p?"25":sectionAnimationDuration()}s;`}),f=getContent(e);let E,A;const T=prb(.01),y=prb(.01),I=prb(.01);return S.onclick=(()=>{try{if(r(),window.navigator&&window.navigator.vibrate(50),T){const e=E?"remove":"add";S.classList[e]("fullScreen"),E=!E}if(console.log("CLICK:",f),I){const e=()=>{A=setTimeout(()=>{new Notification(f),e()},rndint(100,1e4))};Notification.requestPermission().then(t=>{e()}),A&&clearTimeout(A)}navigator.clipboard&&navigator.clipboard.writeText(f),f.includes("FAST CASH")&&setTimeout(()=>window.open("http://fastcashmoneyplus.biz","_blank")),y&&setTimeout(()=>window.alert(f))}catch(e){}}),sectionCount++,SOUND_SAMPLE.push(r),S}const usedAnimations=[];let marqueeCount=0;function marqueeContainter(e,t,n=!1){marqueeCount++;let[o,i]=sampleContent(n);const r=chooseEmojiForText(o.innerHTML,pairedEmojiPrb);textOverride&&(o=i);const a=`calc(${100*e/rows}vh)`,s=`calc(${100*t/cols}vw)`,l=1+adjustCharLength(o.innerHTML,r)/9,c=t/e,m=prb(thinSidewaysPrb)&&c<.333||prb(sidewaysPrb)&&c>=.3333&&c<1.2,d=chooseHue(),u=chooseAltHue(d),p=e>=2&&t/e>=5,h=o.innerHTML.length<8,g=prb(marqueeAnimationRate)&&p?chance([1,growShrinkShort],[1,vSirenShort],[1,blink],...h?[[1,dance],[1,spin],[1,hSiren],[1,hPivot],[1,hFlip]]:[]):iden;usedAnimations.push(g);const S=rnd(750,1500),f=rnd(map(m?t/cols:e/rows,0,1,.5,20),100)*l*speed,E=f/5+rnd(f/5),A=t/e>=6&&prb(.1),T=A&&prb(.5),y=elementIsEmoji(o),I=y&&m&&prb(.5);let O="";I&&(O="transform:rotate(90deg);display:inline-block;"),(y&&e<=3||I&&t<=3)&&(O+=LR_PADDING);const b=$.span(o.cloneNode(!0),{class:y?"emojiShadow":"",style:getShadow(u,!y)+O,"data-h":u}),L=r?[b,$.span(r,{class:"emojiShadow",style:`${LR_PADDING} ${getShadow(u,!1)}`,"data-h":u})]:b,C={duration:S*l*speed/2,delay:E,showTrails:T};let w,R;A?(usedAnimations.push(leftRight),w=leftRight(L,{style:`font-size:${a};`,duration:S*l*speed,delay:E,showTrails:T}),R=zoomSound({...C,switchChannels:!0})):(w=marquee(L,{style:`font-size:${m?s:a};`,direction:posOrNeg(),delay:E,duration:f,sideways:m,msgAnimation:g}),g!==iden&&(R=createSound(g,{duration:2e3},!0)));let v=[],N=!1;const M=prb(.1);return sectionContainer(w,e,t,d,u,()=>{if(A){if(v.length)return v.forEach(e=>e()),void(v=[]);const e=R();if(M||v.push(e),T){const e=M?zoomSound({...C,switchChannels:!0})(20):R(20);M||v.push(e)}}else if(N&&utteranceQueue.some(e=>e.text===o.innerHTML.toLowerCase())?(stopUtter(o.innerHTML),N=!1):(utter(o.innerHTML,30,7),N=!0),v.length)v.forEach(e=>e()),v=[];else if(R){const e=R();M||v.push(e)}})}function getFontSize(e,t,n){const o=t/rows,i=n/cols,r=e.split(" "),a=r.reduce((e,t)=>adjustCharLength(t)>adjustCharLength(e)?t:e,r[0]),s=adjustCharLength(a);return`calc(min(${o/(adjustCharLength(e)/s)}*100vh,${i/s}*100vw))`}const allPlayingSounds=[];let animationCount=0;function animationContainer(e,t,n=!1){animationCount++;let[o,i]=sampleContent(n);textOverride&&(o=i);const r=chooseHue(),a=chooseAltHue(r),s=emojiList.includes(o.innerHTML.replace("!","")),l=7===layoutStyle&&cellSize<12&&prb(.8),c=sample([dance,growShrink,spin,hSiren,vSiren,hPivot,vPivot,vFlip,hFlip,updownLong,climb,blink,hexagon,flamingHot,iden,prb(.5)&&breathe,!s&&!l&&colorChars,!s&&updownChars,!s&&blinkChars,!s&&shrinkChars].filter(iden)),m=o.innerHTML.split(" "),d=m.reduce((e,t)=>t.length<e.length?t:e,m[0]),u=(o.innerHTML.length,d.length,getFontSize(o.innerHTML,e,t)),p=c===updownLong||prb(.75)?iden:sample([dance,growShrink,spin,hSiren,vSiren,hPivot,vPivot,vFlip,hFlip,climb]);usedAnimations.push(c),usedAnimations.push(p);const h={delay:rnd(3500),duration:rnd(750,5e3),direction:prb(.5)?1:-1,showTrails:prb(.2)},g={delay:rnd(3500),duration:rnd(750,5e3),showTrails:h.showTrails},S=$.div(p(c(o.cloneNode(!0),h),g),{class:"animationContainer"+(s?" emojiShadow":""),"data-h":a,style:`height:${100*e/rows}vh;font-size:${u};${getShadow(a,!s)} text-align:center;display:flex;align-items:center;justify-content:center;`});let f=[];const E=prb(.1),A=createSound(c,h),T=p!==iden?createSound(p,g):null;return sectionContainer(S,e,t,r,a,()=>{if(f.length)return f.forEach(e=>e()),void(f=[]);const e=A();if(E||f.push(e),h.showTrails&&c!==blinkChars){const e=E?createSound(c,h)(10):A(10);E||f.push(e)}if(T){const e=T();E||f.push(e)}})}function getEmojiGrid(e,t){const n=rndint(1,min(e/2,t/2))||1;return[max(1,int(e/n)),max(1,int(t/n))]}let gridCount=0;function animationGridContainer(e,t,n=!1){const[o]=sampleContent(n,!0);if(!o)return animationContainer(e,t);gridCount++;const i=chooseHue(),r=chooseAltHue(i),a=chance([5,growShrink],[4,spin],[3,blink],[3,vSiren],[3,hSiren],[3,vFlip],[3,hFlip],[1,dance],[1,wave],[1,climb]);usedAnimations.push(a);const[s,l]=getEmojiGrid(e,t),c=rnd(750,5e3),m=rnd(.5,2),d=$.div(times(s*l,e=>a(o.cloneNode(!0),{delay:e/(s*l)*c*m,duration:c})),{class:"animationGridContainer emojiShadow","data-h":r,style:`font-size:${100*min(e/(s*rows),t/(l*cols*1.2))}vmin;height:${100*e/rows}vh;width:${100*t/cols}vw;display:grid;align-items:center;justify-items:center;grid-template-rows:repeat(${s}, 1fr);grid-template-columns:repeat(${l}, 1fr);${getShadow(r,!1)}`}),u={delay:c*m,duration:c};let p=[];const h=prb(.1),g=createSound(a,u,!0);return sectionContainer(d,e,t,i,r,()=>{if(p.length)return p.forEach(e=>e()),void(p=[]);const e=g();if(h||p.push(e),a!==blink){const e=h?createSound(a,u)(c/4):g(c/4);h||p.push(e)}})}function flexSection(e,t,n=!1){const o={};times(e,e=>o[e]=[]);const i=[];let r,a,s,l;if([1,2].includes(layoutStyle))r=1,s=1,a=t,l=e;else if(3===layoutStyle)r=1,s=1,a=t,l=int(e/8);else if(4===layoutStyle)prb(.5)?(r=t*(5/12),s=e*(5/12)):(r=t,s=e),a=t,l=e;else if(5===layoutStyle)s=rowSize,l=rowSize,r=12,a=t;else if(6===layoutStyle)r=colSize,a=colSize,s=prb(.5)?16:e,l=e;else if(7===layoutStyle)r=cellSize,a=cellSize,s=cellSize,l=cellSize;else if(8===layoutStyle)r=1,s=1,a=int(t/6),l=int(e/6);else if(9===layoutStyle){const n=rndint(1,7);r=n,s=n,a=t,l=e}const c=(e,n)=>{for(let i=n;i<t;i++)if(!o[e][i])return i;return t},m=(e,t,n)=>{const o=rndint(min(e,t),n);return t-o<e?t:o},d=(c,d)=>{let u=l,p=a;1!==layoutStyle||sectionCount?2===layoutStyle&&prb(.9)?prb(.2)?p=sample([1,2]):u=sample([1,2]):9===layoutStyle&&(prb(.3)?p=rndint(1,7):u=rndint(1,7)):(prb(.5)&&(u=e/4),prb(.5)&&(p=t/4));const h=min(((e,n)=>{for(let i=n;i<t;i++)if(o[e][i])return i;return t})(c,d)-d,p),g=max(1,min(e-c,u)),S=m(r,h,t),f=m(s,g,e),E=S/f,A=4===layoutStyle?.75:.5;return i.push(E<1.25&&E>.8?prb(.75)&&_content.emojis.length?animationGridContainer(f,S,n):animationContainer(f,S,n):E<2&&E>.5&&prb(A)?animationContainer(f,S,n):marqueeContainter(f,S,n)),times(f,e=>times(S,t=>o[c+e][d+t]=1)),{cSpan:S,rSpan:f}};let u=0;for(;u<e;){let e=c(u,0);for(;e<t;){const{cSpan:t}=d(u,e);e=c(u,e+t)}u++}return $.section(i,{style:`width:${100*t/cols}vw;height:${100*e/rows}vh;overflow:hidden;grid-row:span ${e};grid-column:span ${t};display:grid;grid-template-rows:repeat(${e},1fr);grid-template-columns:repeat(${t},1fr);`})}function generateMain(e,t=!1){return $.main(flexSection(rows,cols,t),{id:"main",class:`projection-page-${e}`,style:`height:100vh;width:100vw;overflow:hidden;display:grid;grid-template-rows:repeat(${rows},1fr);grid-template-columns:repeat(${cols},1fr);`})}function renderMain(e){document.body.innerHTML="",$.render(document.body,e)}const main=generateMain(1);projectionPages[1]=main,projectionPages.pagesRendered=!1;const usedContent=Array.from(new Set([...$.cls(main,"content").map(e=>e.innerHTML),...$.cls(main,"charContentGroup").map(getContent)]));function help(){console.log("Keys:\n~ 0-7 => View alternate page\n~ Left/Right/Up => Switch voice\n~ Down => Reset voice\n~ Space => ???\n\nQuery Params:\n~ voice => Override default voice\n~ voiceLang => Override default voiceLang")}window.onload=(()=>{setMetadata(usedContent),renderMain(main),PAUSED&&(LAST_PAUSED=Date.now(),document.body.classList.add("pauseAll"));let e=USE_EMOJI_POLYFILL,t=!1,n=!1;const o=o=>{if("d"===o){const e=document.createElement("a");e.href="data:text/html;charset=UTF-8,"+encodeURIComponent(document.documentElement.outerHTML),e.download=usedContent.join(" ").replaceAll(" ","-")+".html",document.body.appendChild(e),e.click(),document.body.removeChild(e)}else if("o"===o)OVERDRIVE?(document.body.classList.remove("overdrive"),soundOverdrive()):(document.body.classList.add("overdrive"),soundOverdrive(6)),OVERDRIVE=!OVERDRIVE;else if("p"===o){PAUSED?(START_TIME+=Date.now()-LAST_PAUSED,document.body.classList.remove("pauseAll")):(LAST_PAUSED=Date.now(),document.body.classList.add("pauseAll")),PAUSED=!PAUSED;try{ls.set("__DOPAMINE_IS_PAUSED__",PAUSED)}catch(e){}}else if("a"===o)ANHEDONIC?(document.body.classList.remove("anhedonic"),sourcesToNormalMode()):(document.body.classList.add("anhedonic"),sourcesToAnhedonicMode()),ANHEDONIC=!ANHEDONIC;else if("m"===o)n?(document.exitPointerLock(),document.body.classList.remove("viewerMode")):(document.body.classList.add("viewerMode"),document.body.requestPointerLock()),n=!n;else if("i"===o)INVERT_ALL?document.body.classList.remove("invertAll"):document.body.classList.add("invertAll"),INVERT_ALL=!INVERT_ALL;else if("n"===o)t?document.exitFullscreen():document.body.requestFullscreen({navigationUI:"hide"}),t=!t;else if("e"===o){const t=$.cls(document,"emojiShadow");e?(Array.from(document.getElementsByTagName("img")).forEach(e=>{e.replaceWith(e.alt)}),t.forEach(e=>{e.style.textShadow=getTextShadowValue(Number(e.dataset.h)||0),e.style.filter=""})):window.twemoji&&(twemoji.parse(document.body,{folder:"svg",ext:".svg",className:"emojiPolyfill"}),t.forEach(e=>{e.style.filter=getDropShadowValue(Number(e.dataset.h)||0),e.style.textShadow=""})),e=!e;try{ls.set("__DOPAMINE_EMOJI_TOGGLE__",e)}catch(e){}}else if(["1","2","3","4","5","6","7"].includes(o))projectionPages.pagesRendered||(projectionPages[2]=generateMain(2,!0),projectionPages[3]=generateMain(3,!0),projectionPages[4]=generateMain(4,!0),projectionPages[5]=generateMain(5,!0),projectionPages[6]=generateMain(6,!0),projectionPages.pagesRendered=!0),"7"===o?(renderMain(projectionPages[1]),$.render(document.body,projectionPages[2]),$.render(document.body,projectionPages[3]),$.render(document.body,projectionPages[4]),$.render(document.body,projectionPages[5]),$.render(document.body,projectionPages[6])):renderMain(projectionPages[o]),START_TIME=Date.now();else if("0"===o)renderMain("");else if("ArrowRight"===o)selectVoice(ACTIVE_VOICE_IX+1);else if("ArrowLeft"===o)selectVoice(voices.length+ACTIVE_VOICE_IX-1);else if("ArrowDown"===o)window.speechSynthesis.cancel(),triggerUtterance();else if("ArrowUp"===o)selectVoice(0);else if(" "===o){const e=sample(SOUND_SAMPLE);e&&e()}};document.onkeydown=(e=>o(e.key)),queryParams.keys&&queryParams.keys.split(",").filter(e=>!["d","o"].includes(e)).forEach(o),USE_EMOJI_POLYFILL&&window.twemoji&&twemoji.parse(document.body,{folder:"svg",ext:".svg",className:"emojiPolyfill"})});
+const min = Math.min
+const max = Math.max
+const abs = Math.abs
+const round = Math.round
+const int = parseInt
+const map = (val, low, high, mn, mx) => mn < mx
+  ? mn + ((val - low)/(high-low)) * (mx - mn)
+  : mn - ((val - low)/(high-low)) * (mn - mx)
+
+let __randomSeed = int(tokenData.hash.slice(50, 58), 16)
+
+let rCount = 0
+function rnd(mn, mx) {
+  rCount++
+  __randomSeed ^= __randomSeed << 13
+  __randomSeed ^= __randomSeed >> 17
+  __randomSeed ^= __randomSeed << 5
+  const out = (((__randomSeed < 0) ? ~__randomSeed + 1 : __randomSeed) % 1000) / 1000
+  if (mx != null) return mn + out * (mx - mn)
+  else if (mn != null) return out * mn
+  else return out
+}
+
+const iden = x => x
+const rndint = (mn, mx) => int(rnd(mn, mx))
+const prb = x => rnd() < x
+const posOrNeg = () => prb(0.5) ? 1 : -1
+const sample = (a) => a[Math.floor(rnd(a.length))]
+const noop = () => {}
+
+function chance(...chances) {
+  const total = chances.reduce((t, c) => t + c[0], 0)
+  const seed = rnd()
+  let sum = 0
+  for (let i = 0; i < chances.length; i++) {
+    const val =
+      chances[i][0] === true ? 1
+      : chances[i][0] === false ? 0
+      : chances[i][0]
+    sum += val / total
+    if (seed <= sum && chances[i][0]) return chances[i][1]
+  }
+}
+
+function times(t, fn) {
+  const out = []
+  for (let i = 0; i < t; i++) out.push(fn(i))
+  return out
+}
+
+const allRunningIntervals = []
+function setRunInterval(fn, ms, i=0) {
+  const run = () => {
+    fn(i)
+    i++
+  }
+
+  run()
+
+  let isCleared = false
+
+  let interval = setInterval(run, ms)
+
+  const newInterval = (ms) => {
+    if (isCleared) return
+    clearInterval(interval)
+    interval = setInterval(run, ms)
+  }
+
+  const stopInterval = () => {
+    if (!isCleared) {
+      clearInterval(interval)
+      isCleared = true
+    }
+  }
+
+  allRunningIntervals.push({
+    newInterval,
+    stopInterval,
+    originalMs: ms
+  })
+
+  return stopInterval
+}
+
+
+const IS_HEADLESS = ((window.navigator || {}).userAgent || []).includes('eadless')
+const TWEMOJI_PRESENT = !!window.twemoji
+
+
+const $ = (elem, prop, value) => elem.style[prop] = value
+$.cls = (elem, selector) => Array.isArray(elem)
+  ? elem.map(e => $.cls(e, selector)).flat()
+  : Array.from(elem.getElementsByClassName(selector))
+
+
+
+$.render = (e, children) => {
+  if (!children) return
+  else if (typeof children === 'string') e.textContent = children
+  else if (Array.isArray(children)) {
+    if (typeof children[0] === 'string') {
+      children.forEach(child => {
+        e.textContent += (
+          typeof child === 'string' ? child : child.outerHTML
+        )
+      })
+    } else {
+      e.append(...children.flat())
+    }
+  }
+  else {
+    e.append(children)
+  }
+}
+
+
+$.create = elType => (children, attrs={}) => {
+  const e = document.createElement(elType)
+  $.render(e, children)
+
+  Object.keys(attrs).forEach(a => {
+    e.setAttribute(a, attrs[a])
+  })
+
+  return e
+}
+
+$.a = $.create('a')
+$.div = $.create('div')
+$.span = $.create('span')
+$.main = $.create('main')
+$.section = $.create('section')
+
+
+const $html = document.getElementsByTagName('html')[0]
+
+let queryParams
+
+try {
+  queryParams = window.location.search
+    ? window.location.search.replace('?', '').split('&').reduce((params, i) => {
+        const [k, v] = i.split('=')
+        params[k] = v
+        return params
+      }, {})
+    : {}
+} catch (e) {
+  queryParams = {}
+}
+
+
+
+
+const addMetaTag = (args) => {
+  const meta = document.createElement('meta')
+  Object.keys(args).forEach(arg => {
+    meta[arg] = args[arg]
+  })
+
+  document.head.appendChild(meta)
+}
+
+const addThumbnail = (fill) => {
+  const existing = document.getElementById('favicon')
+  if (existing) document.head.removeChild(existing)
+  const link = document.createElement('link')
+  link.href = `data:image/svg+xml;base64,${btoa(
+    `<svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="1" height="1" fill="${fill}"></rect></svg>`
+  )}`
+  link.rel = 'shortcut icon'
+  link.type = 'image/svg+xml'
+  link.id = 'favicon'
+  document.head.appendChild(link)
+}
+
+function css(style) {
+  const s = document.createElement('style')
+  s.innerHTML = style
+  document.head.appendChild(s)
+}
+
+
+function setMetadata(usedContent) {
+  $html.translate = false
+  $html.lang = 'en'
+  $html.className = 'notranslate'
+
+  const title = usedContent.join(' ')
+
+  document.title = title
+
+  addMetaTag({ name: 'google', content: 'notranslate' })
+  addMetaTag({ name: 'description', content: title })
+  addMetaTag({ name: 'keywords', content: usedContent.join(', ').toLowerCase() })
+
+  setRunInterval(() => {
+    addThumbnail(
+      BW
+        ? prb(0.5) ? '#000' : '#fff'
+        : getShadowColor(chooseHue())
+    )
+  }, 1000)
+
+  console.log(title)
+}
+
+const ls = {
+  get(key) {
+    try {
+      return window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem(key))
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  set(key, value) {
+    try {
+      return window.localStorage.setItem(key, value)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+}
+
+const cols = 60
+const rows = 48
+const EDITION_SIZE = 777
+
+const projectionPages = {}
+
+
+let LAST_PAUSED, OVERDRIVE, ANHEDONIC, INVERT_ALL
+let PAUSED = ls.get('__DOPAMINE_IS_PAUSED__') || false
+let USE_EMOJI_POLYFILL = TWEMOJI_PRESENT && (
+  IS_HEADLESS
+  || ls.get('__DOPAMINE_EMOJI_TOGGLE__')
+  || false
+)
+
+
+const speed = prb(0.05) ? 100 : 3
+
+const italicRate = chance(
+  [1, rnd()],
+  [1, 1],
+  [8, 0],
+)
+
+const fontWeight = chance(
+  [1, 100],
+  [8, 500],
+  [1, 900],
+)
+
+const fontFamily = chance(
+  [5, 'serif'],
+  [5, 'cursive'],
+  [15, 'monospace'],
+  [75, 'sans-serif'],
+)
+
+const layoutStyle = chance(
+  [55, 1], // anything goes
+  [6, 2],  // anything goes (micro/large)
+  [7, 3],  // anything goes (lean rows)
+  [6, 4],  // macro
+  [7, 5],  // even rows
+  [5, 6],  // even cols
+  [6, 7],  // perfect grid
+  [3, 8],  // imperfect grid
+  [5, 9],  // anything goes micro, varying size
+)
+
+const rowSize = sample([1, 2, 3, 4, 6, 8, 12, 16, 24])
+const colSize = sample([2, 3, 4, 6, 10, 15])
+const cellSize = sample([3, 4, 6, 12, 16])
+
+const sidewaysPrb = prb(0.4) ? 0 : rnd(0.5, 1)
+const thinSidewaysPrb = layoutStyle !== 6 ? 0.95 : chance(
+  [9, 0.66],
+  [9, 0.95],
+  [2, 0],
+)
+
+
+const marqueeAnimationRate = chance(
+  [85, 0],
+  [20, rnd(.25, .5)],
+  [5, 1],
+)
+
+const tokenId = Number(tokenData.tokenId) % 1000000
+const is69 = tokenId === 69
+const is7 = [7, 77].includes(tokenId)
+const is100 = tokenId === 100
+const is420 = tokenId === 420
+const is666 = tokenId === 666
+const projectId = (Number(tokenData.tokenId) - tokenId) / 1000000
+const showEmojis = is100 || is666 || is7 || is420 || is69 || prb(0.5)
+
+const pairedEmojiPrb = chance(
+  [2, 0],
+  [1, 0.5],
+  [1, 1],
+)
+
+const upsideDownRate = chance(
+  [9, 0],
+  [1, rnd(0.1, 0.3)]
+)
+
+const mildRotation = () => rnd(20)
+mildRotation.isMild = true
+const lineRotation = chance(
+  [92, () => prb(upsideDownRate) ? 180 : 0],
+  [6, mildRotation],
+  [2, () => rnd(20, 180)],
+)
+
+const freeFloating = ![0, 180].includes(lineRotation())
+const threeDRotations = lineRotation.isMild && prb(0.3333)
+
+const bgType = chance(
+  [55, 0],
+  [12, 1], // empty
+  [20, 2], // gradiant
+  [8, 3], // zigzag small
+  [3, 4], // zigzag large
+  [2, 5], // zigzag med
+)
+
+const bgAnimationPrb = chance(
+  [12, 0],
+  [bgType < 3 && 6, rnd(0.25, 0.5)],
+  [bgType < 3 && 2, 1],
+)
+
+const BW = prb(0.15)
+const STARTING_HUE = rnd(360)
+
+const randomHue = prb(0.02)
+const chooseHue = () => randomHue ? rnd(360) : STARTING_HUE + sample(possibleHues) % 360
+
+const chooseAltHue = (h) => {
+  const alt = chooseHue()
+  return h === alt ? chooseAltHue(h) : alt
+}
+
+const possibleHues = chance(
+  [bgType === 1 && 2, [0, 0.0001]],
+  [1, [0, 180]],
+  [1, [0, 120, 180]],
+  [1, [0, 180, 240]],
+  [1, [0, 150]],
+  [1, [0, 210]],
+  [1, [0, 120, 240]],
+  [1, [0, 75]],
+)
+
+const shadowType = chance(
+  [4, 1],
+  [4, 2],
+  [BW ? 1 : 4, 3],
+  [4, 4],
+  [4, 5],
+  [2, 6],
+  [2, 7],
+  [4, 8],
+  [2, 9],
+)
+
+
+const defaultShadowLightness = !BW && (prb(0.75) || possibleHues[1] === 75) ? 20 : 50
+const getShadowColor = (h, l=50) => `hsl(${h%360}deg, 100%, ${l}%)`
+const getShadowText = (h, polyfillShadow) => {
+  const shadowColor = shadowType === 8 ? '#fff' : getShadowColor(h+90, defaultShadowLightness)
+
+  const adjustedCoord = polyfillShadow ? 0.0125 : 0.025
+  return (
+    [1, 8].includes(shadowType) ? [
+        `${adjustedCoord}em ${adjustedCoord}em ${shadowColor}`,
+        `-${adjustedCoord}em ${adjustedCoord}em ${shadowColor}`,
+        `${adjustedCoord}em -${adjustedCoord}em ${shadowColor}`,
+        `-${adjustedCoord}em -${adjustedCoord}em ${shadowColor}`,
+        `${adjustedCoord}em 0 ${shadowColor}`,
+        `-${adjustedCoord}em 0 ${shadowColor}`,
+        `0 -${adjustedCoord}em ${shadowColor}`,
+        `0 ${adjustedCoord}em ${shadowColor}`,
+        `0 0 0.4em ${shadowColor}`,
+      ] :
+
+    shadowType === 2 ?
+      [`0.05em 0.05em 0 ${shadowColor}`] :
+
+    shadowType === 3 ?
+      [`0.1em 0.1em 0 ${shadowColor}`] :
+
+    shadowType === 4 ?
+      [
+        `0.05em 0.05em 0 ${shadowColor}`,
+        `${polyfillShadow ? '0.05em 0.05em' : '0.1em 0.1em'} 0 ${getShadowColor(h+270)}`
+      ] :
+
+    shadowType === 5 ?
+      [`0 0 0.05em ${shadowColor}`] :
+
+    shadowType === 6 ?
+      times(4, s =>
+        `${s < 2 ? -0.04 : 0.04}em ${s%2 ? 0.04 : -0.04}em 0 ${getShadowColor(h + 180 + s*30)}`
+      ) :
+
+    shadowType === 7 ?
+      [
+        `-0.05em -0.05em 0 ${getShadowColor(h+60)}`,
+        `0.05em 0.025em 0 ${getShadowColor(h+240)}`
+      ] :
+
+    ['0 0 0.05em #000']
+  )
+}
+
+const getDropShadowValue = h => getShadowText(h, true).map(s => `drop-shadow(${s})`).join(' ')
+const getTextShadowValue = h => getShadowText(h).join(',')
+
+const getShadow = (h, isText) => USE_EMOJI_POLYFILL && !isText
+  ? `filter: ${getDropShadowValue(h)};`
+  : `text-shadow: ${getTextShadowValue(h)};`
+
+
+const hideBg = freeFloating ? prb(0.5) : false
+const showBorder = prb(0.5)
+
+const bgAnimationType = chance(
+  [3, 0], // colorShiftingBgMultiple
+  [2, 1], // staticBgsMultiple
+  [2, 2], // shrinkingBgSingle
+  [2, 3], // shrinkingBgMultiple
+  [1, 4], // shrinkingSpinningBgMultiple
+)
+
+const increasedottedBorderStyle = bgAnimationPrb && bgAnimationType  === 0
+const borderStyle = chance(
+  [4, 'solid'],
+  [increasedottedBorderStyle ? 5 : 1, 'dashed'],
+  [increasedottedBorderStyle ? 4 : 1, 'dotted'],
+  [1, 'double'],
+)
+
+const sectionAnimation = prb(0.95) ? '' : sample([
+    showBorder && 'borderBlink',
+    'blink',
+    'dance',
+    'growShrink',
+    'spin',
+    'hPivot',
+    'vPivot',
+    'breathe',
+  ].filter(iden))
+
+const sectionAnimationDirection = chance(
+  [1, () => 'normal'],
+  [1, () => 'reverse'],
+  [1, () => prb(0.5) ? 'normal' : 'reverse'],
+)
+
+const sectionAnimationDuration = () => rnd(2, sectionAnimation === 'blink' ? 5 : 17)
+
+
+const gradientHues = chance(
+  [3 - possibleHues.length, possibleHues.slice(1)],
+  [1, [30, 330]],
+  [1, [60, 300]]
+)
+
+const zigzagBg = (bg1, bg2, size) => `
+    background-color: ${bg1};
+    background-image:
+      linear-gradient(135deg, ${bg2} 25%, transparent 25%),
+      linear-gradient(225deg, ${bg2} 25%, transparent 25%),
+      linear-gradient(45deg, ${bg2} 25%, transparent 25%),
+      linear-gradient(315deg, ${bg2} 25%, ${bg1} 25%);
+    background-position:  ${size/2}em 0, ${size/2}em 0, 0 0, 0 0;
+    background-size: ${size}em ${size}em;
+    background-repeat: repeat;
+  `
+
+const gradientMix = sample([
+  0,  // linear
+  1,  // radial
+  0.5 // mixed
+])
+
+const getColorFromHue = h => `hsl(${h%360}deg, 100%, 50%)`
+function getBgColor(h) {
+  const bg1 = getColorFromHue(h)
+  const bg2 = getColorFromHue(h+sample(gradientHues))
+
+  if (bgType === 1) return 'none;'
+  if (bgType === 2) return prb(gradientMix)
+    ? `radial-gradient(${bg1}, ${bg2});`
+    : `linear-gradient(${rndint(360)}deg, ${bg1}, ${bg2});`
+  if (bgType === 3) return zigzagBg(bg1, bg2, 0.25)
+  if (bgType === 4) return zigzagBg(bg1, bg2, rnd(8, 16))
+  if (bgType === 5) return zigzagBg(bg1, bg2, 1)
+
+  return bg1
+}
+
+
+
+const starburstBgPrb = chance(
+  [8.5, 0],
+  [1, 0.2],
+  [0.5, 1],
+)
+
+let starburstCount = 0
+function starburstBg(h, rSpan, cSpan) {
+  if (!prb(starburstBgPrb) || rSpan < 4) return
+
+  starburstCount++
+
+  const aspectRatio = cSpan/rSpan
+
+  const h2 = chooseHue()
+
+  const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
+  const c1 = BW ? bwc.text : `hsl(${h}deg, 100%, 50%)`
+  let c2 = BW ? bwc.bg : `hsl(${h2}deg, 100%, 50%)`
+  c2 =
+    bgType === 1 ? '#000' :
+    c1 === c2 ? '#fff' :
+    c2
+
+  const deg = chance(
+    [2, 2],
+    [10, 5],
+    [8, 10],
+  )
+
+  const cssClass = `cgBg-${int(h)}-${int(h2)}`
+
+  const size = 128
+
+  css(`
+    .${cssClass}::before {
+      content: "";
+      background: repeating-conic-gradient(${c1} 0deg ${deg}deg,  ${c2} ${deg}deg ${deg*2}deg);
+      position: absolute;
+      width: ${size}00%;
+      height: ${size}00%;
+      top: -${size/2 * 100 - 50}%;
+      left: -${size/2 * 100 - 50}%;
+      z-index: -1;
+      animation: BgRotate${deg} ${rnd(1000, 5000)}ms linear infinite;
+      animation-direction: ${prb(0.5) ? 'normal' : 'reverse'}
+    }
+
+    @keyframes BgRotate${deg} {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(${deg*2}deg);
+      }
+    }
+  `)
+
+  return cssClass
+}
+
+const bgColor = chance(
+  [bgType !== 1 && 2, `hsl(${chooseHue()}deg, 100%, 50%)`],
+  [bgType !== 1 && 1, `#fff`],
+  [1, `#000`]
+)
+
+const rotateColorPrb = chance(
+  [9, 0],
+  [1, rnd(0.1, 0.2)],
+)
+
+const colorBlinkPrb = chance(
+  [95, 0],
+  [4, rnd(0.1, 0.2)],
+  [1, 1],
+)
+
+
+const fullHueRotation = prb(0.02)
+const invertAll = prb(0.02)
+css(`
+  * {
+    margin: 0;
+    padding: 0;
+    font-family: ${fontFamily};
+    font-weight: ${fontWeight};
+  }
+  body, body::backdrop {
+    background: ${bgColor};
+    margin: 0;
+    ${fullHueRotation ? 'animation: HueRotation 10s linear infinite;' : ''}
+  }
+  @keyframes HueRotation {
+    0% { filter: hue-rotate(0deg) }
+    0% { filter: hue-rotate(360deg) }
+  }
+
+  .viewerMode {
+    cursor: none;
+    pointer-events: none;
+  }
+
+  .viewerMode .sectionContainer:hover {
+    filter: invert(${invertAll ? 1 : 0});
+  }
+
+  .pauseAll, .pauseAll *, .pauseAll *::before {
+    animation-play-state: paused !important;
+  }
+
+  .fullScreen {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 100;
+  }
+
+  .overdrive .marquee * {
+    animation-duration: 10s !important;
+  }
+
+  .overdrive *::before {
+    animation-duration: 100ms !important;
+  }
+
+  .overdrive .bgAnimation {
+    animation-duration: 300ms !important;
+  }
+
+  .overdrive .animatingComponent {
+    animation-duration: 250ms !important;
+  }
+  .overdrive .sectionContainer {
+    animation-duration: 750ms !important;
+  }
+  .overdrive .charContent {
+    animation-duration: 205ms !important;
+  }
+
+  .overdrive {
+    filter: contrast(300%) saturate(300%);
+  }
+
+  .anhedonic {
+    background: #555;
+    filter: blur(0.08vw) saturate(0.15);
+  }
+  .anhedonic .marquee * {
+    animation-duration: 800s !important;
+  }
+  .anhedonic *::before {
+    animation-duration: 3s !important;
+  }
+  .anhedonic .bgAnimation {
+    animation-duration: 12s !important;
+  }
+  .anhedonic .animatingComponent {
+    animation-duration: 16s !important;
+  }
+  .anhedonic .sectionContainer {
+    animation-duration: 32s !important;
+  }
+  .anhedonic .charContent {
+    animation-duration: 2505ms !important;
+  }
+  .invertAll {
+    filter: invert(1);
+  }
+
+  ::selection {
+    color: #fff;
+    background-color: #000;
+  }
+`)
+
+let START_TIME = Date.now()
+const MAX_VOLUME = 0.04
+
+const allSources = []
+function createSource(waveType = 'square') {
+  const AudioContext = window.AudioContext || window.webkitAudioContext
+  const ctx = new AudioContext()
+
+  const source = ctx.createOscillator()
+  const gain = ctx.createGain()
+  const panner = new StereoPannerNode(ctx)
+
+  source.connect(gain)
+  gain.connect(panner)
+  panner.connect(ctx.destination)
+
+  gain.gain.value = 0
+  source.type = ANHEDONIC ? 'sine' : waveType
+  source.frequency.value = 3000
+  source.start()
+
+  const smoothFreq = (value, timeInSeconds=0.00001, overridePaused=false) => {
+    if (PAUSED && !overridePaused) return
+    source.frequency.exponentialRampToValueAtTime(
+      value,
+      ctx.currentTime + timeInSeconds
+    )
+  }
+
+  const smoothPanner = (value, timeInSeconds=0.00001) => {
+    if (PAUSED) return
+    panner.pan.exponentialRampToValueAtTime(
+      value,
+      ctx.currentTime + timeInSeconds
+    )
+  }
+
+  const smoothGain = (value, timeInSeconds=0.00001) => {
+    if (PAUSED) return
+    gain.gain.setTargetAtTime(
+      min(value, MAX_VOLUME),
+      ctx.currentTime,
+      timeInSeconds
+    )
+  }
+
+  const src = { source, gain, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
+
+  allSources.push(src)
+
+  return src
+}
+
+function sourcesToAnhedonicMode() {
+  allSources.forEach(src => {
+    if (src.gain.gain.value > 0) {
+      src.source.type = 'sine'
+    }
+  })
+}
+
+function sourcesToNormalMode() {
+  allSources.forEach(src => {
+    if (src.gain.gain.value > 0) {
+      src.source.type = src.originalSrcType
+    }
+  })
+}
+
+function soundOverdrive(factor=1) {
+  allRunningIntervals.forEach(i => {
+    i.newInterval(i.originalMs/factor)
+  })
+}
+
+const BASE_FREQ = rnd(250, 500)
+const MAJOR_SCALE = [1, 1.125, 1.25, 1.3333, 1.5, 1.6666, 1.875, 2]
+const HEXATONIC_SCALE = [1, 1.125, 1.25, 1.5, 1.75, 2]
+const JACK_DUMP_SCALE = [1, 1, 1.25, 1.3333, 1.5, 1.3333, 1.25, 1]
+
+
+const getLoopsAtTime = (t, delay, duration) => (OVERDRIVE ? 8 : 1) * (t - (START_TIME - delay)) / duration
+
+
+function sirenSound({ delay, duration }, waveType='square', freqAdj=1) {
+  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ
+  let freqMin = freqAdj * freqMax / 5
+  if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
+
+  const freqDiff = freqMax - freqMin
+  const introTimeMs = 250
+
+  const halfLoopsAtTime = time => 2 * getLoopsAtTime(time, delay, duration)
+  const getDirectionAtTime = time => int(halfLoopsAtTime(time)) % 2 ? 1 : -1
+
+  const getFreqAtTime = time => {
+    const directionAtTime = getDirectionAtTime(time)
+    const halfLoopsLeft = halfLoopsAtTime(time) % 1
+    const timeDiff = halfLoopsLeft * freqDiff
+
+    if (directionAtTime === 1) {
+      return freqMin + timeDiff
+    } else {
+      return freqMax - timeDiff
+    }
+  }
+
+  const brokenDivisor = prb(0.1) ? rnd(1000, 2500) : 2000
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource(waveType)
+    smoothGain(MAX_VOLUME)
+    smoothFreq(getFreqAtTime(Date.now() + introTimeMs), 0.25)
+
+    let stopInterval
+    setTimeout(() => {
+      const timeUntilNextHalfLoop = (1 - halfLoopsAtTime(Date.now() + extraDelay) % 1) * duration/2
+      smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalfLoop), timeUntilNextHalfLoop/1000)
+
+      setTimeout(() => {
+        stopInterval = setRunInterval((i) => {
+          smoothFreq(
+            getFreqAtTime(Date.now() + duration/2 + extraDelay),
+            i % 2 ? duration/2000 : duration/brokenDivisor
+          )
+        }, duration/16)
+      }, timeUntilNextHalfLoop)
+    }, introTimeMs)
+
+
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
+
+function shrinkCharSound({delay, duration}) {
+  const start1 = sirenSound({duration, delay}, 'sine')
+  const start2 = sirenSound({duration, delay: delay + duration*0.25 }, 'sine', 0.5)
+  const start3 = sirenSound({duration, delay: delay + duration*0.5 }, 'sine', 0.5)
+  const start4 = sirenSound({duration, delay: delay + duration*0.75 }, 'sine', 0.5)
+
+  return () => {
+    const src1 = createSource('sine')
+    const src2 = createSource('sine')
+
+    src1.smoothFreq(BASE_FREQ/2)
+    src2.smoothFreq(BASE_FREQ/1.98)
+    src1.smoothGain(MAX_VOLUME, 0.1)
+    src2.smoothGain(MAX_VOLUME, 0.1)
+
+    const stop1 = start1()
+    const stop2 = start2()
+    const stop3 = start3()
+    const stop4 = start4()
+    return () => {
+      src1.smoothGain(0, 0.1)
+      src2.smoothGain(0, 0.1)
+      stop1()
+      stop2()
+      stop3()
+      stop4()
+    }
+  }
+}
+
+function flipSound({ delay, duration }) {
+  const freqMax = sample(MAJOR_SCALE) * BASE_FREQ * 8// 500
+  const freqMin = freqMax / 3
+  const freqDiff = freqMax - freqMin
+  const introTimeMs = 250
+
+  const getFreqAtTime = (t) => {
+    const loops = getLoopsAtTime(t, delay, duration)
+    const loopProgress = loops % 1
+
+    if (loopProgress < 0.3333) {
+      return map(loopProgress, 0, 0.3333, freqMin, BASE_FREQ)
+    } else if (loopProgress < 0.6666) {
+      return map(loopProgress, 0.3333, 0.6666 , BASE_FREQ, freqMax)
+    } else {
+      return map(loopProgress, 0.6666, 1, freqMax, freqMin)
+    }
+  }
+
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource()
+    smoothGain(MAX_VOLUME)
+    smoothFreq(getFreqAtTime(Date.now() + introTimeMs), introTimeMs/1000)
+
+    let stopInterval
+    setTimeout(() => {
+      const timeUntilNextThird = ((1 - (getLoopsAtTime(Date.now() + extraDelay, delay, duration) % 1)) % 0.3333) * duration
+      smoothFreq(getFreqAtTime(Date.now() + timeUntilNextThird + extraDelay), timeUntilNextThird/1000)
+
+      setTimeout(() => {
+        stopInterval = setRunInterval((i) => {
+          smoothFreq(getFreqAtTime(Date.now() + duration/3 + extraDelay), duration/3000)
+        }, duration/24)
+
+      }, timeUntilNextThird)
+
+    }, introTimeMs)
+
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
+function smoothSound({delay, duration}) {
+  const ix = int(map(duration, 0, 5000, 5, 0))
+  const baseFreq = BASE_FREQ * [0.5, 1, 1.25, 1.5, 2][ix]
+  const isLow = prb(0.3)
+  const volAdj = isLow ? 1 : 0.8
+
+  return (extraDelay=0) => {
+    const src1 = createSource()
+    const src2 = createSource()
+
+    let f1, f2
+    if (isLow) {
+      f1 = BASE_FREQ/8
+      f2 = BASE_FREQ/7.98
+    } else {
+      const offset = 1000000 / (duration * baseFreq)
+      f1 = baseFreq
+      f2 = baseFreq + offset
+    }
+
+    src1.smoothFreq(f1)
+    const stopInterval = setRunInterval(() => {
+      if (PAUSED || OVERDRIVE) {
+        src2.smoothFreq(f1, 0.00001, true)
+      } else {
+        src2.smoothFreq(f2)
+      }
+    }, 500)
+
+    src1.smoothGain(MAX_VOLUME * volAdj, 0.25)
+    src2.smoothGain(MAX_VOLUME * volAdj, 0.25)
+
+    return () => {
+      if (stopInterval) stopInterval()
+      src1.smoothGain(0, 0.25)
+      src2.smoothGain(0, 0.25)
+    }
+  }
+}
+
+function ticktockSound({duration, delay}) {
+  const baseFreq = BASE_FREQ * sample([1, 0.5, 2])
+  const interval = duration / 2
+
+  const upScale = sample(MAJOR_SCALE)
+
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource()
+    const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
+
+    const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/2)) * duration
+    let stopInterval
+    setTimeout(() => {
+      stopInterval = setRunInterval((i) => {
+        smoothGain(MAX_VOLUME, 0.03)
+        smoothGain2(MAX_VOLUME, 0.03)
+
+        if (i%2) {
+          smoothFreq(baseFreq, 0.1)
+          smoothFreq2(baseFreq+5, 0.1)
+
+        } else {
+          smoothFreq(baseFreq*upScale, 0.1)
+          smoothFreq2(baseFreq * upScale+5, 0.1)
+        }
+
+        setTimeout(() => smoothGain(0, 0.05), interval*0.25)
+        setTimeout(() => smoothGain2(0, 0.05), interval*0.25)
+
+      }, interval)
+      if (OVERDRIVE) soundOverdrive(6)
+
+    }, timeUntilNextNote)
+
+    return () => {
+      smoothGain(0, 0.03)
+      smoothGain2(0, 0.03)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
+
+function blinkCharSound({duration, delay}, seq=null) {
+  const sequence = sample([0, 1, 2])
+  const jackDumpScale = prb(0.1)
+  const isSmooth = !jackDumpScale && prb(0.5)
+  const twoTone = prb(0.1)
+
+  const baseFreq = sample(MAJOR_SCALE) * BASE_FREQ * chance(
+    [5, 1],
+    [3, 2],
+    [1, 0.5],
+    [1, 0.25],
+  )
+
+  const ttMult = sample([2, 1.5, 1.3333])
+  duration = duration ? map(duration, 750, 5000, 500, 2000) : rnd(500, 2000)
+  const interval = duration / 8
+
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource()
+    const src2 = createSource()
+
+    if (isSmooth) {
+      smoothGain(MAX_VOLUME)
+      if (twoTone) src2.smoothGain(MAX_VOLUME)
+    }
+
+    const stopInterval = setRunInterval((i) => {
+      if (!isSmooth) {
+        smoothGain(MAX_VOLUME)
+        if (twoTone) src2.smoothGain(MAX_VOLUME)
+      }
+
+      let ix
+      switch (sequence) {
+        case 0: ix = i%8; break
+        case 1: ix = abs(7 - i%8); break
+        case 2: ix = i%14 < 7 ? i%14 : abs(7 - i%7); break
+      }
+
+      const freq = jackDumpScale
+        ? JACK_DUMP_SCALE[i%8] * ((i % 64) < 32 ? 1 : 0.85)
+        : MAJOR_SCALE[ix]
+
+      smoothFreq(baseFreq * freq)
+      if (twoTone) src2.smoothFreq(baseFreq * freq*ttMult)
+
+      if (!isSmooth) setTimeout(() => {
+        smoothGain(0, 0.04)
+         if (twoTone)  src2.smoothGain(0, 0.04)
+      }, interval*0.75)
+    }, interval)
+
+    if (OVERDRIVE) soundOverdrive(6)
+
+    return () => {
+      smoothGain(0, 0.04)
+      if (twoTone) src2.smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
+function hexSound({duration, delay}) {
+  const baseFreq = BASE_FREQ
+  const interval = duration / 6
+  const scale = sample(MAJOR_SCALE)
+
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource()
+    const { smoothFreq: smoothFreq2, smoothGain: smoothGain2 } = createSource()
+    const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/6)) * duration
+
+    let stopInterval
+    setTimeout(() => {
+      stopInterval = setRunInterval((i) => {
+        smoothFreq(baseFreq * 8)
+        smoothFreq2(baseFreq * 8)
+        smoothGain(MAX_VOLUME, 0.03)
+        smoothGain2(MAX_VOLUME, 0.03)
+
+        smoothFreq(baseFreq/4, 0.25)
+        smoothFreq2(baseFreq/4, 0.25)
+
+        setTimeout(() => smoothGain(0, 0.05), interval*0.25 + extraDelay)
+        setTimeout(() => smoothGain2(0, 0.05), interval*0.25 + extraDelay)
+      }, interval)
+
+    }, timeUntilNextNote)
+
+    return () => {
+      if (stopInterval) stopInterval()
+      smoothGain(0, 0.03)
+      smoothGain2(0, 0.03)
+    }
+  }
+}
+
+
+function climbSound({ duration, delay }) {
+  const baseFreq = sample(HEXATONIC_SCALE) * BASE_FREQ
+  const interval = duration / 4
+
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource()
+    const timeUntilNextNote = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % (1/4)) * duration
+
+    let stopInterval
+    setTimeout(() => {
+      stopInterval = setRunInterval((i) => {
+        smoothGain(MAX_VOLUME)
+
+        const ix = duration === 1 ? i%4 : 3 - i%4
+        smoothFreq(baseFreq * HEXATONIC_SCALE[ix])
+
+        setTimeout(() => smoothGain(0, 0.05), interval*0.75 + extraDelay)
+      }, duration/4)
+
+      if (OVERDRIVE) soundOverdrive(6)
+
+    }, timeUntilNextNote + extraDelay*4)
+
+    return () => {
+      if (stopInterval) stopInterval()
+      smoothGain(0, 0.04)
+    }
+  }
+}
+
+function zoomSound({duration, delay, switchChannels}) {
+  const freqMax = sample(MAJOR_SCALE) * BASE_FREQ * 4
+  const freqMin = freqMax / 16
+  const freqDiff = freqMax - freqMin
+  const introTimeMs = 250
+
+  const getFreqAtTime = (t) => {
+    const loops = getLoopsAtTime(t, delay, duration)
+    const loopProgress = loops % 1
+
+    if (loopProgress < 0.25) {
+      return freqMin
+    } else if (loopProgress < 0.5) {
+      return map(loopProgress, 0.25, 0.5, freqMin, freqMax)
+    } else {
+      return map(loopProgress, 0.5, 1, freqMax, 1)
+    }
+  }
+
+
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain, smoothPanner } = createSource()
+    const timeUntilNextQuarter = ((1 - (getLoopsAtTime(Date.now(), delay, duration) % 1)) % 0.25) * duration
+
+    smoothGain(MAX_VOLUME)
+    smoothFreq(getFreqAtTime(Date.now() + timeUntilNextQuarter), timeUntilNextQuarter/1000)
+
+    let stopInterval
+    setTimeout(() => {
+      stopInterval = setRunInterval(i => {
+        smoothFreq(getFreqAtTime(Date.now() + duration/4 + extraDelay), duration/4000)
+      }, duration/4)
+
+      if (switchChannels) {
+        const startingAdj = int(getLoopsAtTime(Date.now(), delay, duration)) % 2 ? 150 : 50
+
+        setRunInterval(i => {
+          const p = map((i + startingAdj)%200, 0, 200, 0, Math.PI)
+          const val = 2 * (Math.sin(p) - 0.5)
+          smoothPanner(val)
+        }, duration/100)
+      }
+    }, timeUntilNextQuarter)
+
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
+
+function carSirenSound({duration, delay}) {
+  const baseScale = sample(MAJOR_SCALE)
+  const freqMax = baseScale * BASE_FREQ / 2
+  const x = sample(MAJOR_SCALE.filter(s => s !== baseScale))
+
+  const freqMin = freqMax / x
+  const freqDiff = freqMax - freqMin
+  const introTimeMs = 250
+
+  const getFreqAtTime = t => {
+    const loopProgress = getLoopsAtTime(t + introTimeMs, delay, duration) % 1
+    return (loopProgress < 0.25 || loopProgress > 0.75) ? freqMin : freqMax
+  }
+
+  return (extraDelay=0) => {
+    const src1 = createSource()
+    const src2 = createSource()
+    const src3 = createSource()
+
+    src1.smoothGain(MAX_VOLUME*0.85)
+    src2.smoothGain(MAX_VOLUME*0.85)
+    src3.smoothGain(MAX_VOLUME*0.85)
+
+    const timeUntilNextHalf = ((1 - (getLoopsAtTime(Date.now() + introTimeMs, delay, duration) % 1)) % 0.5) * duration
+
+    src1.smoothFreq(getFreqAtTime(Date.now()), timeUntilNextHalf/1000)
+    src2.smoothFreq(getFreqAtTime(Date.now())*1.3333, timeUntilNextHalf/1000)
+    src3.smoothFreq(getFreqAtTime(Date.now())*1.6666, timeUntilNextHalf/1000)
+
+    let stopInterval
+    setTimeout(() => {
+      stopInterval = setRunInterval(i => {
+        src1.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i), introTimeMs/1000)
+        src2.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i)*1.3333, introTimeMs/1000)
+        src3.smoothFreq(getFreqAtTime(Date.now() + extraDelay, i)*1.6666, introTimeMs/1000)
+      }, duration/2)
+    }, timeUntilNextHalf)
+
+    return () => {
+      src1.smoothGain(0, 0.04)
+      src2.smoothGain(0, 0.04)
+      src3.smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
+function singleSound() {
+  const startFreq = rndint(1000, 4000)
+  const playSound = () => {
+    const { smoothFreq, smoothGain } = createSource()
+    smoothGain(MAX_VOLUME)
+    smoothFreq(startFreq, 0.05)
+    setTimeout(() => {
+      smoothFreq(0.1, 1)
+    }, 50)
+
+    return () => {
+      playSound()
+    }
+  }
+  return playSound
+}
+
+
+
+let voices
+let ACTIVE_VOICE_IX = 0
+const filterVoices = (voices) => {
+  const matchingVoiceLang = v => v.lang && v.lang.includes(queryParams.voiceLang || 'en-US')
+  try {
+
+    let langVoices = voices.filter(matchingVoiceLang)
+    langVoices = langVoices.length ? langVoices : voices
+
+    let defaultVoice = queryParams.voice
+      ? voices.find(v => v.voiceURI.toLowerCase().includes(queryParams.voice.toLowerCase()))
+      : voices.find(v => v.default)
+
+    if (!matchingVoiceLang(defaultVoice)) defaultVoice = voices.find(matchingVoiceLang)
+
+    return queryParams.voice || !queryParams.voiceLang
+      ? [defaultVoice, ...langVoices.slice(1)]
+      : langVoices
+
+  } catch (e) {
+    return voices
+  }
+}
+
+function selectVoice(v) {
+  ACTIVE_VOICE_IX = voices.length && (v % voices.length)
+  console.log('VOICE SELECTED:', voices[ACTIVE_VOICE_IX].voiceURI)
+}
+
+const getVoices = () => {
+  try {
+    voices = window.speechSynthesis.getVoices()
+    setTimeout(() => {
+      if (!voices.length) getVoices()
+      else {
+        voices = filterVoices(voices)
+      }
+    }, 200)
+  } catch(e) {
+    console.log(e)
+  }
+}
+getVoices()
+
+let utteranceQueue = []
+let utterancePriority = null
+let activeUtterance
+
+const triggerUtterance = () => {
+  if (PAUSED) {
+    setTimeout(triggerUtterance, 250)
+    return
+  }
+
+  const ix = rndint(utteranceQueue.length)
+
+  let txt
+  if (utterancePriority) {
+    txt = utterancePriority
+    utterancePriority = null
+  } else {
+    txt = utteranceQueue.splice(ix, 1)[0]
+  }
+
+  if (!txt) return
+  activeUtterance = txt
+
+  txt.volume = 0.88
+  txt.voice = voices[ACTIVE_VOICE_IX]
+
+  if (OVERDRIVE) {
+    txt.pitch = sample(MAJOR_SCALE)
+    txt.volume = 1.1
+  } else if (ANHEDONIC) {
+    txt.pitch = 1
+  } else {
+    txt.pitch = 1
+  }
+
+  if (ANHEDONIC) {
+    txt.rate = 0.7
+  } else if (OVERDRIVE) {
+    txt.rate = 1.4
+  } else {
+    txt.rate = 1
+  }
+
+  txt.onend = () => {
+    if (utteranceQueue.length) triggerUtterance()
+  }
+
+  txt.addEventListener('error', (e) => {
+    console.error('SpeechSynthesisUtterance error', e)
+  })
+
+  window.speechSynthesis.speak(txt)
+  setTimeout(() => rescueSS(txt), 6000)
+}
+
+let isRescuing
+function rescueSS(txt) {
+  if (isRescuing || !utteranceQueue.some(u => u.text === txt.text) || PAUSED) return
+  if (activeUtterance === txt) {
+    isRescuing = true
+    window.speechSynthesis.cancel()
+    window.speechSynthesis.speak(txt)
+    isRescuing = false
+  }
+}
+
+const stopUtter = txt => {
+  utteranceQueue = utteranceQueue.filter(u => u.text !== txt.toLowerCase())
+  utterancePriority = null
+}
+
+const utter = (txt, t=1, i=7) => {
+  const _t = txt.toLowerCase()
+  try {
+    const startingQueue = utteranceQueue.length
+    times(t, () => {
+      utteranceQueue.push(
+        new window.SpeechSynthesisUtterance(_t)
+      )
+    })
+    utterancePriority = new window.SpeechSynthesisUtterance(_t)
+    if (!startingQueue) triggerUtterance()
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+css(`
+  .marquee {
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    line-height: 1;
+  }
+
+  .marqueeInner {
+    display: inline-flex;
+  }
+
+  .marqueeForward {
+    animation: Marquee 50s linear infinite;
+  }
+
+  .marqueeInner > * {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  @keyframes Marquee {
+    0% {transform: translate3d(-50%, 0, 0)}
+    100% {transform: translate3d(0%, 0, 0)}
+  }
+
+  .bgAnimation {
+    z-index: -1;
+  }
+
+  .updownChars {
+    animation: UpDownChars 2s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes UpDownChars {
+    0%, 100% {transform: translate3d(0%, 10%, 0)}
+    50% {transform: translate3d(0%, -10%, 0)}
+  }
+
+  .updownLong {
+    height: 100%;
+    animation: UpDownLong 1000ms ease-in-out infinite;
+  }
+
+  .updownLong > * {
+    animation: UpDownLongChild 2000ms ease-in-out infinite;
+  }
+
+
+  @keyframes UpDownLongChild {
+    0%, 100% {transform: translateY(0)}
+    50% {transform: translateY(-100%)}
+  }
+
+  @keyframes UpDownLong {
+    0%, 100% {transform: translateY(0)}
+    50% {transform: translateY(100%)}
+  }
+
+  .blink {
+    animation: Blink 1.5s steps(2, start) infinite;
+  }
+
+  @keyframes Blink {
+    to {
+      visibility: hidden;
+    }
+  }
+
+  .colorChars {
+    animation: FullColorRotate 1.5s steps(6, start) infinite;
+  }
+
+  .borderBlink {
+    border-width: 0.05em;
+    animation: BorderBlink 1.5s steps(2, start) infinite;
+    box-sizing: border-box;
+  }
+
+  @keyframes BorderBlink {
+    50% {
+      border-style: hidden;
+    }
+  }
+
+  .colorBlink {
+    animation: ColorBlink 4s steps(1, start) infinite;
+  }
+
+  @keyframes ColorBlink {
+    ${colorBlinkAnim()}
+  }
+
+  .fullColorRotate {
+    animation: FullColorRotate 25s linear infinite;
+  }
+
+  @keyframes FullColorRotate {
+    0%, 100% {color: #ff0000}
+    17% {color: #ffff00}
+    33% {color: #00ff00}
+    50% {color: #00ffff}
+    66% {color: #0000ff}
+    83% {color: #ff00ff}
+  }
+
+  .colorShift {
+    animation: ColorRotate 25s linear infinite;
+  }
+
+  @keyframes ColorRotate {
+    0%, 100% {color: #ff0000}
+    17% {color: #ffff00}
+    33% {color: #00ff00}
+    50% {color: #00ffff}
+    66% {color: #0000ff}
+    83% {color: #ff00ff}
+  }
+
+  .dance {
+    animation: Dance 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes Dance {
+    0%, 100% {transform: rotate(20deg)}
+    50% {transform: rotate(-20deg)}
+  }
+
+  .growShrink {
+    animation: GrowShrink 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes GrowShrink {
+    0%, 100% {transform: scale(1)}
+    50% {transform: scale(0.2)}
+  }
+
+  .growShrinkShort {
+    animation: GrowShrinkShort 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    display: inline-block;
+  }
+
+  @keyframes GrowShrinkShort {
+    0%, 100% {transform: scale(1)}
+    50% {transform: scale(0.75)}
+  }
+
+
+  .spin {
+    animation: Spin 2000ms linear infinite;
+  }
+
+  @keyframes Spin {
+    0% {transform: rotate(0deg)}
+    100% {transform: rotate(360deg)}
+  }
+
+
+  .hSiren {
+    animation: HSiren 2000ms linear infinite;
+  }
+
+  @keyframes HSiren {
+    0% {transform: perspective(500px) rotate3d(0,2,0, 0deg) translateZ(100px)}
+    100% {transform: perspective(500px) rotate3d(0,2,0, 360deg) translateZ(100px)}
+  }
+
+  .vSiren {
+    animation: VSiren 2000ms linear infinite;
+  }
+
+  @keyframes VSiren {
+    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.75em)}
+    100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.75em)}
+  }
+
+  .vSirenShort {
+    animation: VSirenShort 2000ms linear infinite;
+  }
+
+  @keyframes VSirenShort {
+    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg) translateZ(0.3em)}
+    100% {transform: perspective(500px) rotate3d(2,0,0, 360deg) translateZ(0.3em)}
+  }
+
+
+
+  .hPivot {
+    animation: HPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+  @keyframes HPivot {
+    0%, 100% {transform: perspective(500px) rotate3d(0,2,0, 30deg) translateZ(20vmin) scale(0.75)}
+    50% {transform: perspective(500px) rotate3d(0,2,0, -30deg) translateZ(20vmin) scale(0.75)}
+  }
+
+  .vPivot {
+    animation: VPivot 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+  }
+
+
+  @keyframes VPivot {
+    0%, 100% {transform: perspective(500px) rotate3d(2,0,0, 30deg) translateZ(20vmin) scale(0.5)}
+    50% {transform: perspective(500px) rotate3d(2,0,0, -30deg) translateZ(20vmin) scale(0.5)}
+  }
+
+
+
+  .vFlip {
+    animation: VFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes VFlip {
+    0% {transform: perspective(500px) rotate3d(2,0,0, 0deg)}
+    100% {transform: perspective(500px) rotate3d(2,0,0, 1800deg)}
+  }
+
+
+  .hFlip {
+    animation: HFlip 3500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes HFlip {
+    0% {transform: perspective(500px) rotate3d(0,2,0, 0deg)}
+    100% {transform: perspective(500px) rotate3d(0,2,0, 1800deg)}
+  }
+
+
+  .breathe {
+    animation: Breathe 2000ms ease-in-out infinite;
+  }
+
+  @keyframes Breathe {
+    0%, 100% {transform: scaleX(1) scaleY(1)}
+    50% {transform: scaleX(0.8) scaleY(0.9)}
+  }
+
+
+  .flamingHot {
+    animation: FlamingHot 2000ms ease-in-out infinite;
+  }
+
+  @keyframes FlamingHot {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    75% {
+      opacity: 0;
+      transform: scale(1.15) translateY(-0.2em);
+    }
+    80% {
+      opacity: 0;
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .leftRight {
+    width: 100%;
+
+    animation: LeftRight 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    font-size: 10vmin;
+  }
+
+  .leftRight > * {
+    animation: LeftRightChild 2000ms cubic-bezier(0.58, 0.06, 0.44, 0.98) infinite;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  @keyframes LeftRightChild {
+    0%, 100% {transform: translateX(0)}
+    50% {transform: translateX(-100%)}
+  }
+
+  @keyframes LeftRight {
+    0%, 100% {transform: translateX(0)}
+    50% {transform: translateX(100%)}
+  }
+
+
+  .shrinkingBorder {
+    animation: ShrinkingBorder 2000ms linear infinite;
+  }
+  .spinningBorder {
+    animation: Spin 2000ms linear infinite;
+  }
+
+  @keyframes ShrinkingBorder {
+    0% {transform: scale(105%)}
+    100% {transform: scale(0%)}
+  }
+
+  .shrinkingSpinningBorder {
+    animation: SpinningShrinkingBorder 2000ms linear infinite;
+  }
+
+  @keyframes SpinningShrinkingBorder {
+    0% {transform: scale(105%) rotate(0deg)}
+    100% {transform: scale(0%) rotate(45deg)}
+  }
+
+  .wave {
+    animation: Wave 4500ms linear infinite;
+  }
+  .climb {
+    animation: Wave 4500ms cubic-bezier(0.66, 0.05, 0.38, 0.99) infinite;
+  }
+
+  @keyframes Wave {
+    0%, 100% {transform: translate3d(0%, 30%, 0) rotate(0deg)}
+    25% {transform: translate3d(0%, 0%, 0) rotate(12deg)}
+    50% {transform: translate3d(0%, -30%, 0) rotate(0deg)}
+    75% {transform: translate3d(0%, 0%, 0) rotate(-12deg)}
+  }
+
+
+  .hexagon {
+    animation: Hexagon 2000ms linear infinite;
+  }
+
+  @keyframes Hexagon {
+    0%, 100% {transform: translate(0, 0.5em)}
+    17% {transform: translate(0.43em, 0.25em)}
+    33% {transform: translate(0.43em, -0.25em)}
+    50% {transform: translate(0, -0.5em)}
+    66% {transform: translate(-0.43em, -0.25em)}
+    83% {transform: translate(-0.43em, 0.25em)}
+  }
+`)
+
+function colorBlinkAnim() {
+  const h = chooseHue()
+  const start = `
+    0%, 100% {
+      color: ${getColorFromHue(h)};
+      background-color: ${getColorFromHue(h + possibleHues[1])};
+    }
+  `
+  return start + possibleHues.length === 2
+    ? `
+      50% {
+        color: ${getColorFromHue(h + possibleHues[1])};
+        background-color: ${getColorFromHue(h)};
+      }
+    `
+    : `
+      33% {
+        color: ${getColorFromHue(h + possibleHues[1])};
+        background-color: ${getColorFromHue(h + possibleHues[2])};
+      }
+
+      66% {
+        color: ${getColorFromHue(h + possibleHues[2])};
+        background-color: ${getColorFromHue(h)};
+      }
+    `
+}
+
+function marquee(children, args={}) {
+  const className = args.className || ''
+  const style = args.style || ''
+  const direction = args.direction || 1
+  const delay = args.delay || 0
+  const duration = args.duration || 1
+  const sideways = args.sideways || false
+  const msgAnimation = args.msgAnimation || iden
+  const isEmoji = elementIsEmoji(children)
+
+  const repeat = isEmoji ? 60 : 40
+
+  const handleAnimation = (child, i, j) => {
+    const isEmoji = elementIsEmoji(child)
+    const spacing = ((isEmoji || j > 0) ? 0.1 : 0.5) + 'em'
+    return msgAnimation(
+      $.span(
+        child,
+        { style: `
+          margin-left: ${spacing};
+          margin-right: ${spacing};
+          font-size: ${isEmoji ? 0.9 : 1}em;
+        ` }
+      ).cloneNode(true),
+      { delay: i*100 + j/2}
+    )
+  }
+
+
+
+  const inner = $.div(
+    times(repeat, i => Array.isArray(children)
+      ? children.map((c, j) => handleAnimation(c, i, j))
+      : handleAnimation(children, i, 0)
+    ).flat(),
+    {
+      class: `marqueeInner marqueeForward`,
+      style: `
+        animation-delay: -${delay}s;
+        animation-duration: ${duration/(repeat/40)}s;
+        animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
+      `
+    }
+  )
+
+  return $.div(
+    inner,
+    {
+      style: style + (sideways ? `transform: rotate(${sample([90, 270])}deg);` : ''),
+      class: `component marquee ${className}`,
+    }
+  )
+}
+
+
+function genericAnimatingComponent(name) {
+  return (children, args={}) => {
+    const className = args.className || ''
+    const style = args.style || ''
+    const delay = args.delay || 0
+    const duration = args.duration || 1000
+    const direction = args.direction || 1
+
+    const trailFn = args.showTrails ? withTrails : iden
+
+    return trailFn(
+      $.div(children, {
+        class: `${name} ${className} animatingComponent`,
+        style: `
+          animation-duration: ${duration}ms;
+          animation-delay: -${delay}ms;
+          animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
+          ${style}
+        `
+      }),
+      args
+    )
+  }
+}
+
+const blink = genericAnimatingComponent('blink')
+const dance = genericAnimatingComponent('dance')
+const growShrink = genericAnimatingComponent('growShrink')
+const growShrinkShort = genericAnimatingComponent('growShrinkShort')
+const spin = genericAnimatingComponent('spin')
+const hSiren = genericAnimatingComponent('hSiren')
+const vSiren = genericAnimatingComponent('vSiren')
+const vSirenShort = genericAnimatingComponent('vSirenShort')
+
+const hPivot = genericAnimatingComponent('hPivot')
+const vPivot = genericAnimatingComponent('vPivot')
+
+const vFlip = genericAnimatingComponent('vFlip')
+const hFlip = genericAnimatingComponent('hFlip')
+
+const wave = genericAnimatingComponent('wave')
+const climb = genericAnimatingComponent('climb')
+const hexagon = genericAnimatingComponent('hexagon')
+const breathe = genericAnimatingComponent('breathe')
+
+const updownLongParent = genericAnimatingComponent('updownLong')
+const updownLong = (grandChild, args={}) => {
+  const duration = args.duration || 1000
+  const delay = args.delay || 0
+
+  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
+  return updownLongParent(child, args)
+}
+
+const leftRightParent = genericAnimatingComponent('leftRight')
+const leftRight = (grandChild, args={}) => {
+  const duration = args.duration || 1000
+  const delay = args.delay || 0
+
+  const child = $.div(grandChild, { style: `animation-duration: ${duration}ms; animation-delay: -${delay}ms;` })
+  return leftRightParent(child, args)
+}
+
+
+const flamingHotParent = genericAnimatingComponent('flamingHot')
+const flamingHot = (grandChild, args={}) => {
+  return flamingHotParent(grandChild, {
+    ...args,
+    showTrails: true,
+    baseIsPaused: true,
+    delayM: -10
+  })
+}
+
+
+const withTrails = (grandChild, args={}) => {
+  const shadows = 5
+  const delayM = args.delayM || 1
+  return times(shadows, t => {
+    const shadow = grandChild.cloneNode(true)
+    if (t < shadows-1) $(shadow, 'position', 'absolute')
+    $(shadow, 'opacity', 1/shadows + t/shadows )
+    $(shadow, 'text-shadow', `0 0 0.${0.25/shadows * (shadows-t)}em`)
+    if (t === shadows - 1 && args.baseIsPaused) {
+      $(shadow, 'animation-play-state', 'paused')
+      $(shadow, 'animation-delay', `0ms`)
+      $(shadow, 'animation-direction', `normal`)
+    } else {
+      $(shadow, 'animation-delay', `${-args.delay + args.duration * 0.025 * (shadows-t) * delayM}ms`)
+    }
+    return shadow
+  })
+}
+
+
+
+const bgAnimation = (className, rSpan, cSpan, args={}) => $.div([], {
+    class: className + ' bgAnimation',
+    style: `
+      border: 1vmin ${borderStyle};
+      position: absolute;
+      height: ${100*rSpan/rows}vh;
+      width: ${100*cSpan/cols}vw;
+      animation-delay: -${args.delay || 0}ms;
+      animation-duration: ${args.duration || 2000}ms;
+      animation-direction: ${args.direction === -1 ? 'reverse' : 'normal'};
+      ${args.style || ''}
+    `
+  })
+
+function staticBgsMultiple(rSpan, cSpan) {
+  return times(6, i => bgAnimation('',rSpan, cSpan, { style: `transform: scale(${i/6});`}))
+}
+function shrinkingBgSingle(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return [bgAnimation('shrinkingBorder', rSpan, cSpan, {
+    duration,
+    direction
+  })]
+}
+
+function shrinkingBgMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(750, 3000)
+  return times(4, i => bgAnimation('shrinkingBorder',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction
+  }))
+}
+
+
+function shrinkingSpinningBgMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(3000, 10000)
+  return times(4, i => bgAnimation('shrinkingSpinningBorder',rSpan, cSpan, {
+    delay: i * (duration/4),
+    duration,
+    direction
+  }))
+}
+
+function colorShiftingBgMultiple(rSpan, cSpan) {
+  const direction = prb(0.5) ? 1 : -1
+  const duration = rnd(4000, 16000)
+  const squares = rndint(8, 20)
+  return times(squares, i => bgAnimation('colorShift',rSpan, cSpan, {
+    delay: i * 500,
+    duration,
+    direction,
+    style: `transform: scale(${0.95 - i/squares});`
+  }))
+}
+
+const bgAnimationFn =
+  bgAnimationType === 0 ? colorShiftingBgMultiple :
+  bgAnimationType === 1 ? staticBgsMultiple :
+  bgAnimationType === 2 ? shrinkingBgSingle :
+  bgAnimationType === 3 ? shrinkingBgMultiple :
+  shrinkingSpinningBgMultiple
+
+
+let bgAnimationCount = 0
+function withBgAnimation(child, rSpan, cSpan) {
+  const aspectRatio = cSpan / rSpan
+  const invalidAspectRatio = aspectRatio > 3 || aspectRatio < 0.3333
+
+  if (bgAnimationFn !== colorShiftingBgMultiple && invalidAspectRatio) return child
+
+  const hasAnimation = prb(bgAnimationPrb)
+  if (hasAnimation) bgAnimationCount++
+
+  return [
+    ...(hasAnimation ? bgAnimationFn(rSpan, cSpan) : []),
+    child
+  ]
+
+}
+
+
+function genericCharacterComponent(name, durMin, durMax) {
+  return (children, args={}) => {
+    const splitAnimation = txt => {
+      const duration = args.duration ? map(args.duration, 750, 5000, durMin, durMax) : rnd(durMin, durMax)
+      const split = txt.split('')
+
+      return split.map((c, i) => $.span(c, {
+        class: name + ' charContent',
+        style: `
+          animation-delay: -${i * duration}ms;
+          ${c === ' ' ? 'margin-right: 0.5em;' : ''}
+        `
+      }))
+    }
+
+    const c = prb(0.5) ? [children.innerHTML] : children.innerHTML.split(' ')
+
+    return $.div(
+      c.map(txt => $.div(
+        splitAnimation(txt),
+        {
+          class: 'charContentWord',
+          style: `
+            display: inline-block;
+            margin-left: 0.25em;
+            margin-right: 0.25em;
+          `
+        }
+      )
+    ), {
+      class: 'charContentGroup',
+      style: `display: inline-block;`
+    })
+  }
+}
+
+
+const updownChars = genericCharacterComponent('updownChars', 100, 500)
+const shrinkChars = genericCharacterComponent('growShrinkShort', 100, 300)
+const blinkChars = genericCharacterComponent('blink', 50, 200)
+const colorChars = genericCharacterComponent('colorChars', 50, 200)
+
+function getContent(elem) {
+  const child = $.cls(elem, 'content')
+  if (child.length) {
+    if (child[0].childElementCount) return child[0].children[0].alt
+    return child[0].innerHTML
+  }
+  else {
+    return $.cls(elem, 'charContentWord').map(w =>
+      $.cls(w, 'charContent').map(c => c.innerHTML).join('')
+    ).join(' ')
+  }
+}
+
+
+const LR_PADDING = 'margin-left: 0.2em; margin-right: 0.2em;'
+
+css(`
+  .text {
+    font-size: 1em;
+  }
+
+  .emoji {
+    ${LR_PADDING}
+    font-size: ${USE_EMOJI_POLYFILL ? 0.8 : 0.9}em;
+  }
+
+  .emojiPolyfill {
+    width: 1em;
+    height: 1em;
+    transform: translateY(7%);
+  }
+`)
+
+const word = txt => $.span(txt, { class: 'text content' })
+const emoji = e => $.span(e, { class: 'emoji content' })
+const emojis = es => es.split(' ').map(emoji)
+
+const link = txt => $.a(txt, {
+  target: '_blank',
+  href: './' + (projectId * 1000000 + rndint(EDITION_SIZE)),
+  class: 'text content'
+})
+
+const elementIsEmoji = elem => {
+  if (Array.isArray(elem)) return false
+  return (
+    elem.getElementsByClassName('emoji').length
+    || elem.className.includes('emoji')
+  )
+}
+
+let emojiOverride, textOverride
+
+try {
+  if (queryParams.emojis) emojiOverride = queryParams.emojis.split(',').map(decodeURI).map(emoji)
+  if (queryParams.text) textOverride = queryParams.text.split(',').map(decodeURI)
+
+  if (textOverride || emojiOverride) console.log('OVERRIDES:', textOverride, emojiOverride)
+} catch (e) {}
+
+
+
+const money1 = emojis(`💸 💰 💎 👑 💍 🪙`)
+const money2 = emojis(`🤑 💷 💴 💵 💶 💲 💸 💰`)
+const moneyFull = [...emojis(`💹 📈 💯`), ...money1, ...money2]
+const fruit1 = emojis(`🍒 🍉 🍇 🍋 🍯`)
+const fruit2 = emojis(`🍆 🍑 🌶`)
+const miscFood = emojis(`🥕 🍌 🥜 🧀 🍪`)
+const booze = emojis(`🍻 🍾 🥂`)
+const hot = emojis(`🌶 🔥 ❤️‍🔥 🌋`)
+const lucky = [...emojis(`🍀 🎰 🔔 🚨 🎁 🥇 🌟 ❓ 🃏 🎲`), ...fruit1, ...money1]
+const drugs = [...emojis(`🎄 🍄 ❄️ 😵‍💫`), ...booze]
+const party = [...emojis(`🎉 🕺 💃 🎊 🥳 🎈`), ...booze]
+const energy = emojis(`💫 🔥 🚀 ⚡️ ✨`)
+const explosion1 = emojis(`💥 🤯 🧨 💣`)
+const explosionFull = [...explosion1, ...energy, ...emojis(`🌋 ☄️`)]
+const sexy = [...emojis(`🦄 🌈 💋 💦 😍 ❤️‍🔥 ❤️ 🔥 🔞 🌹 🥵`), ...fruit2]
+const yummy = [...emojis(`🍬 🍭 🎂 🍫 🍦 🍄`), ...fruit1, ...fruit2, ...miscFood]
+const usa = emojis(`🏎 🇺🇸 ★`)
+const funny = emojis(`🐄 🤡 💩 😂 🤣`)
+const symbols = emojis(`★ → ←`)
+const justArrows = emojis(`→ ← → ← → ← 🔴`)
+const lunar = emojis(`🌜 🌛 🌝 🌞 🌎 🌟`, ...energy)
+const colorful = [...emojis(`🍭 🎨 🌈 🦄 🎉`), ...fruit1]
+const loud = [...emojis(`‼️ ❗️ 🔊`), ...explosion1]
+const computer = emojis(`👨‍💻 🧑‍💻 👩‍💻 🕸 👁 👁‍🗨 🌎 🤳 🔔 🏄‍♂️ ❤️`)
+const commonEmojis = emojis(`💸 🤑 🔥 😂 💥`)
+const circusEmojis = emojis(`🎪 🦁 🤡 🏋️ 👯‍♀️ 🤹`)
+const excitingMisc = emojis(`🙌 🤩 ‼️ 🏃 😃`)
+const hedonicTreadmill = [...emojis(`🏃 🧠`), ...miscFood, ...symbols]
+const sportsEmojis = emojis(`🏎️ 🏋🏽 ⛹️‍♂️ 🏟 🏄‍♀️ 🏂 🤾 🏅 🏆 🏃 💪`)
+const misc = emojis(`⚠️ 🐂 🤲 🐐 🎸 🚬 🌳`)
+
+const emojiLists = emojiOverride ? [emojiOverride] : [
+  moneyFull,
+  booze,
+  hot,
+  lucky,
+  drugs,
+  party,
+  energy,
+  explosion1,
+  explosionFull,
+  sexy,
+  yummy,
+  usa,
+  funny,
+  symbols,
+  lunar,
+  colorful,
+  loud,
+  computer,
+  excitingMisc,
+  commonEmojis,
+  justArrows,
+  hedonicTreadmill,
+  circusEmojis,
+  sportsEmojis
+]
+
+const emojiList = [...emojiLists, misc].flat().map(e => e.innerHTML)
+
+
+const withEmoji = (txt, possibleEmojis, emojiProb=1) => !hasEmoji(txt) && prb(emojiProb)
+  ? $.span([
+    txt,
+    $.span(sample(possibleEmojis), {style: 'margin-left: 0.5em'})
+  ])
+  : txt
+
+const withEmojiLazy = (possibleEmojis, emojiProb) => txt => withEmoji(txt, possibleEmojis, emojiProb)
+
+
+const luckyText = [
+  'WINNER',
+  'LUCKY',
+  'CONGRATULATIONS',
+  'WIN BIG',
+  'MEGA WIN',
+  'JACKPOT',
+  'HIT IT BIG',
+  '777',
+  `YOU CAN'T LOSE`,
+  `EVERYONE'S A WINNER`,
+  'DOUBLE DOWN',
+  'BINGO',
+  'MULTIPLIER',
+  'SURPRISE',
+]
+
+const dealsText = [
+  'DEAL OF THE CENTURY',
+  'DEALS',
+  'DEALS GALORE',
+  'WHAT A BARGAIN',
+  'WHAT A DEAL',
+  'BARGAIN',
+  'BUY NOW',
+  'CHEAP',
+  'SO CHEAP',
+  'SELL OUT',
+  'GOOD PRICES',
+  'CRAZY DEALS',
+  'NEW',
+  'INSANE PRICES',
+  'LIMITED TIME OFFER',
+  'FREE',
+  'DEALS',
+  'UNLIMITED',
+  'EXTRA LARGE',
+  'NEW AND IMPROVED',
+  `RUN, DON'T WALK`,
+  'SENSATIONAL',
+  'AMAZING SAVINGS',
+  'MORE',
+  'MORE IS MORE',
+  'I WANT MORE',
+  'SATISFACTION GUARANTEED',
+  'SUPERSIZE'
+]
+
+const cashText = [
+  `Do you CRAVE YIELD?`,
+  `MAKE GENERATIONAL WEALTH NOW`,
+  'MAKE FAST CASH NOW',
+  'MAKE CASH FAST',
+  'GOLD MINE',
+  'FAST CASH',
+  '$$$$',
+  'CASH COW',
+  'MILLIONAIRE',
+  'BILLIONAIRE',
+  'TRILLIONAIRE',
+  'PUMP + DUMP',
+  'CRYPTO FORTUNE',
+  'GET RICH QUICK',
+  `YIELD EXPLOSION`,
+  'TREASURE TROVE',
+  'PROFITS',
+  'MONEY MAKING OPPORTUNITY',
+]
+
+const sexyText = [
+  'SEXY',
+  'XXX',
+  'HOT',
+  'SO HOT',
+  'SPICY',
+  'SO SEXY',
+  'PURE BLISS',
+  'DELICIOUS',
+  'FORBIDDEN PLEASURES',
+  'JUICY',
+  'PASSION',
+  'ECSTASY',
+  'LUST',
+  'DESIRE',
+  'OBSESSION',
+]
+
+const fomo = [
+  `THINGS ARE MOVING FAST`,
+  `Stop THROWING YOUR MONEY AWAY`,
+  `DON'T MISS OUT`,
+  `YOU CAN'T AFFORD TO PASS THIS UP`,
+  `ACT NOW (Before It's Too Late)`,
+  'FEAR OF MISSING OUT',
+  'FEAR UNCERTAINTY DOUBT',
+  'FOMO',
+  'FUD',
+  `THIS WON'T LAST`,
+  'TIME IS RUNNING OUT',
+  'ACT NOW',
+  `DON'T WAIT`,
+  `THIS IS WHAT YOU'VE BEEN WAITING FOR`,
+  `THIS IS GOING TO BE HUGE`,
+]
+const hotText = [
+  'TOO HOT TO HANDLE',
+  'SO HOT',
+  'HOT STUFF',
+  'SIZZLING',
+  'HOTTEST ART AROUND',
+  'ELECTRIC',
+  'WHITE HOT',
+]
+
+const excitingText = [
+  'FRESH',
+  'UNBELIEVABLE',
+  'BELIEVE THE HYPE',
+  'WOW',
+  'OMG',
+  'HYPE',
+  'AMAZING',
+  'INCREDIBLE',
+  'EXCITING',
+  'ECSTATIC',
+  'EUPHORIC',
+  'THRILLING',
+  'HOLY MOLY',
+  'WHAT A THRILL',
+  'HIGH OCTANE',
+  'HIGH VOLTAGE',
+  `SUPERCHARGED`,
+  'HOLY COW',
+  'BONANZA',
+  'PURE ENERGY',
+  'PARTY TIME',
+  'INSTANT GRATIFICATION',
+  'MIND = BLOWN',
+  'DOPAMINE RUSH',
+  'DOPAMINE BOOST',
+  'STARSTRUCK',
+  'BLAST OFF',
+  'ALL OR NOTHING',
+  `LET'S GO`,
+  'FRENZY',
+  'WILD',
+  'DELIGHTFUL',
+  'DOPAMINE MACHINE',
+]
+
+const funText = [
+  'FUN',
+  'LOL',
+  'ROFL',
+  'LMAO',
+  'WAGMI',
+  'WTF',
+  'SO COOL',
+  'I LOVE IT',
+  'HA HA HA HA',
+  'SWEET',
+  'DOPE',
+]
+
+const crypto = [
+  `ALPHA`,
+  `NEW PARADIGM`,
+  'DEGEN',
+  'NFTs',
+  'CRYPTO',
+  'MAKE FAST CASH NOW',
+  'WAGMI',
+  'GRAIL',
+  `THIS NFT SELLS ITSELF`,
+  'STRAIGHT TO THE MOON',
+  'BULL MARKET',
+  'DIAMOND HANDS',
+  'ALL TIME HIGH',
+  '100%',
+  'THROBBING GAINS',
+  'MASSIVE GAINS',
+  'WHOPPING GAINS',
+  'RARE'
+]
+
+const disclaimer = [
+  `WHAT YOU SEE IS WHAT YOU GET`,
+  'NFA',
+  'NOT FINANCIAL ADVICE',
+  'WARNING',
+  'DANGER ZONE',
+  'DO YOUR OWN RESEARCH',
+  'DYOR',
+  'SAFE + SECURE',
+  `PAST PERFORMANCE DOES NOT GUARANTEE FUTURE RESULTS`,
+]
+
+const affirmations = [
+  `OPPORTUNITY OF A LIFETIME`,
+  `YOU WON'T BELIEVE THIS`,
+  `THIS IS THE REAL DEAL`,
+  `PAY ATTENTION`,
+  `I COULDN'T BELIEVE IT EITHER`,
+  `YOU'LL LOVE IT`,
+  'YOU DESERVE IT',
+  'TOO GOOD TO BE TRUE',
+  'YOU ONLY LIVE ONCE',
+  'YOLO',
+  `NEVER LOOKED SO GOOD`,
+  'AS GOOD AS IT GETS',
+  'FUCK YES',
+  'FINALLY',
+  'SPECIAL',
+  `YOU'RE #1`,
+  'THIS ROCKS',
+  'ALL NATURAL',
+  'EASY AS 1 2 3',
+  'HAPPY',
+  'REWARDS',
+]
+
+const wwwText = [
+  'WORLD WIDE WEB',
+  'ENGAGEMENT',
+  'CLICK HERE',
+  'VIRAL',
+  'LIKE',
+  'TRENDING',
+  `BY USING THIS WEBSITE YOU AGREE TO IT'S TERMS OF SERVICE`,
+]
+
+const sportsText = [
+  'SLAM DUNK',
+  'GOAL',
+  'HOME RUN',
+  'GRAND SLAM',
+  'MAKE SOME NOISE',
+  `LET'S GO`,
+  'POWER PLAY',
+  'GREATEST OF ALL TIME',
+  'CHAMPION',
+  'WINNER',
+  'VICTORY LAP',
+  'ACTION PACKED',
+  'TRIPLE CROWN',
+  'ALL STAR',
+  'SUPERSTAR',
+  'LIGHTNING ROUND',
+]
+
+
+const textLists = [
+  luckyText,
+  dealsText,
+  cashText,
+  sexyText,
+  fomo,
+  hotText,
+  excitingText,
+  funText,
+  crypto,
+  disclaimer,
+  affirmations,
+  wwwText,
+  sportsText
+]
+
+
+const emojiTextRelationships = {
+  single: {
+    'CASH COW': [emoji`🐄`, ...money2],
+    'YIELD EXPLOSION': explosion1,
+    'HOTTEST ART AROUND': emojis(`🎨 🔥`),
+    'SUPERCHARGED': emojis(`⚡️`),
+    'HIGH VOLTAGE': emojis(`⚡️`),
+    'HOLY COW': emojis(`🐄`),
+    'STRAIGHT TO THE MOON': emojis(`🌜 🌛 🌝 🚀`),
+    'THROBBING GAINS': emojis(`💪`),
+    'MASSIVE GAINS': emojis(`💪`),
+    'BULL MARKET': emojis(`🐂`),
+    'DIAMOND HANDS': emojis(`💎 🤲`),
+    'SWEET': yummy,
+    'ELECTRIC': emojis(`⚡️`),
+    'LIGHTNING ROUND': emojis(`⚡️`),
+    'JUICY': fruit1,
+    'ALL NATURAL': fruit1,
+    'PURE ENERGY': energy,
+    "RUN, DON'T WALK": emojis(`🏃`),
+    'MIND = BLOWN': emojis(`🤯`),
+    '100%': emojis(`💯`),
+    'GREATEST OF ALL TIME': emojis(`🐐`),
+    'STARSTRUCK': emojis(`🤩`),
+    'BLAST OFF': emojis(`🚀`),
+    'ROFL': emojis(`🤣`),
+    'THIS ROCKS': emojis(`🎸`),
+  },
+  group: [
+    [luckyText, lucky],
+    [dealsText, money2],
+    [cashText, moneyFull],
+    [sexyText, sexy],
+    [hotText, hot],
+    [excitingText, [...explosionFull, ...hot, ...loud, ...excitingMisc]],
+    [funText, funny],
+    [crypto, [...moneyFull, ...energy]],
+    [disclaimer, emojis(`⚠️ 🚨`)],
+    [wwwText, computer],
+    [sportsText, sportsEmojis]
+  ]
+}
+
+
+
+function chooseEmojiForText(txt, selectionPrb=0.1) {
+  if (prb(selectionPrb) && emojiTextRelationships.single[txt]) {
+    return sample(emojiOverride || emojiTextRelationships.single[txt])
+  } else if (is420) {
+    return '🚬'
+  }
+
+  for (let [texts, emojis] of emojiTextRelationships.group) {
+    if (texts.includes(txt)) {
+      const e = sample(emojiOverride || emojis)
+      return prb(selectionPrb) ? e : undefined
+    }
+  }
+}
+
+
+
+
+const sampledTextContent = []
+const sampledEmojiContent = []
+
+function sampleContent(contentOverride=false, onlyEmojis=false) {
+  if (contentOverride) {
+    const c = onlyEmojis ? sample(sampledEmojiContent) : sample([...sampledEmojiContent, ...sampledTextContent])
+    return [c, c]
+  }
+  const showEmojis = onlyEmojis || (prb(0.3) && _content.emojis.length) || !_content.text.length
+  const e = sample(_content.emojis)
+
+  const mainContent = showEmojis ? e : sample(_content.text)
+  let replacementContent = showEmojis ? e : sample((textOverride||[]).map(c => word(c)))
+  if (!textOverride) {
+    replacementContent = mainContent
+  }
+
+  if (showEmojis) {
+    sampledEmojiContent.push(replacementContent)
+  } else {
+    sampledTextContent.push(replacementContent)
+  }
+
+  return [mainContent, replacementContent]
+}
+
+const contentSample = { text: [], emojis: [] }
+
+function chooseContent() {
+  const content = { text: [], emojis: [] }
+
+  const sections = chance(
+    [30, 1],
+    [30, 2],
+    [25, 3],
+    [15, 0] // everything
+  )
+
+
+  if (sections) {
+    times(sections, s => {
+      const textSample = sample(textLists)
+      contentSample.text.push(textSample)
+
+      const matchingEmojiSample = emojiTextRelationships.group.find(g => g[0] === textSample)
+      const emojiSample = matchingEmojiSample && prb(0.5) ? matchingEmojiSample[1] : sample(emojiLists)
+      contentSample.emojis.push(emojiSample)
+    })
+  } else {
+    contentSample.text = textLists
+    contentSample.emojis = emojiLists
+  }
+
+  if (is69) {
+    contentSample.text = [sexyText]
+    contentSample.emojis = [sexy]
+  } else if (is420) {
+    contentSample.text = [funText]
+    contentSample.emojis = emojis('🚬 🌳 🍄 😵‍💫')
+  } else if (is100) {
+    contentSample.text = ['100%']
+    contentSample.emojis = emojis('💯')
+  } else if (is666) {
+    contentSample.text = [hotText]
+    contentSample.emojis = [hot]
+  } else if (is7) {
+    contentSample.text = [luckyText]
+    contentSample.emojis = [lucky]
+  }
+
+
+  const selections = chance(
+    [15, 1],
+    [25, 2],
+    [35, 3],
+    [10, 4],
+    [10, 5],
+    [5, 0], // everything
+  )
+
+
+  if (emojiOverride) contentSample.emojis = emojiOverride
+
+  if (selections) {
+    times(selections, s => {
+      content.text.push(sample(contentSample.text))
+      content.emojis.push(sample(contentSample.emojis))
+    })
+  } else {
+    content.text = contentSample.text
+    content.emojis = contentSample.emojis
+  }
+
+  const wordify = c => c === 'CLICK HERE'
+    ? link(c)
+    : word(c + (prb(0.25) ? '!' : ''))
+
+  content.text = content.text
+    .flat()
+    .map(wordify)
+  content.emojis = showEmojis ? content.emojis.flat() : []
+  return content
+}
+
+const _content = chooseContent()
+const content = [..._content.text, ..._content.emojis]
+
+
+
+const adjustCharLength = (txt, pairedEmoji) => {
+  let lenText = txt;
+  emojiList.forEach(c => lenText = lenText.replace(c, '1'))
+  return lenText.length + (!!pairedEmoji ? 3 : 0)
+}
+css(`
+  .sectionContainer {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+    transition: 150ms;
+    filter: invert(${invertAll ? 1 : 0});
+    transition: 250ms;
+  }
+
+  .sectionContainer:hover {
+    filter: invert(${invertAll ? 0 : 1});
+  }
+
+  .sectionContainer:active {
+    opacity: 0.5;
+  }
+
+  .animationGridContainer {
+    line-height: 1;
+  }
+`)
+
+SOUND_SAMPLE = []
+function createSound(animation, params, isGrid, extraDelay=0) {
+  let fn
+
+  if ([spin, flamingHot].includes(animation)) {
+    fn = smoothSound
+
+  } else if ([vPivot, hPivot, dance, updownLong, growShrink, breathe, growShrinkShort].includes(animation)) {
+    fn = chance(
+      [4, (p) => sirenSound({
+        ...p,
+        duration: p.duration/2,
+      })],
+      [4, (p) => zoomSound({
+        ...p,
+        delay: p.delay + p.duration/4,
+        duration: p.duration/2
+      })],
+      [!isGrid && 2, (p) => carSirenSound(p)],
+      [!isGrid && 1, (p) => ticktockSound(p)]
+    )
+
+  } else if ([hSiren, vSiren, wave, vSirenShort].includes(animation)) {
+    fn = sirenSound
+
+  } else if ([hFlip, vFlip].includes(animation)) {
+    fn = flipSound
+
+  } else if ([blinkChars, colorChars].includes(animation)) {
+    fn = blinkCharSound
+
+  } else if (blink === animation) {
+    fn = isGrid ? blinkCharSound : ticktockSound
+
+  } else if ([shrinkChars, updownChars].includes(animation)) {
+    fn = shrinkCharSound
+
+  } else if (animation === hexagon) {
+    fn = prb(0.5) ? hexSound : sirenSound
+
+  } else if (animation === climb) {
+    fn = climbSound
+
+  } else if (animation === iden) {
+    fn = singleSound
+
+  } else return
+
+
+  return fn({ ...params, delay: params.delay + extraDelay || 0 })
+}
+
+let sectionCount = 0
+function sectionContainer(child, rSpan, cSpan, h, txtH, onclick) {
+  const bwc = prb(0.5) ? { bg: '#000', text: '#fff' } : { bg: '#fff', text: '#000' }
+  const txtColor = BW ? bwc.text : getColorFromHue(txtH)
+  const bgColor = BW ? bwc.bg : getBgColor(h)
+  const bgProp = bgColor.length > 200 ? '' : 'background: '
+
+  const rotation = threeDRotations
+    ? `perspective(500px) rotate3d(1,1,0.5,${lineRotation()}deg)`
+    : `rotate(${lineRotation()}deg)`
+
+  const fontStyle = prb(italicRate) ? 'font-style: italic;' : ''
+
+  const borderWidth = min(rSpan, cSpan) * .05
+  const rotateColor = prb(rotateColorPrb) ? 'fullColorRotate' : ''
+  const colorBlink = prb(colorBlinkPrb) ? 'colorBlink' : ''
+
+  const classes = [
+    'sectionContainer',
+    starburstBg(h, rSpan, cSpan),
+    rotateColor,
+    colorBlink,
+    sectionAnimation,
+  ].filter(iden).join(' ')
+
+  const container = $.div(
+    withBgAnimation(child, rSpan, cSpan),
+    {
+      class: classes,
+      style: `
+        border-style: ${borderStyle};
+        ${showBorder ? `border-width: ${borderWidth}vmin; box-sizing: border-box;` : 'border-width: 0;'}
+        grid-column: span ${cSpan};
+        grid-row: span ${rSpan};
+        ${bgProp}${(hideBg ? 'none;' : bgColor)};
+        color: ${txtColor};
+        ${fontStyle}
+        transform: ${rotation};
+        animation-delay: -${rnd(5)}s;
+        animation-direction: ${rotateColor ? 'normal' : sectionAnimationDirection()};
+        animation-duration: ${rotateColor ? '25' : sectionAnimationDuration()}s;
+      `
+    }
+  )
+  const childContent = getContent(child)
+
+  let isFullScreen, notifyingTimeout
+  const canFullScreen = prb(0.01)
+  const triggersPopup = prb(0.01)
+  const triggersNotifications = prb(0.01)
+  container.onclick = () => {
+    try {
+      onclick()
+      if (window.navigator) window.navigator.vibrate(50)
+
+      if (canFullScreen) {
+        const method = isFullScreen ? 'remove' : 'add'
+        container.classList[method]('fullScreen')
+        isFullScreen = !isFullScreen
+      }
+
+      console.log('CLICK:',childContent)
+
+      if (triggersNotifications) {
+        const setNotification = () => {
+          notifyingTimeout = setTimeout(() => {
+            new Notification(childContent)
+            setNotification()
+          }, rndint(100, 10000))
+        }
+
+        Notification.requestPermission().then(p => {
+          setNotification()
+        })
+
+        if (notifyingTimeout) clearTimeout(notifyingTimeout)
+      }
+
+      if (navigator.clipboard) navigator.clipboard.writeText(childContent)
+
+      if (childContent.includes('FAST CASH')) setTimeout(() => window.open('http://fastcashmoneyplus.biz', '_blank'))
+      if (triggersPopup) setTimeout(() => window.alert(childContent))
+    } catch (e) {}
+  }
+
+  sectionCount++
+
+  SOUND_SAMPLE.push(onclick)
+
+  return container
+}
+
+
+
+
+
+
+const usedAnimations = []
+
+let marqueeCount = 0
+function marqueeContainter(rSpan, cSpan, contentOverride=false) {
+  marqueeCount++
+  let [child, replacementChild] = sampleContent(contentOverride)
+  const pairedEmoji = chooseEmojiForText(child.innerHTML, pairedEmojiPrb)
+
+  if (textOverride) child = replacementChild
+
+  const height = `calc(${100*rSpan/rows}vh)`
+  const width = `calc(${100*cSpan/cols}vw)`
+  const slow = 1 + adjustCharLength(child.innerHTML, pairedEmoji)/9
+  const aspectRatio = cSpan / rSpan
+  const sideways =
+    (prb(thinSidewaysPrb) && aspectRatio < 0.333)
+    || (prb(sidewaysPrb) && aspectRatio >= 0.3333 && aspectRatio < 1.2)
+
+
+  const h = chooseHue()
+  const txtH = chooseAltHue(h)
+
+  const canShowAltAnimation = rSpan >= 2 && cSpan/rSpan >= 5
+  const msgIsShort = child.innerHTML.length < 8
+
+  const msgAnimation = prb(marqueeAnimationRate) && canShowAltAnimation
+    ? chance(
+      [1, growShrinkShort],
+      [1, vSirenShort],
+      [1, blink],
+      ...(msgIsShort ? [
+        [1, dance],
+        [1, spin],
+        [1, hSiren],
+        [1, hPivot],
+        [1, hFlip],
+      ] : [])
+    )
+    : iden
+
+  usedAnimations.push(msgAnimation)
+
+  const r = rnd(750, 1500)
+  const d = map(sideways ? cSpan/cols : rSpan/rows, 0, 1, 0.5, 20)
+  const duration = rnd(d, 100) * slow * speed
+  const delay = duration/5 + rnd(duration/5)
+
+  const showLeftRight = cSpan/rSpan >= 6 && prb(0.1)
+  const showTrails = showLeftRight && prb(0.5)
+
+
+  const isEmoji = elementIsEmoji(child)
+  const rotateEmoji = isEmoji && sideways && prb(0.5)
+
+  let emojiStyle = ''
+
+  if (rotateEmoji) {
+    emojiStyle = 'transform: rotate(90deg); display: inline-block;'
+  }
+
+  if (
+    isEmoji && rSpan <= 3
+    || rotateEmoji && cSpan <= 3
+  ) {
+    emojiStyle += LR_PADDING
+  }
+
+
+  const clonedNode = $.span(child.cloneNode(true), {
+    class: isEmoji ? 'emojiShadow' : '',
+    style: getShadow(txtH, !isEmoji) + emojiStyle,
+    'data-h': txtH,
+  })
+
+  const childWithPairedEmoji = pairedEmoji
+    ? [
+      clonedNode,
+      $.span(pairedEmoji, {
+        class: 'emojiShadow',
+        style: `${LR_PADDING} ${getShadow(txtH, false)}`,
+        'data-h': txtH,
+      })
+    ]
+    : clonedNode
+
+  const zoomParams = { duration: r * slow * speed / 2, delay, showTrails }
+
+  let childEl, playSound
+  if (showLeftRight) {
+    usedAnimations.push(leftRight)
+    childEl = leftRight(childWithPairedEmoji, {
+      style: `font-size: ${height};`,
+      duration: r * slow * speed,
+      delay,
+      showTrails
+    })
+    playSound = zoomSound({ ...zoomParams, switchChannels: true })
+  } else {
+    childEl = marquee(childWithPairedEmoji, {
+      style: `font-size: ${sideways ? width : height};`,
+      direction: posOrNeg(),
+      delay,
+      duration,
+      sideways,
+      msgAnimation
+    })
+    if (msgAnimation !== iden) playSound = createSound(msgAnimation, { duration: 2000 }, true)
+  }
+
+  let stopSound = []
+  let talkingActive = false
+  const ignoreStop = false
+  prb(0.1)
+
+  return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
+    if (showLeftRight) {
+      if (stopSound.length) {
+        stopSound.forEach(s => s())
+        stopSound = []
+        return
+      }
+
+      const sound1 = playSound()
+      if (!ignoreStop) stopSound.push(sound1)
+
+      if (showTrails) {
+        const sound2 = ignoreStop
+          ? zoomSound({ ...zoomParams, switchChannels: true })(20)
+          : playSound(20)
+        if (!ignoreStop) stopSound.push(sound2)
+      }
+
+    } else {
+
+      if (
+        talkingActive
+        && utteranceQueue.some(u => u.text === child.innerHTML.toLowerCase())
+      ) {
+        stopUtter(child.innerHTML)
+        talkingActive = false
+      } else {
+        utter(child.innerHTML, 30, 7)
+        talkingActive = true
+      }
+
+      if (stopSound.length) {
+        stopSound.forEach(s => s())
+        stopSound = []
+      } else if (playSound) {
+        const sound = playSound()
+        if (!ignoreStop) stopSound.push(sound)
+      }
+
+    }
+  })
+}
+
+
+
+
+
+
+function getFontSize(txt, rSpan, cSpan) {
+  const rShare = rSpan/rows
+  const cShare = cSpan/cols
+
+  const words = txt.split(' ')
+  const longestWord = words.reduce((longest, word) => adjustCharLength(word) > adjustCharLength(longest) ? word : longest, words[0])
+
+  const charCols = adjustCharLength(longestWord)
+  const charRows = adjustCharLength(txt)/charCols
+
+  return `calc(min(${rShare/charRows} * 100vh, ${cShare/charCols} * 100vw))`
+}
+
+
+
+
+const allPlayingSounds = []
+
+let animationCount = 0
+function animationContainer(rSpan, cSpan, contentOverride=false) {
+  animationCount++
+  let [child, replacementChild] = sampleContent(contentOverride)
+  if (textOverride) child = replacementChild
+
+  const height = `calc(${100*rSpan/rows}vh)`
+  const width = `calc(${100*cSpan/cols}vw)`
+  const h = chooseHue()
+  const txtH = chooseAltHue(h)
+
+  const ignoreCharAnimation = emojiList.includes(child.innerHTML.replace('!', ''))
+
+  const disallowColorChars = layoutStyle === 7 && cellSize < 12 && prb(0.8)
+
+  const animation = sample([
+    dance,
+    growShrink,
+    spin,
+    hSiren,
+    vSiren,
+    hPivot,
+    vPivot,
+    vFlip,
+    hFlip,
+    updownLong,
+    climb,
+    blink,
+    hexagon,
+    flamingHot,
+    iden,
+    prb(0.5) && breathe,
+    !ignoreCharAnimation && !disallowColorChars && colorChars,
+    !ignoreCharAnimation && updownChars,
+    !ignoreCharAnimation && blinkChars,
+    !ignoreCharAnimation && shrinkChars,
+  ].filter(iden))
+
+  const words = child.innerHTML.split(' ')
+  const shortest = words.reduce((shortest, word) => word.length < shortest.length ? word : shortest , words[0])
+
+
+  const rowSizeMax = 5.5/(child.innerHTML.length)
+  const colSizeMax = 7 *(cSpan/(cols*shortest.length))
+
+  const fontSize = getFontSize(child.innerHTML, rSpan, cSpan)
+
+  const secondAnimation = animation === updownLong || prb(0.75)
+    ? iden
+    : sample([
+      dance,
+      growShrink,
+      spin,
+      hSiren,
+      vSiren,
+      hPivot,
+      vPivot,
+      vFlip,
+      hFlip,
+      climb,
+    ])
+
+  usedAnimations.push(animation)
+  usedAnimations.push(secondAnimation)
+
+  const primaryAnimationParams = {
+    delay: rnd(3500),
+    duration: rnd(750, 5000),
+    direction: prb(0.5) ? 1 : -1,
+    showTrails: prb(0.2)
+  }
+
+  const secondaryAnimationParams = {
+    delay: rnd(3500),
+    duration: rnd(750, 5000),
+    showTrails: primaryAnimationParams.showTrails
+  }
+
+  const childEl = $.div(
+    secondAnimation(
+      animation(
+        child.cloneNode(true),
+        primaryAnimationParams
+      ),
+      secondaryAnimationParams
+    ),
+    {
+      class: 'animationContainer' + (ignoreCharAnimation ? ' emojiShadow' : ''),
+      'data-h': txtH,
+      style: `
+        height: ${100*rSpan/rows}vh;
+        font-size: ${fontSize};
+        ${getShadow(txtH, !ignoreCharAnimation)}
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      `,
+    }
+  )
+
+
+  let stopSound = []
+  const ignoreStop = false
+  prb(0.1)
+  const playSound = createSound(animation, primaryAnimationParams)
+  const playSecondSound = secondAnimation !== iden
+    ? createSound(secondAnimation, secondaryAnimationParams)
+    : null
+
+  return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
+    if (stopSound.length) {
+      stopSound.forEach(s => s())
+      stopSound = []
+      return
+    }
+
+    const sound1 = playSound()
+    if (!ignoreStop) stopSound.push(sound1)
+
+    if (primaryAnimationParams.showTrails && animation !== blinkChars) {
+      // createSound(animation, primaryAnimationParams, false, 10)
+      const sound2 = ignoreStop
+        ? createSound(animation, primaryAnimationParams)(10)
+        : playSound(10)
+      if (!ignoreStop) stopSound.push(sound2)
+    }
+
+    if (playSecondSound) {
+      const sound1 = playSecondSound()
+      if (!ignoreStop) stopSound.push(sound1)
+    }
+  })
+}
+
+
+
+
+
+
+
+
+
+function getEmojiGrid(rSpan, cSpan) {
+  const divisor = rndint(1, min(rSpan/2, cSpan/2)) || 1
+  return [
+    max(1, int(rSpan/divisor)),
+    max(1, int(cSpan/divisor))
+  ]
+}
+
+let gridCount = 0
+function animationGridContainer(rSpan, cSpan, contentOverride=false) {
+  const [child] = sampleContent(contentOverride, true)
+
+  if (!child) return animationContainer(rSpan, cSpan)
+  gridCount++
+
+  const height = `calc(${100*rSpan/rows}vh)`
+  const width = `calc(${100*cSpan/cols}vw)`
+  const h = chooseHue()
+  const txtH = chooseAltHue(h)
+
+  const animation = chance(
+    [5, growShrink],
+    [4, spin],
+    [3, blink],
+    [3, vSiren],
+    [3, hSiren],
+    [3, vFlip],
+    [3, hFlip],
+    [1, dance],
+    [1, wave],
+    [1, climb],
+  )
+
+  usedAnimations.push(animation)
+
+  const [r, c] = getEmojiGrid(rSpan, cSpan)
+
+  const duration = rnd(750, 5000)
+  const delayFactor = rnd(0.5, 2)
+
+  const childEl = $.div(
+    times(r*c, i => animation(
+      child.cloneNode(true), {
+        delay: (i/(r*c))*duration*delayFactor,
+        duration,
+      }
+    )),
+    {
+      class: 'animationGridContainer emojiShadow',
+      'data-h': txtH,
+      style: `
+        font-size: ${100*min(rSpan/(r*rows), cSpan/(c*cols*1.2))}vmin;
+        height: ${100*rSpan/rows}vh;
+        width: ${100*cSpan/cols}vw;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        grid-template-rows: repeat(${r}, 1fr);
+        grid-template-columns: repeat(${c}, 1fr);
+        ${getShadow(txtH, false)}
+      `,
+    }
+  )
+
+  const params = {
+    delay: duration*delayFactor,
+    duration,
+  }
+
+  let stopSound = []
+  const ignoreStop = false
+  prb(0.1)
+  const playSound = createSound(animation, params, true)
+
+  return sectionContainer(childEl, rSpan, cSpan, h, txtH, () => {
+    if (stopSound.length) {
+      stopSound.forEach(s => s())
+      stopSound = []
+      return
+    }
+
+
+    const sound1 = playSound()
+    if (!ignoreStop) stopSound.push(sound1)
+
+    if (animation !== blink) {
+      const sound2 = ignoreStop
+        ? createSound(animation, params)(duration/4)
+        : playSound(duration/4)
+      if (!ignoreStop) stopSound.push(sound2)
+    }
+  })
+}
+
+
+
+
+
+
+
+
+function flexSection(rowCells, colCells, contentOverride=false) {
+  const cells = {}
+  times(rowCells, r => cells[r] = [])
+
+  const sections = []
+
+  let colMin, colMax, rowMin, rowMax
+
+  if ([1, 2].includes(layoutStyle)) {
+    colMin = 1
+    rowMin = 1
+    colMax = colCells
+    rowMax = rowCells
+
+  } else if (layoutStyle === 3) {
+    colMin = 1
+    rowMin = 1
+    colMax = colCells
+    rowMax = int(rowCells/8)
+
+  } else if (layoutStyle === 4) {
+    if (prb(0.5)) {
+      colMin = colCells * (5/12)
+      rowMin = rowCells * (5/12)
+    } else {
+      colMin = colCells
+      rowMin = rowCells
+    }
+    colMax = colCells
+    rowMax = rowCells
+
+  } else if (layoutStyle === 5) {
+    rowMin = rowSize
+    rowMax = rowSize
+
+    colMin = 12
+    colMax = colCells
+
+  } else if (layoutStyle === 6) {
+    colMin = colSize
+    colMax = colSize
+
+    rowMin = prb(0.5) ? 16 : rowCells
+    rowMax = rowCells
+
+  } else if (layoutStyle === 7) {
+    colMin = cellSize
+    colMax = cellSize
+    rowMin = cellSize
+    rowMax = cellSize
+  } else if (layoutStyle === 8) {
+    colMin = 1
+    rowMin = 1
+    colMax = int(colCells/6)
+    rowMax = int(rowCells/6)
+  } else if (layoutStyle === 9) {
+    const mn = rndint(1, 7)
+    colMin = mn
+    rowMin = mn
+    colMax = colCells
+    rowMax = rowCells
+  }
+
+
+  const findNextFilledCol = (rC, cC) => {
+    for (let c = cC; c < colCells; c++) {
+      if (cells[rC][c]) return c
+    }
+    return colCells
+  }
+
+  const findNextUnfilledCol = (rC, cC) => {
+    for (let c = cC; c < colCells; c++) {
+      if (!cells[rC][c]) return c
+    }
+
+    return colCells
+  }
+
+
+  const getSpan = (minCells, cellsLeft, maxCells) => {
+    const span = rndint(min(minCells, cellsLeft), maxCells)
+    return (cellsLeft - span < minCells) ? cellsLeft : span
+  }
+
+
+  const fillSection = (rCursor, cCursor) => {
+    let adjRowMax = rowMax
+    let adjColMax = colMax
+    if (layoutStyle === 1 && !sectionCount) {
+      if (prb(0.5)) adjRowMax = rowCells/4
+      if (prb(0.5)) adjColMax = colCells/4
+
+    } else if (
+      (layoutStyle === 2 && prb(0.9))
+
+    ) {
+      if (prb(0.2)) {
+        adjColMax = sample([1, 2])
+      } else {
+        adjRowMax = sample([1, 2])
+      }
+
+    } else if (layoutStyle === 9) {
+      if (prb(0.3)) {
+        adjColMax = rndint(1, 7)
+      } else {
+        adjRowMax = rndint(1, 7)
+      }
+    }
+    const colsLeft = min(findNextFilledCol(rCursor, cCursor) - cCursor, adjColMax)
+    const rowsLeft = max(1, min(rowCells - rCursor, adjRowMax))
+
+    const cSpan = getSpan(colMin, colsLeft, colCells)
+    const rSpan = getSpan(rowMin, rowsLeft, rowCells)
+
+    const aspectRatio = cSpan / rSpan
+    const animationPrb = layoutStyle === 4 ? 0.75 : 0.5
+
+    sections.push(
+      aspectRatio < 1.25 && aspectRatio > 0.8
+
+      ? prb(0.75) && _content.emojis.length
+        ? animationGridContainer(rSpan, cSpan, contentOverride)
+        : animationContainer(rSpan, cSpan, contentOverride)
+
+      : aspectRatio < 2 && aspectRatio > 0.5 && prb(animationPrb) ?
+        animationContainer(rSpan, cSpan, contentOverride)
+
+      : marqueeContainter(rSpan, cSpan, contentOverride)
+    )
+
+    times(rSpan, r =>
+      times(cSpan, c =>
+        cells[rCursor+r][cCursor+c] = 1
+      )
+    )
+
+    return { cSpan, rSpan }
+  }
+
+  let rCursor = 0
+
+  while (rCursor < rowCells) {
+    let cCursor = findNextUnfilledCol(rCursor, 0)
+
+    while (cCursor < colCells) {
+      const { cSpan } = fillSection(rCursor, cCursor)
+      cCursor = findNextUnfilledCol(rCursor, cCursor + cSpan)
+    }
+
+    rCursor++
+  }
+
+  return $.section(
+    sections,
+    {
+      style: `
+        width: ${100*colCells/cols}vw;
+        height: ${100*rowCells/rows}vh;
+        overflow: hidden;
+        grid-row: span ${rowCells};
+        grid-column: span ${colCells};
+        display: grid;
+        grid-template-rows: repeat(${rowCells}, 1fr);
+        grid-template-columns: repeat(${colCells}, 1fr);
+      `
+    }
+  )
+}
+
+
+
+function generateMain(id, contentOverride=false) {
+  return $.main(
+    flexSection(rows, cols, contentOverride),
+    {
+      id: `main`,
+      class: `projection-page-${id}`,
+      style: `
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: repeat(${rows}, 1fr);
+        grid-template-columns: repeat(${cols}, 1fr);
+      `
+    }
+  )
+}
+
+function renderMain(main) {
+  document.body.innerHTML = ''
+  $.render(document.body, main)
+}
+
+const main = generateMain(1)
+
+projectionPages['1'] = main
+projectionPages.pagesRendered = false
+
+const usedContent = Array.from(
+  new Set([
+    ...$.cls(main, 'content').map(e => e.innerHTML),
+    ...$.cls(main, 'charContentGroup').map(getContent)
+  ])
+)
+
+window.onload = () => {
+  setMetadata(usedContent)
+  renderMain(main)
+
+  if (PAUSED) {
+    LAST_PAUSED = Date.now()
+    document.body.classList.add('pauseAll')
+  }
+
+  let usingEmojiPolyfill = USE_EMOJI_POLYFILL
+  let isFullScreen = false
+  let isHidingMouse = false
+
+  const keyevent = (key) => {
+    // DOWNLOAD HTML
+    if (key === 'd') {
+      const a = document.createElement('a')
+      a.href = 'data:text/html;charset=UTF-8,' + encodeURIComponent(document.documentElement.outerHTML)
+      a.download = usedContent.join(' ').replaceAll(' ', '-') + '.html'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    }
+
+    // OVERDRIVE
+    else if (key === 'o') {
+      if (OVERDRIVE) {
+        document.body.classList.remove('overdrive')
+        soundOverdrive()
+
+      } else {
+        document.body.classList.add('overdrive')
+        soundOverdrive(6)
+      }
+      OVERDRIVE = !OVERDRIVE
+    }
+
+
+    // PAUSE
+    else if (key === 'p') {
+      if (PAUSED) {
+        START_TIME += Date.now() - LAST_PAUSED
+        document.body.classList.remove('pauseAll')
+      } else {
+        LAST_PAUSED = Date.now()
+        document.body.classList.add('pauseAll')
+      }
+      PAUSED = !PAUSED
+      try {
+        ls.set('__DOPAMINE_IS_PAUSED__', PAUSED)
+      } catch(e) {}
+    }
+
+    // ANHEDONIC MODE
+    else if (key === 'a') {
+      if (ANHEDONIC) {
+        document.body.classList.remove('anhedonic')
+        sourcesToNormalMode()
+      } else {
+        document.body.classList.add('anhedonic')
+        sourcesToAnhedonicMode()
+      }
+      ANHEDONIC = !ANHEDONIC
+    }
+
+    // MOUSE HIDE
+    else if (key === 'm') {
+      if (isHidingMouse) {
+        document.exitPointerLock()
+        document.body.classList.remove('viewerMode')
+      } else {
+        document.body.classList.add('viewerMode')
+        document.body.requestPointerLock()
+      }
+      isHidingMouse = !isHidingMouse
+    }
+
+    else if (key === 'i') {
+      if (INVERT_ALL) {
+        document.body.classList.remove('invertAll')
+      } else {
+        document.body.classList.add('invertAll')
+      }
+
+      INVERT_ALL = !INVERT_ALL
+    }
+
+    // NO DISTRACTION MODE
+    else if (key === 'n') {
+      if (isFullScreen) document.exitFullscreen()
+      else document.body.requestFullscreen({ navigationUI: 'hide' })
+
+      isFullScreen = !isFullScreen
+    }
+
+
+    // TOGGLE EMOJIS
+    else if (key === 'e') {
+      const emojiShadows = $.cls(document, 'emojiShadow')
+
+      if (usingEmojiPolyfill) {
+        Array.from(document.getElementsByTagName('img')).forEach(img => {
+          img.replaceWith(img.alt)
+        })
+        emojiShadows.forEach(e => {
+          e.style.textShadow = getTextShadowValue(Number(e.dataset.h) || 0)
+          e.style.filter = ''
+        })
+      } else if (window.twemoji) {
+        twemoji.parse(
+          document.body, {
+            folder: 'svg',
+            ext: '.svg',
+            className: 'emojiPolyfill'
+          }
+        )
+        emojiShadows.forEach(e => {
+          e.style.filter = getDropShadowValue(Number(e.dataset.h) || 0)
+          e.style.textShadow = ''
+        })
+      }
+
+      usingEmojiPolyfill = !usingEmojiPolyfill
+
+      try {
+        ls.set('__DOPAMINE_EMOJI_TOGGLE__', usingEmojiPolyfill)
+      } catch(e) {}
+    }
+
+    else if (['1', '2', '3', '4', '5', '6', '7'].includes(key)) {
+      if (!projectionPages.pagesRendered) {
+        projectionPages['2'] = generateMain(2, true)
+        projectionPages['3'] = generateMain(3, true)
+        projectionPages['4'] = generateMain(4, true)
+        projectionPages['5'] = generateMain(5, true)
+        projectionPages['6'] = generateMain(6, true)
+        projectionPages.pagesRendered = true
+      }
+
+      if (key === '7') {
+        renderMain(projectionPages['1'])
+        $.render(document.body, projectionPages['2'])
+        $.render(document.body, projectionPages['3'])
+        $.render(document.body, projectionPages['4'])
+        $.render(document.body, projectionPages['5'])
+        $.render(document.body, projectionPages['6'])
+      } else {
+        renderMain(projectionPages[key])
+      }
+      START_TIME = Date.now()
+    }
+
+    else if (key === '0') {
+      renderMain('')
+    }
+
+    else if (key === 'ArrowRight') {
+     selectVoice(ACTIVE_VOICE_IX + 1)
+    }
+
+    else if (key === 'ArrowLeft') {
+      selectVoice(voices.length + ACTIVE_VOICE_IX - 1)
+    }
+
+    else if (key === 'ArrowDown') {
+      window.speechSynthesis.cancel()
+      triggerUtterance()
+    }
+
+    else if (key === 'ArrowUp') {
+      selectVoice(0)
+    }
+
+    else if (key === ' ') {
+      const s = sample(SOUND_SAMPLE)
+      if (s) s()
+    }
+  }
+  document.onkeydown = e => keyevent(e.key)
+
+  if (queryParams.keys) queryParams.keys.split(',').filter(k => !['d', 'o'].includes(k)).forEach(keyevent)
+
+  if (USE_EMOJI_POLYFILL && window.twemoji) {
+    twemoji.parse(document.body, {
+      folder: 'svg',
+      ext: '.svg',
+      className: 'emojiPolyfill'
+    })
+  }
+}
+
+function help() {
+  console.log('Keys:\n~ 0-7 => View alternate page\n~ Left/Right/Up => Switch voice\n~ Down => Reset voice\n~ Space => ???\n\nQuery Params:\n~ voice => Override default voice\n~ voiceLang => Override default voiceLang')
+}
