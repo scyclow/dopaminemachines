@@ -337,7 +337,7 @@ function marquee(children, args={}) {
   const msgAnimation = args.msgAnimation || iden
   const isEmoji = elementIsEmoji(children)
 
-  const repeat = isEmoji ? 60 : 40
+  const repeat = args.repeat || isEmoji ? 60 : 40
 
   const handleAnimation = (child, i, j) => {
     const isEmoji = elementIsEmoji(child)
@@ -368,6 +368,9 @@ function marquee(children, args={}) {
         animation-delay: -${delay}s;
         animation-duration: ${duration/(repeat/40)}s;
         animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
+        background: none;
+        font-size: 1.5em;
+        overflow: visible;
       `
     }
   )
@@ -542,11 +545,13 @@ function genericCharacterComponent(name, durMin, durMax) {
     }
 
     const c = children.innerHTML.split(' ')
+    console.log(args)
 
     return $.div(
       c.map(txt => $.div(
         splitAnimation(txt),
         {
+          id: args.id,
           class: 'charContentWord',
           style: `
             display: inline-block;

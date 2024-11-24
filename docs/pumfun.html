@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>DOPAMINE MACHINES</title>
+
+  <meta name="google" content="notranslate" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="Dopamine Machines. Art Blocks Curated. 777 Editions. Wednesday June 21st 2023. 1pm Eastern Daylight Time. Dutch Auction. 1.99 ETH to 0.0999 ETH. Responsive, Interactive, and Audio-Visual NFTs! steviep.">
+  <meta name="keywords" content="dopamine machines, dopamine machine, dopamine, machine, nft, nfts, exciting, art, website, art blocks, crypto, fastcash, ethereum, steviep, steve pikelny, pikelny">
+
+  <meta name="twitter:image" content="https://dopaminemachines.website/dm-thumbnail.png">
+  <meta name="twitter:image:alt" content="Dopamine Machines">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@steviepxyz">
+  <meta name="twitter:site" content="@steviepxyz">
+  <meta property="twitter:description" content="Dopamine Machines">
+
+  <meta name="og:image" property="og:image" content="https://dopaminemachines.website/dm-thumbnail.png">
+  <meta name="og:image:alt" content="Dopamine Machines">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dopaminemachines.website">
+  <meta property="og:title" content="Dopamine Machines">
+  <meta property="og:site_name" content="Dopamine Machines">
+  <meta property="og:description" content="Dopamine Machines. Art Blocks Curated. 777 Editions. June 21st 2023. 1pm Eastern Daylight Time. Dutch Auction. 1.99 ETH to 0.0999 ETH. Responsive, Interactive, and Audio-Visual NFTs! steviep.">
+
+
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+    }
+
+    #heroGrid {
+      height: 100vh;
+      width: 100vw;
+      /*max-height: 175vw;*/
+      display: grid;
+      grid-template-rows: repeat(40, 1fr);
+      grid-template-columns: repeat(40, 1fr);
+    }
+
+    #heroGrid > * {
+      overflow: hidden;
+/*      border-top: 1px solid;
+      border-bottom: 1px solid;*/
+    }
+
+    #marquee1 {
+      align-self: center;
+      grid-column: span 40;
+      grid-row: span 1;
+      color: #f06;
+    }
+
+    #marquee2 {
+      align-self: center;
+      grid-column: span 40;
+      grid-row-start: -2;
+      color: #f0f;
+    }
+
+    #marquee3 {
+      grid-row: 2/-2;
+      grid-column: span 1;
+      color: #0f0;
+    }
+
+    #marquee4 {
+      grid-row: 2/-2;
+      grid-column: span 1;
+      grid-column-start: -2;
+      color: #ff0;
+    }
+
+    #marquee5 {
+      align-self: center;
+      grid-column: 2/-2;
+      grid-row: span 1;
+      color: #0ff;
+    }
+
+    #marquee6 {
+      align-self: center;
+      grid-column: 2/-2;
+      grid-row: span 1;
+      grid-row-start: -3;
+      color: #dfc;
+    }
+
+    #marquee7 {
+      grid-row: 3/-3;
+      grid-column: span 1;
+      color: #f60;
+    }
+
+    #marquee8 {
+      grid-row: 3/-3;
+      grid-column: span 1;
+      grid-column-start: -3;
+      color: #06f;
+    }
+
+    #marquee3, #marquee4, #marquee7, #marquee8 {
+      font-size: 2.5vw;
+
+    }
+
+    #marquee1, #marquee2, #marquee5, #marquee6 {
+      font-size: 2.5vh;
+
+    }
+
+    #heroText {
+      grid-column: 3/-3;
+      grid-row: 3/-3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #heroText h1 {
+      font-size: calc(min(22vh, 14vw));
+      text-align:  center;
+      text-shadow: 0 0 0.15em #fff;
+    }
+
+    #heroText .downArrow {
+      display: none;
+      color: #fff;
+      font-size: calc(min(15vh, 10vw));
+      text-shadow: 0 0 1em #ff6000;
+    }
+
+
+    @media (max-width: 100vh) {
+      #marquee1 {
+        grid-row: span 2;
+      }
+
+      #marquee2 {
+        grid-row: span 2;
+      }
+
+      #marquee3 {
+        grid-row: 3/-3;
+        grid-column: span 2;
+      }
+
+      #marquee4 {
+        grid-row: 3/-3;
+        grid-column: span 2;
+      }
+
+      #marquee5 {
+        grid-column: 3/-3;
+        grid-row: span 2;
+        grid-row-start: 3;
+        margin-top: 2vh;
+      }
+
+      #marquee6 {
+        grid-column: 3/-3;
+        grid-row: span 2;
+        grid-row-start: -4;
+        margin-top: -2vh;
+      }
+
+      #marquee7 {
+        grid-row: 5/-5;
+        grid-column: span 2;
+      }
+
+      #marquee8 {
+        grid-row: 5/-5;
+        grid-column: span 2;
+      }
+
+      #marquee3, #marquee4, #marquee7, #marquee8 {
+        font-size: 5vw;
+      }
+
+      #marquee1, #marquee2, #marquee5, #marquee6 {
+        font-size: 5vh;
+      }
+
+      #heroText {
+        grid-column: 5/-5;
+        grid-row: 7/-7;
+      }
+    }
+
+
+
+    @media (max-width: 90vh) {
+      #heroText .downArrow {
+        margin-top: 1em;
+        height: 2em;
+        display: block;
+        animation-duration: 3s;
+      }
+
+      .fadein {
+        animation: FadeIn 3s linear;
+        opacity: 1;
+
+      }
+
+      @keyframes FadeIn {
+        0%, 66% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+    }
+
+
+    #info {
+      display: grid;
+      grid-template-rows: repeat(40, 1fr);
+      grid-template-columns: repeat(40, 1fr);
+      overflow: hidden;
+      height: 50vh;
+    }
+
+    #infoMarquee1 {
+      grid-row: 1/-1;
+      grid-column: span 2;
+      overflow: hidden;
+      font-size: 5vw;
+      color: #f0f;
+    }
+    #infoMarquee2 {
+      grid-row: 1/-1;
+      grid-column: -1/-3;
+      font-size: 5vw;
+      overflow: hidden;
+      color: #0f0;
+    }
+
+    .center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #countdownContainer {
+      grid-row: span 40;
+      grid-column: 3/20;
+    }
+
+    #abLink {
+      grid-row: span 40;
+      grid-column: 20/-3;
+    }
+
+    #countdown, #abLink {
+      font-size: calc(min(0.22 * 100vh, 0.12 * 50vw));
+    }
+
+    #abLink a, #abLink a:visited {
+      color: #03f;
+      padding: 0.2em;
+      border: 0.1em dashed #ff0;
+      /*text-shadow: 0.05em 0.05em #ff0;*/
+    }
+
+    #abLink a:hover {
+      background: #03f;
+      color: #ff0;
+      border: 0.1em solid #ff0;
+    }
+
+    @media(max-width: 750px) {
+      #countdownContainer {
+        grid-row: 1/20;
+        grid-column: span 36;
+      }
+
+      #countdown {
+        font-size: 10vw;
+      }
+
+      #abLink {
+        grid-row: 20/-1;
+        grid-column: span 36;
+        font-size: 8vw;
+      }
+    }
+
+  </style>
+</head>
+
+<body id="main">
+  <section id="heroGrid" style="cursor: pointer; user-select: none;">
+    <div id="marquee1"></div>
+    <div id="marquee2"></div>
+    <div id="marquee3"></div>
+    <div id="marquee4"></div>
+    <div id="marquee5"></div>
+    <div id="marquee6"></div>
+    <div id="marquee7"></div>
+    <div id="marquee8"></div>
+
+    <div id="heroText">
+      <h1 id="heroTextText"></h1>
+      <div class="fadein" style="display: flex">
+        <div class="downArrow updownLong">⬇</div>
+        <div class="downArrow updownLong" style="animation-delay: .333s">⬇</div>
+        <div class="downArrow updownLong" style="animation-delay: .666s">⬇</div>
+        <div class="downArrow updownLong" style="animation-delay: 1s">⬇</div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <style type="text/css">
+      #preview {
+        display: grid;
+        grid-template-rows: repeat(40, 1fr);
+        grid-template-columns: repeat(40, 1fr);
+        overflow: hidden;
+      }
+      #preview h1 {
+        text-align: center;
+        margin: 2em;
+        font-size: 4vw;
+        text-shadow: 0.1em 0.1em 0 #f00, -0.1em -0.1em 0 #00f;
+      }
+
+      #preview h4 {
+        text-align: center;
+      }
+
+      #preview iframe {
+        margin: 1em auto;
+        box-shadow: 0 0 5em #fff4bd;
+        border: 0.25em solid #fff;
+        max-width: 70vw;
+      }
+
+      #preview a, #preview a:visited {
+        color: #fff;
+      }
+
+      #previewMarquee1 {
+        grid-row: 1/-1;
+        grid-column: span 2;
+        overflow: hidden;
+        font-size: 5vw;
+        color: #f06;
+      }
+      #previewMarquee2 {
+        grid-row: 1/-1;
+        grid-column: -1/-3;
+        font-size: 5vw;
+        overflow: hidden;
+        color: #0ff;
+      }
+
+      #previewLinks {
+        grid-row: span 40;
+        grid-column: 3/39;
+      }
+
+      .controls h2 {
+        font-family: monospace !important;
+      }
+
+      button {
+        cursor: pointer;
+      }
+    </style>
+
+    <style>
+      #view {
+        border: 2vw double;
+        animation: ColorShift 6s linear infinite;
+        padding: 1em;
+      }
+
+      #view a, #view a:visited {
+        animation: ColorShift 6s linear infinite;
+        animation-delay: -3s;
+      }
+
+      #view h2 {
+        text-align: center;
+        font-size: 4em;
+      }
+
+  @keyframes ColorShift {
+    0% {color: #f00}
+    16% {color: #ff0}
+    32% {color: #0f0}
+    50% {color: #0ff}
+    66% {color: #00f}
+    83% {color: #f0f}
+    100% {color: #f00}
+  }
+    </style>
+
+    <section id="view" >
+      <h2><a href="./explore">Explore The Collection</a></h2>
+    </section>
+
+    <section id="preview">
+      <div id="previewMarquee1"></div>
+      <div id="previewLinks">
+
+        <div class="center">
+          <h1>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+          </h1>
+
+          <h1>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+            <span class="dance" style="display: block ;animation-duration: 2s">PREVIEW!</span>
+          </h1>
+        </div>
+        <div>
+          <iframe src="./preview.html" id="mainPreview" class="center" style="width: 640px; height: 400px"></iframe>
+          <h4>(Live Preview)
+            <button style="margin: 0.5em auto; padding: 0.25em;" onclick="location.reload(true)">
+              RELOAD
+            </button>
+          </h4>
+
+        </div>
+
+        <div class="center controls" style="flex-direction: column; margin-top: 2em; font-family: monospace;">
+          <div>
+            <h2 style="text-align: center; margin-bottom: 0.5em; text-decoration: underline;">Controls:</h2>
+            <h2>[D] ⬇️ Download HTML</h2>
+            <h2>[O] ⚠️ Overdrive</h2>
+            <h2>[P] ✋ Pause</h2>
+            <h2>[A] 😐 Anti-Anxiety Mode</h2>
+            <h2>[M] 🐁 Mouse Hide</h2>
+            <h2>[I] ↔️ Invert</h2>
+            <h2>[N] 🙈 No Distraction Mode</h2>
+            <h2>[E] 🙃 Emoji Polyfill Toggle</h2>
+          </div>
+        </div>
+
+        <h1><a href="./preview.html" target="_blank">→ FULL SCREEN PREVIEW ←</a></h1>
+        <div>
+          <iframe src="./preview.html" class="center" style="width: 400px; height: 640px;"></iframe>
+          <h4>(1 X 2 Live Preview)</h4>
+        </div>
+
+        <h1><a href="./preview.html" target="_blank">→ FULL SCREEN PREVIEW ←</a></h1>
+        <div>
+          <iframe src="./preview.html" class="center" style="width: 520px; height: 520px"></iframe>
+          <h4>(1 x 1 Live Preview)</h4>
+        </div>
+
+        <h1><a href="./preview.html" target="_blank">→ FULL SCREEN PREVIEW ←</a></h1>
+        <div>
+          <iframe src="./preview.html" class="center" style="width: 640px; height: 200px"></iframe>
+          <h4>(4 x 1 Live Preview)</h4>
+        </div>
+
+        <h1></h1>
+      </div>
+      <div id="previewMarquee2"></div>
+    </section>
+
+    <style type="text/css">
+      .info2 {
+        display: grid;
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        background: linear-gradient(135deg, #f00, #0ff);
+        border: 8px dashed #000;
+      }
+
+      .info2 > * {
+        align-self: center;
+        justify-self: center;
+        font-size: 3em;
+        text-align: center;
+        padding: 1em;
+        animation-duration: 1s;
+        text-shadow: 0.1em 0.1em 0 #000;
+      }
+
+      @media (max-width: 950px) {
+        .info2 {
+          grid-template-rows: 1fr;
+          grid-template-columns: 1fr;
+        }
+
+        .info2 > * {
+          padding: 0.5em;
+        }
+      }
+
+
+    </style>
+
+    <section class="info2">
+      <div class="growShrink" style="animation-delay: -0s; font-size: 5em">🤑</div>
+      <div class="growShrink" style="animation-delay: -0.25s">335 Emojis + Phrases!</div>
+      <div class="growShrink" style="animation-delay: -0.5s; font-size: 5em">😂</div>
+
+      <div class="growShrink" style="animation-delay: -0.75s">22 Animation Types!</div>
+      <div class="growShrink" style="animation-delay: -1s; font-size: 5em">💥</div>
+      <div class="growShrink" style="animation-delay: -1.25s">9 Shadow Styles!</div>
+
+      <div class="growShrink" style="animation-delay: -1.5s; font-size: 5em">🎰</div>
+      <div class="growShrink" style="animation-delay: -1.75s">Mix & Match Up to 17 Fun Themes!</div>
+      <div class="growShrink" style="animation-delay: -2s; font-size: 5em">🎲</div>
+    </section>
+
+    <section id="info">
+      <div id="infoMarquee1"></div>
+      <div id="infoMarquee2"></div>
+      <div id="countdownContainer" class="center">
+        <div id="countdown" class="breathe"></div>
+      </div>
+      <div id="abLink" class="center">
+        <a href="https://www.artblocks.io/collections/curated/projects/0x99a9b7c1116f9ceeb1652de04d5969cce509b069/457" target="_blank" class="dance">BUY NOW</a>
+      </div>
+    </section>
+
+    <section style="background: linear-gradient(45deg, #ff0, #00f); border: 8px solid #f00; text-shadow: 0.1em 0.1em 0 #000;">
+      <div id="marquee9" style="overflow: hidden; border-bottom: 8px solid #f00; margin: 0.25em 0"></div>
+      <div class="center" style="margin: 3em 0; flex-direction: column;">
+        <h2 class="blink" style="animation-delay: -0.5s; font-size: 5vw;">🔥 🎁 🔥 🎁 🔥</h2>
+        <h2 class="blink" style="margin: 1em 0; font-size: 5vw; animation-duration: 1s">FIRST 100 MINTS → FREE PRINT</h2>
+
+        <div style="border: 8px solid #f0f">
+          <a href="./rewards.jpg" target="_blank"><img style="max-width: 50vw; min-width: 250px; max-height: 70vh;" src="./rewards.jpg"></a>
+        </div>
+        <h2 class="blink" style="animation-delay: -0.75s; font-size: 5vw;">🤩 WOW 🤩</h2>
+        <h2 class="blink" style="margin: 1em 0; font-size: 5vw; animation-delay: -1s;">BUT WAIT, THERE'S MORE!!</h2>
+        <h2 class="blink" style="animation-delay: -1.5s; font-size: 5vw;">🚀🚀🚀🚀</h2>
+        <h2 class="blink" style="margin: 1em 0; font-size: 5vw; animation-delay: -2s;">ALL MINTS → 1 $FASTCASH</h2>
+        <h2 class="blink" style="animation-delay: -2.5s; font-size: 5vw;">💸💸💸</h2>
+      </div>
+    </section>
+
+
+
+
+    <style type="text/css">
+      .review {
+        border-bottom: 0.1em solid #000;
+        background: #fff;
+        color: #000;
+        font-size: 4em;
+        overflow: hidden;
+      }
+    </style>
+    <section>
+      <h1 style="font-size: 4em; text-align: center; margin: 1em 0;">Here's what people are saying:</h1>
+      <div id="review1" class="review"></div>
+      <div id="review2" class="review"></div>
+      <div id="review3" class="review"></div>
+      <div id="review4" class="review"></div>
+      <div id="review5" class="review"></div>
+      <div id="review6" class="review"></div>
+      <div id="review7" class="review"></div>
+      <div id="review8" class="review"></div>
+      <div id="review9" class="review"></div>
+      <div id="review10" class="review"></div>
+      <div id="review11" class="review"></div>
+      <div id="review12" class="review"></div>
+    </section>
+
+    <style type="text/css">
+      #disclaimer {
+        margin-top: 5em;
+        padding: 0 1em;
+      }
+      #disclaimer p {
+        margin: 1em 0;
+        padding: 0 1em;
+        font-style:  italic;
+        line-height: 1.3;
+        max-width: 700px;
+
+      }
+    </style>
+
+    <section id="disclaimer">
+      <div class="center" style="flex-direction: column; text-align: justify;">
+        <p>WARNING: Dopamine Machines contain visual effects that may induce seizures in individuals with photosensitive epilepsy. In addition, frequent use of Dopamine Machines may lead to anxiety, psychosis, manic behavior, addiction, aggression, insomnia, and restlessness in otherwise healthy individuals. Dopamine Machines may also inhibit future dopamine transmission for some users, which may lead to depression, apathy, and/or anhedonia.</p>
+        <p>None of the emojis or text contained within a Dopamine Machine constitutes financial advice. If you suspect you may have a gambling problem, please contact the National Problem Gambling Helpline Network at 1-800-522-4700. By using Dopamine Machines, you acknowledge and accept these potential risks and agree that the Artist shall not be held liable for any damages or injuries resulting from such use.</p>
+        <p>All Dopamine Machines are presented "AS IS" without any warranty whatsoever, either express or implied. While each resultant HTML Document is intended to work on all devices, sizes, and aspect ratios, the Artist makes no guarantees related to the consistency of appearance and functionality in obsolete and future web browsers.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer style="padding: 1em; margin-top: 5em; text-align: center">
+    <a href="https://steviep.xyz" target="_blank" style="color: #fff">steviep.xyz</a> (2023)
+  </footer>
+</body>
+
+
+<script type="text/javascript">
+let hash = '0x'
+for (let i = 0; i < 64; i++) {
+  hash += Math.floor(Math.random() * 16).toString(16)
+}
+const tokenData = { hash, tokenId: 0 }
+</script>
+<script src="./utils.js"></script>
+<script src="./$.js"></script>
+<script src="./components.js"></script>
+
+<script type="text/javascript">
+
+  let START_TIME = Date.now()
+  const MAX_VOLUME = 0.06
+  const BASE_FREQ = rnd(250, 500)
+  const MAJOR_SCALE = [1, 1.125, 1.25, 1.3333, 1.5, 1.6666, 1.875, 2]
+
+  function id(i) {
+    return document.getElementById(i)
+  }
+
+  function getTimezone() {
+    try {
+      const d = new Date()
+      const offset = d.getTimezoneOffset() / 60
+      if (offset % 1 < 1) return '1PM EDT'
+      const adjustedHour = (24 + 17 - offset) % 24
+      const tz = d.toString().match(/\(([A-Za-z\s].*)\)/)[1].replace(/[^A-Z]/g, '')
+
+      const amPm = adjustedHour < 12 ? 'AM' : 'PM'
+
+      const displayHour = (adjustedHour > 12 ? adjustedHour - 12 : adjustedHour) || 12
+      return displayHour + amPm + ' ' + tz
+    } catch (e) {
+      return '1PM EDT'
+    }
+  }
+
+  function getAdjustedDay() {
+    const d = new Date()
+    const offset = d.getTimezoneOffset() / 60
+    const adjustedHour = (17 - offset)
+
+    if (adjustedHour >= 24) return 22
+    else return 21
+  }
+
+
+  const triggerSound1 = sirenSound({ duration: 1500 })
+  const triggerSound2 = blinkCharSound({ duration: 1500 })
+
+  let stopSound
+
+  id('heroGrid').onclick = () => {
+
+    if (window.navigator) window.navigator.vibrate(50)
+
+    const u = new window.SpeechSynthesisUtterance('dopamine machines. art blocks curated. 777 editions. june 21st 2023. 1pm eastern daylight time. wednesday. dutch auction. 1.99 eth to 0.0999 eth. responsive interactive and audio-visual NFTs! stevie p')
+
+    setTimeout(() => {
+      window.speechSynthesis.speak(u)
+    }, 2000)
+
+    const setNotification = () => {
+      notifyingTimeout = setTimeout(() => {
+        new Notification(sample([
+          'Dopamine Machines',
+          'Art Blocks Curated',
+          '777 Editions',
+          'June 21st 2023',
+          '1pm Eastern Daylight Time',
+          'Dutch Auction',
+          '1.99 ETH to 0.0999 ETH' ,
+          'Responsive, Interactive, and Audio-Visual NFTs!',
+          'steviep',
+        ]))
+        setNotification()
+      }, rndint(100, 5000))
+    }
+
+    Notification.requestPermission().then(p => {
+      setNotification()
+    })
+
+    if (navigator.clipboard) navigator.clipboard.writeText(`Dopamine Machines - 6/${getAdjustedDay()} @ ${getTimezone()} - artblocks.io`)
+
+
+    triggerSound1()
+    triggerSound2()
+  }
+
+
+
+  $.render(
+    id('marquee1'),
+    marquee($.span('🤩'), { duration: 45, direction: -1, style: ''})
+  )
+
+  $.render(
+    id('marquee2'),
+    marquee($.span('🚀'), { duration: 45})
+  )
+
+  $.render(
+    id('marquee5'),
+    marquee($.span('🎰'), { duration: 45})
+  )
+
+  $.render(
+    id('marquee6'),
+    marquee($.span(`🤑`), { duration: 45, direction: -1})
+  )
+
+  $.render(
+    id('marquee3'),
+    marquee($.span('💸'), { duration: 45, rotate: 90, repeat: 100})
+  )
+
+  $.render(
+    id('marquee4'),
+    marquee($.span('🧠'), { duration: 45, rotate: 270,repeat: 100})
+  )
+
+
+  $.render(
+    id('marquee7'),
+    marquee($.span('⚡️'), { duration: 45, rotate: 270, repeat: 100})
+  )
+
+  $.render(
+    id('marquee8'),
+    marquee($.span('🔥'), { duration: 45, rotate: 90, repeat: 100})
+  )
+
+  $.render(
+    id('heroTextText'),
+    dance(
+      growShrink(
+        // colorChars(
+          // $.span('DOPAMINE', {id: 'mainText'})
+          $.span('DOPAMINE', {id: 'mainText', class: 'fullColorRotate'}),
+        // ),
+
+        { duration: 1500, style: 'font-size: 1.3em'}
+      ),
+      { duration: 1500}
+    )
+  )
+
+  $.render(
+    id('infoMarquee1'),
+    marquee($.span('NOT MUCH TIME LEFT'), { duration: 40, rotate: 90, repeat: 100})
+  )
+
+  $.render(
+    id('infoMarquee2'),
+    marquee($.span("THIS WON'T LAST"), { duration: 40, rotate: 270, repeat: 100})
+  )
+
+
+  $.render(
+    id('previewMarquee1'),
+    marquee($.span('PREVIEW'), { duration: 40, rotate: 90, repeat: 100})
+  )
+
+  $.render(
+    id('previewMarquee2'),
+    marquee($.span("PREVIEW"), { duration: 40, rotate: 270, repeat: 100})
+  )
+
+  $.render(
+    id('marquee9'),
+    marquee($.span("SPECIAL PROMOTION:", { style: `font-size: 3em`}), { duration: 40 })
+  )
+
+  triggerTimer(1732510800000 - START_TIME, id('mainText'))
+
+
+  ;[
+    `EXCITING!!!`,
+    `AN ABSOLUTE MASTER CLASS IN HTML & CSS`,
+    `I COULDN'T BELIEVE MY EYES... OR EARS!`,
+    `THEY'RE EVEN BETTER FULL-SCREEN!`,
+    `🤯 MIND BLOWING 🤯`,
+    `SO COOL`,
+    `EXCITING!`,
+    `AN OVERWHELMING SENSATION`,
+    `I COULDN'T LOOK AWAY!`,
+    `IT WORKS ON ALL MY DEVICES! 🤳`,
+    `THESE NFTs ARE GOING STRAIGHT TO THE MOON!`,
+    `I'VE NEVER SEEN ANYTHING QUITE LIKE IT`,
+  ].forEach((t, i) => {
+    $.render(
+      id('review' + (i+1)),
+      marquee($.span(t), { duration: t.length * 4 + Math.random() * 50, direction: i % 2 ? 1 : -1 })
+    )
+  })
+
+
+  function triggerTimer(timeLeft, $elem) {
+    const with0 = x => x < 10 ? '0' + Math.floor(x) : Math.floor(x)
+    const interval = setInterval(() => {
+      timeLeft -= 10
+      const days = timeLeft / (24*60*60*1000)
+      const hours = 24 * (days%1)
+      const minutes = 60 * (hours%1)
+      const seconds = Math.floor(60 * (minutes%1))
+      const ms = Math.floor(timeLeft % 1000 / 100) % 10
+
+      $elem.innerHTML = `${Math.floor(days)}:${with0(hours)}:${with0(minutes)}:${with0(seconds)}.${ms}`
+    }, 10)
+  }
+
+
+
+
+function createSource(waveType = 'square') {
+  const AudioContext = window.AudioContext || window.webkitAudioContext
+  const ctx = new AudioContext()
+
+  const source = ctx.createOscillator()
+  const gain = ctx.createGain()
+  const panner = new StereoPannerNode(ctx)
+
+  source.connect(gain)
+  gain.connect(panner)
+  panner.connect(ctx.destination)
+
+  gain.gain.value = 0
+  source.type = waveType
+  source.frequency.value = 3000
+  source.start()
+
+  const smoothFreq = (value, timeInSeconds=0.00001, overridePaused=false) => {
+    source.frequency.exponentialRampToValueAtTime(
+      value,
+      ctx.currentTime + timeInSeconds
+    )
+  }
+
+  const smoothPanner = (value, timeInSeconds=0.00001) => {
+    panner.pan.exponentialRampToValueAtTime(
+      value,
+      ctx.currentTime + timeInSeconds
+    )
+  }
+
+  const smoothGain = (value, timeInSeconds=0.00001) => {
+    gain.gain.setTargetAtTime(
+      min(value, MAX_VOLUME),
+      ctx.currentTime,
+      timeInSeconds
+    )
+  }
+
+  const src = { source, gain, smoothFreq, smoothGain, smoothPanner, originalSrcType: source.type }
+
+  return src
+}
+
+const getLoopsAtTime = (t, duration) => (t - START_TIME) / duration
+
+
+function sirenSound({ duration }, waveType='square', freqAdj=1) {
+  let freqMax = freqAdj * sample(MAJOR_SCALE) * BASE_FREQ
+  let freqMin = freqAdj * freqMax / 5
+  if (prb(0.5)) [freqMax, freqMin] = [freqMin, freqMax]
+
+  const freqDiff = freqMax - freqMin
+  const introTimeMs = 250
+
+  const halfLoopsAtTime = time => 2 * getLoopsAtTime(time, duration)
+  const getDirectionAtTime = time => int(halfLoopsAtTime(time)) % 2 ? 1 : -1
+
+  const getFreqAtTime = time => {
+    const directionAtTime = getDirectionAtTime(time)
+    const halfLoopsLeft = halfLoopsAtTime(time) % 1
+    const timeDiff = halfLoopsLeft * freqDiff
+
+    if (directionAtTime === 1) {
+      return freqMin + timeDiff
+    } else {
+      return freqMax - timeDiff
+    }
+  }
+
+  const brokenDivisor = prb(0.1) ? rnd(1000, 2500) : 2000
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource(waveType)
+    smoothGain(MAX_VOLUME)
+    smoothFreq(getFreqAtTime(Date.now() + introTimeMs), 0.25)
+
+    let stopInterval
+    setTimeout(() => {
+      const timeUntilNextHalfLoop = (1 - halfLoopsAtTime(Date.now() + extraDelay) % 1) * duration/2
+      smoothFreq(getFreqAtTime(Date.now() + timeUntilNextHalfLoop), timeUntilNextHalfLoop/1000)
+
+      setTimeout(() => {
+        stopInterval = setRunInterval((i) => {
+          smoothFreq(
+            getFreqAtTime(Date.now() + duration/2 + extraDelay),
+            i % 2 ? duration/2000 : duration/brokenDivisor
+          )
+        }, duration/16)
+      }, timeUntilNextHalfLoop)
+    }, introTimeMs)
+
+
+    return () => {
+      smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
+function blinkCharSound({duration}, seq=null) {
+  const sequence = sample([0, 1, 2])
+  const isSmooth = prb(0.5)
+  const twoTone = prb(0.1)
+
+  const baseFreq = sample(MAJOR_SCALE) * BASE_FREQ * chance(
+    [5, 1],
+    [3, 2],
+    [1, 0.5],
+    [1, 0.25],
+  )
+
+  const ttMult = sample([2, 1.5, 1.3333])
+  duration = duration ? map(duration, 750, 5000, 500, 2000) : rnd(500, 2000)
+  const interval = duration / 8
+
+  return (extraDelay=0) => {
+    const { smoothFreq, smoothGain } = createSource()
+    const src2 = createSource()
+
+    if (isSmooth) {
+      smoothGain(MAX_VOLUME*0.65)
+      if (twoTone) src2.smoothGain(MAX_VOLUME*0.65)
+    }
+
+    const stopInterval = setRunInterval((i) => {
+      if (!isSmooth) {
+        smoothGain(MAX_VOLUME*0.65)
+        if (twoTone) src2.smoothGain(MAX_VOLUME*0.65)
+      }
+
+      let ix
+      switch (sequence) {
+        case 0: ix = i%8; break
+        case 1: ix = abs(7 - i%8); break
+        case 2: ix = i%14 < 7 ? i%14 : abs(7 - i%7); break
+      }
+
+      const freq = MAJOR_SCALE[ix]
+
+      smoothFreq(baseFreq * freq)
+      if (twoTone) src2.smoothFreq(baseFreq * freq*ttMult)
+
+      if (!isSmooth) setTimeout(() => {
+        smoothGain(0, 0.04)
+         if (twoTone)  src2.smoothGain(0, 0.04)
+      }, interval*0.75)
+    }, interval)
+
+    return () => {
+      smoothGain(0, 0.04)
+      if (twoTone) src2.smoothGain(0, 0.04)
+      if (stopInterval) stopInterval()
+    }
+  }
+}
+
+
+
+setRunInterval(() => {
+  addThumbnail(`hsl(${Math.random() * 360}deg, 100%, 50%)`)
+}, 250)
+</script>
+
+</html>
