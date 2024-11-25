@@ -368,9 +368,6 @@ function marquee(children, args={}) {
         animation-delay: -${delay}s;
         animation-duration: ${duration/(repeat/40)}s;
         animation-direction: ${direction === 1 ? 'normal' : 'reverse'};
-        background: none;
-        font-size: 1.5em;
-        overflow: visible;
       `
     }
   )
