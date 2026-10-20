@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dopamine Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000" />
+  <link rel="stylesheet" href="console.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Dopamine Console</h1>
+      <span id="status" class="status">connecting…</span>
+    </header>
+
+    <section>
+      <h2>Hash</h2>
+      <div class="row">
+        <input id="hash" class="mono" spellcheck="false" autocomplete="off">
+        <button id="newHash" class="primary">New hash</button>
+      </div>
+      <div class="row">
+        <select id="savedHashes" class="saved"></select>
+        <button id="saveHash">Save</button>
+        <button id="deleteSaved">Delete</button>
+      </div>
+      <div class="row">
+        <label for="tokenId">Token ID</label>
+        <input id="tokenId" class="mono short" type="number" min="0">
+      </div>
+      <p id="error" class="error"></p>
+    </section>
+
+    <section>
+      <h2>Content</h2>
+      <p class="hint">Samples (none checked = random; a page's <span class="mono">?samples=0,1,2</span> overrides these)</p>
+      <div id="samples" class="toggles samples"></div>
+      <div class="row">
+        <label for="emojis">Emojis</label>
+        <select id="emojis"></select>
+      </div>
+    </section>
+
+    <section>
+      <h2>Layouts</h2>
+      <div id="layouts" class="layouts"></div>
+    </section>
+
+    <section>
+      <h2>Modes</h2>
+      <div id="toggles" class="toggles"></div>
+    </section>
+
+    <section>
+      <h2>URLs</h2>
+      <p class="hint">Query params that reproduce the current output on each surface. They override the console for that page.</p>
+      <div id="urls" class="urls"></div>
+    </section>
+
+    <section>
+      <h2>Pages <span id="pageCount" class="count"></span></h2>
+      <ul id="clients" class="clients"></ul>
+      <button id="reloadAll">Reload all pages</button>
+    </section>
+  </main>
+
+  <script type="module" src="./console.js"></script>
+</body>
+</html>

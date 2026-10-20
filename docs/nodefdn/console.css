@@ -1,0 +1,199 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  color: #eee;
+  font-family: sans-serif;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  margin: 0 0 12px;
+}
+
+section {
+  border-top: 1px solid #333;
+  padding: 20px 0;
+  margin-top: 20px;
+}
+
+.mono {
+  font-family: monospace;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+input, select, button {
+  font-size: 14px;
+  background: #111;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+#hash {
+  flex: 1;
+  min-width: 0;
+}
+
+select.saved {
+  flex: 1;
+  min-width: 0;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+input.short {
+  width: 140px;
+}
+
+button {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+button:hover {
+  border-color: #888;
+}
+
+button.primary {
+  background: #0f0;
+  color: #000;
+  border-color: #0f0;
+  font-weight: bold;
+}
+
+.status {
+  font-size: 13px;
+  color: #f44;
+}
+
+.status.connected {
+  color: #0f0;
+}
+
+.error {
+  color: #f44;
+  font-size: 13px;
+  margin: 0;
+  min-height: 1em;
+}
+
+.layouts {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.layouts a {
+  color: #0ff;
+  font-size: 13px;
+}
+
+.count {
+  color: #555;
+}
+
+.pageCount {
+  font-size: 12px;
+  color: #888;
+}
+
+.pageCount.live {
+  color: #0f0;
+}
+
+.toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.toggles label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 8px;
+}
+
+.samples {
+  margin-bottom: 16px;
+}
+
+.urls {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.urls code {
+  font-size: 12px;
+  color: #ccc;
+  word-break: break-all;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+.clients {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.clients li {
+  padding: 4px 0;
+}
+
+@media (max-width: 520px) {
+  .row {
+    flex-wrap: wrap;
+  }
+
+  .layouts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
