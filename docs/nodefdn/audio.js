@@ -746,6 +746,12 @@ function setRoot(root) {
 $root.onchange = () => setRoot(Number($root.value))
 $rootRange.oninput = () => setRoot(Number($rootRange.value))
 
+document.getElementById('resetAll').onclick = () => {
+  if (!confirm('Reset root + both channels to the defaults?')) return
+  setRoot(440)
+  panes.forEach(p => p.loadDefaults())
+}
+
 
 // PERSISTENCE
 
