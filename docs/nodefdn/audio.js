@@ -32,7 +32,7 @@ const fixed = n => v => Number(v).toFixed(n)
 
 
 const state = {
-  root: rnd(250, 500),
+  root: 440,
 }
 
 
@@ -387,6 +387,7 @@ class Pane {
     Object.assign(this, { $el, key, title, name, VoiceClass, schema, randomize, defaults })
     this.on = false
     this.volume = 1
+    this.pan = 0
     this.voices = []
     this.dirty = false
     this.render()
@@ -399,6 +400,11 @@ class Pane {
     this.$vol.oninput = () => this.setVolume(Number(this.$vol.value))
     this.$vol.ondblclick = () => this.setVolume(1)
 
+    this.$panValue = el('span', { class: 'value mono' }, this.pan.toFixed(2))
+    this.$pan = el('input', { type: 'range', min: -1, max: 1, step: 0.01, value: this.pan })
+    this.$pan.oninput = () => this.setPan(Number(this.$pan.value))
+    this.$pan.ondblclick = () => this.setPan(0)
+
     this.$voices = el('div', { class: 'voices' })
     this.$config = el('textarea', { class: 'mono', spellcheck: false, rows: 12 })
     this.$config.oninput = () => this.setDirty(true)
@@ -408,7 +414,10 @@ class Pane {
       el('div', { class: 'paneHeader' }, [
         el('h2', {}, this.title),
         $on,
-        el('label', { class: 'master' }, ['master', this.$vol, this.$volValue]),
+        el('div', { class: 'masters' }, [
+          el('label', { class: 'master' }, ['volume', this.$vol, this.$volValue]),
+          el('label', { class: 'master' }, ['pan', this.$pan, this.$panValue]),
+        ]),
       ]),
       el('div', { class: 'row' }, [
         el('button', { class: 'primary', onclick: () => this.addVoice(sanitize(this.schema, {})) }, '+ Add'),
@@ -434,7 +443,8 @@ class Pane {
   connect() {
     this.output = ctx.createGain()
     this.output.gain.value = this.on ? this.volume : 0
-    this.output.connect(ctx.destination)
+    this.panner = new StereoPannerNode(ctx, { pan: this.pan })
+    this.output.connect(this.panner).connect(ctx.destination)
     this.voices.forEach(v => this.sync(v))
   }
 
@@ -448,6 +458,14 @@ class Pane {
     this.$el.classList.toggle('active', on)
     if (this.output) this.output.gain.setTargetAtTime(on ? this.volume : 0, ctx.currentTime, 0.05)
     this.voices.forEach(v => this.sync(v))
+  }
+
+  setPan(pan) {
+    this.pan = pan
+    this.$pan.value = pan
+    this.$panValue.textContent = pan.toFixed(2)
+    if (this.panner) this.panner.pan.setTargetAtTime(pan, ctx.currentTime, 0.02)
+    this.changed()
   }
 
   setVolume(volume) {
@@ -581,14 +599,15 @@ class Pane {
   config() {
     return {
       volume: this.volume,
+      pan: this.pan,
       sounds: this.voices.map(v => ({ ...v.params })),
     }
   }
 
   configText() {
-    const { volume, sounds } = this.config()
+    const { volume, pan, sounds } = this.config()
     // one sound per line so it stays readable
-    return `{\n  "volume": ${volume},\n  "sounds": [\n${sounds.map(s => `    ${JSON.stringify(s)}`).join(',\n')}\n  ]\n}`
+    return `{\n  "volume": ${volume},\n  "pan": ${pan},\n  "sounds": [\n${sounds.map(s => `    ${JSON.stringify(s)}`).join(',\n')}\n  ]\n}`
   }
 
   setDirty(dirty) {
@@ -617,6 +636,11 @@ class Pane {
       const volume = Number(config.volume)
       if (!Number.isFinite(volume)) throw new Error('volume must be a number')
       this.setVolume(clamp(volume, 0, 2))
+    }
+    if (!Array.isArray(config) && config.pan !== undefined) {
+      const pan = Number(config.pan)
+      if (!Number.isFinite(pan)) throw new Error('pan must be a number')
+      this.setPan(clamp(pan, -1, 1))
     }
     sounds.forEach(s => this.addVoice(sanitize(this.schema, s)))
     this.changed()
@@ -651,6 +675,7 @@ class Pane {
 
 const CHANNEL_1_DEFAULTS = {
   volume: 1,
+  pan: -1,
   sounds: [
     { on: true, note: 0, octave: 0.125, beat: 0.14, wave: 'square', volume: 1 },
     { on: true, note: 0, octave: 0.25, beat: 0.38, wave: 'square', volume: 0.61 },
@@ -666,6 +691,7 @@ const CHANNEL_1_DEFAULTS = {
 
 const CHANNEL_2_DEFAULTS = {
   volume: 0.6,
+  pan: 1,
   sounds: [
     { on: true, note: 0, octave: 1, duration: 1000, sequence: 0, scale: 'major', smooth: true, twoTone: false, wave: 'square', volume: 1 },
     { on: true, note: 0, octave: 1, duration: 1830, sequence: 2, scale: 'major', smooth: false, twoTone: false, wave: 'square', volume: 1 },
@@ -702,14 +728,12 @@ const panes = [spinny, blinky]
 
 const $root = document.getElementById('root')
 const $rootRange = document.getElementById('rootRange')
-const $rootNote = document.getElementById('rootNote')
 
 function setRoot(root) {
   if (!Number.isFinite(root) || root <= 0) return
   state.root = root
   $root.value = root.toFixed(2)
   $rootRange.value = root
-  $rootNote.textContent = noteName(root)
   panes.forEach(p => p.voices.forEach(v => {
     p.renderInfo(v)
     v.refresh?.()
@@ -719,7 +743,6 @@ function setRoot(root) {
 
 $root.onchange = () => setRoot(Number($root.value))
 $rootRange.oninput = () => setRoot(Number($rootRange.value))
-document.getElementById('rootRandom').onclick = () => setRoot(rnd(250, 500))
 
 
 // PERSISTENCE

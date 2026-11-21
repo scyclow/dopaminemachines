@@ -148,13 +148,24 @@ main {
   cursor: pointer;
 }
 
-.master {
+.masters {
   margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.master {
   color: #888;
+  justify-content: flex-end;
 }
 
 .master input {
   width: 160px;
+}
+
+.master .value {
+  width: 40px;
 }
 
 .row {
