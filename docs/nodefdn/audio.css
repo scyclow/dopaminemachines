@@ -274,20 +274,35 @@ main {
 }
 
 .toggleBtn {
-  min-width: 48px;
+  display: inline-flex;
+  padding: 0;
+  overflow: hidden;
+  border-color: #555;
+  background: #111;
+}
+
+.toggleBtn:hover {
+  border-color: #888;
+}
+
+.toggleBtn .seg {
   padding: 3px 8px;
   font-size: 12px;
   font-weight: bold;
-  color: #888;
+  color: #555;
 }
 
-.toggleBtn.on {
+.toggleBtn.on .segOn {
   background: #0f0;
   color: #000;
-  border-color: #0f0;
 }
 
-.paneHeader .toggleBtn {
+.toggleBtn:not(.on) .segOff {
+  background: #f44;
+  color: #000;
+}
+
+.paneHeader .toggleBtn .seg {
   padding: 6px 12px;
   font-size: 13px;
 }
@@ -310,7 +325,7 @@ main {
 }
 
 /* channel off: gray out all the green */
-.pane:not(.active) .toggleBtn.on,
+.pane:not(.active) .toggleBtn.on .segOn,
 .pane:not(.active) button.primary {
   background: #555;
   border-color: #555;

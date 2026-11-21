@@ -332,11 +332,13 @@ const el = (tag, attrs = {}, children = []) => {
 }
 
 const toggleButton = (on, onchange) => {
-  const $btn = el('button', { class: 'toggleBtn' })
+  const $btn = el('button', { class: 'toggleBtn' }, [
+    el('span', { class: 'seg segOn' }, 'ON'),
+    el('span', { class: 'seg segOff' }, 'OFF'),
+  ])
   const set = v => {
     on = v
     $btn.classList.toggle('on', on)
-    $btn.textContent = on ? 'ON' : 'OFF'
   }
   $btn.onclick = () => {
     set(!on)
